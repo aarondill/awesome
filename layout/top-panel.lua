@@ -23,7 +23,7 @@ local battery_widget = require("widget.battery")({})
 local mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Create a textclock widget
-local mytextclock = wibox.widget.textclock('<span font="Roboto Mono 12">%I:%M %p</span>')
+local mytextclock = wibox.widget.textclock("%I:%M %p")
 -- local mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
