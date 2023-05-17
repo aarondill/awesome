@@ -21,6 +21,10 @@ require("theme")(nil)
 -- Layout
 require("layout")
 
+local bindings = require("modules.bindings")
+-- Set keys
+root.keys(bindings.globalkeys)
+
 require("modules.rules")
 require("modules.signals")
 
