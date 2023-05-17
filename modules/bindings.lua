@@ -17,7 +17,7 @@ root.buttons(gears.table.join(
 	awful.button({}, 5, awful.tag.viewprev)
 ))
 
--- {{{ Key bindings
+-- Key bindings
 local globalkeys = gears.table.join(
 	awful.key({ vars.modkey }, "j", function()
 		awful.client.focus.byidx(1)
@@ -226,8 +226,4 @@ local clientbuttons = gears.table.join(
 	end)
 )
 
--- Set keys
-root.keys(globalkeys)
--- }}}
-
-return { clientkeys = clientkeys, clientbuttons = clientbuttons }
+return { globalkeys = globalkeys, clientkeys = clientkeys, clientbuttons = clientbuttons }
