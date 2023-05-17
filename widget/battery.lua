@@ -59,4 +59,10 @@ local function batterybar(args)
 	return batbar
 end
 
-return batterybar
+-- https://github.com/hoelzro/obvious
+local has_obv, bat = pcall(require, "obvious.battery")
+if has_obv then
+	return bat
+else
+	return batterybar
+end
