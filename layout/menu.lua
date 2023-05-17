@@ -48,9 +48,9 @@ else
 	mainmenu = awesome.menu({ items = { menu_awesome, menu_terminal } })
 end
 
-local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu })
+local launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
 
-return { mylauncher = mylauncher, mymainmenu = mainmenu }
+return { mylauncher = launcher, mymainmenu = mainmenu }
