@@ -1,6 +1,3 @@
 [submodule "widget/brightness"]
 	path = widget/brightness
 	url = https://github.com/deficient/brightness
-[submodule "freedesktop"]
-	path = freedesktop
-	url = https://github.com/lcpz/awesome-freedesktop
