@@ -5,6 +5,7 @@ M.terminal = "wezterm"
 M.editor = os.getenv("EDITOR") or "nvim"
 M.browser = os.getenv("BROWSER") or "sensible-browser"
 M.editor_cmd = M.terminal .. " -e " .. M.editor
+M.lock = "lock"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
