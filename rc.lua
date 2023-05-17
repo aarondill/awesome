@@ -15,6 +15,9 @@ require("awful.hotkeys_popup.keys")
 -- Show a notification if something goes wrong
 require("modules.error_handling")
 
+-- Auto-start
+require("modules.auto-start")
+
 -- theme(themeName)
 require("theme")(nil)
 
