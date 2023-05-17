@@ -12,7 +12,7 @@ systray:set_base_size(20)
 systray.forced_height = 20
 
 -- Load brightness widget
-local brightness_widget = require("widget.brightness")({
+local brightness_widget = require("widget.brightness-wip")({
 	step = 5,
 	timeout = 10,
 	levels = { 1, 25, 50, 75, 100 },
