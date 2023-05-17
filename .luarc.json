@@ -1,0 +1,5 @@
+{
+  "diagnostics": {
+    "globals": ["awesome", "client", "screen", "root"]
+  }
+}
