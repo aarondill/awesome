@@ -4,6 +4,7 @@ local gears = require("gears")
 
 local vars = require("variables")
 local menu = require("layout.menu")
+local TaskList = require("widget.task-list")
 
 local systray = wibox.widget.systray()
 systray:set_horizontal(true)
@@ -23,7 +24,7 @@ local battery_widget = require("widget.battery")({})
 local mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Create a textclock widget
-local mytextclock = wibox.widget.textclock("%I:%M %p")
+local textclock = wibox.widget.textclock("%I:%M %p")
 -- local mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
@@ -50,35 +51,9 @@ local taglist_buttons = gears.table.join(
 	end)
 )
 
-local tasklist_buttons = gears.table.join(
-	awful.button({}, 1, function(c)
-		if c == client.focus then
-			c.minimized = true
-		else
-			c:emit_signal("request::activate", "tasklist", { raise = true })
-		end
-	end),
-	awful.button({}, 3, function()
-		awful.menu.client_list({ theme = { width = 250 } })
-	end),
-	awful.button({}, 4, function()
-		awful.client.focus.byidx(1)
-	end),
-	awful.button({}, 5, function()
-		awful.client.focus.byidx(-1)
-	end)
-)
-
-local function TopPanel(s)
-	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-
-	-- Create a promptbox for each screen
-	local promptbox = awful.widget.prompt()
-	-- HACK: assign to the screen
-	s.promptbox = promptbox
-	-- Create an imagebox widget which will contain an icon indicating which layout we're using.
-	-- We need one layoutbox per screen.
+-- Create an imagebox widget which will contain an icon indicating which layout we're using.
+-- We need one layoutbox per screen.
+local LayoutBox = function(s)
 	local layoutbox = awful.widget.layoutbox(s)
 	layoutbox:buttons(gears.table.join(
 		awful.button({}, 1, function()
@@ -94,18 +69,22 @@ local function TopPanel(s)
 			awful.layout.inc(-1)
 		end)
 	))
+	return layoutbox
+end
+
+local function TopPanel(s)
+	-- Each screen has its own tag table.
+	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+
+	-- Create a promptbox for each screen
+	local promptbox = awful.widget.prompt()
+	-- HACK: assign to the screen
+	s.promptbox = promptbox
 	-- Create a taglist widget
 	local taglist = awful.widget.taglist({
 		screen = s,
 		filter = awful.widget.taglist.filter.all,
 		buttons = taglist_buttons,
-	})
-
-	-- Create a tasklist widget
-	local mytasklist = awful.widget.tasklist({
-		screen = s,
-		filter = awful.widget.tasklist.filter.currenttags,
-		buttons = tasklist_buttons,
 	})
 
 	-- Create the wibox
@@ -119,13 +98,13 @@ local function TopPanel(s)
 			taglist,
 			promptbox,
 		},
-		mytasklist, -- Middle widget
+		TaskList(s), -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			mykeyboardlayout,
 			systray,
-			mytextclock,
-			layoutbox,
+			textclock,
+			LayoutBox(s),
 			battery_widget,
 			brightness_widget,
 		},
