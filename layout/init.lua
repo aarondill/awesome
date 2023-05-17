@@ -18,7 +18,8 @@ local function updateBarsVisibility()
 	end
 end
 
-tag.connect_signal("property::selected", updateBarsVisibility)
+-- Attact to all tags on all screens
+awful.tag.attached_connect_signal(nil, "property::selected", updateBarsVisibility)
 
 client.connect_signal("property::fullscreen", function(c)
 	c.screen.selected_tag.fullscreenMode = c.fullscreen
