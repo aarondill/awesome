@@ -9,7 +9,7 @@ local has_debian, debian = pcall(require, "debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
 
 -- Create a launcher widget and a main menu
-local myawesomemenu = {
+local awesome_ctrl_menu = {
 	{
 		"hotkeys",
 		function()
@@ -27,28 +27,30 @@ local myawesomemenu = {
 	},
 }
 
-local menu_awesome = { "awesome", myawesomemenu, beautiful.awesome_icon }
-local menu_terminal = { "open terminal", vars.terminal }
+local menu_awesome = { "Awesome", awesome_ctrl_menu, beautiful.awesome_icon }
+local menu_terminal = { "Open Terminal", vars.terminal }
 
-local mymainmenu
+local mainmenu
 if has_fdo then
-	mymainmenu = freedesktop.menu.build({
+	mainmenu = freedesktop.menu.build({
 		before = { menu_awesome },
 		after = { menu_terminal },
 	})
 elseif has_debian then
-	mymainmenu = awful.menu({
+	mainmenu = awful.menu({
 		items = {
 			menu_awesome,
 			{ "Debian", debian.menu.Debian_menu.Debian },
 			menu_terminal,
 		},
 	})
+else
+	mainmenu = awesome.menu({ items = { menu_awesome, menu_terminal } })
 end
 
-local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mymainmenu })
+local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
 
-return { mylauncher = mylauncher, mymainmenu = mymainmenu }
+return { mylauncher = mylauncher, mymainmenu = mainmenu }
