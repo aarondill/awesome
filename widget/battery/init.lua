@@ -28,13 +28,19 @@ local widget = wibox.widget({
 		widget = wibox.widget.imagebox,
 		resize = true,
 	},
+	{
+		id = "text",
+		widget = wibox.widget.textbox,
+		text = "100%",
+	},
 	layout = wibox.layout.fixed.horizontal,
 })
 
-local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), 4, 4))
-widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
-	awful.spawn("xfce4-power-manager-settings")
-end)))
+local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
+-- clickable_container()
+-- widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
+-- 	awful.spawn("xfce4-power-manager-settings")
+-- end)))
 -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
 local battery_popup = awful.tooltip({
 	objects = { widget_button },
@@ -118,6 +124,7 @@ watch("acpi -i", 1, function(_, stdout)
 	end
 
 	widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
+	widget.text:set_text(math.floor(charge) .. "%")
 	-- Update popup text
 	battery_popup.text = string.gsub(stdout, "\n$", "")
 	collectgarbage("collect")
