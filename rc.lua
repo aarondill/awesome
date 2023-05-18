@@ -10,7 +10,7 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
-require("configuration.environment")
+require("configuration.environment")()
 
 -- Make caps lock like ctrl
 awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
