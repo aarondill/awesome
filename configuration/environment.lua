@@ -1,4 +1,4 @@
-local has_posix, posix = pcall(require, "deps.stdlib")
+local has_posix, posix = pcall(require, "posix.stdlib")
 local naughty = require("naughty")
 
 local function setenv()
@@ -14,7 +14,7 @@ end
 if not has_posix then
 	naughty.notify({
 		presets = naughty.config.presets.warn,
-		text = "Could not find luaposix.stdlib! Please ensure it's available at deps/stdlib.",
+		text = "Could not find luaposix.stdlib! Please ensure it's available at posix/stdlib.",
 		title = "Warning: ",
 		timeout = 0,
 	})
