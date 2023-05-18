@@ -25,4 +25,5 @@ return {
 	harddisk = dir .. "/harddisk.svg",
 	thermometer = dir .. "/thermometer.svg",
 	plus = dir .. "/plus.svg",
+	launcher = dir .. "/awesome.svg",
 }
