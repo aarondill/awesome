@@ -4,4 +4,4 @@ configuration {
   show-icons:         true;
   icon-theme:         "Papirus";
 }
-@import "$HOME/.config/awesome/theme/sidebar.rasi"
+@import "~/.config/awesome/theme/sidebar.rasi"
