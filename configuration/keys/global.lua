@@ -19,10 +19,14 @@ local globalKeys = awful.util.table.join(
 	awful.key({ modkey }, "k", function()
 		awful.client.focus.byidx(-1)
 	end, { description = "focus previous by index", group = "client" }),
+
 	awful.key({ modkey }, "r", function()
 		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
 	end, { description = "Main menu", group = "awesome" }),
 	awful.key({ altkey }, "space", function()
+		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
+	end, { description = "Main menu", group = "awesome" }),
+	awful.key({ modkey }, "p", function()
 		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
 	end, { description = "Main menu", group = "awesome" }),
 
