@@ -18,6 +18,7 @@ if not has_posix then
 		title = "Warning: ",
 		timeout = 0,
 	})
+	-- If no posix module is available, return an empty function
+	return function() end
 end
--- If no posix module is available, return an empty function
-return (has_posix and setenv) or function() end
+return setenv
