@@ -134,10 +134,10 @@ local globalKeys = awful.util.table.join(
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn("xbacklight -inc 10")
+		awful.spawn("brightnessctl set 10%+")
 	end, { description = "+10%", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn("xbacklight -dec 10")
+		awful.spawn("brightnessctl set 10%-")
 	end, { description = "-10%", group = "hotkeys" }),
 	-- ALSA volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
@@ -149,6 +149,7 @@ local globalKeys = awful.util.table.join(
 	awful.key({}, "XF86AudioMute", function()
 		awful.spawn("amixer -D pulse set Master 1+ toggle")
 	end, { description = "toggle mute", group = "hotkeys" }),
+
 	awful.key({}, "XF86AudioNext", function()
 		--
 	end, { description = "Next Audio Track (Unimplimented)", group = "hotkeys" }),
@@ -156,8 +157,10 @@ local globalKeys = awful.util.table.join(
 		--
 	end, { description = "Power Down (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerOff", function()
-		exit_screen_show()
+		-- HACK:
+		_G.exit_screen_show()
 	end, { description = "Open Poweroff Menu", group = "hotkeys" }),
+
 	-- Screen management
 	awful.key(
 		{ modkey },
