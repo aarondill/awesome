@@ -1,4 +1,5 @@
 local awful = require("awful")
+local gears = require("gears")
 local clickable_container = require("widget.material.clickable-container")
 
 -- Create an imagebox widget which will contains an icon indicating which layout we're using.
