@@ -8,7 +8,7 @@
 
 # List of applications to run
 APPS=(
-  "xcape -t 500 -e 'Caps_Lock=Escape'"
+  "xcape -d -t 500 -e Caps_Lock=Escape"
 )
 
 # Some applications start child applications that need to be killed on reload
