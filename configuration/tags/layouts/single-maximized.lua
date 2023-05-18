@@ -22,33 +22,33 @@ local max = {}
 -- @see gears.surface
 
 local function fmax(p, fs)
-    -- Fullscreen?
-    local area
-    if fs then
-        area = p.geometry
-    else
-        area = p.workarea
-    end
-    local focused_client = client.focus
-    for _, c in pairs(p.clients) do
-        local g = {
-            x = area.x,
-            y = area.y,
-            width = area.width,
-            height = area.height
-        }
-        p.geometries[c] = g
-    end
+	-- Fullscreen?
+	local area
+	if fs then
+		area = p.geometry
+	else
+		area = p.workarea
+	end
+	local focused_client = client.focus
+	for _, c in pairs(p.clients) do
+		local g = {
+			x = area.x,
+			y = area.y,
+			width = area.width,
+			height = area.height,
+		}
+		p.geometries[c] = g
+	end
 end
 
 --- Maximized layout.
 -- @clientlayout awful.layout.suit.max.name
-max.name = 'max'
+max.name = "max"
 function max.arrange(p)
-    return fmax(p, false)
+	return fmax(p, false)
 end
 function max.skip_gap(nclients, t) -- luacheck: no unused args
-    return true
+	return true
 end
 
 return max
