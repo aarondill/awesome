@@ -8,6 +8,11 @@ local dpi = require("beautiful").xresources.apply_dpi
 
 local menu = require("widget.launcher")
 local brightness = require("widget.brightness")
+local battery = require("widget.battery")
+--HACK
+if type(battery) == "function" then
+	battery = battery({})
+end
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
@@ -65,6 +70,7 @@ local TopPanel = function(s)
 			LayoutBox(s),
 			-- Clock
 			clock_widget,
+			battery,
 			brightness({
 				step = 5,
 				timeout = 5,
