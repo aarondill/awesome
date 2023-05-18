@@ -20,8 +20,7 @@ wget -qO- https://git.io/papirus-icon-theme-install | sh
 #### Arch-Based
 
 ```
-yay -S awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pnmixer network-manager-applet qt5-styleplugins xcape blueman -y
-wget -qO- https://git.io/papirus-icon-theme-install | sh
+yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pnmixer network-manager-applet qt5-styleplugins xcape blueman papirus-icon-theme
 ```
 
 #### Program list
