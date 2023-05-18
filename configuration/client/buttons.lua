@@ -1,4 +1,5 @@
 local awful = require("awful")
+local gears = require("gears")
 
 local modkey = require("configuration.keys.mod").modKey
 
