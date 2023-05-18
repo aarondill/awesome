@@ -1,5 +1,4 @@
 local naughty = require("naughty")
-local beautiful = require("beautiful")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
 
@@ -43,11 +42,4 @@ do
 		})
 		in_error = false
 	end)
-end
-
-function log_this(title, txt)
-	naughty.notify({
-		title = "log: " .. title,
-		text = txt,
-	})
 end
