@@ -16,10 +16,10 @@ KILL=(xcape)
 
 # First kill lingering apps
 for app in "${APPS[@]}"; do
-  kill -9 "$(pgrep -xf "$app")"
+  pkill -9 -xf "$app"
 done
 for app in "${KILL[@]}"; do
-  kill -9 "$(pidof "$app")"
+  pkill -9x "$app"
 done
 
 # Start new instances
