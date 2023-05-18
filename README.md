@@ -1,17 +1,10 @@
 ## Material and Mouse driven theme for [AwesomeWM 4.3](https://awesomewm.org/)
 
-### Original design by PapyElGringo, I modified it removing sidebar and condensing the bars to a single top panel.
-
-Note: This fork focuses on streamlining the config and adding some Quality of Life touches to the theme.
+### Original design by PapyElGringo. Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opiniated mouse/keyboard workflow to increase daily productivity and comfort.
 
 [![](./theme/titus-theme/demo.png)](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)
-_[Click to view in high quality](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)_
-
-|               Fullscreen                |          Rofi Combo Panel          |             Exit screen              |
-| :-------------------------------------: | :--------------------------------: | :----------------------------------: |
-| ![](./theme/titus-theme/fullscreen.png) | ![](./theme/titus-theme/panel.png) | ![](https://i.imgur.com/rcKOLYQ.png) |
 
 ## Installation
 
@@ -27,7 +20,7 @@ wget -qO- https://git.io/papirus-icon-theme-install | sh
 #### Arch-Based
 
 ```
-yay -S awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pnmixer network-manager-applet xfce4-power-manager qt5-styleplugins -y
+yay -S awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pnmixer network-manager-applet qt5-styleplugins xcape blueman -y
 wget -qO- https://git.io/papirus-icon-theme-install | sh
 ```
 
@@ -47,7 +40,8 @@ wget -qO- https://git.io/papirus-icon-theme-install | sh
 - [flameshot](https://flameshot.js.org/#/) my personal screenshot utility of choice, can be replaced by whichever you want, just remember to edit the apps.lua file
 - [pnmixer](https://github.com/nicklan/pnmixer) Audio Tray icon that is in debian repositories and is easily installed on arch through AUR.
 - [network-manager-applet](https://gitlab.gnome.org/GNOME/network-manager-applet) nm-applet is a Network Manager Tray display from GNOME.
-- [xfce4-power-manager](https://docs.xfce.org/xfce/xfce4-power-manager/start) XFCE4's power manager is excellent and a great way of dealing with sleep, monitor timeout, and other power management features.
+- [xcape](https://github.com/alols/xcape) xcape makes single taps of ctrl (or caps lock) emit an ESC code
+- [blueman](https://github.com/blueman-project/blueman/) blueman is a simple bluetooth manager that doesn't depend on any specific DE.
 
 ### 2) Clone the configuration
 
