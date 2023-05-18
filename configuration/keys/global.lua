@@ -174,34 +174,7 @@ local globalKeys = awful.util.table.join(
 		awful.client.movetoscreen,
 		{ description = "move window to next screen", group = "client" }
 	),
-	-- Open default program for tag
-	awful.key({ modkey }, "t", function()
-		awful.spawn(awful.screen.focused().selected_tag.defaultApp, {
-			tag = _G.mouse.screen.selected_tag,
-			placement = awful.placement.bottom_right,
-		})
-	end, { description = "Open default program for tag/workspace", group = "tag" }),
 	-- Custom hotkeys
-	-- vfio integration
-	awful.key({ "Control", altkey }, "space", function()
-		awful.util.spawn_with_shell("vm-attach attach")
-	end),
-	-- Lutris hotkey
-	awful.key({ modkey }, "g", function()
-		awful.util.spawn_with_shell("lutris")
-	end),
-	-- System Monitor hotkey
-	awful.key({ modkey }, "m", function()
-		awful.util.spawn_with_shell("mate-system-monitor")
-	end),
-	-- Kill VLC
-	awful.key({ modkey }, "v", function()
-		awful.util.spawn_with_shell("killall -9 vlc")
-	end),
-	-- File Manager
-	awful.key({ modkey }, "e", function()
-		awful.util.spawn(apps.default.files)
-	end, { description = "filebrowser", group = "hotkeys" }),
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
 		awful.util.spawn_with_shell("ibus emoji")
