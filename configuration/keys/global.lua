@@ -37,10 +37,6 @@ local globalKeys = awful.util.table.join(
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
-	awful.key({ modkey, "Shift" }, "l", function()
-		_G.exit_screen_show()
-	end, { description = "Log Out Screen", group = "awesome" }),
-
 	-- Layout management
 
 	awful.key({ modkey, "Shift" }, "j", function()
