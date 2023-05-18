@@ -94,6 +94,6 @@ _G.client.connect_signal("property::fullscreen", function(c)
 	end
 end)
 
-_G.tag.connect_signal("property::selected", tagCallback)
+awful.tag.attached_connect_signal(nil, "property::selected", tagCallback)
 
-_G.tag.connect_signal("property::layout", tagCallback)
+awful.tag.attached_connect_signal(nil, "property::layout", tagCallback)
