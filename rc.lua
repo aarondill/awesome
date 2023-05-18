@@ -10,18 +10,9 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
-local has_posix, posix = pcall(require, "posix.stdlib")
-if has_posix then
-	posix.setenv("GTK_IM_MODULE", "xim") -- Fix for Chrome
-	posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
-	posix.setenv("XMODIFIERS", "@im=ibus")
-else
-	naughty.notify({
-		presets = naughty.config.presets.warn,
-		text = "Could not find luaposix! Please ensure it's available.",
-		title = "Could not find module",
-	})
-end
+require("configuration.environment")
+
+-- Make caps lock like ctrl
 awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
 
 -- Theme
