@@ -28,7 +28,6 @@ local globalKeys = gears.table.join(
 		awful.spawn(apps.default.rofi)
 	end, { description = "Main menu", group = "awesome" }),
 	awful.key({ modkey }, "p", function()
-		gears.filesystem.make_directories(apps.default.rofi)
 		awful.spawn(apps.default.rofi)
 	end, { description = "Main menu", group = "awesome" }),
 
