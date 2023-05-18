@@ -32,7 +32,7 @@ return {
 	-- List of apps to start once on start-up
 	run_on_start_up = {
 		"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-		"compton --config " .. filesystem.get_configuration_dir() .. "/configuration/compton.conf",
+		"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
 		"nm-applet --indicator", -- wifi
 		"blueman-applet", --bluetooth
 		"pnmixer", -- shows an audiocontrol applet in systray when installed.
