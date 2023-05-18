@@ -11,6 +11,7 @@ pcall(require, "luarocks.loader")
 
 -- Theme
 beautiful.init(require("theme"))
+require("module.notifications")
 
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
@@ -22,7 +23,6 @@ awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
 require("layout")
 
 -- Init all modules
-require("module.notifications")
 require("module.auto-start")
 require("module.decorate-client")
 -- Backdrop causes bugs on some gtk3 applications
