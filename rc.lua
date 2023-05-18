@@ -4,8 +4,6 @@
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
-
--- Focus on mouse over
 require("awful.autofocus")
 
 -- Enable hotkeys help widget for VIM and other apps
