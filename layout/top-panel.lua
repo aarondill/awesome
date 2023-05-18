@@ -7,6 +7,7 @@ local LayoutBox = require("widget.layout-box")
 local dpi = require("beautiful").xresources.apply_dpi
 
 local menu = require("widget.launcher")
+local brightness = require("widget.brightness")
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
@@ -64,6 +65,11 @@ local TopPanel = function(s)
 			LayoutBox(s),
 			-- Clock
 			clock_widget,
+			brightness({
+				step = 5,
+				timeout = 5,
+				levels = { 1, 25, 50, 75, 100 },
+			}),
 		},
 	})
 
