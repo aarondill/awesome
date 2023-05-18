@@ -1,16 +1,17 @@
 ## Material and Mouse driven theme for [AwesomeWM 4.3](https://awesomewm.org/)
-### Original design by PapyElGringo, I modified it removing sidebar and condensing the bars to a single top panel. 
+
+### Original design by PapyElGringo, I modified it removing sidebar and condensing the bars to a single top panel.
 
 Note: This fork focuses on streamlining the config and adding some Quality of Life touches to the theme.
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opiniated mouse/keyboard workflow to increase daily productivity and comfort.
 
 [![](./theme/titus-theme/demo.png)](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)
-*[Click to view in high quality](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)*
+_[Click to view in high quality](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)_
 
-| Fullscreen   | Rofi Combo Panel | Exit screen   |
-|:-------------:|:-------------:|:-------------:|
-|![](./theme/titus-theme/fullscreen.png)|![](./theme/titus-theme/panel.png)|![](https://i.imgur.com/rcKOLYQ.png)|
+|               Fullscreen                |          Rofi Combo Panel          |             Exit screen              |
+| :-------------------------------------: | :--------------------------------: | :----------------------------------: |
+| ![](./theme/titus-theme/fullscreen.png) | ![](./theme/titus-theme/panel.png) | ![](https://i.imgur.com/rcKOLYQ.png) |
 
 ## Installation
 
@@ -19,7 +20,7 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 #### Debian-Based
 
 ```
-sudo apt install awesome fonts-roboto rofi compton i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus xfce4-power-manager pnmixer network-manager-gnome policykit-1-gnome -y
+sudo apt install -y -- awesome fonts-roboto rofi compton i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pnmixer network-manager-gnome policykit-1-gnome xcape blueman
 wget -qO- https://git.io/papirus-icon-theme-install | sh
 ```
 
@@ -51,11 +52,13 @@ wget -qO- https://git.io/papirus-icon-theme-install | sh
 ### 2) Clone the configuration
 
 Arch-Based Installs
+
 ```
 git clone https://github.com/ChrisTitusTech/titus-awesome ~/.config/awesome
 ```
 
 Debian-Based Installs
+
 ```
 git clone --branch debian https://github.com/ChrisTitusTech/titus-awesome ~/.config/awesome
 ```
@@ -68,6 +71,7 @@ Note: for cursor theme, edit `~/.icons/default/index.theme` and `~/.config/gtk3-
 Recommended Cursors - <https://github.com/keeferrourke/capitaine-cursors>
 
 Set Rofi Theme
+
 ```
 mkdir -p ~/.config/rofi
 cp $HOME/.config/awesome/theme/config.rasi ~/.config/rofi/config.rasi
@@ -91,8 +95,8 @@ The documentation live within the source code.
 
 The project is split in functional directories and in each of them there is a readme where you can get additional information about the them.
 
-* [Configuration](./configuration) is about all the **settings** available
-* [Layout](./layout) hold the **disposition** of all the widgets
-* [Module](./module) contain all the **features** available
-* [Theme](./theme) hold all the **aesthetic** aspects
-* [Widget](./widget) contain all the **widgets** available
+- [Configuration](./configuration) is about all the **settings** available
+- [Layout](./layout) hold the **disposition** of all the widgets
+- [Module](./module) contain all the **features** available
+- [Theme](./theme) hold all the **aesthetic** aspects
+- [Widget](./widget) contain all the **widgets** available
