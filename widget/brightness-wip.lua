@@ -22,10 +22,6 @@ local naughty = require("naughty")
 local timer = gears.timer or timer
 local exec = awful.spawn.easy_async
 
-local icons = require("theme.icons")
-local mat_icon = require("widget.material.icon")
-local mat_list_item = require("widget.material.list-item")
-
 ------------------------------------------
 -- Private utility functions
 ------------------------------------------
@@ -43,7 +39,7 @@ end
 local function readcommand(command)
 	-- I know, you should *never* use `io.popen`, but it's called at most once
 	-- per backend through the whole awesome session… I promise!
-	local file = assert(io.popen(command))
+	local file = io.popen(command)
 	local text = file:read("*all")
 	file:close()
 	return text
@@ -167,46 +163,27 @@ function vcontrol:init(args)
 	self.step = tonumber(args.step or "5")
 	self.levels = args.levels or { 1, 25, 50, 75, 100 }
 
-	local mat_slider = require("widget.material.slider")
-	local slider = wibox.widget({
-		read_only = false,
-		widget = mat_slider,
-		forced_width = 10,
-	})
+	local mat_clickable_cont = require("widget.material.clickable-container")
+	self.widget = wibox.widget.textbox()
+	self.widget.set_align("right")
 
-	slider:connect_signal("property::value", function()
-		self:set(math.max(slider.value, 5))
-	end)
-	self.widget = slider
-
-	local icon = wibox.widget({
-		image = icons.brightness,
-		widget = wibox.widget.imagebox,
-	})
-
-	local brightness_setting = wibox.widget({
-		mat_icon(icon),
-		slider,
-		widget = mat_list_item,
-	})
-
-	-- self.widget:buttons(awful.util.table.join(
-	-- 	awful.button({}, 1, function()
-	-- 		self:up()
-	-- 	end),
-	-- 	awful.button({}, 3, function()
-	-- 		self:down()
-	-- 	end),
-	-- 	awful.button({}, 2, function()
-	-- 		self:toggle()
-	-- 	end),
-	-- 	awful.button({}, 4, function()
-	-- 		self:up(1)
-	-- 	end),
-	-- 	awful.button({}, 5, function()
-	-- 		self:down(1)
-	-- 	end)
-	-- ))
+	self.widget:buttons(awful.util.table.join(
+		awful.button({}, 1, function()
+			self:up()
+		end),
+		awful.button({}, 3, function()
+			self:down()
+		end),
+		awful.button({}, 2, function()
+			self:toggle()
+		end),
+		awful.button({}, 4, function()
+			self:up(1)
+		end),
+		awful.button({}, 5, function()
+			self:down(1)
+		end)
+	))
 
 	self.timer = timer({ timeout = args.timeout or 3 })
 	self.timer:connect_signal("timeout", function()
@@ -215,13 +192,13 @@ function vcontrol:init(args)
 	self.timer:start()
 	self:update()
 
-	return brightness_setting
+	return mat_clickable_cont(self.widget)
 end
 
 function vcontrol:update()
 	self.backend:get(function(value)
 		local brightness = math.floor(0.5 + value)
-		self.widget:set_value(brightness)
+		self.widget:set_text(string.format(" [%d] ", brightness))
 		return brightness
 	end)
 end
