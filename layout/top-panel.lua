@@ -12,15 +12,9 @@ systray:set_base_size(20)
 systray.forced_height = 20
 
 -- Load brightness widget
-local brightness_widget = wibox.container.constraint(
-	require("widget.brightness-wip")({
-		step = 5,
-		timeout = 10,
-		levels = { 1, 25, 50, 75, 100 },
-	}),
-	"max",
-	400
-)
+local brightness_widget = require("widget.brightness-wip")({
+	timeout = 10,
+})
 
 local battery_widget = require("widget.battery")({})
 
