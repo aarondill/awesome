@@ -22,13 +22,14 @@ local globalKeys = gears.table.join(
 	end, { description = "focus previous by index", group = "client" }),
 
 	awful.key({ modkey }, "r", function()
-		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
+		awful.spawn(apps.default.rofi)
 	end, { description = "Main menu", group = "awesome" }),
 	awful.key({ altkey }, "space", function()
-		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
+		awful.spawn(apps.default.rofi)
 	end, { description = "Main menu", group = "awesome" }),
 	awful.key({ modkey }, "p", function()
-		awful.spawn("rofi -combi-modi window,drun -show combi -modi combi")
+		gears.filesystem.make_directories(apps.default.rofi)
+		awful.spawn(apps.default.rofi)
 	end, { description = "Main menu", group = "awesome" }),
 
 	-- Tag management
