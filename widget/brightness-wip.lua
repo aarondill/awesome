@@ -23,7 +23,7 @@ local timer = gears.timer or timer
 local exec = awful.spawn.easy_async
 
 local icons = require("theme.icons")
-local mat_icon_button = require("widget.material.icon-button")
+local mat_icon = require("widget.material.icon")
 local mat_list_item = require("widget.material.list-item")
 
 ------------------------------------------
@@ -183,10 +183,9 @@ function vcontrol:init(args)
 		image = icons.brightness,
 		widget = wibox.widget.imagebox,
 	})
-	local button = mat_icon_button(icon)
 
 	local brightness_setting = wibox.widget({
-		button,
+		mat_icon(icon),
 		slider,
 		widget = mat_list_item,
 	})
