@@ -1,9 +1,27 @@
 local awful = require("awful")
+local naughty = require("naughty")
 local beautiful = require("beautiful")
 require("awful.autofocus")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+
+-- If LuaRocks is installed, make sure that packages installed through it are
+-- found (e.g. lgi). If LuaRocks is not installed, do nothing.
+pcall(require, "luarocks.loader")
+
+local has_posix, posix = pcall(require, "posix.stdlib")
+if has_posix then
+	posix.setenv("GTK_IM_MODULE", "xim") -- Fix for Chrome
+	posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
+	posix.setenv("XMODIFIERS", "@im=ibus")
+else
+	naughty.notify({
+		presets = naughty.config.presets.warn,
+		text = "Could not find luaposix! Please ensure it's available.",
+		title = "Could not find module",
+	})
+end
 
 -- Theme
 beautiful.init(require("theme"))
