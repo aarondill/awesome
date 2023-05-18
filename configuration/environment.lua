@@ -1,19 +1,21 @@
-local has_posix, posix = pcall(require, "posix.stdlib")
+local has_posix, posix = pcall(require, "deps.stdlib")
 local naughty = require("naughty")
 
 local function setenv()
-	posix.setenv("GTK_IM_MODULE", "xim") -- Fix for Chrome
-	posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
-	posix.setenv("XMODIFIERS", "@im=ibus")
-	posix.setenv("XDG_CURRENT_DESKTOP", "Unity")
-	posix.setenv("QT_QPA_PLATFORMTHEME", "gtk2")
+	pcall(function()
+		posix.setenv("GTK_IM_MODULE", "xim") -- Fix for browsers
+		posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
+		posix.setenv("XMODIFIERS", "@im=ibus")
+		posix.setenv("XDG_CURRENT_DESKTOP", "Unity")
+		posix.setenv("QT_QPA_PLATFORMTHEME", "gtk2")
+	end)
 end
 
 if not has_posix then
 	naughty.notify({
 		presets = naughty.config.presets.warn,
-		text = "Could not find luaposix! Please ensure it's available.",
-		title = "Could not find module",
+		text = "Could not find luaposix.stdlib! Please ensure it's available at deps/stdlib.",
+		title = "Warning: ",
 	})
 end
 -- If no posix module is available, return an empty function
