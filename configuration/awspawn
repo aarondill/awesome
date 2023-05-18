@@ -7,19 +7,21 @@
 #  (if you want to apply parameters then use a script file!)
 
 # List of applications to run
+# killed on the *full* command line - may not match due to special characters.
 APPS=(
   "xcape -d -t 500 -e Caps_Lock=Escape"
 )
 
 # Some applications start child applications that need to be killed on reload
+# Matched only on the process name
 KILL=(xcape)
 
 # First kill lingering apps
 for app in "${APPS[@]}"; do
-  pkill -9 -xf "$app"
+  pkill --signal 9 -xf "$app"
 done
 for app in "${KILL[@]}"; do
-  pkill -9x "$app"
+  pkill --signal 9 -x "$app"
 done
 
 # Start new instances
