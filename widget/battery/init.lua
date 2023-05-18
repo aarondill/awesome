@@ -20,8 +20,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
 -- Battery 0: Charging, 53%, 00:57:43 until charged
 
-local HOME = os.getenv("HOME")
-local PATH_TO_ICONS = HOME .. "/.config/awesome/widget/battery/icons/"
+local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/battery/icons/"
 
 local widget = wibox.widget({
 	{
