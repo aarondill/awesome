@@ -167,7 +167,7 @@ function vcontrol:init(args)
 	self.widget = wibox.widget.textbox()
 	self.widget.set_align("right")
 
-	self.widget:buttons(awful.util.table.join(
+	self.widget:buttons(gears.table.join(
 		awful.button({}, 1, function()
 			self:up()
 		end),

@@ -38,7 +38,7 @@ local function backdrop(c)
 	end
 	if not c.backdrop then
 		c.backdrop = wibox({ ontop = true, bg = "#00000054", type = "splash" })
-		c.backdrop:buttons(awful.util.table.join(awful.button({}, 1, function()
+		c.backdrop:buttons(gears.table.join(awful.button({}, 1, function()
 			c:kill()
 		end)))
 		c:connect_signal("property::geometry", update)
