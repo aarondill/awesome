@@ -16,6 +16,7 @@ if not has_posix then
 		presets = naughty.config.presets.warn,
 		text = "Could not find luaposix.stdlib! Please ensure it's available at deps/stdlib.",
 		title = "Warning: ",
+		timeout = 0,
 	})
 end
 -- If no posix module is available, return an empty function
