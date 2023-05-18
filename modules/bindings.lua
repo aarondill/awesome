@@ -6,7 +6,7 @@ local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 
 local vars = require("variables")
-local menu = require("layout.menu")
+local menu = require("widget.launcher")
 
 -- Mouse bindings
 root.buttons(gears.table.join(

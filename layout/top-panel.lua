@@ -3,7 +3,7 @@ local wibox = require("wibox")
 local gears = require("gears")
 
 local vars = require("variables")
-local menu = require("layout.menu")
+local menu = require("widget.launcher")
 local TaskList = require("widget.task-list")
 
 local systray = wibox.widget.systray()
