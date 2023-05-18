@@ -18,7 +18,7 @@ function updateBarsVisibility()
 	end
 end
 
-_G.tag.connect_signal("property::selected", function(t)
+awful.tag.attached_connect_signal(nil, "property::selected", function(t)
 	updateBarsVisibility()
 end)
 
