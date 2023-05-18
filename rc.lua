@@ -22,6 +22,8 @@ else
 		title = "Could not find module",
 	})
 end
+awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
+awful.spawn("xcape -t 500 -e 'Caps_Lock=Escape'")
 
 -- Theme
 beautiful.init(require("theme"))
