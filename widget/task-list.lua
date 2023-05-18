@@ -139,7 +139,7 @@ local function list_update(w, buttons, label, data, objects)
 		w:add(bgb)
 	end
 end
-local tasklist_buttons = awful.util.table.join(
+local tasklist_buttons = gears.table.join(
 	awful.button({}, 1, function(c)
 		if c == _G.client.focus then
 			c.minimized = true

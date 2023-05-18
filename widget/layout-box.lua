@@ -5,7 +5,7 @@ local clickable_container = require("widget.material.clickable-container")
 -- We need one layoutbox per screen.
 local LayoutBox = function(s)
 	local layoutBox = clickable_container(awful.widget.layoutbox(s))
-	layoutBox:buttons(awful.util.table.join(
+	layoutBox:buttons(gears.table.join(
 		awful.button({}, 1, function()
 			awful.layout.inc(1)
 		end),

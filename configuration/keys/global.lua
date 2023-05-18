@@ -7,7 +7,7 @@ local modkey = require("configuration.keys.mod").modKey
 local altkey = require("configuration.keys.mod").altKey
 local apps = require("configuration.apps")
 -- Key bindings
-local globalKeys = awful.util.table.join(
+local globalKeys = gears.table.join(
 	-- Hotkeys
 	awful.key({ modkey }, "F1", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
@@ -176,7 +176,7 @@ for i = 1, 9 do
 		descr_move = { description = "move focused client to tag #", group = "tag" }
 		descr_toggle_focus = { description = "toggle focused client on tag #", group = "tag" }
 	end
-	globalKeys = awful.util.table.join(
+	globalKeys = gears.table.join(
 		globalKeys,
 		-- View tag only.
 		awful.key({ modkey }, "#" .. i + 9, function()
