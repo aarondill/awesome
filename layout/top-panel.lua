@@ -1,114 +1,143 @@
-local awful = require("awful")
-local wibox = require("wibox")
-local gears = require("gears")
+local awful = require('awful')
+local beautiful = require('beautiful')
+local wibox = require('wibox')
+local TaskList = require('widget.task-list')
+local TagList = require('widget.tag-list')
+local gears = require('gears')
+local clickable_container = require('widget.material.clickable-container')
+local mat_icon_button = require('widget.material.icon-button')
+local mat_icon = require('widget.material.icon')
+local dpi = require('beautiful').xresources.apply_dpi
+local icons = require('theme.icons')
 
-local vars = require("variables")
-local menu = require("layout.menu")
-local TaskList = require("widget.task-list")
-
+-- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
-systray:set_horizontal(true)
-systray:set_base_size(20)
-systray.forced_height = 20
+  systray:set_horizontal(true)
+  systray:set_base_size(20)
+  systray.forced_height = 20
 
--- Load brightness widget
-local brightness_widget = require("widget.brightness-wip")({
-	step = 5,
-	timeout = 10,
-	levels = { 1, 25, 50, 75, 100 },
+  -- Clock / Calendar 24h format
+-- local textclock = wibox.widget.textclock('<span font="Roboto Mono bold 9">%d.%m.%Y\n     %H:%M</span>')
+-- Clock / Calendar 12AM/PM fornat
+local textclock = wibox.widget.textclock('<span font="Roboto Mono 12">%I:%M %p</span>')
+-- textclock.forced_height = 36
+
+-- Add a calendar (credits to kylekewley for the original code)
+local month_calendar = awful.widget.calendar_popup.month({
+  screen = s,
+  start_sunday = false,
+  week_numbers = true
 })
+month_calendar:attach(textclock)
 
-local battery_widget = require("widget.battery")({})
+local clock_widget = wibox.container.margin(textclock, dpi(13), dpi(13), dpi(9), dpi(8))
 
--- Keyboard map indicator and switcher
-local mykeyboardlayout = awful.widget.keyboardlayout()
-
--- Create a textclock widget
-local textclock = wibox.widget.textclock("%I:%M %p")
--- local mytextclock = wibox.widget.textclock()
-
--- Create a wibox for each screen and add it
-local taglist_buttons = gears.table.join(
-	awful.button({}, 1, function(t)
-		t:view_only()
-	end),
-	awful.button({ vars.modkey }, 1, function(t)
-		if client.focus then
-			client.focus:move_to_tag(t)
-		end
-	end),
-	awful.button({}, 3, awful.tag.viewtoggle),
-	awful.button({ vars.modkey }, 3, function(t)
-		if client.focus then
-			client.focus:toggle_tag(t)
-		end
-	end),
-	awful.button({}, 4, function(t)
-		awful.tag.viewnext(t.screen)
-	end),
-	awful.button({}, 5, function(t)
-		awful.tag.viewprev(t.screen)
-	end)
+local add_button = mat_icon_button(mat_icon(icons.plus, dpi(24)))
+add_button:buttons(
+  gears.table.join(
+    awful.button(
+      {},
+      1,
+      nil,
+      function()
+        awful.spawn(
+          awful.screen.focused().selected_tag.defaultApp,
+          {
+            tag = _G.mouse.screen.selected_tag,
+            placement = awful.placement.bottom_right
+          }
+        )
+      end
+    )
+  )
 )
 
--- Create an imagebox widget which will contain an icon indicating which layout we're using.
+-- Create an imagebox widget which will contains an icon indicating which layout we're using.
 -- We need one layoutbox per screen.
 local LayoutBox = function(s)
-	local layoutbox = awful.widget.layoutbox(s)
-	layoutbox:buttons(gears.table.join(
-		awful.button({}, 1, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, 3, function()
-			awful.layout.inc(-1)
-		end),
-		awful.button({}, 4, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, 5, function()
-			awful.layout.inc(-1)
-		end)
-	))
-	return layoutbox
+  local layoutBox = clickable_container(awful.widget.layoutbox(s))
+  layoutBox:buttons(
+    awful.util.table.join(
+      awful.button(
+        {},
+        1,
+        function()
+          awful.layout.inc(1)
+        end
+      ),
+      awful.button(
+        {},
+        3,
+        function()
+          awful.layout.inc(-1)
+        end
+      ),
+      awful.button(
+        {},
+        4,
+        function()
+          awful.layout.inc(1)
+        end
+      ),
+      awful.button(
+        {},
+        5,
+        function()
+          awful.layout.inc(-1)
+        end
+      )
+    )
+  )
+  return layoutBox
 end
 
-local function TopPanel(s)
-	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+local TopPanel = function(s)
+  
+    local panel =
+    wibox(
+    {
+      ontop = true,
+      screen = s,
+      height = dpi(32),
+      width = s.geometry.width,
+      x = s.geometry.x,
+      y = s.geometry.y,
+      stretch = false,
+      bg = beautiful.background.hue_800,
+      fg = beautiful.fg_normal,
+      struts = {
+        top = dpi(32)
+      }
+    }
+    )
 
-	-- Create a promptbox for each screen
-	local promptbox = awful.widget.prompt()
-	-- HACK: assign to the screen
-	s.promptbox = promptbox
-	-- Create a taglist widget
-	local taglist = awful.widget.taglist({
-		screen = s,
-		filter = awful.widget.taglist.filter.all,
-		buttons = taglist_buttons,
-	})
+    panel:struts(
+      {
+        top = dpi(32)
+      }
+    )
 
-	-- Create the wibox
-	local panel = awful.wibar({ position = "top", screen = s })
-	-- Add widgets to the wibox
-	panel:setup({
-		layout = wibox.layout.align.horizontal,
-		{ -- Left widgets
-			layout = wibox.layout.fixed.horizontal,
-			menu.mylauncher,
-			taglist,
-			promptbox,
-		},
-		TaskList(s), -- Middle widget
-		{ -- Right widgets
-			layout = wibox.layout.fixed.horizontal,
-			mykeyboardlayout,
-			systray,
-			textclock,
-			LayoutBox(s),
-			battery_widget,
-			brightness_widget,
-		},
-	})
-	return panel
+    panel:setup {
+      layout = wibox.layout.align.horizontal,
+      {
+        layout = wibox.layout.fixed.horizontal,
+        -- Create a taglist widget
+        TagList(s),
+        TaskList(s),
+        add_button
+      },
+      nil,
+      {
+        layout = wibox.layout.fixed.horizontal,
+        wibox.container.margin(systray, dpi(3), dpi(3), dpi(6), dpi(3)),
+        -- Layout box
+        LayoutBox(s),
+        -- Clock
+        clock_widget,
+      }
+    }
+
+  return panel
 end
+
 return TopPanel

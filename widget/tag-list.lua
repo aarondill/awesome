@@ -2,8 +2,8 @@ local awful = require('awful')
 local wibox = require('wibox')
 local dpi = require('beautiful').xresources.apply_dpi
 local capi = {button = _G.button}
-local gears = require('gears')
 local clickable_container = require('widget.material.clickable-container')
+local modkey = require('configuration.keys.mod').modKey
 --- Common method to create buttons.
 -- @tab buttons
 -- @param object
@@ -41,76 +41,39 @@ local function list_update(w, buttons, label, data, objects)
   w:reset()
   for i, o in ipairs(objects) do
     local cache = data[o]
-    local ib, cb, tb, cbm, bgb, tbm, ibm, tt, l, ll, bg_clickable
+    local ib, tb, bgb, tbm, ibm, l, bg_clickable
     if cache then
       ib = cache.ib
       tb = cache.tb
       bgb = cache.bgb
       tbm = cache.tbm
       ibm = cache.ibm
-      tt  = cache.tt
     else
       ib = wibox.widget.imagebox()
       tb = wibox.widget.textbox()
-      cb =
-        clickable_container(
-        wibox.container.margin(
-          wibox.widget.imagebox(os.getenv('HOME') .. '/.config/awesome/theme/icons/tag-list/tag/close.png'),
-          4,
-          4,
-          4,
-          4
-        )
-      )
-      cb.shape = gears.shape.circle
-      cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
-      cbm:buttons(
-        gears.table.join(
-          awful.button(
-            {},
-            1,
-            nil,
-            function()
-              o.kill(o)
-            end
-          )
-        )
-      )
-      bg_clickable = clickable_container()
       bgb = wibox.container.background()
-      tbm = wibox.container.margin(tb, dpi(4), dpi(4))
-      ibm = wibox.container.margin(ib, dpi(4), dpi(4), dpi(4), dpi(4))
+      tbm = wibox.container.margin(tb, dpi(6), dpi(6))
+      ibm = wibox.container.margin(ib, dpi(6), dpi(6), dpi(6), dpi(6))
       l = wibox.layout.fixed.horizontal()
-      ll = wibox.layout.fixed.horizontal()
+      bg_clickable = clickable_container()
 
       -- All of this is added in a fixed widget
       l:fill_space(true)
       l:add(ibm)
-      l:add(tbm)
-      ll:add(l)
-      ll:add(cbm)
+      -- l:add(tbm)
+      bg_clickable:set_widget(l)
 
-      bg_clickable:set_widget(ll)
       -- And all of this gets a background
       bgb:set_widget(bg_clickable)
 
-      l:buttons(create_buttons(buttons, o))
-
-      -- Tooltip to display whole title, if it was truncated
-      tt = awful.tooltip({
-        objects = {tb},
-        mode = 'outside',
-        align = 'bottom',
-        delay_show = 1,
-      })
+      bgb:buttons(create_buttons(buttons, o))
 
       data[o] = {
         ib = ib,
         tb = tb,
         bgb = bgb,
         tbm = tbm,
-        ibm = ibm,
-        tt  = tt
+        ibm = ibm
       }
     end
 
@@ -121,15 +84,6 @@ local function list_update(w, buttons, label, data, objects)
     if text == nil or text == '' then
       tbm:set_margins(0)
     else
-      -- truncate when title is too long
-      local textOnly = text:match('>(.-)<')
-      if (textOnly:len() > 24) then
-        text = text:gsub('>(.-)<', '>' .. textOnly:sub(1, 21) .. '...<')
-        tt:set_text(textOnly)
-        tt:add_to_object(tb)
-      else
-        tt:remove_from_object(tb)
-      end
       if not tb:set_markup_silently(text) then
         tb:set_markup('<i>&lt;Invalid text&gt;</i>')
       end
@@ -153,60 +107,57 @@ local function list_update(w, buttons, label, data, objects)
     w:add(bgb)
   end
 end
-local tasklist_buttons =
-  awful.util.table.join(
-  awful.button(
-    {},
-    1,
-    function(c)
-      if c == _G.client.focus then
-        c.minimized = true
-      else
-        -- Without this, the following
-        -- :isvisible() makes no sense
-        c.minimized = false
-        if not c:isvisible() and c.first_tag then
-          c.first_tag:view_only()
-        end
-        -- This will also un-minimize
-        -- the client, if needed
-        _G.client.focus = c
-        c:raise()
-      end
-    end
-  ),
-  awful.button(
-    {},
-    2,
-    function(c)
-      c.kill(c)
-    end
-  ),
-  awful.button(
-    {},
-    4,
-    function()
-      awful.client.focus.byidx(1)
-    end
-  ),
-  awful.button(
-    {},
-    5,
-    function()
-      awful.client.focus.byidx(-1)
-    end
-  )
-)
 
-local TaskList = function(s)
-  return awful.widget.tasklist(
+local TagList = function(s)
+  return awful.widget.taglist(
     s,
-    awful.widget.tasklist.filter.currenttags,
-    tasklist_buttons,
+    awful.widget.taglist.filter.all,
+    awful.util.table.join(
+      awful.button(
+        {},
+        1,
+        function(t)
+          t:view_only()
+        end
+      ),
+      awful.button(
+        {modkey},
+        1,
+        function(t)
+          if _G.client.focus then
+            _G.client.focus:move_to_tag(t)
+            t:view_only()
+          end
+        end
+      ),
+      awful.button({}, 3, awful.tag.viewtoggle),
+      awful.button(
+        {modkey},
+        3,
+        function(t)
+          if _G.client.focus then
+            _G.client.focus:toggle_tag(t)
+          end
+        end
+      ),
+      awful.button(
+        {},
+        4,
+        function(t)
+          awful.tag.viewprev(t.screen)
+        end
+      ),
+      awful.button(
+        {},
+        5,
+        function(t)
+          awful.tag.viewnext(t.screen)
+        end
+      )
+    ),
     {},
-    list_update,
-    wibox.layout.fixed.horizontal()
+    list_update
+    --wibox.layout.fixed.veritcal()
   )
 end
-
-return TaskList
+return TagList

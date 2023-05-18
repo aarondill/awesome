@@ -1,8 +1,0 @@
-{
-  "diagnostics": {
-    "globals": ["awesome"]
-  },
-  "workspace": {
-    "library": ["/usr/share/awesome/lib/"]
-  }
-}
