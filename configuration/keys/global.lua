@@ -27,8 +27,6 @@ local globalKeys = awful.util.table.join(
 	end, { description = "Main menu", group = "awesome" }),
 
 	-- Tag management
-	awful.key({ modkey }, "w", awful.tag.viewprev, { description = "view previous", group = "tag" }),
-	awful.key({ modkey }, "s", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ altkey, "Control" }, "Up", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ altkey, "Control" }, "Down", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
