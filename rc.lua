@@ -1,5 +1,4 @@
 local awful = require("awful")
-local naughty = require("naughty")
 local beautiful = require("beautiful")
 require("awful.autofocus")
 -- Enable hotkeys help widget for VIM and other apps
@@ -10,13 +9,14 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+-- Theme
+beautiful.init(require("theme"))
+
+-- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
 
 -- Make caps lock like ctrl
 awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
-
--- Theme
-beautiful.init(require("theme"))
 
 -- Layout
 require("layout")
