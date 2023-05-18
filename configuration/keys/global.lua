@@ -10,15 +10,9 @@ local apps = require("configuration.apps")
 local globalKeys = awful.util.table.join(
 	-- Hotkeys
 	awful.key({ modkey }, "F1", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
-	-- Client management
-	awful.key({ modkey }, "j", function()
-		awful.client.focus.byidx(1)
-	end, { description = "focus next by index", group = "client" }),
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
-	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
-	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
-	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
+	-- Client management
 	awful.key({ modkey }, "j", function()
 		awful.client.focus.byidx(1)
 	end, { description = "focus next by index", group = "client" }),
@@ -37,6 +31,8 @@ local globalKeys = awful.util.table.join(
 	awful.key({ modkey }, "s", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ altkey, "Control" }, "Up", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ altkey, "Control" }, "Down", awful.tag.viewnext, { description = "view next", group = "tag" }),
+	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
 	awful.key({ modkey, "Shift" }, "l", function()
@@ -101,9 +97,6 @@ local globalKeys = awful.util.table.join(
 		awful.spawn(apps.default.terminal)
 	end, { description = "Open a terminal", group = "launcher" }),
 
-	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
-	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
-
 	awful.key({ modkey }, "l", function()
 		awful.tag.incmwfact(0.05)
 	end, { description = "increase master width factor", group = "layout" }),
@@ -136,10 +129,6 @@ local globalKeys = awful.util.table.join(
 			c:emit_signal("request::activate", "key.unminimize", { raise = true })
 		end
 	end, { description = "restore minimized", group = "client" }),
-	-- Dropdown application
-	awful.key({ modkey }, "z", function()
-		_G.toggle_quake()
-	end, { description = "dropdown application", group = "launcher" }),
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
