@@ -161,13 +161,6 @@ local globalKeys = awful.util.table.join(
 		_G.exit_screen_show()
 	end, { description = "Open Poweroff Menu", group = "hotkeys" }),
 
-	-- Screen management
-	awful.key(
-		{ modkey },
-		"o",
-		awful.client.movetoscreen,
-		{ description = "move window to next screen", group = "client" }
-	),
 	-- Custom hotkeys
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
