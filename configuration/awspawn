@@ -12,7 +12,7 @@ APPS=(
 )
 
 # Some applications start child applications that need to be killed on reload
-KILL=()
+KILL=(xcape)
 
 # First kill lingering apps
 for app in "${APPS[@]}"; do
