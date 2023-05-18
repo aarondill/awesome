@@ -6,7 +6,7 @@ local function setenv()
 		posix.setenv("GTK_IM_MODULE", "xim") -- Fix for browsers
 		posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
 		posix.setenv("XMODIFIERS", "@im=ibus")
-		posix.setenv("XDG_CURRENT_DESKTOP", "Gnome")
+		posix.setenv("XDG_CURRENT_DESKTOP", "GNOME")
 		posix.setenv("QT_QPA_PLATFORMTHEME", "gtk2")
 	end)
 end
