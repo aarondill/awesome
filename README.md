@@ -13,7 +13,7 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 #### Debian-Based
 
 ```
-sudo apt install -y -- awesome fonts-roboto rofi compton i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pnmixer network-manager-gnome policykit-1-gnome xcape blueman
+sudo apt install -y -- awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pnmixer network-manager-gnome policykit-1-gnome xcape blueman
 wget -qO- https://git.io/papirus-icon-theme-install | sh
 ```
 
@@ -29,7 +29,7 @@ wget -qO- https://git.io/papirus-icon-theme-install | sh
 - [AwesomeWM](https://awesomewm.org/) as the window manager - universal package install: awesome
 - [Roboto](https://fonts.google.com/specimen/Roboto) as the **font** - Debian: fonts-roboto Arch: ttf-roboto
 - [Rofi](https://github.com/DaveDavenport/rofi) for the app launcher - universal install: rofi
-- [picom](https://github.com/yshui/picom) for the compositor (blur and animations) universal install: picom - Debian users need PPA (`sudo add-apt-repository ppa:regolith-linux/unstable`) _Note: I recommend Compton for Debian Users and the Debian Branch_
+- [picom](https://github.com/yshui/picom) for the compositor (blur and animations) Universasal install: picom
 - [i3lock](https://github.com/meskarune/i3lock-fancy) the lockscreen application universal install: i3lock-fancy
 - [xclip](https://github.com/astrand/xclip) for copying screenshots to clipboard package: xclip
 - [gnome-polkit] recommend using the gnome-polkit as it integrates nicely for elevating programs that need root access
@@ -69,7 +69,6 @@ Set Rofi Theme
 ```
 mkdir -p ~/.config/rofi
 cp $HOME/.config/awesome/theme/config.rasi ~/.config/rofi/config.rasi
-sed -i '/@import/c\@import "'$HOME'/.config/awesome/theme/sidebar.rasi"' ~/.config/rofi/config.rasi
 ```
 
 ### 4) Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
@@ -85,7 +84,7 @@ The first variable fixes most indicators (especially electron based ones!), the 
 
 ### 5) Read the documentation
 
-The documentation live within the source code.
+The documentation lives within the source code.
 
 The project is split in functional directories and in each of them there is a readme where you can get additional information about the them.
 
