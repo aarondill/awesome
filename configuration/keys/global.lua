@@ -84,9 +84,9 @@ local globalKeys = awful.util.table.join(
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
-	awful.key({ modkey }, "c", function()
+	awful.key({ modkey }, "e", function()
 		awful.util.spawn(apps.default.editor)
-	end, { description = "Open a text/code editor", group = "launcher" }),
+	end, { description = "Open an editor", group = "launcher" }),
 	awful.key({ modkey }, "b", function()
 		awful.util.spawn(apps.default.browser)
 	end, { description = "Open a browser", group = "launcher" }),
