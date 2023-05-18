@@ -54,7 +54,7 @@ local function changesOnScreen(currentScreen)
 	changesOnScreenCalled = false
 end
 
-function clientCallback(client)
+local function clientCallback(client)
 	if not changesOnScreenCalled then
 		if not client.skip_decoration and client.screen then
 			changesOnScreenCalled = true
@@ -66,7 +66,7 @@ function clientCallback(client)
 	end
 end
 
-function tagCallback(tag)
+local function tagCallback(tag)
 	if not changesOnScreenCalled then
 		if tag.screen then
 			changesOnScreenCalled = true
