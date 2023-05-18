@@ -19,7 +19,7 @@ local brightness_widget = wibox.container.constraint(
 		levels = { 1, 25, 50, 75, 100 },
 	}),
 	"max",
-	30
+	400
 )
 
 local battery_widget = require("widget.battery")({})
