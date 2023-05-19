@@ -1,3 +1,4 @@
+--HACK: TITLEBAR!
 local filesystem = require("gears.filesystem")
 local mat_colors = require("theme.mat-colors")
 local theme_dir = filesystem.get_configuration_dir() .. "/theme"
@@ -27,9 +28,9 @@ local awesome_overrides = function(theme)
 	theme.title_font = "Roboto medium 14"
 
 	theme.fg_normal = "#ffffffde"
-
 	theme.fg_focus = "#e4e4e4"
 	theme.fg_urgent = "#CC9393"
+
 	theme.bat_fg_critical = "#232323"
 
 	theme.bg_normal = theme.background.hue_800
@@ -39,6 +40,7 @@ local awesome_overrides = function(theme)
 
 	-- Borders
 
+	theme.useless_gap = dpi(0)
 	theme.border_width = dpi(2)
 	theme.border_normal = theme.background.hue_800
 	theme.border_focus = theme.primary.hue_300
@@ -60,8 +62,25 @@ local awesome_overrides = function(theme)
 	-- Layout
 
 	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
+	-- This should really be spiral...
 	theme.layout_tile = theme.icons .. "layouts/view-quilt.png"
 
+	theme.layout_fairh = theme.icons .. "layouts/fairhw.png"
+	theme.layout_fairv = theme.icons .. "layouts/fairvw.png"
+	theme.layout_floating = theme.icons .. "layouts/floatingw.png"
+	theme.layout_magnifier = theme.icons .. "layouts/magnifierw.png"
+	-- theme.layout_max = theme.icons .. "layouts/maxw.png"
+	theme.layout_fullscreen = theme.icons .. "layouts/fullscreenw.png"
+	theme.layout_tilebottom = theme.icons .. "layouts/tilebottomw.png"
+	theme.layout_tileleft = theme.icons .. "layouts/tileleftw.png"
+	-- theme.layout_tile = theme.icons .. "layouts/tilew.png"
+	theme.layout_tiletop = theme.icons .. "layouts/tiletopw.png"
+	theme.layout_spiral = theme.icons .. "layouts/spiralw.png"
+	theme.layout_dwindle = theme.icons .. "layouts/dwindlew.png"
+	theme.layout_cornernw = theme.icons .. "layouts/cornernww.png"
+	theme.layout_cornerne = theme.icons .. "layouts/cornernew.png"
+	theme.layout_cornersw = theme.icons .. "layouts/cornersww.png"
+	theme.layout_cornerse = theme.icons .. "layouts/cornersew.png"
 	-- Taglist
 
 	theme.taglist_bg_empty = theme.background.hue_800
