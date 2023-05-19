@@ -10,7 +10,7 @@ local mat_clickable_cont = require("widget.material.clickable-container")
 local menu = require("widget.launcher")
 local brightness_widget = mat_clickable_cont(require("widget.brightness")({
 	step = 5,
-	timeout = 5,
+	timeout = 20,
 	levels = { 1, 25, 50, 75, 100 },
 }))
 local battery_widget = require("widget.battery")({
