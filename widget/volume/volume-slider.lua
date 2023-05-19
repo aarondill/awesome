@@ -12,7 +12,7 @@ local slider = wibox.widget({
 })
 
 slider:connect_signal("property::value", function()
-	spawn("amixer -D pulse sset Master " .. slider.value .. "%")
+	spawn("amixer -D pulse sset Master " .. slider.value .. "%", false)
 end)
 
 watch([[bash -c "amixer -D pulse sget Master"]], 1, function(_, stdout)
