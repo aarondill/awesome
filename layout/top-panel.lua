@@ -14,7 +14,7 @@ local Battery = require("widget.battery")
 local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
 	timeout = 10,
-	levels = { 1, 25, 50, 75, 100 },
+	levels = { 5, 25, 50, 75, 100 },
 }))
 
 -- Titus - Horizontal Tray
