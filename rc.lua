@@ -1,3 +1,11 @@
+--TODO:
+--Super+tab switch tags
+--Super+shift+tab switch tags back
+--Remove icons on tags
+--9 tags please
+--Fix client decoratations
+--Remove unused code
+
 local awful = require("awful")
 local beautiful = require("beautiful")
 require("awful.autofocus")
