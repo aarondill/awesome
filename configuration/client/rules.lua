@@ -29,8 +29,8 @@ awful.rules.rules = {
 	-- {
 	-- 	rule_any = { type = { "normal", "dialog" } },
 	-- 	callback = function(c)
-	-- -- This *must* be set in a callback to preserve the property outside of the request::titlebars
-	-- c.titlebars_enabled = true
+	-- 		-- This *must* be set in a callback to preserve the property outside of the request::titlebars
+	-- 		c.titlebars_enabled = true
 	-- 	end,
 	-- },
 	-- Dialog clients should float and have rounded corners
