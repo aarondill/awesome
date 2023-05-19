@@ -31,10 +31,10 @@ local globalKeys = gears.table.join(
 	end, { description = "Main menu", group = "awesome" }),
 
 	-- Tag management
-	awful.key({ altkey, "Control" }, "Up", awful.tag.viewprev, { description = "view previous", group = "tag" }),
-	awful.key({ altkey, "Control" }, "Down", awful.tag.viewnext, { description = "view next", group = "tag" }),
-	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
+	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+	awful.key({ modkey }, "Tab", awful.tag.viewnext, { description = "view next", group = "tag" }),
+	awful.key({ modkey, "Shift" }, "Tab", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
 	-- Layout management
@@ -162,14 +162,6 @@ local globalKeys = gears.table.join(
 	awful.key({ modkey }, "a", function()
 		awful.spawn.with_shell("ibus emoji")
 	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
-
-	--- Switch tags with super+tab
-	awful.key({ modkey }, "Tab", function()
-		awful.tag.viewidx(1)
-	end, { description = "select next", group = "layout" }),
-	awful.key({ modkey, "Shift" }, "Tab", function()
-		awful.tag.viewidx(-1)
-	end, { description = "select previous", group = "layout" })
 )
 
 -- Bind all key numbers to tags.
