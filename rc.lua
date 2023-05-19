@@ -1,7 +1,7 @@
 --TODO:
 --Remove icons on tags
 --9 tags please
---Fix client decoratations
+--Fix client decoratations - widget to toggle
 --Remove unused code
 --Use /sys files in battery widget to remove dependency on acpi
 
