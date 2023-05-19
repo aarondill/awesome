@@ -6,8 +6,15 @@
 configuration {
   display-drun: "Activate";
   display-run: "Execute";
+  modi: [drun, window, filebrowser, ssh];
   show-icons: true;
   sidebar-mode: true;
+  matching: "fuzzy";
+  drun-match-fields: [all];
+  drun-display-format: "{name} [<span weight='light' size='small'><i>({comment})</i></span>]";
+  drun-show-actions: true;
+  window-match-fields: [all];
+  run-command: "bash -ci 'shopt -s expand_aliases; {cmd}'";
 }
 
 * {
