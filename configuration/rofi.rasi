@@ -14,6 +14,7 @@ configuration {
   drun-display-format: "{name} [<span weight='light' size='small'><i>({comment})</i></span>]";
   drun-show-actions: true;
   window-match-fields: [all];
+  window-format: "{w}: {c} ({r}) - {t}";
   run-command: "bash -ci 'shopt -s expand_aliases; {cmd}'";
 }
 
