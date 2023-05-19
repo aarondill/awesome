@@ -8,7 +8,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 local mat_clickable_cont = require("widget.material.clickable-container")
 local apps = require("configuration.apps")
 local launcher = require("widget.launcher")
-local Brightness = require("widgets.brightness")
+local Brightness = require("widget.brightness")
 local Battery = require("widget.battery")
 
 local brightness_widget = mat_clickable_cont(Brightness({
