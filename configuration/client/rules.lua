@@ -26,7 +26,13 @@ awful.rules.rules = {
 		},
 	},
 	-- Enable titlebars on normal clients
-	-- { rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
+	-- {
+	-- 	rule_any = { type = { "normal", "dialog" } },
+	-- 	callback = function(c)
+	-- -- This *must* be set in a callback to preserve the property outside of the request::titlebars
+	-- c.titlebars_enabled = true
+	-- 	end,
+	-- },
 	-- Dialog clients should float and have rounded corners
 	{
 		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
