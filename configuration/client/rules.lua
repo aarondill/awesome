@@ -25,6 +25,8 @@ awful.rules.rules = {
 			maximized_vertical = false,
 		},
 	},
+	-- Enable titlebars on normal clients
+	-- { rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
 	-- Dialog clients should float and have rounded corners
 	{
 		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
