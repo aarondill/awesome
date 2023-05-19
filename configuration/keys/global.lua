@@ -22,13 +22,16 @@ local globalKeys = gears.table.join(
 
 	awful.key({ modkey }, "r", function()
 		awful.spawn(apps.default.rofi)
-	end, { description = "Main menu", group = "awesome" }),
+	end, { description = "Main Menu", group = "awesome" }),
 	awful.key({ altkey }, "space", function()
 		awful.spawn(apps.default.rofi)
-	end, { description = "Main menu", group = "awesome" }),
+	end, { description = "Main Menu", group = "awesome" }),
 	awful.key({ modkey }, "p", function()
 		awful.spawn(apps.default.rofi)
-	end, { description = "Main menu", group = "awesome" }),
+	end, { description = "Main Menu", group = "awesome" }),
+	awful.key({ modkey }, "w", function()
+		awful.spawn(apps.default.rofi_window)
+	end, { description = "Window Picker", group = "awesome" }),
 
 	-- Tag management
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
