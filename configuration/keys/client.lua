@@ -26,12 +26,9 @@ local clientkeys = gears.table.join(
 		c:swap(awful.client.getmaster())
 	end, { description = "move to master", group = "client" }),
 
-	awful.key(
-		{ modkey },
-		"o",
-		awful.client.movetoscreen,
-		{ description = "move window to next screen", group = "client" }
-	),
+	awful.key({ modkey }, "o", function(c)
+		c:move_to_screen()
+	end, { description = "move window to next screen", group = "client" }),
 
 	awful.key({ modkey }, "t", function(c)
 		c.ontop = not c.ontop
