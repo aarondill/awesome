@@ -78,15 +78,15 @@ local function tagCallback(tag)
 	end
 end
 
-_G.client.connect_signal("manage", clientCallback)
+client.connect_signal("manage", clientCallback)
 
-_G.client.connect_signal("unmanage", clientCallback)
+client.connect_signal("unmanage", clientCallback)
 
-_G.client.connect_signal("property::hidden", clientCallback)
+client.connect_signal("property::hidden", clientCallback)
 
-_G.client.connect_signal("property::minimized", clientCallback)
+client.connect_signal("property::minimized", clientCallback)
 
-_G.client.connect_signal("property::fullscreen", function(c)
+client.connect_signal("property::fullscreen", function(c)
 	if c.fullscreen then
 		renderClient(c, "maximized")
 	else
