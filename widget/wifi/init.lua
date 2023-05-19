@@ -35,7 +35,7 @@ local widget = wibox.widget({
 
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
 widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
-	awful.spawn("wicd-client -n")
+	awful.spawn("wicd-client -n", false)
 end)))
 -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
 awful.tooltip({

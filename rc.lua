@@ -24,7 +24,7 @@ require("module.notifications")
 require("configuration.environment")()
 
 -- Make caps lock like ctrl
-awful.spawn("setxkbmap -option 'caps:ctrl_modifier'")
+awful.spawn("setxkbmap -option 'caps:ctrl_modifier'", false)
 
 -- Layout
 require("layout")
