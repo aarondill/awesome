@@ -3,13 +3,12 @@ local filesystem = require("gears.filesystem")
 -- Thanks to jo148 on github for making rofi dpi aware!
 local with_dpi = require("beautiful").xresources.apply_dpi
 local get_dpi = require("beautiful").xresources.get_dpi
-local rofi_command = "env rofi -dpi "
-	.. get_dpi()
-	.. " -width "
-	.. with_dpi(400)
-	.. " -show drun -theme "
-	.. filesystem.get_configuration_dir()
-	.. "configuration/rofi.rasi -run-command \"/bin/bash -c -i 'shopt -s expand_aliases; {cmd}'\""
+local rofi_command = string.format(
+	"rofi -dpi '%d' -width '%d' -theme '%s' -show",
+	get_dpi(),
+	with_dpi(400),
+	("%s/configuration/rofi.rasi"):format(filesystem.get_configuration_dir())
+)
 
 local terminal = "wezterm"
 return {
