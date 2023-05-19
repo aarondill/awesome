@@ -12,42 +12,15 @@ local awful = require("awful")
 local naughty = require("naughty")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
-local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- acpi sample outputs
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
 -- Battery 0: Charging, 53%, 00:57:43 until charged
+-- Battery 0: Discharging, 25%, discharging at zero rate - will never fully discharge.
 
 local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/battery/icons/"
-
-local widget = wibox.widget({
-	{
-		id = "icon",
-		widget = wibox.widget.imagebox,
-		resize = true,
-	},
-	{
-		id = "text",
-		widget = wibox.widget.textbox,
-		text = "100%",
-	},
-	layout = wibox.layout.fixed.horizontal,
-})
-
-local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
--- clickable_container()
--- widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
--- 	awful.spawn("xfce4-power-manager-settings")
--- end)))
--- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
-local battery_popup = awful.tooltip({
-	objects = { widget_button },
-	mode = "outside",
-	align = "left",
-	preferred_positions = { "right", "left", "top", "bottom" },
-})
 
 -- To use colors from beautiful theme put
 -- following lines in rc.lua before require("battery"):
@@ -69,65 +42,111 @@ local function show_battery_warning()
 	})
 end
 
-local last_battery_check = os.time()
+---@class Config
+---How often to check the battery status (default: 15).
+---@field timeout integer?
+---What percentage to alert about low power (default: 15). Set to 0 to disable low power warning.
+---@field low_power integer?
+---How often (in seconds) to wait between alerts about low power (default: 300).
+---@field low_power_frequency integer?
 
-watch("acpi -i", 1, function(_, stdout)
-	local batteryIconName = "battery"
+---Create a new battery widget
+---@param args Config?
+---@return table BatteryWidget
+function Battery(args)
+	args = args or {}
 
-	local battery_info = {}
-	local capacities = {}
-	for s in stdout:gmatch("[^\r\n]+") do
-		local status, charge_str, time = string.match(s, ".+: (%a+), (%d?%d?%d)%%,?.*")
-		if status ~= nil then
-			table.insert(battery_info, { status = status, charge = tonumber(charge_str) })
-		else
-			local cap_str = string.match(s, ".+:.+last full capacity (%d+)")
-			table.insert(capacities, tonumber(cap_str))
+	local widget = wibox.widget({
+		{
+			id = "icon",
+			widget = wibox.widget.imagebox,
+			resize = true,
+		},
+		{
+			id = "text",
+			widget = wibox.widget.textbox,
+			text = "100%",
+		},
+		layout = wibox.layout.fixed.horizontal,
+	})
+
+	local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
+	-- clickable_container()
+	-- widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
+	-- 	awful.spawn("xfce4-power-manager-settings")
+	-- end)))
+	-- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
+	local battery_popup = awful.tooltip({
+		objects = { widget_button },
+		mode = "outside",
+		align = "left",
+		preferred_positions = { "right", "left", "top", "bottom" },
+	})
+
+	local last_battery_check = os.time()
+	watch("acpi -i", (args.timeout or 15), function(_, stdout)
+		local batteryIconName = "battery"
+
+		local battery_info = {}
+		local capacities = {}
+		for s in stdout:gmatch("[^\r\n]+") do
+			local status, charge_str, _ = string.match(s, ".+: (%a+), (%d?%d?%d)%%,?.*")
+			if status ~= nil then
+				table.insert(battery_info, { status = status, charge = tonumber(charge_str) })
+			else
+				local cap_str = string.match(s, ".+:.+last full capacity (%d+)")
+				table.insert(capacities, tonumber(cap_str))
+			end
 		end
-	end
 
-	local capacity = 0
-	for _, cap in ipairs(capacities) do
-		capacity = capacity + cap
-	end
-
-	local charge = 0
-	local status
-	for i, batt in ipairs(battery_info) do
-		if batt.charge >= charge then
-			status = batt.status -- use most charged battery status
-			-- this is arbitrary, and maybe another metric should be used
+		local capacity = 0
+		for _, cap in ipairs(capacities) do
+			capacity = capacity + cap
 		end
 
-		charge = charge + batt.charge * capacities[i]
-	end
-	charge = charge / capacity
+		local charge = 0
+		local status
+		for i, batt in ipairs(battery_info) do
+			if batt.charge >= charge then
+				status = batt.status -- use most charged battery status
+				-- this is arbitrary, and maybe another metric should be used
+			end
 
-	if charge >= 0 and charge < 15 then
-		if status ~= "Charging" and os.difftime(os.time(), last_battery_check) > 300 then
-			-- if 5 minutes have elapsed since the last warning
-			last_battery_check = _G.time()
-
-			show_battery_warning()
+			charge = charge + batt.charge * capacities[i]
 		end
-	end
+		charge = charge / capacity
 
-	if status == "Charging" or status == "Full" then
-		batteryIconName = batteryIconName .. "-charging"
-	end
+		if charge >= 0 and charge < (args.low_power or 15) then
+			if
+				status ~= "Charging"
+				and os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300)
+			then
+				-- if 5 minutes have elapsed since the last warning
+				last_battery_check = os.time()
 
-	local roundedCharge = math.floor(charge / 10) * 10
-	if roundedCharge == 0 then
-		batteryIconName = batteryIconName .. "-outline"
-	elseif roundedCharge ~= 100 then
-		batteryIconName = batteryIconName .. "-" .. roundedCharge
-	end
+				show_battery_warning()
+			end
+		end
 
-	widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
-	widget.text:set_text(math.floor(charge) .. "%")
-	-- Update popup text
-	battery_popup.text = string.gsub(stdout, "\n$", "")
-	collectgarbage("collect")
-end, widget)
+		if status == "Charging" or status == "Full" then
+			batteryIconName = batteryIconName .. "-charging"
+		end
 
-return widget_button
+		local roundedCharge = math.floor(charge / 10) * 10
+		if roundedCharge == 0 then
+			batteryIconName = batteryIconName .. "-outline"
+		elseif roundedCharge ~= 100 then
+			batteryIconName = batteryIconName .. "-" .. roundedCharge
+		end
+
+		widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
+		widget.text:set_text(math.floor(charge) .. "%")
+		-- Update popup text
+		battery_popup.text = string.gsub(stdout, "\n$", "")
+		collectgarbage("collect")
+	end, widget)
+
+	return widget_button
+end
+
+return Battery
