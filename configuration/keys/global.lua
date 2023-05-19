@@ -1,7 +1,6 @@
 local awful = require("awful")
 local gears = require("gears")
 require("awful.autofocus")
-local beautiful = require("beautiful")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey = require("configuration.keys.mod").modKey
@@ -162,7 +161,15 @@ local globalKeys = gears.table.join(
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
 		awful.spawn.with_shell("ibus emoji")
-	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" })
+	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
+
+	--- Switch tags with super+tab
+	awful.key({ modkey }, "Tab", function()
+		awful.tag.viewidx(1)
+	end, { description = "select next", group = "layout" }),
+	awful.key({ modkey, "Shift" }, "Tab", function()
+		awful.tag.viewidx(-1)
+	end, { description = "select previous", group = "layout" })
 )
 
 -- Bind all key numbers to tags.
@@ -197,19 +204,19 @@ for i = 1, 9 do
 		end, descr_toggle),
 		-- Move client to tag.
 		awful.key({ modkey, "Shift" }, "#" .. i + 9, function()
-			if _G.client.focus then
-				local tag = _G.client.focus.screen.tags[i]
+			if client.focus then
+				local tag = client.focus.screen.tags[i]
 				if tag then
-					_G.client.focus:move_to_tag(tag)
+					client.focus:move_to_tag(tag)
 				end
 			end
 		end, descr_move),
 		-- Toggle tag on focused client.
 		awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
-			if _G.client.focus then
-				local tag = _G.client.focus.screen.tags[i]
+			if client.focus then
+				local tag = client.focus.screen.tags[i]
 				if tag then
-					_G.client.focus:toggle_tag(tag)
+					client.focus:toggle_tag(tag)
 				end
 			end
 		end, descr_toggle_focus)
