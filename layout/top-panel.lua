@@ -5,14 +5,17 @@ local TaskList = require("widget.task-list")
 local TagList = require("widget.tag-list")
 local LayoutBox = require("widget.layout-box")
 local dpi = require("beautiful").xresources.apply_dpi
+local mat_clickable_cont = require("widget.material.clickable-container")
 
 local menu = require("widget.launcher")
-local brightness = require("widget.brightness")
-local battery = require("widget.battery")
---HACK
-if type(battery) == "function" then
-	battery = battery({})
-end
+local brightness_widget = mat_clickable_cont(require("widget.brightness")({
+	step = 5,
+	timeout = 5,
+	levels = { 1, 25, 50, 75, 100 },
+}))
+local battery_widget = require("widget.battery")({
+	timeout = 20,
+})
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
@@ -70,12 +73,8 @@ local TopPanel = function(s)
 			LayoutBox(s),
 			-- Clock
 			clock_widget,
-			battery,
-			brightness({
-				step = 5,
-				timeout = 5,
-				levels = { 1, 25, 50, 75, 100 },
-			}),
+			battery_widget,
+			brightness_widget,
 		},
 	})
 
