@@ -26,11 +26,6 @@ awful.rules.rules = {
 		},
 	},
 	{
-		rule_any = { name = { "QuakeTerminal" } },
-		properties = { skip_decoration = true },
-	},
-	-- Titlebars
-	{
 		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
 		properties = {
 			placement = awful.placement.centered,
