@@ -52,6 +52,10 @@ local clientkeys = gears.table.join(
 	awful.key({ modkey, "Shift" }, "m", function(c)
 		c.maximized_horizontal = not c.maximized_horizontal
 		c:raise()
-	end, { description = "(un)maximize horizontally", group = "client" })
+	end, { description = "(un)maximize horizontally", group = "client" }),
+
+	awful.key({ modkey }, "`", function(c)
+		awful.titlebar.toggle(c, "top")
+	end, { description = "toggle top titlebar", group = "client" })
 )
 return clientkeys
