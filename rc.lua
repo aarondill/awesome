@@ -3,6 +3,7 @@
 --9 tags please
 --Fix client decoratations
 --Remove unused code
+--Use /sys files in battery widget to remove dependency on acpi
 
 local awful = require("awful")
 local beautiful = require("beautiful")
