@@ -30,6 +30,7 @@ return {
 	-- List of apps to start once on start-up
 	run_on_start_up = {
 		"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
+		"ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 		"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
 		"nm-applet --indicator", -- wifi
 		"blueman-applet", --bluetooth
