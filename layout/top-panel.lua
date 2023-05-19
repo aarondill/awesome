@@ -6,16 +6,16 @@ local TagList = require("widget.tag-list")
 local LayoutBox = require("widget.layout-box")
 local dpi = require("beautiful").xresources.apply_dpi
 local mat_clickable_cont = require("widget.material.clickable-container")
+local apps = require("configuration.apps")
+local launcher = require("widget.launcher")
+local Brightness = require("widgets.brightness")
+local Battery = require("widget.battery")
 
-local menu = require("widget.launcher")
-local brightness_widget = mat_clickable_cont(require("widget.brightness")({
+local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
 	timeout = 20,
 	levels = { 1, 25, 50, 75, 100 },
 }))
-local battery_widget = require("widget.battery")({
-	timeout = 20,
-})
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
@@ -55,11 +55,13 @@ local TopPanel = function(s)
 		top = dpi(32),
 	})
 
+	-- Empty widget to replace with the battery when it's ready
+	local battery_placeholder = wibox.widget.textbox("Placeholder")
 	panel:setup({
 		layout = wibox.layout.align.horizontal,
 		{
 			layout = wibox.layout.fixed.horizontal,
-			menu(s),
+			launcher(s),
 			TagList(s),
 		},
 		TaskList(s),
@@ -70,10 +72,26 @@ local TopPanel = function(s)
 			LayoutBox(s),
 			-- Clock
 			clock_widget,
-			battery_widget,
+			battery_placeholder,
 			brightness_widget,
 		},
 	})
+
+	local battery_manager = apps.default.battery_manager or "xfce4-power-manager-settings"
+	-- Check if battery_manager is available
+	awful.spawn.easy_async({ "which", battery_manager }, function(stdout, _, exitreason, exitcode)
+		local battery_widget = Battery({
+			timeout = 20,
+			-- If exit successfully, return stdout, else nil
+			spawn_on_click = ((exitreason == "exit" and exitcode == 0) or nil) and stdout,
+		})
+		for _, c in ipairs(panel.widget.children) do
+			if c and type(c.replace_widget) == "function" then
+				-- Replace "all" instances of the placeholder with the real thing
+				c:replace_widget(battery_placeholder, battery_widget, true)
+			end
+		end
+	end)
 
 	return panel
 end
