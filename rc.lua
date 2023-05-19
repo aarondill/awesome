@@ -1,6 +1,4 @@
 --TODO:
---Super+tab switch tags
---Super+shift+tab switch tags back
 --Remove icons on tags
 --9 tags please
 --Fix client decoratations
