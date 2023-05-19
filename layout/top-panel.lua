@@ -13,7 +13,7 @@ local Battery = require("widget.battery")
 
 local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
-	timeout = 20,
+	timeout = 10,
 	levels = { 1, 25, 50, 75, 100 },
 }))
 
@@ -81,7 +81,7 @@ local TopPanel = function(s)
 	-- Check if battery_manager is available
 	awful.spawn.easy_async({ "which", battery_manager }, function(stdout, _, exitreason, exitcode)
 		local battery_widget = Battery({
-			timeout = 20,
+			timeout = 15,
 			-- If exit successfully, return stdout, else nil
 			spawn_on_click = ((exitreason == "exit" and exitcode == 0) or nil) and stdout,
 		})
