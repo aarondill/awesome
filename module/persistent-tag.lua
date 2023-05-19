@@ -4,21 +4,18 @@ awesome.connect_signal("exit", function(reason_restart)
 		return
 	end
 
-	local str = ""
+	local file = io.open("/tmp/awesomewm-last-selected-tags", "w+")
+  --stylua: ignore
+  if not file then return end
+
 	for s in screen do
-		local tags = s.selected_tags
-		for _, tag in ipairs(tags) do
-			str = str .. tag.index .. "\n"
+		for _, tag in ipairs(s.selected_tags) do
+			file:write(tag.index, " ")
 		end
-		str = str .. "\n"
+		file:write("\n")
 	end
 
-	-- empty line means next screen
-	local file = io.open("/tmp/awesomewm-last-selected-tags", "w+")
-	if file then
-		file:write(str)
-		file:close()
-	end
+	file:close()
 end)
 
 awesome.connect_signal("startup", function()
@@ -26,37 +23,26 @@ awesome.connect_signal("startup", function()
 	if not file then
 		return
 	end
-	local has_found_tag = false
 
 	local screen_tags = {}
-	local scrI = 1
-	local selected_tags = {}
-	for line in file:lines() do
-		if line == "\n" or line == "" then
-			screen_tags[scrI] = selected_tags
-			selected_tags = {}
-			scrI = scrI + 1
+	for line in file:lines("l") do
+		local selected_tags = {}
+		---@cast line string
+		for match in line:gmatch("%d+") do
+			table.insert(selected_tags, tonumber(match))
 		end
-		has_found_tag = true
-		table.insert(selected_tags, tonumber(line))
+		table.insert(screen_tags, selected_tags)
 	end
-
-	-- if has_found_tag then
-	-- 	for s in screen do
-	-- 		for _, tag in ipairs(s.tag) do
-	-- 			tag.selected = false
-	-- 		end
-	-- 	end
-	-- end
 
 	for s in screen do
 		local sel_tags = screen_tags[s.index]
-		if sel_tags then
-			for _, tag in ipairs(sel_tags) do
-				local t = s.tags[tag]
-				if t then
-					t.selected = true
-				end
+		if #sel_tags > 0 then
+			awful.tag.viewnone(s)
+		end
+		for _, i in ipairs(sel_tags) do
+			local scr_tag = s.tags[i]
+			if scr_tag then
+				scr_tag.selected = true
 			end
 		end
 	end
