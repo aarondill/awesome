@@ -30,7 +30,6 @@ local default = {
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-	"ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
 	"nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
@@ -38,6 +37,7 @@ local run_on_start_up = {
 	"numlockx on", -- enable numlock
 	"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)", -- credential manager
 	"xfce4-power-manager", -- Power manager
+	"ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	-- "steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
