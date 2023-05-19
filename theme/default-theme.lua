@@ -1,4 +1,3 @@
---HACK: TITLEBAR!
 local filesystem = require("gears.filesystem")
 local mat_colors = require("theme.mat-colors")
 local theme_dir = filesystem.get_configuration_dir() .. "/theme"
@@ -39,7 +38,6 @@ local awesome_overrides = function(theme)
 	theme.bg_systray = theme.background.hue_800
 
 	-- Borders
-
 	theme.useless_gap = dpi(0)
 	theme.border_width = dpi(2)
 	theme.border_normal = theme.background.hue_800
@@ -47,7 +45,6 @@ local awesome_overrides = function(theme)
 	theme.border_marked = "#CC9393"
 
 	-- Menu
-
 	theme.menu_height = dpi(16)
 	theme.menu_width = dpi(160)
 
@@ -60,7 +57,6 @@ local awesome_overrides = function(theme)
 	end
 
 	-- Layout
-
 	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
 	-- This should really be spiral...
 	theme.layout_tile = theme.icons .. "layouts/view-quilt.png"
@@ -81,8 +77,8 @@ local awesome_overrides = function(theme)
 	theme.layout_cornerne = theme.icons .. "layouts/cornernew.png"
 	theme.layout_cornersw = theme.icons .. "layouts/cornersww.png"
 	theme.layout_cornerse = theme.icons .. "layouts/cornersew.png"
-	-- Taglist
 
+	-- Taglist
 	theme.taglist_bg_empty = theme.background.hue_800
 	theme.taglist_bg_occupied = theme.background.hue_800
 	theme.taglist_bg_urgent = "linear:0,0:"
@@ -107,7 +103,6 @@ local awesome_overrides = function(theme)
 		.. theme.background.hue_800
 
 	-- Tasklist
-
 	theme.tasklist_font = "Roboto medium 11"
 	theme.tasklist_bg_normal = theme.background.hue_800
 	theme.tasklist_bg_focus = "linear:0,0:0,"
