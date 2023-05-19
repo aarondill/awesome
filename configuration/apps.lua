@@ -18,7 +18,6 @@ return {
 		terminal = terminal,
 		rofi = rofi_command,
 		lock = "lock",
-		quake = terminal,
 		screenshot = "flameshot screen -p ~/Pictures/Screenshots/",
 		region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/",
 		delayed_screenshot = "flameshot screen -p ~/Pictures/Screenshots/ -d 5000",
