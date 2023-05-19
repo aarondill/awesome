@@ -48,6 +48,33 @@ local awesome_overrides = function(theme)
 	theme.menu_height = dpi(16)
 	theme.menu_width = dpi(160)
 
+	-- Titlebar
+	theme.titlebar_close_button_normal = theme.icons .. "titlebar/close_normal.png"
+	theme.titlebar_close_button_focus = theme.icons .. "titlebar/close_focus.png"
+
+	theme.titlebar_minimize_button_normal = theme.icons .. "titlebar/minimize_normal.png"
+	theme.titlebar_minimize_button_focus = theme.icons .. "titlebar/minimize_focus.png"
+
+	theme.titlebar_ontop_button_normal_inactive = theme.icons .. "titlebar/ontop_normal_inactive.png"
+	theme.titlebar_ontop_button_focus_inactive = theme.icons .. "titlebar/ontop_focus_inactive.png"
+	theme.titlebar_ontop_button_normal_active = theme.icons .. "titlebar/ontop_normal_active.png"
+	theme.titlebar_ontop_button_focus_active = theme.icons .. "titlebar/ontop_focus_active.png"
+
+	theme.titlebar_sticky_button_normal_inactive = theme.icons .. "titlebar/sticky_normal_inactive.png"
+	theme.titlebar_sticky_button_focus_inactive = theme.icons .. "titlebar/sticky_focus_inactive.png"
+	theme.titlebar_sticky_button_normal_active = theme.icons .. "titlebar/sticky_normal_active.png"
+	theme.titlebar_sticky_button_focus_active = theme.icons .. "titlebar/sticky_focus_active.png"
+
+	theme.titlebar_floating_button_normal_inactive = theme.icons .. "titlebar/floating_normal_inactive.png"
+	theme.titlebar_floating_button_focus_inactive = theme.icons .. "titlebar/floating_focus_inactive.png"
+	theme.titlebar_floating_button_normal_active = theme.icons .. "titlebar/floating_normal_active.png"
+	theme.titlebar_floating_button_focus_active = theme.icons .. "titlebar/floating_focus_active.png"
+
+	theme.titlebar_maximized_button_normal_inactive = theme.icons .. "titlebar/maximized_normal_inactive.png"
+	theme.titlebar_maximized_button_focus_inactive = theme.icons .. "titlebar/maximized_focus_inactive.png"
+	theme.titlebar_maximized_button_normal_active = theme.icons .. "titlebar/maximized_normal_active.png"
+	theme.titlebar_maximized_button_focus_active = theme.icons .. "titlebar/maximized_focus_active.png"
+
 	-- Tooltips
 	theme.tooltip_bg = "#232323"
 	--theme.tooltip_border_color = '#232323'
