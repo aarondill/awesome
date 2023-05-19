@@ -16,6 +16,9 @@ local clientkeys = gears.table.join(
 		c:kill()
 	end, { description = "close", group = "client" }),
 
+	awful.key({ modkey, "Control" }, "s", function(c)
+		c.sticky = not c.sticky
+	end, { description = "toggle sticky", group = "client" }),
 	awful.key(
 		{ modkey, "Control" },
 		"space",
