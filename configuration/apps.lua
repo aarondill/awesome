@@ -2,6 +2,7 @@ local filesystem = require("gears.filesystem")
 
 -- Thanks to jo148 on github for making rofi dpi aware!
 local xres = require("beautiful").xresources
+-- Ends in -show to pick default, but can be overridden by appending a mode
 local rofi_command = string.format(
 	"rofi -dpi '%d' -width '%d' -theme '%s' -show",
 	xres.get_dpi(),
@@ -15,6 +16,7 @@ local default = {
 	battery_manager = "xfce4-power-manager-settings", -- Only used *if* installed
 	terminal = terminal,
 	rofi = rofi_command,
+	rofi_window = rofi_command .. " window",
 	lock = "lock",
 	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
 	browser = "google-chrome",
