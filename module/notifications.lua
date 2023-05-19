@@ -38,7 +38,7 @@ do
 		naughty.notify({
 			preset = naughty.config.presets.critical,
 			title = "Oops, an error happened!",
-			text = tostring(err),
+			text = tostring(err) .. "\n" .. debug.traceback(nil, 2),
 		})
 		in_error = false
 	end)
