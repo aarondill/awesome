@@ -25,6 +25,7 @@ awful.rules.rules = {
 			maximized_vertical = false,
 		},
 	},
+	-- Dialog clients should float and have rounded corners
 	{
 		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
 		properties = {
