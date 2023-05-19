@@ -45,7 +45,7 @@ root.keys(require("configuration.keys.global"))
 -- Different tags for each wallpaper
 require("module.wallpaper")
 -- Keep selected tag on restart
-require("module.persistent-tag")
+-- require("module.persistent-tag")
 
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
