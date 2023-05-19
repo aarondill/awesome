@@ -35,7 +35,7 @@ local run_on_start_up = {
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	"numlockx on", -- enable numlock
-	"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)", -- credential manager
+	'/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"xfce4-power-manager", -- Power manager
 	"ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	-- "steam -silent",
