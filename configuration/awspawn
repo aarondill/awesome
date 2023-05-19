@@ -8,13 +8,11 @@
 
 # List of applications to run
 # killed on the *full* command line - may not match due to special characters.
-APPS=(
-  "xcape -d -t 500 -e Caps_Lock=Escape"
-)
+APPS=()
 
 # Some applications start child applications that need to be killed on reload
 # Matched only on the process name
-KILL=(xcape)
+KILL=()
 
 # First kill lingering apps
 for app in "${APPS[@]}"; do
