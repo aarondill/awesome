@@ -79,7 +79,7 @@ local globalKeys = gears.table.join(
 	end, { description = "Lock the screen", group = "awesome" }),
 
 	awful.key({}, "Print", function()
-		awful.spawn_with_shell(apps.default.region_screenshot)
+		awful.spawn.with_shell(apps.default.region_screenshot)
 	end, { description = "Mark an area and screenshot it to your clipboard", group = "screenshots (clipboard)" }),
 
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
@@ -161,7 +161,7 @@ local globalKeys = gears.table.join(
 	-- Custom hotkeys
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
-		awful.spawn_with_shell("ibus emoji")
+		awful.spawn.with_shell("ibus emoji")
 	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" })
 )
 
