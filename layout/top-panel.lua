@@ -49,9 +49,6 @@ local TopPanel = function(s)
 		stretch = false,
 		bg = beautiful.background.hue_800,
 		fg = beautiful.fg_normal,
-		struts = {
-			top = dpi(32),
-		},
 	})
 
 	panel:struts({
