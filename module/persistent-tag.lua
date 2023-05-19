@@ -26,6 +26,7 @@ awesome.connect_signal("startup", function()
 	if not file then
 		return
 	end
+	local has_found_tag = false
 
 	local screen_tags = {}
 	local scrI = 1
@@ -36,9 +37,18 @@ awesome.connect_signal("startup", function()
 			selected_tags = {}
 			scrI = scrI + 1
 		end
+		has_found_tag = true
 		table.insert(selected_tags, tonumber(line))
 	end
-	-- awful.screen[s].tags
+
+	-- if has_found_tag then
+	-- 	for s in screen do
+	-- 		for _, tag in ipairs(s.tag) do
+	-- 			tag.selected = false
+	-- 		end
+	-- 	end
+	-- end
+
 	for s in screen do
 		local sel_tags = screen_tags[s.index]
 		if sel_tags then
