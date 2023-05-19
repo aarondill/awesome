@@ -41,3 +41,20 @@ client.connect_signal("request::titlebars", function(c)
 		layout = wibox.layout.align.horizontal,
 	})
 end)
+
+-- Show or hide the titlebar according to requests_no_titlebar and titlebars_enabled
+local function renderTitlebars(client)
+	if client.requests_no_titlebar then
+		awful.titlebar.hide(client, "top")
+	-- NOTE: This must be set manually (in a callback),
+	-- the value of `properties: {titlebars_enabled = true}`
+	-- is lost after request::titlebars event
+	elseif client.titlebars_enabled then
+		awful.titlebar.show(client, "top")
+	end
+end
+
+-- If client requests not to show the titlebar
+client.connect_signal("property::requests_no_titlebar", renderTitlebars)
+-- The user has indicated that titlebars should be shown
+client.connect_signal("property::titlebars_enabled", renderTitlebars)
