@@ -19,7 +19,7 @@ local default = {
 	rofi_window = rofi_command .. " window",
 	lock = "lock",
 	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
-	browser = "google-chrome",
+	browser = "google-chrome --enable-features=WebUIDarkMode --force-dark-mode",
 	editor = terminal .. " -e nvim", -- gui text editor
 	social = "discord",
 	game = "steam",
