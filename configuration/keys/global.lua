@@ -133,27 +133,28 @@ local globalKeys = gears.table.join(
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn("brightnessctl set 10%+")
-	end, { description = "+10%", group = "hotkeys" }),
+		awful.spawn(apps.default.brightness.up)
+	end, { description = "brightness up", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn("brightnessctl set 10%-")
-	end, { description = "-10%", group = "hotkeys" }),
-	-- ALSA volume control
+		awful.spawn(apps.default.brightness.down)
+	end, { description = "brightness down", group = "hotkeys" }),
+	-- volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
-		awful.spawn("amixer -D pulse sset Master 5%+")
+		awful.spawn(apps.default.volume.up)
 	end, { description = "volume up", group = "hotkeys" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
-		awful.spawn("amixer -D pulse sset Master 5%-")
+		awful.spawn(apps.default.volume.down)
 	end, { description = "volume down", group = "hotkeys" }),
 	awful.key({}, "XF86AudioMute", function()
-		awful.spawn("amixer -D pulse set Master 1+ toggle")
+		awful.spawn(apps.default.volume.toggle_mute)
 	end, { description = "toggle mute", group = "hotkeys" }),
 
 	awful.key({}, "XF86AudioNext", function()
 		--
 	end, { description = "Next Audio Track (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerDown", function()
-		--
+		-- HACK:
+		_G.exit_screen_show()
 	end, { description = "Power Down (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerOff", function()
 		-- HACK:
