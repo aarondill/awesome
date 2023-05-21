@@ -1,5 +1,4 @@
 local awful = require("awful")
-local gears = require("gears")
 local icons = require("theme.icons")
 local apps = require("configuration.apps")
 
