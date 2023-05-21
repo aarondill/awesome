@@ -21,8 +21,10 @@ local brightness_widget = mat_clickable_cont(Brightness({
 -- TODO: Check if gnome-system-monitor is installed
 local cpu_widget = mat_clickable_cont(CPU({
 	timeout = 15,
-	precision = 0,
+	precision = 1,
 	spawn_on_click = "gnome-system-monitor",
+	prefix = "",
+	suffix = "%",
 }))
 
 -- Titus - Horizontal Tray
