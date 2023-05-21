@@ -26,6 +26,15 @@ local default = {
 	game = "steam",
 	files = "nautilus",
 	music = "spotify",
+	brightness = {
+		up = "brightnessctl set 10%+",
+		down = "brightnessctl set 10%-",
+	},
+	volume = {
+		up = "amixer -D pulse sset Master 5%+ unmute",
+		down = "amixer -D pulse sset Master 5%- unmute",
+		toggle_mute = "amixer -D pulse sset Master toggle",
+	},
 }
 
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
