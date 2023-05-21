@@ -43,7 +43,7 @@ local function show_battery_warning()
 	})
 end
 
----@class Config
+---@class BatteryWidgetConfig
 ---How often to check the battery status (default: 15).
 ---@field timeout integer?
 ---What percentage to alert about low power (default: 15). Set to 0 to disable low power warning.
@@ -54,7 +54,7 @@ end
 ---@field spawn_on_click string?
 
 ---Create a new battery widget
----@param args Config?
+---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
 function Battery(args)
 	args = args or {}
