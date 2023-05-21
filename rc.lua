@@ -38,8 +38,6 @@
 --Custom theme?
 --More wallpapers :)
 
----TODO: Install clipboard manager
-
 local awful = require("awful")
 local beautiful = require("beautiful")
 -- Enable hotkeys help widget for VIM and other apps
