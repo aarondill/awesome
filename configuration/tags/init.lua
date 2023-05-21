@@ -5,45 +5,24 @@ local apps = require("configuration.apps")
 local tags = {
 	{
 		icon = icons.chrome,
-		type = "chrome",
-		defaultApp = apps.default.browser,
-		screen = 1,
 	},
 	{
 		icon = icons.code,
-		type = "code",
-		defaultApp = apps.default.editor,
-		screen = 1,
 	},
 	{
 		icon = icons.social,
-		type = "social",
-		defaultApp = apps.default.social,
-		screen = 1,
 	},
 	{
 		icon = icons.game,
-		type = "game",
-		defaultApp = apps.default.game,
-		screen = 1,
 	},
 	{
 		icon = icons.folder,
-		type = "files",
-		defaultApp = apps.default.files,
-		screen = 1,
 	},
 	{
 		icon = icons.music,
-		type = "music",
-		defaultApp = apps.default.music,
-		screen = 1,
 	},
 	{
 		icon = icons.lab,
-		type = "any",
-		defaultApp = apps.default.rofi,
-		screen = 1,
 	},
 }
 
@@ -59,12 +38,12 @@ awful.screen.connect_for_each_screen(function(s)
 	for i, tag in pairs(tags) do
 		awful.tag.add(i, {
 			icon = tag.icon,
-			icon_only = true,
+			-- Icon only if icon is defined, else show the text
+			icon_only = (tag.icon and true) or false,
 			layout = awful.layout.layouts[1] or awful.layout.suit.tile,
 			gap_single_client = true,
 			gap = 4,
 			screen = s,
-			defaultApp = tag.defaultApp,
 			selected = i == 1,
 		})
 	end
