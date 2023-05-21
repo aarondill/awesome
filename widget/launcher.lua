@@ -10,7 +10,7 @@ local icons = require("theme.icons")
 local has_debian, debian = pcall(require, "debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
 
-function Menu(_)
+function Launcher(_)
 	-- Create a launcher widget and a main menu
 	local awesome_ctrl_menu = {
 		{
@@ -64,4 +64,4 @@ function Menu(_)
 	return wibox.container.margin(launcher, m, m, m, m)
 end
 
-return Menu
+return Launcher
