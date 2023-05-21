@@ -2,7 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local capi = { button = _G.button }
+local capi = { button = button }
 local clickable_container = require("widget.material.clickable-container")
 local modkey = require("configuration.keys.mod").modKey
 --- Common method to create buttons.
@@ -112,15 +112,15 @@ local TagList = function(s)
 				t:view_only()
 			end),
 			awful.button({ modkey }, 1, function(t)
-				if _G.client.focus then
-					_G.client.focus:move_to_tag(t)
+				if client.focus then
+					client.focus:move_to_tag(t)
 					t:view_only()
 				end
 			end),
 			awful.button({}, 3, awful.tag.viewtoggle),
 			awful.button({ modkey }, 3, function(t)
-				if _G.client.focus then
-					_G.client.focus:toggle_tag(t)
+				if client.focus then
+					client.focus:toggle_tag(t)
 				end
 			end),
 			awful.button({}, 4, function(t)
