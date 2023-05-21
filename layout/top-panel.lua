@@ -11,20 +11,13 @@ local launcher = require("widget.launcher")
 local Brightness = require("widget.brightness")
 local Battery = require("widget.battery")
 local CPU = require("widget.cpu")
+local installed = require("util.installed")
+local replace_in_widget = require("util.replace_in_widget")
 
 local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
 	timeout = 10,
 	levels = { 5, 25, 50, 75, 100 },
-}))
-
--- TODO: Check if gnome-system-monitor is installed
-local cpu_widget = mat_clickable_cont(CPU({
-	timeout = 15,
-	precision = 1,
-	spawn_on_click = "gnome-system-monitor",
-	prefix = "",
-	suffix = "%",
 }))
 
 -- Titus - Horizontal Tray
@@ -66,7 +59,8 @@ local TopPanel = function(s)
 	})
 
 	-- Empty widget to replace with the battery when it's ready
-	local battery_placeholder = wibox.widget.textbox("Placeholder")
+	local battery_placeholder = wibox.widget.textbox("")
+	local cpu_placeholder = wibox.widget.textbox("")
 	panel:setup({
 		layout = wibox.layout.align.horizontal,
 		{
@@ -84,24 +78,32 @@ local TopPanel = function(s)
 			clock_widget,
 			battery_placeholder,
 			brightness_widget,
-			cpu_widget,
+			cpu_placeholder,
 		},
 	})
 
-	local battery_manager = apps.default.battery_manager or "xfce4-power-manager-settings"
+	local battery_manager = apps.default.battery_manager
 	-- Check if battery_manager is available
-	awful.spawn.easy_async({ "which", battery_manager }, function(stdout, _, exitreason, exitcode)
+	installed(battery_manager, function(path_or_nil)
 		local battery_widget = Battery({
 			timeout = 15,
 			-- If exit successfully, return stdout, else nil
-			spawn_on_click = ((exitreason == "exit" and exitcode == 0) or nil) and stdout,
+			spawn_on_click = path_or_nil,
 		})
-		for _, c in ipairs(panel.widget.children) do
-			if c and type(c.replace_widget) == "function" then
-				-- Replace "all" instances of the placeholder with the real thing
-				c:replace_widget(battery_placeholder, battery_widget, true)
-			end
-		end
+		replace_in_widget(panel.widget, battery_placeholder, battery_widget)
+	end)
+
+	local system_manager = apps.default.system_manager
+	-- Check if system_manager is available
+	installed(system_manager, function(path_or_nil)
+		local cpu_widget = mat_clickable_cont(CPU({
+			timeout = 15,
+			precision = 1,
+			spawn_on_click = path_or_nil,
+			prefix = "",
+			suffix = "%",
+		}))
+		replace_in_widget(panel.widget, cpu_placeholder, cpu_widget)
 	end)
 
 	return panel
