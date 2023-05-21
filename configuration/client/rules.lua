@@ -24,6 +24,10 @@ awful.rules.rules = {
 			maximized_horizontal = false,
 			maximized_vertical = false,
 		},
+		callback = function(c)
+			c:grant("autoactivate", "history")
+			c:grant("autoactivate", "switch_tag")
+		end,
 	},
 	-- Enable titlebars on normal clients
 	-- {
