@@ -8,6 +8,7 @@ local function setenv()
 		posix.setenv("XMODIFIERS", "@im=ibus")
 		posix.setenv("XDG_CURRENT_DESKTOP", "GNOME")
 		posix.setenv("QT_QPA_PLATFORMTHEME", "gtk2")
+		posix.setenv("SHLVL", "0") -- Fix terminals opened in AwesomeWM
 	end)
 end
 
