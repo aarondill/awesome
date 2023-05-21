@@ -1,6 +1,6 @@
 local awful = require("awful")
 local naughty = require("naughty")
-local handle_error = require("handle_error")
+local handle_error = require("util.handle_error")
 
 -- State to ensure only one notification is sent
 local has_notified = false
