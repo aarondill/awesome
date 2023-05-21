@@ -14,6 +14,7 @@ local terminal = "wezterm"
 -- List of apps to start by default on some actions
 local default = {
 	battery_manager = "xfce4-power-manager-settings", -- Only used *if* installed
+	system_manager = "gnome-system-monitor", -- Only used *if* installed
 	terminal = terminal,
 	rofi = rofi_command,
 	rofi_window = rofi_command .. " window",
