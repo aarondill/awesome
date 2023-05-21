@@ -10,6 +10,7 @@ local apps = require("configuration.apps")
 local launcher = require("widget.launcher")
 local Brightness = require("widget.brightness")
 local Battery = require("widget.battery")
+local cpu_meter = require("widget.cpu.cpu-meter")
 
 local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
@@ -74,6 +75,7 @@ local TopPanel = function(s)
 			clock_widget,
 			battery_placeholder,
 			brightness_widget,
+			cpu_meter(),
 		},
 	})
 
