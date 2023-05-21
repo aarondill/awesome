@@ -131,6 +131,7 @@ local TagList = function(s)
 			end)
 		),
 		style = {},
+		-- TODO: Make this show the name instead of (and?) icons
 		update_function = list_update,
 	})
 end
