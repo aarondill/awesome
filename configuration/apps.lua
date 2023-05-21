@@ -32,6 +32,7 @@ local default = {
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
 	"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
+	"diodon", -- Clipboard after closing window
 	"nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
