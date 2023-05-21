@@ -104,10 +104,10 @@ local function list_update(w, buttons, label, data, objects)
 end
 
 local TagList = function(s)
-	return awful.widget.taglist(
-		s,
-		awful.widget.taglist.filter.all,
-		gears.table.join(
+	return awful.widget.taglist({
+		screen = s,
+		filter = awful.widget.taglist.filter.all,
+		buttons = gears.table.join(
 			awful.button({}, 1, function(t)
 				t:view_only()
 			end),
@@ -130,9 +130,8 @@ local TagList = function(s)
 				awful.tag.viewnext(t.screen)
 			end)
 		),
-		{},
-		list_update
-		--wibox.layout.fixed.veritcal()
-	)
+		style = {},
+		update_function = list_update,
+	})
 end
 return TagList
