@@ -13,14 +13,14 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 #### Debian-Based
 
 ```
-sudo apt install -y -- awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pasystray network-manager-gnome policykit-1-gnome xcape blueman acpi brightnessctl
+sudo apt install -y -- awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pasystray network-manager-gnome policykit-1-gnome xcape blueman acpi brightnessctl diodon
 wget -qO- https://git.io/papirus-icon-theme-install | sh
 ```
 
 #### Arch-Based
 
 ```
-yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pasystray network-manager-applet qt5-styleplugins xcape blueman papirus-icon-theme acpi brightnessctl
+yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pasystray network-manager-applet qt5-styleplugins xcape blueman papirus-icon-theme acpi brightnessctl diodon
 ```
 
 #### Program list
@@ -41,6 +41,7 @@ yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome mater
 - [network-manager-applet](https://gitlab.gnome.org/GNOME/network-manager-applet) nm-applet is a Network Manager Tray display from GNOME.
 - [xcape](https://github.com/alols/xcape) xcape makes single taps of ctrl (or caps lock) emit an ESC code
 - [blueman](https://github.com/blueman-project/blueman/) blueman is a simple bluetooth manager that doesn't depend on any specific DE.
+- [diodon](https://github.com/diodon-dev/diodon) is a clipboard manager to keep clipboard after closing a window
 
 ### 2) Clone the configuration
 
