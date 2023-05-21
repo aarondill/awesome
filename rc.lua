@@ -10,6 +10,7 @@
 --Remove unused code
 --  Keep the widgets for the sake of convenience
 --  Remove many of the images found in theme/icons
+--Remove exitscreen global functions.
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
 --  These don't work (I think)
