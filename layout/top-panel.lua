@@ -10,12 +10,19 @@ local apps = require("configuration.apps")
 local launcher = require("widget.launcher")
 local Brightness = require("widget.brightness")
 local Battery = require("widget.battery")
-local cpu_meter = require("widget.cpu.cpu-meter")
+local CPU = require("widget.cpu")
 
 local brightness_widget = mat_clickable_cont(Brightness({
 	step = 5,
 	timeout = 10,
 	levels = { 5, 25, 50, 75, 100 },
+}))
+
+-- TODO: Check if gnome-system-monitor is installed
+local cpu_widget = mat_clickable_cont(CPU({
+	timeout = 15,
+	precision = 0,
+	spawn_on_click = "gnome-system-monitor",
 }))
 
 -- Titus - Horizontal Tray
@@ -75,7 +82,7 @@ local TopPanel = function(s)
 			clock_widget,
 			battery_placeholder,
 			brightness_widget,
-			cpu_meter(),
+			cpu_widget,
 		},
 	})
 
