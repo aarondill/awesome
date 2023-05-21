@@ -10,6 +10,7 @@
 --Remove unused code
 --  Keep the widgets for the sake of convenience
 --  Remove many of the images found in theme/icons
+--Handle power button. SUPPRESS it!
 --Implement audio foward, back, PlayPause
 --Remove exitscreen global functions.
 --Improve all widgets that came with TitusTech's clone.
