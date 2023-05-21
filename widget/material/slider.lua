@@ -8,14 +8,9 @@ local dpi = require("beautiful").xresources.apply_dpi
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
-local mat_colors = require("theme.mat-colors")
 -- Local declarations
 
 local mat_slider = { mt = {} }
-
-local properties = {
-	read_only = false,
-}
 
 function mat_slider:set_value(value)
 	if self._private.value ~= value then
@@ -27,7 +22,7 @@ function mat_slider:set_value(value)
 	end
 end
 
-function mat_slider:get_value(value)
+function mat_slider:get_value()
 	return self._private.value
 end
 
@@ -39,7 +34,7 @@ function mat_slider:set_read_only(value)
 	end
 end
 
-function mat_slider:get_read_only(value)
+function mat_slider:get_read_only()
 	return self._private.read_only
 end
 
@@ -52,7 +47,7 @@ function mat_slider:layout(_, width, height)
 	return layout
 end
 
-function mat_slider:draw(_, cr, width, height)
+function mat_slider:draw(_, _, _, _)
 	if self._private.read_only then
 		self._private.slider.forced_height = 0
 	end
