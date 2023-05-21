@@ -1,6 +1,6 @@
 local wibox = require("wibox")
 
-function build(widget)
+local function build(widget)
 	local container = wibox.widget({
 		widget,
 		widget = wibox.container.background,
