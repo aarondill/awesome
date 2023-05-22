@@ -77,8 +77,8 @@ local TopPanel = function(s)
 			-- Clock
 			clock_widget,
 			battery_placeholder,
-			brightness_widget,
 			cpu_placeholder,
+			brightness_widget,
 		},
 	})
 
