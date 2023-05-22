@@ -40,7 +40,7 @@ local default = {
 }
 
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
--- If a table is provided, the second argument must be true to run in a shell, else it will be treated like a simple command name
+-- These will be run in sh. Don't use any weird syntax (bashisms).
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
 	"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
