@@ -52,7 +52,7 @@ local run_on_start_up = {
 	'/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"xfce4-power-manager --daemon", -- Power manager
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
-	{ "sleep 1 && exec ibus-daemon --xim -rd", true }, -- Run ibus-daemon for language and emoji keyboard support
+	"sleep 1 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	-- "steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
