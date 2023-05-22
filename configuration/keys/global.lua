@@ -77,7 +77,7 @@ local globalKeys = gears.table.join(
 	end, { description = "open a terminal", group = "launcher" }),
 
 	awful.key({ modkey }, "Delete", function()
-		awful.spawn(apps.default.lock)
+		awful.spawn(apps.default.lock, false)
 	end, { description = "Lock the screen", group = "awesome" }),
 
 	awful.key({}, "Print", function()
@@ -133,20 +133,20 @@ local globalKeys = gears.table.join(
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn(apps.default.brightness.up)
+		awful.spawn(apps.default.brightness.up, false)
 	end, { description = "brightness up", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn(apps.default.brightness.down)
+		awful.spawn(apps.default.brightness.down, false)
 	end, { description = "brightness down", group = "hotkeys" }),
 	-- volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
-		awful.spawn(apps.default.volume.up)
+		awful.spawn(apps.default.volume.up, false)
 	end, { description = "volume up", group = "hotkeys" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
-		awful.spawn(apps.default.volume.down)
+		awful.spawn(apps.default.volume.down, false)
 	end, { description = "volume down", group = "hotkeys" }),
 	awful.key({}, "XF86AudioMute", function()
-		awful.spawn(apps.default.volume.toggle_mute)
+		awful.spawn(apps.default.volume.toggle_mute, false)
 	end, { description = "toggle mute", group = "hotkeys" }),
 
 	awful.key({}, "XF86AudioNext", function()
