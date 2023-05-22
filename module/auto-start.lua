@@ -9,8 +9,11 @@ local function run_once(cmd)
 	local firstspace = cmd:find(" ")
 	if firstspace then
 		findme = cmd:sub(0, firstspace - 1)
+		awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || { %s; }", findme, cmd))
+	else
+		-- best case senario, just one command. Exec directly.
+		awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || exec %s", findme, cmd))
 	end
-	awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || exec %s", findme, cmd))
 end
 
 for _, app in ipairs(apps.run_on_start_up) do
