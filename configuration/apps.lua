@@ -29,8 +29,8 @@ local default = {
 	-- files = "nautilus",
 	-- music = "spotify",
 	brightness = {
-		up = "brightnessctl set 10%+",
-		down = "brightnessctl set 10%-",
+		up = "brightnessctl set 10%+ -e -n 5",
+		down = "brightnessctl set 10%- -e -n 5",
 	},
 	volume = {
 		up = "amixer -D pulse sset Master 5%+ unmute",
