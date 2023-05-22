@@ -5,23 +5,27 @@ local function build(widget)
 		widget,
 		widget = wibox.container.background,
 	})
-	local old_cursor, old_wibox
+	local saved_cursor, containing_wibox
 
 	container:connect_signal("mouse::enter", function()
 		container.bg = "#ffffff11"
 		-- Hm, no idea how to get the wibox from this signal's arguments...
-		local w = _G.mouse.current_wibox
-		if w then
-			old_cursor, old_wibox = w.cursor, w
+		local w = mouse.current_wibox
+		if w and not w.is_moused_over then
+			saved_cursor, containing_wibox = w.cursor, w
+			-- Save the state to avoid race conditions between
+			-- multiple clickable widgets in the same wibox
+			w.is_moused_over = true
 			w.cursor = "hand1"
 		end
 	end)
 
 	container:connect_signal("mouse::leave", function()
 		container.bg = "#ffffff00"
-		if old_wibox then
-			old_wibox.cursor = old_cursor
-			old_wibox = nil
+		if containing_wibox then
+			containing_wibox.cursor = saved_cursor
+			containing_wibox.is_moused_over = false
+			containing_wibox = nil
 		end
 	end)
 
