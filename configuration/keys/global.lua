@@ -153,12 +153,10 @@ local globalKeys = gears.table.join(
 		--
 	end, { description = "Next Audio Track (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerDown", function()
-		-- HACK:
-		_G.exit_screen_show()
+		require("module.exit-screen").show()
 	end, { description = "Power Down (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerOff", function()
-		-- HACK:
-		_G.exit_screen_show()
+		require("module.exit-screen").show()
 	end, { description = "Open Poweroff Menu", group = "hotkeys" }),
 
 	-- Custom hotkeys

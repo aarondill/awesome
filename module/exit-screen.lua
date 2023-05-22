@@ -6,36 +6,50 @@ local icons = require("theme.icons")
 local clickable_container = require("widget.material.clickable-container")
 local apps = require("configuration.apps")
 local dpi = require("beautiful").xresources.apply_dpi
+local handle_error = require("util.handle_error")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 
---TODO: add the text
-local function buildButton(icon, text)
-	local abutton = wibox.widget({
-		wibox.widget({
-			wibox.widget({
-				wibox.widget({
-					image = icon,
-					widget = wibox.widget.imagebox,
-				}),
-				top = dpi(16),
-				bottom = dpi(16),
-				left = dpi(16),
-				right = dpi(16),
-				widget = wibox.container.margin,
-			}),
-			shape = gears.shape.circle,
-			forced_width = icon_size,
-			forced_height = icon_size,
-			widget = clickable_container,
-		}),
-		left = dpi(24),
-		right = dpi(24),
+---Build a clickable button for the exit screen
+---@param icon string the path to the icon to show
+---@param text string the text to display under the button
+---@param on_release function? passed to connect_signal button::release.
+---Passing this ensures only the icon/margin is clickable, rather than the caption below.
+---@return table button the button widget to show on the exit_screen
+local function buildButton(icon, text, on_release)
+	local imagebox = wibox.widget({
 		widget = wibox.container.margin,
+		margins = dpi(16),
+		wibox.widget.imagebox(icon),
+	})
+	local clickable = wibox.widget({
+		widget = clickable_container,
+		shape = gears.shape.circle,
+		forced_width = icon_size,
+		forced_height = icon_size,
+		imagebox,
+	})
+	local widget = wibox.widget({
+		{
+			widget = wibox.container.margin,
+			left = dpi(24),
+			right = dpi(24),
+			clickable,
+		},
+		{
+			widget = wibox.widget.textbox,
+			align = "center",
+			text = text,
+		},
+		layout = wibox.layout.fixed.vertical,
 	})
 
-	return abutton
+	if on_release then
+		clickable:connect_signal("button::release", on_release)
+	end
+
+	return widget
 end
 
 -- Get screen geometry
@@ -69,40 +83,32 @@ local function suspend_command()
 	awful.spawn({ "systemctl", "suspend" }, false)
 end
 local function exit_command()
-	awesome.quit()
+	exit_screen_hide()
+	awesome.quit(0)
 end
 local function lock_command()
 	exit_screen_hide()
-	awful.spawn({ "sh", "-c", "sleep 1 && exec" .. apps.default.lock }, false)
+	awful.spawn(apps.default.lock, false)
 end
 local function poweroff_command()
+	exit_screen_hide()
 	awful.spawn("poweroff", false)
-	awful.keygrabber.stop(exit_screen_grabber)
 end
 local function reboot_command()
+	exit_screen_hide()
 	awful.spawn("reboot", false)
-	awful.keygrabber.stop(exit_screen_grabber)
 end
 
-local poweroff = buildButton(icons.power, "Shutdown")
-poweroff:connect_signal("button::release", poweroff_command)
+local poweroff = buildButton(icons.power, "Shutdown", handle_error(poweroff_command))
+local reboot = buildButton(icons.restart, "Restart", handle_error(reboot_command))
+local suspend = buildButton(icons.sleep, "Sleep", handle_error(suspend_command))
+local exit = buildButton(icons.logout, "Logout", handle_error(exit_command))
+local lock = buildButton(icons.lock, "Lock", handle_error(lock_command))
 
-local reboot = buildButton(icons.restart, "Restart")
-reboot:connect_signal("button::release", reboot_command)
-
-local suspend = buildButton(icons.sleep, "Sleep")
-suspend:connect_signal("button::release", suspend_command)
-
-local exit = buildButton(icons.logout, "Logout")
-exit:connect_signal("button::release", exit_command)
-
-local lock = buildButton(icons.lock, "Lock")
-lock:connect_signal("button::release", lock_command)
-
-function _G.exit_screen_show()
-	exit_screen_grabber = awful.keygrabber.run(function(_, key, event)
-		if event == "release" then
-			return
+local function exit_screen_show()
+	exit_screen_grabber = awful.keygrabber.run(handle_error(function(mods, key, event)
+		if event == "release" or not #mods == 0 then
+			return false
 		end
 
 		if key == "s" then
@@ -118,7 +124,7 @@ function _G.exit_screen_show()
 		elseif key == "Escape" or key == "q" or key == "x" then
 			exit_screen_hide()
 		end
-	end)
+	end))
 	exit_screen.visible = true
 end
 
@@ -134,10 +140,10 @@ exit_screen:buttons(gears.table.join(
 ))
 -- Item placement
 exit_screen:setup({
-	nil,
+	nil, -- No top
 	{
-		nil,
-		{
+		nil, -- No left
+		{ -- This should be centered
 			poweroff,
 			reboot,
 			suspend,
@@ -145,11 +151,13 @@ exit_screen:setup({
 			lock,
 			layout = wibox.layout.fixed.horizontal,
 		},
-		nil,
+		nil, -- No right
 		expand = "none",
 		layout = wibox.layout.align.horizontal,
 	},
-	nil,
+	nil, -- No bottom
 	expand = "none",
 	layout = wibox.layout.align.vertical,
 })
+
+return { show = exit_screen_show, hide = exit_screen_hide }
