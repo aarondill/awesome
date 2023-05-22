@@ -3,14 +3,17 @@ local naughty = require("naughty")
 ---Not typed because generics can't handle it properly
 local function handle_error(func)
 	return function(...)
-		local ok, err = pcall(func, ...)
-		if not ok then
-			naughty.notify({
-				preset = naughty.config.presets.critical,
-				title = "Something went terribly wrong",
-				text = tostring(err),
-			})
+		local ok, val_or_err = pcall(func, ...)
+		if ok then
+			return val_or_err
 		end
+
+		naughty.notify({
+			preset = naughty.config.presets.critical,
+			title = "Something went terribly wrong",
+			text = tostring(val_or_err),
+		})
+		return nil
 	end
 end
 
