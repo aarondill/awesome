@@ -22,10 +22,10 @@ local default = {
 	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
 	browser = "google-chrome --enable-features=WebUIDarkMode --force-dark-mode",
 	editor = terminal .. " -e nvim", -- gui text editor
-	social = "discord",
-	game = "steam",
-	files = "nautilus",
-	music = "spotify",
+	-- social = "discord",
+	-- game = "steam",
+	-- files = "nautilus",
+	-- music = "spotify",
 	brightness = {
 		up = "brightnessctl set 10%+",
 		down = "brightnessctl set 10%-",
