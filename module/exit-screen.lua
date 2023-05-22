@@ -65,51 +65,41 @@ end
 
 local function suspend_command()
 	exit_screen_hide()
-	awful.spawn.with_shell(apps.default.lock .. " & systemctl suspend")
+	awful.spawn(apps.default.lock, false) -- This doesn't block
+	awful.spawn({ "systemctl", "suspend" }, false)
 end
 local function exit_command()
 	awesome.quit()
 end
 local function lock_command()
 	exit_screen_hide()
-	awful.spawn.with_shell("sleep 1 && " .. apps.default.lock)
+	awful.spawn({ "sh", "-c", "sleep 1 && exec" .. apps.default.lock }, false)
 end
 local function poweroff_command()
-	awful.spawn.with_shell("poweroff")
+	awful.spawn("poweroff", false)
 	awful.keygrabber.stop(exit_screen_grabber)
 end
 local function reboot_command()
-	awful.spawn.with_shell("reboot")
+	awful.spawn("reboot", false)
 	awful.keygrabber.stop(exit_screen_grabber)
 end
 
 local poweroff = buildButton(icons.power, "Shutdown")
-poweroff:connect_signal("button::release", function()
-	poweroff_command()
-end)
+poweroff:connect_signal("button::release", poweroff_command)
 
 local reboot = buildButton(icons.restart, "Restart")
-reboot:connect_signal("button::release", function()
-	reboot_command()
-end)
+reboot:connect_signal("button::release", reboot_command)
 
 local suspend = buildButton(icons.sleep, "Sleep")
-suspend:connect_signal("button::release", function()
-	suspend_command()
-end)
+suspend:connect_signal("button::release", suspend_command)
 
 local exit = buildButton(icons.logout, "Logout")
-exit:connect_signal("button::release", function()
-	exit_command()
-end)
+exit:connect_signal("button::release", exit_command)
 
 local lock = buildButton(icons.lock, "Lock")
-lock:connect_signal("button::release", function()
-	lock_command()
-end)
+lock:connect_signal("button::release", lock_command)
 
 function _G.exit_screen_show()
-	-- naughty.notify({text = "starting the keygrabber"})
 	exit_screen_grabber = awful.keygrabber.run(function(_, key, event)
 		if event == "release" then
 			return
@@ -126,9 +116,7 @@ function _G.exit_screen_show()
 		elseif key == "r" then
 			reboot_command()
 		elseif key == "Escape" or key == "q" or key == "x" then
-			-- naughty.notify({text = "Cancel"})
 			exit_screen_hide()
-			-- else awful.keygrabber.stop(exit_screen_grabber)
 		end
 	end)
 	exit_screen.visible = true
@@ -150,15 +138,12 @@ exit_screen:setup({
 	{
 		nil,
 		{
-			-- {
 			poweroff,
 			reboot,
 			suspend,
 			exit,
 			lock,
 			layout = wibox.layout.fixed.horizontal,
-			-- },
-			-- widget = exit_screen_box
 		},
 		nil,
 		expand = "none",
