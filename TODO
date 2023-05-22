@@ -43,6 +43,7 @@ end
 --    /usr/lib/update-notifier/apt-check 2>&1 --> 'security_updates;regular_updates'
 --Use /sys files in battery widget to remove dependency on acpi
 --  Credit original creator! (I'm gonna take much of his code)
+--Use exponential scale. Check ./widget/backlight-adjust.lua for an example
 
 --TODO: MODULARITY
 --Notification utils for consistency
