@@ -10,7 +10,8 @@ local dpi = require("beautiful").xresources.apply_dpi
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 
-local buildButton = function(icon)
+--TODO: add the text
+local function buildButton(icon, text)
 	local abutton = wibox.widget({
 		wibox.widget({
 			wibox.widget({
@@ -37,24 +38,49 @@ local buildButton = function(icon)
 	return abutton
 end
 
-function suspend_command()
+-- Get screen geometry
+local screen_geometry = awful.screen.focused().geometry
+
+-- Create the widget
+local exit_screen = wibox({
+	screen = 1,
+	x = screen_geometry.x,
+	y = screen_geometry.y,
+	visible = false,
+	ontop = true,
+	type = "splash",
+	height = screen_geometry.height,
+	width = screen_geometry.width,
+})
+
+exit_screen.bg = beautiful.background.hue_800 .. "dd"
+exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or "#FEFEFE"
+
+local exit_screen_grabber
+
+local function exit_screen_hide()
+	awful.keygrabber.stop(exit_screen_grabber)
+	exit_screen.visible = false
+end
+
+local function suspend_command()
 	exit_screen_hide()
 	awful.spawn.with_shell(apps.default.lock .. " & systemctl suspend")
 end
-function exit_command()
-	_G.awesome.quit()
+local function exit_command()
+	awesome.quit()
 end
-function lock_command()
+local function lock_command()
 	exit_screen_hide()
 	awful.spawn.with_shell("sleep 1 && " .. apps.default.lock)
 end
-function poweroff_command()
+local function poweroff_command()
 	awful.spawn.with_shell("poweroff")
-	awful.keygrabber.stop(_G.exit_screen_grabber)
+	awful.keygrabber.stop(exit_screen_grabber)
 end
-function reboot_command()
+local function reboot_command()
 	awful.spawn.with_shell("reboot")
-	awful.keygrabber.stop(_G.exit_screen_grabber)
+	awful.keygrabber.stop(exit_screen_grabber)
 end
 
 local poweroff = buildButton(icons.power, "Shutdown")
@@ -82,32 +108,7 @@ lock:connect_signal("button::release", function()
 	lock_command()
 end)
 
--- Get screen geometry
-local screen_geometry = awful.screen.focused().geometry
-
--- Create the widget
-exit_screen = wibox({
-	screen = 1,
-	x = screen_geometry.x,
-	y = screen_geometry.y,
-	visible = false,
-	ontop = true,
-	type = "splash",
-	height = screen_geometry.height,
-	width = screen_geometry.width,
-})
-
-exit_screen.bg = beautiful.background.hue_800 .. "dd"
-exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or "#FEFEFE"
-
-local exit_screen_grabber
-
-function exit_screen_hide()
-	awful.keygrabber.stop(exit_screen_grabber)
-	exit_screen.visible = false
-end
-
-function exit_screen_show()
+function _G.exit_screen_show()
 	-- naughty.notify({text = "starting the keygrabber"})
 	exit_screen_grabber = awful.keygrabber.run(function(_, key, event)
 		if event == "release" then
@@ -143,7 +144,6 @@ exit_screen:buttons(gears.table.join(
 		exit_screen_hide()
 	end)
 ))
-
 -- Item placement
 exit_screen:setup({
 	nil,
