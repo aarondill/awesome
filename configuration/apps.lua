@@ -38,6 +38,7 @@ local default = {
 }
 
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
+-- If a table is provided, the second argument must be true to run in a shell, else it will be treated like a simple command name
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
 	"picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
@@ -49,7 +50,7 @@ local run_on_start_up = {
 	'/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"xfce4-power-manager --daemon", -- Power manager
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
-	"sleep 1 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
+	{ "sleep 1 && exec ibus-daemon --xim -rd", true }, -- Run ibus-daemon for language and emoji keyboard support
 	-- "steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
