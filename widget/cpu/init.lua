@@ -7,9 +7,11 @@ local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local awful = require("awful")
 
-local function escape_pattern(text)
-	-- Fix percent colon breaking for some reason
-	return text:gsub("(%%)", "%%%1"):gsub("(^|[^%])%:", "\1:")
+local function escape_pattern(str)
+	-- Taken from gears.string.quote_pattern
+	-- All special characters escaped in a string: %%, %^, %$, ...
+	local patternchars = "[" .. ("%^$().[]*+-?"):gsub("(.)", "%%%1") .. "]"
+	return str:gsub(patternchars, "%%%1")
 end
 
 ---@class CPUWidgetConfig
