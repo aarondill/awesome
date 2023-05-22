@@ -4,19 +4,15 @@
 local awful = require("awful")
 local apps = require("configuration.apps")
 
+---@param cmd_str string the thing to run
 local function run_once(cmd_str)
-	local findme = cmd_str
-	-- run in sh for memory performance
-	local cmd = { "sh", "-c" }
-	local base_string = "pgrep -u $USER -x %s > /dev/null ||"
-
-	local firstspace = cmd_str:find(" ")
-	if firstspace then
-		findme = cmd_str:sub(0, firstspace - 1)
-		table.insert(cmd, string.format(base_string .. " { %s; }", findme, cmd_str))
-	else
-		-- best case senario, just one command. Exec directly.
-		table.insert(cmd, string.format(base_string .. " exec %s", findme, cmd_str))
+	-- best case senario, just one command. Run.
+	---@type string|table
+	local cmd = cmd_str
+	-- Contains space, run in shell just in case
+	if cmd_str:find(" ") then
+		-- run in sh for memory performance
+		cmd = { "sh", "-c", cmd_str }
 	end
 
 	return awful.spawn(cmd, false)
