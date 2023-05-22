@@ -1,0 +1,95 @@
+#!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
+-- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
+if true then
+	return
+end
+
+--TODO:: TAGS
+--Fix tags
+--  Remove icons on tags
+--  9 tags please
+-- Fix tag icons!
+--   Their sizes are off bc they came from the default config. Try to find the source of the tile one.
+
+--TODO: CLIENT DECORATATIONS
+--Fix client decoratations - widget to toggle
+--  Onclick: toggle all clients, *except* if request_no_titlebars
+--  Ensure the above is already handled by configuration/client/titlebar.lua
+
+--TODO: CLEANUP
+--Remove unused code
+--  Keep the widgets for the sake of convenience
+--  Remove many of the images found in theme/icons
+
+--TODO: HARDWARE
+--Handle power button. SUPPRESS it!
+--Implement audio foward, back, PlayPause
+--Remove exitscreen global functions.
+
+--TODO: WIDGETS
+--Improve all widgets that came with TitusTech's clone.
+--  Return functions, take args, default programs, etc...
+--  These don't work (I think)
+--    Tempurature - WORKS? test.
+--    Volumne - works? patterns?
+--    WiFi - spawns defined program, needs fixed. Defined interface. relies on iw - not stable
+--    Bluetooth - Not even exists.
+--    Hard-Drive - Relies on `df`, and only checks /home
+--    Package updater - relies on pamac - not even debian supported.
+--    RAM - Uses glob, by accident. External process, can be simplified?
+--Make the package widget work with apt (dpkg?) (or any given package).
+--  Accept an argument for commands/hooks
+--    apt-get -q -y --ignore-hold --allow-change-held-packages --allow-unauthenticated ---simulate dist-upgrade | /bin/grep  ^Inst | wc -l --> 'updates'
+--    /usr/lib/update-notifier/apt-check 2>&1 --> 'security_updates;regular_updates'
+--Use /sys files in battery widget to remove dependency on acpi
+--  Credit original creator! (I'm gonna take much of his code)
+
+--TODO: AUTO-START
+--Manage auto-start apps better?
+--  Make array of arrays instead of strings for safer argument handling
+--    Allow strings, but prefer arrays
+--  send notification if not found -->
+--    make script that takes parameter.
+--    Complicated string.format?
+
+--TODO: MODULARITY
+--Notification utils for consistency
+--Further seperate top-panel into files for each widget
+--   Especially the ones that have placeholders which get replaced
+
+--TODO: THEME
+--Custom theme?
+--More wallpapers :)
+
+--TODO: WIDGETS - STARTUP
+do
+	-- Replace spawn_on_click with the following to avoid wibar resizing
+	-- Usage:
+	-- replace_if_present(cmd, replace_widget, replace_in, function(path, replace_widget, replace_in)
+	-- Do something with path (guarenteed to be non-nil)
+	-- end)
+	---@param cmd string
+	---@param replace_widget table
+	---@param replace_in table
+	---@param cb fun(path:string, replace_widget:table, replace_in:table)
+	local function replace_if_present(cmd, replace_widget, replace_in, cb)
+		local gears = require("gears")
+		local awful = require("awful")
+		local installed = require("util.installed")
+		local replace_in_widget = require("util.replace_in_widget")
+		if not cmd or not replace_widget or not replace_in or not cb then
+			error("Replace_if_present requires 4 arguments")
+		end
+		installed(cmd, function(path_or_nil)
+			if path_or_nil then
+				local clickable = require("widget.material.clickable-container")(replace_widget)
+				clickable:buttons(gears.table.join(awful.button({}, 1, nil, function()
+					return cb(path_or_nil, replace_widget, replace_in)
+				end)))
+				replace_in_widget(replace_in, replace_widget, clickable)
+			end
+		end)
+	end
+
+	pcall(replace_if_present, nil, nil, nil, nil)
+end
