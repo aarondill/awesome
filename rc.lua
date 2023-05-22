@@ -1,4 +1,5 @@
 --TODO:
+--Clock is *not* clickable (open calendar?)
 --Fix tags
 --  Remove icons on tags
 --  9 tags please
