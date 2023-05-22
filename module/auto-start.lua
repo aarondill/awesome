@@ -19,9 +19,17 @@ local function run_once(cmd_str)
 		table.insert(cmd, string.format(base_string .. " exec %s", findme, cmd_str))
 	end
 
-	awful.spawn(cmd, false)
+	return awful.spawn(cmd, false)
 end
 
+local processes = {}
+
 for _, app in ipairs(apps.run_on_start_up) do
-	run_once(app)
+	processes[#processes + 1] = run_once(app)
 end
+-- Kill them all on exit
+awesome.connect_signal("exit", function(_)
+	for _, pid in ipairs(processes) do
+		awesome.kill(pid, 15) -- SIGTERM
+	end
+end)
