@@ -1,6 +1,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
+local gears = require("gears")
 local TaskList = require("widget.task-list")
 local TagList = require("widget.tag-list")
 local LayoutBox = require("widget.layout-box")
@@ -82,9 +83,24 @@ local TopPanel = function(s)
 		},
 	})
 
-	local battery_manager = apps.default.battery_manager
+	-- Setup click click handler if calendar is installed
+	installed(apps.default.calendar, function(path_or_nil)
+		if path_or_nil then
+			local click_clock_widget = mat_clickable_cont(clock_widget)
+			click_clock_widget:buttons(gears.table.join(awful.button({}, 1, nil, function()
+				-- Hide the calendar on click (won't hide otherwise)
+				month_calendar.visible = false
+				-- needed to ensure it reapears on next mouse-over
+				month_calendar._calendar_clicked_on = false
+
+				awful.spawn(path_or_nil)
+			end)))
+			replace_in_widget(panel.widget, clock_widget, click_clock_widget)
+		end
+	end)
+
 	-- Check if battery_manager is available
-	installed(battery_manager, function(path_or_nil)
+	installed(apps.default.battery_manager, function(path_or_nil)
 		local battery_widget = Battery({
 			timeout = 15,
 			-- If exit successfully, return stdout, else nil
@@ -93,9 +109,8 @@ local TopPanel = function(s)
 		replace_in_widget(panel.widget, battery_placeholder, battery_widget)
 	end)
 
-	local system_manager = apps.default.system_manager
 	-- Check if system_manager is available
-	installed(system_manager, function(path_or_nil)
+	installed(apps.default.system_manager, function(path_or_nil)
 		local cpu_widget = mat_clickable_cont(CPU({
 			timeout = 15,
 			precision = 1,
