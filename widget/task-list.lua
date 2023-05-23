@@ -1,39 +1,46 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local capi = { button = _G.button }
+local capi = { button = button }
 local gears = require("gears")
 local clickable_container = require("widget.material.clickable-container")
---- Common method to create buttons.
--- @tab buttons
--- @param object
--- @treturn table
+---Common method to create buttons.
+---@param buttons table?
+---@param object table
+---@return table?
 local function create_buttons(buttons, object)
-	if buttons then
-		local btns = {}
-		for _, b in ipairs(buttons) do
-			-- Create a proxy button object: it will receive the real
-			-- press and release events, and will propagate them to the
-			-- button object the user provided, but with the object as
-			-- argument.
-			local btn = capi.button({ modifiers = b.modifiers, button = b.button })
-			btn:connect_signal("press", function()
-				b:emit_signal("press", object)
-			end)
-			btn:connect_signal("release", function()
-				b:emit_signal("release", object)
-			end)
-			btns[#btns + 1] = btn
-		end
-
-		return btns
+	if not buttons then
+		return nil
 	end
+	local btns = {}
+	for _, b in ipairs(buttons) do
+		-- Create a proxy button object: it will receive the real
+		-- press and release events, and will propagate them to the
+		-- button object the user provided, but with the object as
+		-- argument.
+		local btn = capi.button({ modifiers = b.modifiers, button = b.button })
+		btn:connect_signal("press", function()
+			b:emit_signal("press", object)
+		end)
+		btn:connect_signal("release", function()
+			b:emit_signal("release", object)
+		end)
+		btns[#btns + 1] = btn
+	end
+
+	return btns
 end
 
-local function list_update(w, buttons, label, data, objects)
+---commen1w
+---@param w table widget
+---@param buttons table of buttons
+---@param label fun(client:table, textbox: table): text:string, bg:string, bg_image:string, icon:string
+---@param data table
+---@param clients table
+local function list_update(w, buttons, label, data, clients)
 	-- update the widgets, creating them if needed
 	w:reset()
-	for i, o in ipairs(objects) do
+	for i, o in ipairs(clients) do
 		local cache = data[o]
 		local ib, cb, tb, cbm, bgb, tbm, ibm, tt, l, ll, bg_clickable
 		if cache then
@@ -123,7 +130,7 @@ local function list_update(w, buttons, label, data, objects)
 		bgb:set_bg(bg)
 		if type(bg_image) == "function" then
 			-- TODO: Why does this pass nil as an argument?
-			bg_image = bg_image(tb, o, nil, objects, i)
+			bg_image = bg_image(tb, o, nil, clients, i)
 		end
 		bgb:set_bgimage(bg_image)
 		if icon then
@@ -139,9 +146,11 @@ local function list_update(w, buttons, label, data, objects)
 		w:add(bgb)
 	end
 end
+
+-- we can use a global set of buttons because they work with their parameters
 local tasklist_buttons = gears.table.join(
 	awful.button({}, 1, function(c)
-		if c == _G.client.focus then
+		if c == client.focus then
 			c.minimized = true
 		else
 			-- Without this, the following
@@ -152,7 +161,7 @@ local tasklist_buttons = gears.table.join(
 			end
 			-- This will also un-minimize
 			-- the client, if needed
-			_G.client.focus = c
+			client.focus = c
 			c:raise()
 		end
 	end),
@@ -168,14 +177,13 @@ local tasklist_buttons = gears.table.join(
 )
 
 local TaskList = function(s)
-	return awful.widget.tasklist(
-		s,
-		awful.widget.tasklist.filter.currenttags,
-		tasklist_buttons,
-		{},
-		list_update,
-		wibox.layout.fixed.horizontal()
-	)
+	return awful.widget.tasklist({
+		screen = s,
+		filter = awful.widget.tasklist.filter.currenttags,
+		buttons = tasklist_buttons,
+		update_function = list_update,
+		base_widget = wibox.layout.fixed.horizontal(),
+	})
 end
 
 return TaskList
