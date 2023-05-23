@@ -22,9 +22,7 @@ end
 --  Remove many of the images found in theme/icons
 
 --TODO: HARDWARE
---Handle power button. SUPPRESS it!
 --Implement audio foward, back, PlayPause
---Remove exitscreen global functions.
 
 --TODO: WIDGETS
 --Improve all widgets that came with TitusTech's clone.
