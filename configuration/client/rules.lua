@@ -23,6 +23,7 @@ awful.rules.rules = {
 			sticky = false,
 			maximized_horizontal = false,
 			maximized_vertical = false,
+			size_hints_honor = false, -- No minimum size, no offscreen windows
 		},
 		callback = function(c)
 			c:grant("autoactivate", "history")
