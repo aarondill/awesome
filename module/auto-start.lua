@@ -26,7 +26,8 @@ end
 -- Kill them all on exit
 awesome.connect_signal("exit", function(_)
 	for _, pid in ipairs(processes) do
-		awesome.kill(pid, 15) -- SIGTERM
+		-- killing -p means sending a signal to every process in the process group p. Awesome makes sure to spawn processes in a new session, so this works.
+		awesome.kill(-pid, 15) -- SIGTERM
 	end
 	processes = {} -- They're all dead. Doesn't matter because the table is lost anyways, but yk.
 end)
