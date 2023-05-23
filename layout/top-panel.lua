@@ -82,6 +82,11 @@ local TopPanel = function(s)
 			brightness_widget,
 		},
 	})
+	s:connect_signal("property::geometry", function()
+		panel.width = s.geometry.width
+		panel.x = s.geometry.x
+		panel.y = s.geometry.y
+	end)
 
 	-- Setup click click handler if calendar is installed
 	installed(apps.default.calendar, function(path_or_nil)
