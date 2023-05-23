@@ -66,6 +66,12 @@ local exit_screen = wibox({
 	height = screen_geometry.height,
 	width = screen_geometry.width,
 })
+screen.connect_signal("property::geometry", function()
+	local s = screen[1]
+	exit_screen.width = s.geometry.width
+	exit_screen.x = s.geometry.x
+	exit_screen.y = s.geometry.y
+end)
 
 exit_screen.bg = beautiful.background.hue_800 .. "dd"
 exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or "#FEFEFE"

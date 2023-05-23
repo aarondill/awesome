@@ -36,7 +36,7 @@ local function changesOnScreen(currentScreen)
 	local tagIsMax = currentScreen.selected_tag ~= nil and currentScreen.selected_tag.layout == awful.layout.suit.max
 	local clientsToManage = {}
 
-	for _, client in pairs(currentScreen.clients) do
+	for _, client in pairs(currentScreen.clients or {}) do
 		if not client.skip_decoration and not client.hidden then
 			table.insert(clientsToManage, client)
 		end
