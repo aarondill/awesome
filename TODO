@@ -8,7 +8,9 @@ end
 --Fix tags
 --  Remove icons on tags
 --  9 tags please
--- Fix tag icons!
+
+--TODO: LAYOUTBOX
+-- Fix layoutbox icons!
 --   Their sizes are off bc they came from the default config. Try to find the source of the tile one.
 
 --TODO: CLIENT DECORATATIONS
