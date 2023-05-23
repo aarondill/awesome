@@ -4,8 +4,6 @@ local awful = require("awful")
 local function setup_wallpapers()
 	-- Set according to wallpaper directory
 	local path = gears.filesystem.get_configuration_dir() .. "wallpapers"
-	-- Set to number of used tags
-	local num_tabs = 9
 	-- Other variables
 	local default = path .. "/1.jpg"
 	if not gears.filesystem.file_readable(default) then
