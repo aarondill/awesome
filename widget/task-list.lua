@@ -177,14 +177,13 @@ local tasklist_buttons = gears.table.join(
 )
 
 local TaskList = function(s)
-	return awful.widget.tasklist(
-		s,
-		awful.widget.tasklist.filter.currenttags,
-		tasklist_buttons,
-		{},
-		list_update,
-		wibox.layout.fixed.horizontal()
-	)
+	return awful.widget.tasklist({
+		screen = s,
+		filter = awful.widget.tasklist.filter.currenttags,
+		buttons = tasklist_buttons,
+		update_function = list_update,
+		layout = wibox.layout.fixed.horizontal(),
+	})
 end
 
 return TaskList
