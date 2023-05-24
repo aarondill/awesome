@@ -2,6 +2,8 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
+-- Don't show the tmux keymaps
+package.loaded["awful.hotkeys_popup.keys.tmux"] = {}
 require("awful.hotkeys_popup.keys")
 
 -- If LuaRocks is installed, make sure that packages installed through it are
