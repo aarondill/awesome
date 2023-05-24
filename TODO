@@ -22,9 +22,6 @@ end
 --  Keep the widgets for the sake of convenience
 --  Remove many of the images found in theme/icons
 
---TODO: HARDWARE
---Implement audio foward, back, PlayPause
-
 --TODO: WIDGETS
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
