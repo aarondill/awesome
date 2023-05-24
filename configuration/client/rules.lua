@@ -40,6 +40,12 @@ awful.rules.rules = {
 	-- },
 	-- Dialog clients should float and have rounded corners
 	{
+		rule_any = { role = { "browser" } },
+		properties = {
+			opacity = 0.90,
+		},
+	},
+	{
 		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
 		properties = {
 			placement = awful.placement.centered,
