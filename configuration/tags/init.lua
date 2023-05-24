@@ -24,6 +24,12 @@ local tags = {
 	{
 		icon = icons.lab,
 	},
+	{
+		icon = icons.brightness,
+	},
+	{
+		icon = icons.lock,
+	},
 }
 
 awful.layout.layouts = {
