@@ -46,7 +46,7 @@ awful.rules.rules = {
 		},
 	},
 	{
-		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" } },
+		rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" }, role = { "pop-up" } },
 		properties = {
 			placement = awful.placement.centered,
 			ontop = true,
