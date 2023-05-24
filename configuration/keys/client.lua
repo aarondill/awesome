@@ -29,9 +29,16 @@ local clientkeys = gears.table.join(
 		c:swap(awful.client.getmaster())
 	end, { description = "move to master", group = "client" }),
 
+	-- awful.key({ modkey }, "o", function(c)
+	-- 	c:move_to_screen()
+	-- end, { description = "move window to next screen", group = "client" }),
+
 	awful.key({ modkey }, "o", function(c)
-		c:move_to_screen()
-	end, { description = "move window to next screen", group = "client" }),
+		c.opacity = c.opacity + 0.1
+	end, { description = "Increase opacity", group = "client" }),
+	awful.key({ modkey, "Shift" }, "o", function(c)
+		c.opacity = math.max(c.opacity - 0.1, 0.2)
+	end, { description = "Decrease opacity", group = "client" }),
 
 	awful.key({ modkey }, "t", function(c)
 		c.ontop = not c.ontop
