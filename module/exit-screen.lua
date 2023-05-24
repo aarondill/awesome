@@ -105,11 +105,11 @@ local function reboot_command()
 	awful.spawn("reboot", false)
 end
 
-local poweroff = buildButton(icons.power, "Shutdown", handle_error(poweroff_command))
-local reboot = buildButton(icons.restart, "Restart", handle_error(reboot_command))
-local suspend = buildButton(icons.sleep, "Sleep", handle_error(suspend_command))
-local exit = buildButton(icons.logout, "Logout", handle_error(exit_command))
-local lock = buildButton(icons.lock, "Lock", handle_error(lock_command))
+local poweroff = buildButton(icons.power, "Poweroff (p)", handle_error(poweroff_command))
+local reboot = buildButton(icons.restart, "Restart (r)", handle_error(reboot_command))
+local suspend = buildButton(icons.sleep, "Suspend (s)", handle_error(suspend_command))
+local exit = buildButton(icons.logout, "Exit AWM (e)", handle_error(exit_command))
+local lock = buildButton(icons.lock, "Lock (l)", handle_error(lock_command))
 
 local function exit_screen_show()
 	exit_screen_grabber = awful.keygrabber.run(handle_error(function(mods, key, event)
