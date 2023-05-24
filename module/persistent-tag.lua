@@ -1,10 +1,11 @@
 local awful = require("awful")
+local filepath = "/tmp/awesomewm-last-selected-tags"
 awesome.connect_signal("exit", function(reason_restart)
 	if not reason_restart then
 		return
 	end
 
-	local file = io.open("/tmp/awesomewm-last-selected-tags", "w+")
+	local file = io.open(filepath, "w+")
   --stylua: ignore
   if not file then return end
 
@@ -19,7 +20,7 @@ awesome.connect_signal("exit", function(reason_restart)
 end)
 
 awesome.connect_signal("startup", function()
-	local file = io.open("/tmp/awesomewm-last-selected-tags", "r")
+	local file = io.open(filepath, "r")
 	if not file then
 		return
 	end
@@ -48,4 +49,5 @@ awesome.connect_signal("startup", function()
 	end
 
 	file:close()
+	os.remove(filepath)
 end)
