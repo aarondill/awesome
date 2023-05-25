@@ -128,10 +128,6 @@ local function list_update(w, buttons, label, data, clients)
 			end
 		end
 		bgb:set_bg(bg)
-		if type(bg_image) == "function" then
-			-- TODO: Why does this pass nil as an argument?
-			bg_image = bg_image(tb, o, nil, clients, i)
-		end
 		bgb:set_bgimage(bg_image)
 		if icon then
 			ib.image = icon
