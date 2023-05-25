@@ -43,7 +43,7 @@ local default = {
 -- These will be run in sh. Don't use any weird syntax (bashisms). If the command line includes a space, it will *not* be
 -- exec'ed, you should do it yourelf.
 local run_on_start_up = {
-	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
+	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY 2>/dev/null", -- Fix gnome apps taking *forever* to open
 	"exec picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
 	"diodon", -- Clipboard after closing window
 	"exec nm-applet --indicator", -- wifi
