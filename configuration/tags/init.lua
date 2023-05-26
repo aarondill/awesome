@@ -1,57 +1,44 @@
 local awful = require("awful")
-local icons = require("theme.icons")
-local apps = require("configuration.apps")
+local gears = require("gears")
+local tags_lua = require("configuration.tags.tags")
 
-local tags = {
-	{
-		icon = icons.chrome,
-	},
-	{
-		icon = icons.code,
-	},
-	{
-		icon = icons.social,
-	},
-	{
-		icon = icons.game,
-	},
-	{
-		icon = icons.folder,
-	},
-	{
-		icon = icons.music,
-	},
-	{
-		icon = icons.lab,
-	},
-	{
-		icon = icons.brightness,
-	},
-	{
-		icon = icons.lock,
-	},
-}
+-- TODO: move this
+awful.layout.layouts = tags_lua.layouts
 
-awful.layout.layouts = {
-	awful.layout.suit.tile,
-	awful.layout.suit.fair,
-	awful.layout.suit.max,
-	awful.layout.suit.magnifier,
-	awful.layout.suit.floating,
-}
+local tags = tags_lua.tags
 
 awful.screen.connect_for_each_screen(function(s)
 	for i, tag in pairs(tags) do
-		awful.tag.add(i, {
-			icon = tag.icon,
-			-- Icon only if icon is defined, else show the text
-			icon_only = (tag.icon and true) or false,
+		if not tag then
+			goto continue
+		end
+		if type(tag) ~= "table" then
+			if type(tag) == "function" then
+				-- Screen, index, array
+				tag = tag(s, i, tags)
+			elseif type(tag) == "string" or type(tag) == "number" then
+				tag = { name = tostring(tag) }
+			else
+				tag = {}
+			end
+		end
+
+		local params = gears.table.crush({
+			name = i,
 			layout = awful.layout.layouts[1] or awful.layout.suit.tile,
 			gap_single_client = true,
 			gap = 4,
 			screen = s,
 			selected = i == 1,
-		})
+		}, tag or {})
+
+		-- icon_only not specified, but icon is. Default to only icon.
+		if tag.icon_only == nil and tag.icon and not tag.name then
+			params.icon_only = true
+		end
+
+		awful.tag.add(params.name, params)
+		::continue::
 	end
 end)
 
