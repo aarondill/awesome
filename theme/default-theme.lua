@@ -84,26 +84,34 @@ local awesome_overrides = function(theme)
 	end
 
 	-- Layout
-	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
-	-- This should really be spiral...
-	theme.layout_tile = theme.icons .. "layouts/view-quilt.png"
+	theme.layout_tile = theme.icons .. "layouts/tile-right.svg"
+	theme.layout_tileleft = theme.icons .. "layouts/tile-left.svg"
+	theme.layout_spiral = theme.icons .. "layouts/spiral.svg"
+	theme.layout_dwindle = theme.icons .. "layouts/dwindle.svg"
+	theme.layout_tilebottom = theme.icons .. "layouts/tile-bottom.svg"
+	theme.layout_tiletop = theme.icons .. "layouts/tile-top.svg"
+	theme.layout_fairh = theme.icons .. "layouts/fair.horizontal.svg"
+	theme.layout_fairv = theme.icons .. "layouts/fair.svg"
 
-	theme.layout_fairh = theme.icons .. "layouts/fairhw.png"
-	theme.layout_fairv = theme.icons .. "layouts/fairvw.png"
-	theme.layout_floating = theme.icons .. "layouts/floatingw.png"
-	theme.layout_magnifier = theme.icons .. "layouts/magnifierw.png"
-	-- theme.layout_max = theme.icons .. "layouts/maxw.png"
-	theme.layout_fullscreen = theme.icons .. "layouts/fullscreenw.png"
-	theme.layout_tilebottom = theme.icons .. "layouts/tilebottomw.png"
-	theme.layout_tileleft = theme.icons .. "layouts/tileleftw.png"
-	-- theme.layout_tile = theme.icons .. "layouts/tilew.png"
-	theme.layout_tiletop = theme.icons .. "layouts/tiletopw.png"
-	theme.layout_spiral = theme.icons .. "layouts/spiralw.png"
-	theme.layout_dwindle = theme.icons .. "layouts/dwindlew.png"
-	theme.layout_cornernw = theme.icons .. "layouts/cornernww.png"
-	theme.layout_cornerne = theme.icons .. "layouts/cornernew.png"
-	theme.layout_cornersw = theme.icons .. "layouts/cornersww.png"
-	theme.layout_cornerse = theme.icons .. "layouts/cornersew.png"
+	-- TODO:
+	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
+
+	-- theme.layout_fairh = theme.icons .. "layouts/defaults/fairhw.png"
+	-- theme.layout_fairv = theme.icons .. "layouts/defaults/fairvw.png"
+	theme.layout_floating = theme.icons .. "layouts/defaults/floatingw.png"
+	theme.layout_magnifier = theme.icons .. "layouts/defaults/magnifierw.png"
+	-- theme.layout_max = theme.icons .. "layouts/defaults/maxw.png"
+	theme.layout_fullscreen = theme.icons .. "layouts/defaults/fullscreenw.png"
+	-- theme.layout_tilebottom = theme.icons .. "layouts/defaults/tilebottomw.png"
+	-- theme.layout_tileleft = theme.icons .. "layouts/defaults/tileleftw.png"
+	-- theme.layout_tile = theme.icons .. "layouts/defaults/tilew.png"
+	-- theme.layout_spiral = theme.icons .. "layouts/defaults/spiralw.png"
+	-- theme.layout_dwindle = theme.icons .. "layouts/defaults/dwindlew.png"
+	-- theme.layout_tiletop = theme.icons .. "layouts/defaults/tiletopw.png"
+	theme.layout_cornernw = theme.icons .. "layouts/defaults/cornernww.png"
+	theme.layout_cornerne = theme.icons .. "layouts/defaults/cornernew.png"
+	theme.layout_cornersw = theme.icons .. "layouts/defaults/cornersww.png"
+	theme.layout_cornerse = theme.icons .. "layouts/defaults/cornersew.png"
 
 	-- Taglist
 	theme.taglist_bg_empty = theme.background.hue_800
