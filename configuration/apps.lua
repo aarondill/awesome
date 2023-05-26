@@ -52,7 +52,7 @@ local run_on_start_up = {
 	"exec numlockx on", -- enable numlock
 	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"exec xfce4-power-manager --daemon", -- Power manager
-	string.format("exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
+	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	"exec systemd-inhibit --what handle-power-key --who awesome --why 'to enable custom power key handling' --mode block sleep infinity",
