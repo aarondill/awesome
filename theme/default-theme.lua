@@ -92,14 +92,16 @@ local awesome_overrides = function(theme)
 	theme.layout_tiletop = theme.icons .. "layouts/tile-top.svg"
 	theme.layout_fairh = theme.icons .. "layouts/fair.horizontal.svg"
 	theme.layout_fairv = theme.icons .. "layouts/fair.svg"
+	theme.layout_floating = theme.icons .. "layouts/floating.svg"
+	theme.layout_magnifier = theme.icons .. "layouts/magnifier.svg"
 
 	-- TODO:
 	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
 
 	-- theme.layout_fairh = theme.icons .. "layouts/defaults/fairhw.png"
 	-- theme.layout_fairv = theme.icons .. "layouts/defaults/fairvw.png"
-	theme.layout_floating = theme.icons .. "layouts/defaults/floatingw.png"
-	theme.layout_magnifier = theme.icons .. "layouts/defaults/magnifierw.png"
+	-- theme.layout_floating = theme.icons .. "layouts/defaults/floatingw.png"
+	-- theme.layout_magnifier = theme.icons .. "layouts/defaults/magnifierw.png"
 	-- theme.layout_max = theme.icons .. "layouts/defaults/maxw.png"
 	theme.layout_fullscreen = theme.icons .. "layouts/defaults/fullscreenw.png"
 	-- theme.layout_tilebottom = theme.icons .. "layouts/defaults/tilebottomw.png"
