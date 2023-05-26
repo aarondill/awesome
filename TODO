@@ -4,10 +4,6 @@ if true then
 	return
 end
 
---TODO:: TAGS
---Fix tags
---  Remove icons on tags
-
 --TODO: LAYOUTBOX
 -- Fix layoutbox icons!
 --   Their sizes are off bc they came from the default config. Try to find the source of the tile one.
