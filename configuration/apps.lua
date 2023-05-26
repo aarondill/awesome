@@ -44,7 +44,7 @@ local default = {
 -- exec'ed, you should do it yourelf.
 local run_on_start_up = {
 	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY 2>/dev/null", -- Fix gnome apps taking *forever* to open
-	"exec picom --config " .. filesystem.get_configuration_dir() .. "/configuration/picom.conf",
+	string.format("exec picom --config '%s/configuration/picom.conf'", filesystem.get_configuration_dir()),
 	"diodon", -- Clipboard after closing window
 	"exec nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
@@ -52,6 +52,7 @@ local run_on_start_up = {
 	"exec numlockx on", -- enable numlock
 	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"exec xfce4-power-manager --daemon", -- Power manager
+	string.format("exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	"exec systemd-inhibit --what handle-power-key --who awesome --why 'to enable custom power key handling' --mode block sleep infinity",
@@ -59,6 +60,6 @@ local run_on_start_up = {
 	-- "exec steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
-	filesystem.get_configuration_dir() .. "configuration/awspawn", -- Spawn "dirty" apps that can linger between sessions
+	string.format("exec '%s/configuration/awspawn'", filesystem.get_configuration_dir()), -- Spawn "dirty" apps that can linger between sessions
 }
 return { default = default, run_on_start_up = run_on_start_up }
