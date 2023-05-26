@@ -6,6 +6,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local awful = require("awful")
+local naughty = require("naughty")
 
 local function escape_pattern(str)
 	-- Taken from gears.string.quote_pattern
@@ -80,9 +81,8 @@ function CPU(args)
 			idle_prev = idle
 		end)
 		if not ok then
-			local n = require("naughty")
-			n.notify({
-				preset = n.config.presets.critical,
+			naughty.notify({
+				preset = naughty.config.presets.critical,
 				title = "error",
 				text = tostring(err),
 			})
