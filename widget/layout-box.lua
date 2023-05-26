@@ -1,5 +1,7 @@
 local awful = require("awful")
 local gears = require("gears")
+local dpi = require("beautiful").xresources.apply_dpi
+local wibox = require("wibox")
 local clickable_container = require("widget.material.clickable-container")
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
@@ -20,6 +22,12 @@ local LayoutBox = function(s)
 			awful.layout.inc(-1)
 		end)
 	))
-	return clickable_container(layoutBox)
+
+	local margin_box = wibox.widget({
+		layoutBox,
+		margins = dpi(5),
+		widget = wibox.container.margin,
+	})
+	return clickable_container(margin_box)
 end
 return LayoutBox
