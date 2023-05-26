@@ -8,7 +8,7 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 
 -- Hide bars when app go fullscreen
-function updateBarsVisibility()
+local function updateBarsVisibility()
 	for s in screen do
 		if s.selected_tag then
 			local fullscreen = s.selected_tag.fullscreenMode
@@ -22,12 +22,12 @@ awful.tag.attached_connect_signal(nil, "property::selected", function(t)
 	updateBarsVisibility()
 end)
 
-_G.client.connect_signal("property::fullscreen", function(c)
+client.connect_signal("property::fullscreen", function(c)
 	c.screen.selected_tag.fullscreenMode = c.fullscreen
 	updateBarsVisibility()
 end)
 
-_G.client.connect_signal("unmanage", function(c)
+client.connect_signal("unmanage", function(c)
 	if c.fullscreen then
 		c.screen.selected_tag.fullscreenMode = false
 		updateBarsVisibility()
