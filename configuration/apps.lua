@@ -44,13 +44,13 @@ local default = {
 -- exec'ed, you should do it yourelf.
 local run_on_start_up = {
 	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY 2>/dev/null", -- Fix gnome apps taking *forever* to open
+	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	string.format("exec picom --config '%s/configuration/picom.conf'", filesystem.get_configuration_dir()),
 	"diodon", -- Clipboard after closing window
 	"exec nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	"exec numlockx on", -- enable numlock
-	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
 	"exec xfce4-power-manager --daemon", -- Power manager
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
