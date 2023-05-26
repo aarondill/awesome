@@ -51,7 +51,7 @@ local run_on_start_up = {
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	"exec numlockx on", -- enable numlock
-	"exec xfce4-power-manager --daemon", -- Power manager
+	"exec xfce4-power-manager", -- Power manager
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
