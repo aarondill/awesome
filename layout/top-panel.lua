@@ -74,7 +74,11 @@ local TopPanel = function(s)
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.margin(systray, dpi(3), dpi(3), dpi(6), dpi(3)),
 			-- Layout box
-			LayoutBox(s),
+			{
+				LayoutBox(s),
+				margins = dpi(5),
+				widget = wibox.container.margin,
+			},
 			-- Clock
 			clock_widget,
 			battery_placeholder,
