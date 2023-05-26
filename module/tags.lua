@@ -1,11 +1,7 @@
 local awful = require("awful")
 local gears = require("gears")
-local tags_lua = require("configuration.tags.tags")
-
--- TODO: move this
-awful.layout.layouts = tags_lua.layouts
-
-local tags = tags_lua.tags
+local tags = require("configuration.tags")
+local layouts = require("configuration.layouts")
 
 awful.screen.connect_for_each_screen(function(s)
 	for i, tag in pairs(tags) do
@@ -25,7 +21,7 @@ awful.screen.connect_for_each_screen(function(s)
 
 		local params = gears.table.crush({
 			name = i,
-			layout = awful.layout.layouts[1] or awful.layout.suit.tile,
+			layout = layouts[1] or awful.layout.suit.tile,
 			gap_single_client = true,
 			gap = 4,
 			screen = s,
