@@ -27,10 +27,11 @@ require("layout")
 require("module.auto-start")
 require("module.decorate-client")
 require("module.exit-screen")
+require("module.tags")
 
 -- Setup all configurations
 require("configuration.client")
-require("configuration.tags")
+awful.layout.layouts = require("configuration.layouts")
 root.keys(require("configuration.keys.global"))
 
 -- Different tags for each wallpaper
