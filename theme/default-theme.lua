@@ -7,11 +7,6 @@ local theme = {}
 theme.icons = theme_dir .. "/icons/"
 theme.font = "Roboto medium 10"
 
-local ok, ret = pcall(dofile, gears.filesystem.get_themes_dir() .. "default/theme.lua")
-if ok then
-	theme = ret
-end
-
 -- Colors Pallets
 
 -- Primary
