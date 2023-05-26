@@ -8,11 +8,6 @@ end
 -- Fix layoutbox icons!
 --   Their sizes are off bc they came from the default config. Try to find the source of the tile one.
 
---TODO: CLIENT DECORATATIONS
---Fix client decoratations - widget to toggle
---  Onclick: toggle all clients, *except* if request_no_titlebars
---  Ensure the above is already handled by configuration/client/titlebar.lua
-
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
