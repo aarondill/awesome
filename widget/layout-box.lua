@@ -22,6 +22,9 @@ local LayoutBox = function(s)
 			awful.layout.inc(-1)
 		end)
 	))
+	-- Not supported yet:
+	-- local imgbox = layoutBox:get_children_by_id("imagebox")[1]
+	-- imgbox:set_stylesheet([[ svg{ color: white; } ]])
 
 	local margin_box = wibox.widget({
 		layoutBox,
