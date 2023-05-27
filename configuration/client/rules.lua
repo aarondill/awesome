@@ -26,8 +26,11 @@ awful.rules.rules = {
 			size_hints_honor = false, -- No minimum size, no offscreen windows
 		},
 		callback = function(c)
-			c:grant("autoactivate", "history")
-			c:grant("autoactivate", "switch_tag")
+			if c.grant then -- Introduced in V5. Replaces awful.autofocus
+				c:grant("autoactivate", "mouse_enter")
+				c:grant("autoactivate", "history")
+				c:grant("autoactivate", "switch_tag")
+			end
 		end,
 	},
 	-- Enable titlebars on normal clients
