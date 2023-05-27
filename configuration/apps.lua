@@ -39,6 +39,7 @@ local default = {
 	},
 }
 
+SCREEN_SAVER_SECS = 600
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
 -- These will be run in sh. Don't use any weird syntax (bashisms). If the command line includes a space, it will *not* be
 -- exec'ed, you should do it yourelf.
@@ -52,6 +53,7 @@ local run_on_start_up = {
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	"exec numlockx on", -- enable numlock
 	"exec xfce4-power-manager", -- Power manager
+	"xset s " .. SCREEN_SAVER_SECS .. " && exec xss-lock -- lock", -- Screen saver
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
