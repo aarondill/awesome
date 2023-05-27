@@ -1,4 +1,5 @@
 local filesystem = require("gears.filesystem")
+local SCREEN_SAVER_SECS = 600
 
 -- Thanks to jo148 on github for making rofi dpi aware!
 local xres = require("beautiful").xresources
@@ -11,7 +12,7 @@ local rofi_command = string.format(
 )
 local terminal = "wezterm"
 
--- List of apps to start by default on some actions
+-- List of apps to start by default on some actions - Don't use shell features.
 local default = {
 	battery_manager = "xfce4-power-manager-settings",
 	system_manager = "gnome-system-monitor",
@@ -20,7 +21,7 @@ local default = {
 	terminal = terminal,
 	rofi = rofi_command,
 	rofi_window = rofi_command .. " window",
-	lock = "lock",
+	lock = "sh -c 'pgrep -x xss-lock && exec loginctl lock-session || exec lock'", -- Run loginctl if xss-lock is running, otherwise just lock
 	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
 	browser = "google-chrome --enable-features=WebUIDarkMode --force-dark-mode",
 	editor = terminal .. " -e nvim", -- gui text editor
@@ -39,7 +40,6 @@ local default = {
 	},
 }
 
-SCREEN_SAVER_SECS = 600
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
 -- These will be run in sh. Don't use any weird syntax (bashisms). If the command line includes a space, it will *not* be
 -- exec'ed, you should do it yourelf.
@@ -53,7 +53,7 @@ local run_on_start_up = {
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	"exec numlockx on", -- enable numlock
 	"exec xfce4-power-manager", -- Power manager
-	"xset s " .. SCREEN_SAVER_SECS .. " && exec xss-lock -- lock", -- Screen saver
+	"xset s " .. SCREEN_SAVER_SECS .. " && exec xss-lock -- lock", -- Lock after SCREEN_SAVER_SECS seconds.
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
