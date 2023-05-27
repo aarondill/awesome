@@ -10,6 +10,8 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+pcall(require, "awful.autofocus") -- Depreciated in V5
+
 -- Theme
 beautiful.init(require("theme"))
 require("module.notifications")
