@@ -59,7 +59,7 @@ local run_on_start_up = {
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
 	"exec systemd-inhibit --what handle-power-key --who awesome --why 'to enable custom power key handling' --mode block sleep infinity",
 	"exec /usr/lib/notification-daemon/notification-daemon -r",
-	"exec deja-dup --backup --auto", -- Run backups using deja-dup on timer
+	"/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- "exec steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
