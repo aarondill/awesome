@@ -34,16 +34,19 @@ local function run_once(cmd_str)
 				-- Remove this to send notifications for missing commands.
 				return nil
 			end
+			local text = ""
+			if exitreason == "signal" then
+				local signame = tostring(awesome.unix_signal[exitcode])
+				text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
+			else
+				local no_end_nl = stderr:gsub("\n$", "")
+				text = string.format("exit code: %d" .. "\n" .. "Stderr: %s", exitcode, no_end_nl)
+			end
 			naughty.notify({
 				presets = naughty.config.presets.warn,
 				icon = beautiful.icon_noti_error,
 				title = string.format('Error while starting "%s".', table.concat(cmd, " ")),
-				text = string.format(
-					'%s: %d.\nStderr: "%s"',
-					exitreason == "exit" and "exit code" or "killed with signal",
-					exitcode,
-					stderr:gsub("\n$", "")
-				),
+				text = text,
 				timeout = 0,
 			})
 		end
