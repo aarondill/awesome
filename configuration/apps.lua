@@ -51,7 +51,6 @@ local run_on_start_up = {
 	"exec nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
-	"exec numlockx on", -- enable numlock
 	"exec xfce4-power-manager", -- Power manager
 	"xset s " .. SCREEN_SAVER_SECS .. " && exec xss-lock -- lock", -- Lock after SCREEN_SAVER_SECS seconds.
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
@@ -60,7 +59,6 @@ local run_on_start_up = {
 	"exec systemd-inhibit --what handle-power-key --who awesome --why 'to enable custom power key handling' --mode block sleep infinity",
 	"exec /usr/lib/notification-daemon/notification-daemon -r",
 	"/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
-	-- "exec steam -silent",
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
 	string.format("exec '%s/configuration/awspawn'", filesystem.get_configuration_dir()), -- Spawn "dirty" apps that can linger between sessions
