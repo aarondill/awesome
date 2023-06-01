@@ -99,10 +99,10 @@ local awesome_overrides = function(theme)
 	theme.layout_cornernw = theme.icons .. "layouts/cornernw.svg"
 	theme.layout_cornersw = theme.icons .. "layouts/cornersw.svg"
 	theme.layout_cornerse = theme.icons .. "layouts/cornerse.svg"
+	theme.layout_fullscreen = theme.icons .. "layouts/fullscreen.svg"
 
 	-- TODO: These
 	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
-	theme.layout_fullscreen = theme.icons .. "layouts/defaults/fullscreenw.png"
 
 	-- theme.layout_fairh = theme.icons .. "layouts/defaults/fairhw.png"
 	-- theme.layout_fairv = theme.icons .. "layouts/defaults/fairvw.png"
