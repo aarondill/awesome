@@ -23,6 +23,7 @@ local function run_once(cmd_str)
 			text = table.concat(cmd, " "),
 			title = "Startup App",
 			presets = naughty.config.presets.info,
+			timeout = 0,
 		})
 	end
 
