@@ -96,11 +96,11 @@ local awesome_overrides = function(theme)
 	theme.layout_magnifier = theme.icons .. "layouts/magnifier.svg"
 
 	theme.layout_cornerne = theme.icons .. "layouts/cornerne.svg"
+	theme.layout_cornernw = theme.icons .. "layouts/cornernw.svg"
+	theme.layout_cornersw = theme.icons .. "layouts/cornersw.svg"
+	theme.layout_cornerse = theme.icons .. "layouts/cornerse.svg"
 
 	-- TODO: These
-	-- theme.layout_cornernw = theme.icons .. "layouts/cornernw.svg"
-	-- theme.layout_cornersw = theme.icons .. "layouts/defaults/cornersww.png"
-	-- theme.layout_cornerse = theme.icons .. "layouts/defaults/cornersew.png"
 	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
 	theme.layout_fullscreen = theme.icons .. "layouts/defaults/fullscreenw.png"
 
