@@ -1,5 +1,6 @@
 -- MODULE AUTO-START
 -- Run all the apps listed in configuration/apps.lua as run_on_start_up only once when awesome start
+local DEBUG = require("configuration").DEBUG
 
 local awful = require("awful")
 local naughty = require("naughty")
@@ -16,6 +17,13 @@ local function run_once(cmd_str)
 	if cmd_str:find(" ") then
 		-- run in sh for memory performance
 		cmd = { "sh", "-c", cmd_str }
+	end
+	if DEBUG then
+		naughty.notify({
+			text = table.concat(cmd, " "),
+			title = "Startup App",
+			presets = naughty.config.presets.info,
+		})
 	end
 
 	local pid = awful.spawn.easy_async(
