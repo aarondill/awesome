@@ -33,7 +33,11 @@ end
 local changesOnScreenCalled = false
 
 local function changesOnScreen(currentScreen)
-	local tagIsMax = currentScreen.selected_tag ~= nil and currentScreen.selected_tag.layout == awful.layout.suit.max
+	local tagIsMax = currentScreen.selected_tag ~= nil
+		and (
+			currentScreen.selected_tag.layout == awful.layout.suit.max
+			or currentScreen.selected_tag.layout == awful.layout.suit.max.fullscreen
+		)
 	local clientsToManage = {}
 
 	for _, client in pairs(currentScreen.clients or {}) do
