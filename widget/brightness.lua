@@ -130,6 +130,23 @@ backends.xbacklight = {
 }
 
 ------------------------------------------
+-- Backend: fallback (doesn't do anything)
+------------------------------------------
+
+backends.fallback = {
+	cmd = "",
+	supported = function()
+		return true
+	end,
+	get = function() end,
+	set = function() end,
+	up = function() end,
+	down = function() end,
+	to_percent = function() end,
+	from_percent = function() end,
+	max = function() end,
+}
+------------------------------------------
 -- Volume control interface
 ------------------------------------------
 local vcontrol = { backends = backends }
@@ -156,6 +173,7 @@ function vcontrol:init(args)
 			backend = backends.xbacklight
 		else
 			warning("Neither brightnessctl nor xbacklight seems to work")
+			backend = backends.fallback -- to avoid errors
 		end
 	end
 
