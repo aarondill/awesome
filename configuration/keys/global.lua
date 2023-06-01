@@ -1,6 +1,5 @@
 local awful = require("awful")
 local gears = require("gears")
-require("awful.autofocus")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey = require("configuration.keys.mod").modKey
@@ -71,14 +70,14 @@ local globalKeys = gears.table.join(
 		end
 	end, { description = "Switch to previous window", group = "client" }),
 
-	-- Programms
+	-- Programs
 	awful.key({ modkey }, "Delete", function()
 		awful.spawn(apps.default.lock, false)
 	end, { description = "Lock the screen", group = "awesome" }),
 
 	awful.key({}, "Print", function()
 		awful.spawn.with_shell(apps.default.region_screenshot)
-	end, { description = "Mark an area and screenshot it to your clipboard", group = "screenshots (clipboard)" }),
+	end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
 
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "Reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "Quit awesome", group = "awesome" }),
@@ -150,9 +149,12 @@ local globalKeys = gears.table.join(
 	awful.key({}, "XF86AudioNext", function()
 		--
 	end, { description = "Next Audio Track (Unimplimented)", group = "hotkeys" }),
+	awful.key({}, "XF86AudioPrev", function()
+		--
+	end, { description = "Previous Audio Track (Unimplimented)", group = "hotkeys" }),
 	awful.key({}, "XF86PowerDown", function()
 		require("module.exit-screen").show()
-	end, { description = "Power Down (Unimplimented)", group = "Hotkeys" }),
+	end, { description = "Open Poweroff Menu", group = "hotkeys" }),
 	awful.key({}, "XF86PowerOff", function()
 		require("module.exit-screen").show()
 	end, { description = "Open Poweroff Menu", group = "hotkeys" }),
