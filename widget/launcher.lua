@@ -45,7 +45,7 @@ elseif has_debian then
 		},
 	})
 else
-	mainmenu = awesome.menu({ items = { menu_awesome, menu_terminal } })
+	mainmenu = awful.menu({ items = { menu_awesome, menu_terminal } })
 end
 
 local launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu })
