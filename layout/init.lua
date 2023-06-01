@@ -7,20 +7,23 @@ awful.screen.connect_for_each_screen(function(s)
 	s.top_panel = top_panel(s)
 end)
 
--- Hide bars when app go fullscreen
-local function updateBarsVisibility()
+--- Hide bars when app go fullscreen
+--- Don't use the parameter without extensive checking
+---@param _ table? tag or client
+local function updateBarsVisibility(_)
 	for s in screen do
 		if s.selected_tag then
 			local fullscreen = s.selected_tag.fullscreenMode
+				or (awful.layout.get(s) == awful.layout.suit.max.fullscreen)
+
 			-- Order matter here for shadow
 			s.top_panel.visible = not fullscreen
 		end
 	end
 end
 
-awful.tag.attached_connect_signal(nil, "property::selected", function(t)
-	updateBarsVisibility()
-end)
+awful.tag.attached_connect_signal(nil, "property::selected", updateBarsVisibility)
+awful.tag.attached_connect_signal(nil, "property::layout", updateBarsVisibility)
 
 client.connect_signal("property::fullscreen", function(c)
 	c.screen.selected_tag.fullscreenMode = c.fullscreen
