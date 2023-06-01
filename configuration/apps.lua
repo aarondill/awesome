@@ -1,5 +1,5 @@
 local filesystem = require("gears.filesystem")
-local SCREEN_SAVER_SECS = 600
+local SCREEN_SAVER_SECS = 30 * 60
 
 -- Thanks to jo148 on github for making rofi dpi aware!
 local xres = require("beautiful").xresources
