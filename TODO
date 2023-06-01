@@ -8,6 +8,9 @@ end
 -- Fix layoutbox icons!
 --   Their sizes are off bc they came from the default config. Try to find the source of the tile one.
 
+--TODO: fullscreen
+-- Doesn't hide bar on fullscreen layout
+
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
