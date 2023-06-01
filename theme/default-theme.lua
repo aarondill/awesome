@@ -100,25 +100,7 @@ local awesome_overrides = function(theme)
 	theme.layout_cornersw = theme.icons .. "layouts/cornersw.svg"
 	theme.layout_cornerse = theme.icons .. "layouts/cornerse.svg"
 	theme.layout_fullscreen = theme.icons .. "layouts/fullscreen.svg"
-
-	-- TODO: These
-	theme.layout_max = theme.icons .. "layouts/arrow-expand-all.png"
-
-	-- theme.layout_fairh = theme.icons .. "layouts/defaults/fairhw.png"
-	-- theme.layout_fairv = theme.icons .. "layouts/defaults/fairvw.png"
-	-- theme.layout_floating = theme.icons .. "layouts/defaults/floatingw.png"
-	-- theme.layout_magnifier = theme.icons .. "layouts/defaults/magnifierw.png"
-	-- theme.layout_max = theme.icons .. "layouts/defaults/maxw.png"
-	-- theme.layout_tilebottom = theme.icons .. "layouts/defaults/tilebottomw.png"
-	-- theme.layout_tileleft = theme.icons .. "layouts/defaults/tileleftw.png"
-	-- theme.layout_tile = theme.icons .. "layouts/defaults/tilew.png"
-	-- theme.layout_spiral = theme.icons .. "layouts/defaults/spiralw.png"
-	-- theme.layout_dwindle = theme.icons .. "layouts/defaults/dwindlew.png"
-	-- theme.layout_tiletop = theme.icons .. "layouts/defaults/tiletopw.png"
-	-- theme.layout_cornernw = theme.icons .. "layouts/defaults/cornernww.png"
-	-- theme.layout_cornerne = theme.icons .. "layouts/defaults/cornernew.png"
-	-- theme.layout_cornersw = theme.icons .. "layouts/defaults/cornersww.png"
-	-- theme.layout_cornerse = theme.icons .. "layouts/defaults/cornersew.png"
+	theme.layout_max = theme.icons .. "layouts/max.svg"
 
 	-- Taglist
 	theme.taglist_bg_empty = theme.background.hue_800
