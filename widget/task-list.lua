@@ -40,7 +40,8 @@ end
 local function list_update(w, buttons, label, data, clients)
 	-- update the widgets, creating them if needed
 	w:reset()
-	for i, o in ipairs(clients) do
+	local max_tab_width = 24
+	for _, o in ipairs(clients) do
 		local cache = data[o]
 		local ib, cb, tb, cbm, bgb, tbm, ibm, tt, l, ll, bg_clickable
 		if cache then
@@ -116,13 +117,11 @@ local function list_update(w, buttons, label, data, clients)
 		else
 			-- truncate when title is too long
 			local textOnly = text:match(">(.-)<")
-			if textOnly:len() > 24 then
-				text = text:gsub(">(.-)<", ">" .. textOnly:sub(1, 21) .. "...<")
-				tt:set_text(textOnly)
-				tt:add_to_object(tb)
-			else
-				tt:remove_from_object(tb)
+			if textOnly:len() > max_tab_width then
+				text = text:gsub(">(.-)<", ">" .. textOnly:sub(1, max_tab_width - 3) .. "...<")
 			end
+			tt:set_text(textOnly)
+			tt:add_to_object(tb)
 			if not tb:set_markup_silently(text) then
 				tb:set_markup("<i>&lt;Invalid text&gt;</i>")
 			end
@@ -172,7 +171,7 @@ local tasklist_buttons = gears.table.join(
 	end)
 )
 
-local TaskList = function(s)
+local function TaskList(s)
 	return awful.widget.tasklist({
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
