@@ -4,9 +4,6 @@ if true then
 	return
 end
 
---TODO: fullscreen
--- Doesn't hide bar on fullscreen layout
-
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
