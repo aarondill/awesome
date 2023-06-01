@@ -1,7 +1,6 @@
 local awful = require("awful")
 local gears = require("gears")
 local modkey = require("configuration.keys.mod").modKey
-local altkey = require("configuration.keys.mod").altKey
 -- Key bindings
 local clientkeys = gears.table.join(
 	awful.key({ modkey }, "f", function(c)
