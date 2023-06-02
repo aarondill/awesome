@@ -50,7 +50,7 @@ local run_on_start_up = {
 	"exec nm-applet --indicator", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
-	"exec xfce4-power-manager", -- Power manager
+	-- "exec xfce4-power-manager", -- Power manager
 	"exec xss-lock -- lock", -- Lock on suspend or dpms
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
