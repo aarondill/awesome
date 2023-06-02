@@ -48,7 +48,7 @@ function Launcher(_)
 			},
 		})
 	else
-		mainmenu = awesome.menu({ items = { menu_awesome, menu_terminal } })
+		mainmenu = awful.menu({ items = { menu_awesome, menu_terminal } })
 	end
 
 	local launcher = awful.widget.launcher({
