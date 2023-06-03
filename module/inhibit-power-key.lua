@@ -43,12 +43,12 @@ end
 
 local main = Gio.Async.call(function()
 	local bus = bus_get_async(Gio.BusType.SYSTEM)
-	local a = inhibit(bus, "handle-power-key", "AwesomeWM", "To manually handle power key", "block")
-	if not a then
+	local fd = inhibit(bus, "handle-power-key", "AwesomeWM", "To manually handle power key", "block")
+	if not fd then
 		return --something went wrong
 	end
 	awesome.connect_signal("exit", function(_)
-		a:async_close()
+		fd:async_close()
 		-- Speed up deletion of the GDBusMessage that still references the FD
 		collectgarbage("collect")
 		collectgarbage("collect")
