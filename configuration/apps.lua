@@ -57,7 +57,6 @@ local run_on_start_up = {
 	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
-	"exec systemd-inhibit --what handle-power-key --who awesome --why 'to enable custom power key handling' --mode block sleep infinity",
 	"exec /usr/lib/notification-daemon/notification-daemon -r",
 	-- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- Add applications that need to be killed between reloads
