@@ -27,6 +27,7 @@ require("layout")
 
 -- Init all modules
 require("module.auto-start")
+require("module.inhibit-power-key")
 require("module.decorate-client")
 require("module.exit-screen")
 require("module.tags")
