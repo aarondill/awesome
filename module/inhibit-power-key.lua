@@ -47,8 +47,9 @@ local main = Gio.Async.call(function()
 	if not fd then
 		return --something went wrong
 	end
+
 	awesome.connect_signal("exit", function(_)
-		fd:async_close()
+		fd:close()
 		-- Speed up deletion of the GDBusMessage that still references the FD
 		collectgarbage("collect")
 		collectgarbage("collect")
