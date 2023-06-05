@@ -64,7 +64,7 @@ mainbox {
   spacing: 0em;
   padding: 0px;
   width: 200px;
-  children: [ inputbar, listview, sidebar];
+  children: [ inputbar, listview, mode-switcher];
   expand: true;
 }
 
