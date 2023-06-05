@@ -148,7 +148,9 @@ function Battery(args)
 		end
 
 		widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
-		widget.text:set_text(math.floor(charge) .. "%")
+		local f_charge = math.floor(charge)
+		local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
+		widget.text:set_text(non_nan_charge .. "%")
 		-- Update popup text
 		battery_popup.text = string.gsub(stdout, "\n$", "")
 		collectgarbage("collect")
