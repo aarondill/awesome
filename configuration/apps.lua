@@ -47,7 +47,7 @@ local run_on_start_up = {
 	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval "$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)"', -- credential manager
 	string.format("exec picom --config '%s/configuration/picom.conf'", filesystem.get_configuration_dir()),
 	"diodon", -- Clipboard after closing window
-	"exec nm-applet --indicator", -- wifi
+	"nm-applet", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	-- "exec xfce4-power-manager", -- Power manager
