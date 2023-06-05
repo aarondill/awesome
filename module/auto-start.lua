@@ -37,7 +37,7 @@ local function run_once(cmd_str)
 			if exitreason == "exit" and exitcode == 0 then
 				return
 			end
-			if exitreason == "exit" and exitcode == 127 then
+			if exitreason == "exit" and exitcode == 127 and not DEBUG then
 				-- Command not found.
 				-- I don't want a warning.
 				-- Remove this to send notifications for missing commands.
