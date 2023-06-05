@@ -44,7 +44,7 @@ local default = {
 -- exec'ed, you should do it yourelf.
 local run_on_start_up = {
 	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY 2>/dev/null", -- Fix gnome apps taking *forever* to open
-	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval \\"$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)\\"', -- credential manager
+	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval "$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)"', -- credential manager
 	string.format("exec picom --config '%s/configuration/picom.conf'", filesystem.get_configuration_dir()),
 	"diodon", -- Clipboard after closing window
 	"exec nm-applet --indicator", -- wifi
