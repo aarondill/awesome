@@ -4,6 +4,9 @@ if true then
 	return
 end
 
+--TODO: submodule
+-- Run git submodule init and git submodule update on startup if submodules aren't available
+
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
