@@ -10,9 +10,9 @@ local apps = require("configuration.apps")
 ---@param cmd_str string the thing to run
 ---@return integer? pid of the process or nil if error
 local function run_once(cmd_str)
-	-- best case senario, just one command. Run.
-	---@type table
-	local cmd = { cmd_str }
+	if not cmd_str then return nil end
+	-- Safely exec because no space
+	local cmd = { "sh", '-c', 'exec ' .. cmd_str }
 	-- Contains space, run in shell just in case
 	if cmd_str:find(" ") then
 		-- run in sh for memory performance
