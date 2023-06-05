@@ -6,7 +6,7 @@
 configuration {
   display-drun: "Activate";
   display-run: "Execute";
-  modi: [drun, window, filebrowser, ssh];
+  modi: [drun, window, ssh];
   show-icons: true;
   sidebar-mode: true;
   matching: "regex";
