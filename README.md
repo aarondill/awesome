@@ -13,13 +13,13 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 #### Debian-Based
 
 ```
-sudo apt install -y -- awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins materia-gtk-theme lxappearance xbacklight flameshot nautilus pasystray network-manager-gnome policykit-1-gnome xcape blueman acpi brightnessctl diodon udiskie
+sudo apt install -y -- awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance xbacklight flameshot nautilus pasystray network-manager-gnome policykit-1-gnome xcape blueman acpi brightnessctl diodon udiskie
 ```
 
 #### Arch-Based
 
 ```
-yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome materia-theme lxappearance flameshot pasystray network-manager-applet qt5-styleplugins xcape blueman acpi brightnessctl diodon udiskie
+yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome lxappearance flameshot pasystray network-manager-applet qt5-styleplugins xcape blueman acpi brightnessctl diodon udiskie
 ```
 
 #### Program list
@@ -31,7 +31,6 @@ yay -S -y -- awesome rofi picom i3lock-fancy xclip ttf-roboto polkit-gnome mater
 - [i3lock](https://github.com/meskarune/i3lock-fancy) the lockscreen application universal install: i3lock-fancy
 - [xclip](https://github.com/astrand/xclip) for copying screenshots to clipboard package: xclip
 - [gnome-polkit] recommend using the gnome-polkit as it integrates nicely for elevating programs that need root access
-- [Materia](https://github.com/nana-4/materia-theme) as GTK theme - Arch Install: materia-theme debian: materia-gtk-theme
 - [lxappearance](https://sourceforge.net/projects/lxde/files/LXAppearance/) to set up the gtk and icon theme
 - [brightnessctl](https://github.com/Hummer12007/brightnessctl) OR [xbacklight](https://www.x.org/archive/X11R7.5/doc/man/man1/xbacklight.1.html) for adjusting brightness on laptops
 - [flameshot](https://flameshot.org/) screenshot utility of choice, can be replaced by whichever you want, just remember to edit the `apps.lua` file
