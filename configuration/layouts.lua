@@ -3,6 +3,7 @@ local layouts = {
 	awful.layout.suit.tile,
 	awful.layout.suit.fair,
 	awful.layout.suit.max,
+	awful.layout.suit.max.fullscreen,
 	awful.layout.suit.magnifier,
 	awful.layout.suit.floating,
 }
