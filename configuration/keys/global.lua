@@ -112,6 +112,23 @@ local globalKeys = gears.table.join(
 	awful.key({ modkey, "Control" }, "l", function()
 		awful.tag.incncol(-1, nil, true)
 	end, { description = "Decrease the number of columns", group = "layout" }),
+
+	awful.key({ modkey }, "=", function()
+		awful.tag.incgap(5)
+	end, { description = "Increase the gaps between windows", group = "layout" }),
+	awful.key({ modkey, "Shift" }, "=", function()
+		awful.tag.incgap(1)
+	end, { description = "Increase the gaps between windows by 1", group = "layout" }),
+
+	awful.key({ modkey }, "-", function()
+    -- if <5, set to 0
+    --stylua: ignore
+		for _ = 1, 5 do awful.tag.incgap(-1) end
+	end, { description = "Decrease the gaps between windows", group = "layout" }),
+	awful.key({ modkey, "Shift" }, "-", function()
+		awful.tag.incgap(-1)
+	end, { description = "Decrease the gaps between windows by 1", group = "layout" }),
+
 	awful.key({ modkey }, "space", function()
 		awful.layout.inc(1)
 	end, { description = "Select next", group = "layout" }),
