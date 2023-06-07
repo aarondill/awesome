@@ -1,10 +1,21 @@
 local awful = require("awful")
+local naughty = require("naughty")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey = require("configuration.keys.mod").modKey
 local altkey = require("configuration.keys.mod").altKey
 local apps = require("configuration.apps")
+local function open_main_menu()
+	local pid_or_err = awesome.spawn(apps.default.rofi, false)
+	-- The return value will be a string in case of failure
+	if type(pid_or_err) == "string" then
+		local s = awful.screen.focused()
+		if s and s.run_promptbox and type(s.run_promptbox.run) == "function" then
+			s.run_promptbox:run()
+		end
+	end
+end
 -- Key bindings
 local globalKeys = gears.table.join(
 	-- Hotkeys
@@ -19,17 +30,17 @@ local globalKeys = gears.table.join(
 		awful.client.focus.byidx(-1)
 	end, { description = "Focus previous by index", group = "client" }),
 
-	awful.key({ modkey }, "r", function()
-		awful.spawn(apps.default.rofi)
-	end, { description = "Main Menu", group = "awesome" }),
-	awful.key({ altkey }, "space", function()
-		awful.spawn(apps.default.rofi)
-	end, { description = "Main Menu", group = "awesome" }),
-	awful.key({ modkey }, "p", function()
-		awful.spawn(apps.default.rofi)
-	end, { description = "Main Menu", group = "awesome" }),
+	awful.key({ modkey }, "r", open_main_menu, { description = "Main Menu", group = "awesome" }),
+	awful.key({ altkey }, "space", open_main_menu, { description = "Main Menu", group = "awesome" }),
+	awful.key({ modkey }, "p", open_main_menu, { description = "Main Menu", group = "awesome" }),
 	awful.key({ modkey }, "w", function()
-		awful.spawn(apps.default.rofi_window)
+		local pid_or_err = awful.spawn(apps.default.rofi_window)
+		if type(pid_or_err) == "string" then
+			naughty.notify({
+				text = "Rofi is required to open the window picker.",
+				preset = naughty.config.presets.critical,
+			})
+		end
 	end, { description = "Window Picker", group = "awesome" }),
 
 	-- Tag management
