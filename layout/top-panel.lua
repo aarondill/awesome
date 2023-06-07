@@ -12,6 +12,7 @@ local launcher = require("widget.launcher")
 local Brightness = require("widget.brightness")
 local Battery = require("widget.battery")
 local CPU = require("widget.cpu")
+local Run_prompt = require("widget.run-prompt")
 local installed = require("util.installed")
 local replace_in_widget = require("util.replace_in_widget")
 
@@ -68,6 +69,7 @@ local TopPanel = function(s)
 			layout = wibox.layout.fixed.horizontal,
 			launcher(s),
 			TagList(s),
+			Run_prompt(s),
 		},
 		TaskList(s),
 		{
