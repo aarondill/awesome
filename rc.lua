@@ -16,6 +16,8 @@ pcall(require, "awful.autofocus") -- Depreciated in V5
 beautiful.init(require("theme"))
 require("module.notifications")
 
+require("module.git-submodule")
+
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
 
