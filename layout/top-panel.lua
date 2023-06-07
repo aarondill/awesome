@@ -9,18 +9,21 @@ local dpi = require("beautiful").xresources.apply_dpi
 local mat_clickable_cont = require("widget.material.clickable-container")
 local apps = require("configuration.apps")
 local launcher = require("widget.launcher")
-local Brightness = require("widget.brightness")
+local has_brightness, Brightness = pcall(require, "widget.brightness")
 local Battery = require("widget.battery")
 local CPU = require("widget.cpu")
 local Run_prompt = require("widget.run-prompt")
 local installed = require("util.installed")
 local replace_in_widget = require("util.replace_in_widget")
 
-local brightness_widget = mat_clickable_cont(Brightness({
-	step = 5,
-	timeout = 10,
-	levels = { 5, 25, 50, 75, 100 },
-}))
+local brightness_widget = nil
+if has_brightness then
+	brightness_widget = mat_clickable_cont(Brightness({
+		step = 5,
+		timeout = 10,
+		levels = { 5, 25, 50, 75, 100 },
+	}))
+end
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
