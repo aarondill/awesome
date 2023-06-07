@@ -38,9 +38,9 @@ local month_calendar = awful.widget.calendar_popup.month({
 	start_sunday = true,
 	week_numbers = false,
 })
-month_calendar:attach(textclock)
 
 local clock_widget = wibox.container.margin(textclock, dpi(13), dpi(13), dpi(9), dpi(8))
+month_calendar:attach(clock_widget)
 
 local TopPanel = function(s)
 	local panel = wibox({
