@@ -1,5 +1,5 @@
 local gears = require("gears")
-local dir = gears.filesystem.get_configuration_dir() .. "awesome/theme/icons"
+local dir = gears.filesystem.get_configuration_dir() .. "theme/icons"
 
 return {
 	--tags
