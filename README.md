@@ -62,13 +62,6 @@ Note: for cursor theme, edit `~/.icons/default/index.theme` and `~/.config/gtk3-
 
 Recommended Cursors - <https://github.com/keeferrourke/capitaine-cursors>
 
-Set Rofi Theme
-
-```
-mkdir -p ~/.config/rofi
-cp $HOME/.config/awesome/theme/config.rasi ~/.config/rofi/config.rasi
-```
-
 ### 4) Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
 
 First install `qt5-style-plugins` (debian) | `qt5-styleplugins` (arch) and add this to the bottom of your `/etc/environment`
