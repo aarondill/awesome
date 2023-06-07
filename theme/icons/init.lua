@@ -1,4 +1,5 @@
-local dir = os.getenv("HOME") .. "/.config/awesome/theme/icons"
+local gears = require("gears")
+local dir = gears.filesystem.get_configuration_dir() .. "awesome/theme/icons"
 
 return {
 	--tags
