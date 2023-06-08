@@ -35,13 +35,3 @@ end
 
 --TODO: THEME
 --Custom theme?
-
---TODO: AUTO-START
---Migrate lua list to a shell script to better handle commands and spaces. Ensure commands DON'T fail if not installed.
---send notification if not found --> notify-send? awesome-client? fallback?
--- --
--- --Manage auto-start apps better? --
--- --  Make array of arrays instead of strings for safer argument handling --
--- --    Allow strings, but prefer arrays --
--- --    make script that takes parameter. --
--- --    Complicated string.format? --
