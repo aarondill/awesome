@@ -67,6 +67,7 @@ local function run_once(cmd_str)
 		end
 	)
 	if type(pid) ~= "number" then
+		-- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
 		return nil
 	end
 	return pid
