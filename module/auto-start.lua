@@ -7,20 +7,23 @@ local naughty = require("naughty")
 local beautiful = require("beautiful")
 local apps = require("configuration.apps")
 
----@param cmd_str string the thing to run
+---@param cmd_str string|string[] the thing to run
 ---@return integer? pid of the process or nil if error
 local function run_once(cmd_str)
-	if not cmd_str then return nil end
+	if not cmd_str then
+		return nil
+	end
+	---@type string|string[]
+	local cmd
 	-- Safely exec because no space
-	local cmd = { "sh", '-c', 'exec ' .. cmd_str }
-	-- Contains space, run in shell just in case
-	if cmd_str:find(" ") then
-		-- run in sh for memory performance
-		cmd = { "sh", "-c", cmd_str }
+	if type(cmd_str) == "string" or type(cmd_str) == "table" then
+		cmd = cmd_str
+	else
+		error("Startup apps must be string or table")
 	end
 	if DEBUG then
 		naughty.notify({
-			text = table.concat(cmd, " "),
+			text = type(cmd) == "table" and table.concat(cmd, " ") or cmd,
 			title = "Startup App",
 			presets = naughty.config.presets.info,
 			timeout = 0,
@@ -54,7 +57,10 @@ local function run_once(cmd_str)
 			naughty.notify({
 				presets = naughty.config.presets.warn,
 				icon = beautiful.icon_noti_error,
-				title = string.format('Error while starting "%s".', table.concat(cmd, " ")),
+				title = string.format(
+					'Error while starting "%s".',
+					type(cmd) == "table" and table.concat(cmd, " ") or cmd
+				),
 				text = text,
 				timeout = 0,
 			})
@@ -80,6 +86,7 @@ awesome.connect_signal("exit", function(_)
 		-- killing -p means sending a signal to every process in the process group p. Awesome makes sure to spawn processes in a new session, so this works.
 		local suc = awesome.kill(-pid, 15) -- SIGTERM
 		if not suc then
+			-- Can't notify because shutting down
 			io.stderr:write("Failed to kill pid " .. pid)
 		end
 	end
