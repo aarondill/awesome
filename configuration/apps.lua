@@ -40,27 +40,36 @@ local default = {
 }
 
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
--- These will be run in sh. Don't use any weird syntax (bashisms). If the command line includes a space, it will *not* be
--- exec'ed, you should do it yourelf.
+-- These can be tables or strings. They will *not* be run in a shell, so you must invoke it yourself if you so desire.
+-- Using a table is safer because quoting isn't an issue
 local run_on_start_up = {
-	"exec dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY 2>/dev/null", -- Fix gnome apps taking *forever* to open
-	'exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 & eval "$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)"', -- credential manager
-	string.format("exec picom --config '%s/configuration/picom.conf'", filesystem.get_configuration_dir()),
+	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
+	{
+		"sh",
+		"-c",
+		'export SSH_AUTH_SOCK=; eval "$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)"; /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1',
+		-- credential manager
+	},
+	{ "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
 	"blueman-applet", --bluetooth
 	"pasystray", -- shows an audiocontrol applet in systray when installed.
 	-- "exec xfce4-power-manager", -- Power manager
-	"exec xset s 0 0", -- disable screen saver
-	"exec xset -dpms", -- Disable dpms because doesn't work with keys?
-	"exec xss-lock -- lock", -- Lock on suspend or dpms
-	string.format("sleep 1 && exec udiskie -c '%s/configuration/udiskie.yml'", filesystem.get_configuration_dir()), -- Automount disks.
+	"xset s 0 0", -- disable screen saver
+	"xset -dpms", -- Disable dpms because doesn't work with keys?
+	"xss-lock -- lock", -- Lock on suspend or dpms
+	{
+		"udiskie",
+		"-c",
+		filesystem.get_configuration_dir() .. "configuration/udiskie.yml",
+	}, -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
-	"sleep 1.5 && exec ibus-daemon --xim -rd", -- Run ibus-daemon for language and emoji keyboard support
-	"exec /usr/lib/notification-daemon/notification-daemon -r",
+	"sh -c 'sleep 1.5 && exec ibus-daemon --xim -rd'", -- Run ibus-daemon for language and emoji keyboard support
+	"/usr/lib/notification-daemon/notification-daemon -r",
 	-- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
-	string.format("exec '%s/configuration/awspawn'", filesystem.get_configuration_dir()), -- Spawn "dirty" apps that can linger between sessions
+	{ filesystem.get_configuration_dir() .. "configuration/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
 }
 return { default = default, run_on_start_up = run_on_start_up }
