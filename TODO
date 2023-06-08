@@ -7,7 +7,6 @@ end
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
---  Remove many of the images found in theme/icons
 
 --TODO: WIDGETS
 --Improve all widgets that came with TitusTech's clone.
@@ -27,11 +26,3 @@ end
 --Use /sys files in battery widget to remove dependency on acpi
 --  Credit original creator! (I'm gonna take much of his code)
 --Use exponential scale. Check ./widget/backlight-adjust.lua for an example
-
---TODO: MODULARITY
---Notification utils for consistency
---Further seperate top-panel into files for each widget
---   Especially the ones that have placeholders which get replaced
-
---TODO: THEME
---Custom theme?
