@@ -14,7 +14,6 @@ local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
-local clickable_container = require("widget.material.clickable-container")
 
 -- acpi sample outputs
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
@@ -50,8 +49,6 @@ end
 ---@field low_power integer?
 ---How often (in seconds) to wait between alerts about low power (default: 300).
 ---@field low_power_frequency integer?
----The program to spawn on click of the battery. If nil, the battery will not be clickable.
----@field spawn_on_click string?
 
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
@@ -76,13 +73,6 @@ function Battery(args)
 
 	local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
 
-	if args.spawn_on_click and args.spawn_on_click ~= "" then
-		-- make clickable
-		widget_button = clickable_container(widget_button)
-		widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
-			awful.spawn(args.spawn_on_click)
-		end)))
-	end
 	-- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
 	local battery_popup = awful.tooltip({
 		objects = { widget_button },

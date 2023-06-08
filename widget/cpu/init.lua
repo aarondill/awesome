@@ -3,9 +3,6 @@ local mat_icon = require("widget.material.icon")
 local icons = require("theme.icons")
 local watch = require("awful.widget.watch")
 local dpi = require("beautiful").xresources.apply_dpi
-local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
-local awful = require("awful")
 local naughty = require("naughty")
 
 local function escape_pattern(str)
@@ -24,8 +21,6 @@ end
 ---@field precision integer?
 ---How often to update the widget in seconds (default: 15).
 ---@field timeout integer?
----The program to spawn on click. If nil, the widget will not be clickable (default: nil).
----@field spawn_on_click string?
 
 ---Create a new CPU usage widget
 ---@param args CPUWidgetConfig?
@@ -99,14 +94,6 @@ function CPU(args)
 		text_box,
 		widget = wibox.layout.fixed.horizontal,
 	})
-
-	if args.spawn_on_click and args.spawn_on_click ~= "" then
-		-- make clickable
-		cpu_meter = clickable_container(cpu_meter)
-		cpu_meter:buttons(gears.table.join(awful.button({}, 1, nil, function()
-			awful.spawn(args.spawn_on_click)
-		end)))
-	end
 
 	return cpu_meter
 end
