@@ -1,5 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
+local gears = require("gears")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 -- Don't show the tmux keymaps
@@ -11,6 +12,11 @@ require("awful.hotkeys_popup.keys")
 pcall(require, "luarocks.loader")
 
 pcall(require, "awful.autofocus") -- Depreciated in V5
+
+-- Add configuration directory to package.?path so awesome --config FILE works right
+local conf = gears.filesystem.get_configuration_dir()
+package.path = string.format("%s/?.lua;%s/?/init.lua;%s", conf, conf, package.path)
+package.cpath = string.format("%s/?.so;%s", conf, package.cpath)
 
 -- Theme
 beautiful.init(require("theme"))
