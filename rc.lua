@@ -1,3 +1,4 @@
+-- awesome_mode: api-level=6:screen=on
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
