@@ -2,7 +2,8 @@
 
 ### Original design by PapyElGringo. Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
 
-This branch is the latest branch! It will not work properly with the git repo. To use the git repo, use the `awesome-git` branch.
+This branch is the awesome-git branch! It will not work properly with the latest release. To use the latest release, use the `main` branch.
+Because this is based on the `main` branch, it will diverge frequently. Please be careful when using this branch, as pulling will have to be done forcefully.
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opiniated mouse/keyboard workflow to increase daily productivity and comfort.
 
