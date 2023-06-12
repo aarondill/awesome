@@ -1,5 +1,6 @@
 local gears = require("gears")
 local awful = require("awful")
+local wibox = require("wibox")
 
 -- Set according to wallpaper directory
 local path = gears.filesystem.get_configuration_dir() .. "wallpapers"
@@ -17,18 +18,22 @@ local function get_wp_path(num)
 		return default
 	end
 end
--- On all screens:
--- Set wallpaper on first tab (else it would be empty at start up)
-gears.wallpaper.maximized(get_wp_path(1), nil)
-local function set_wallpaper(tag)
-	-- And if selected
-	if tag and tag.selected then
-		-- Set wallpaper
-		gears.wallpaper.maximized(get_wp_path(tag.index), tag.screen.index)
+screen.connect_signal("request::wallpaper", function(s)
+	if s.selected_tag then
+		awful.wallpaper({
+			screen = s,
+			widget = {
+				horizontal_fit_policy = "fit",
+				vertical_fit_policy = "fit",
+				image = get_wp_path(s.selected_tag.index),
+				widget = wibox.widget.imagebox,
+			},
+		})
 	end
-end
-
-awful.tag.attached_connect_signal(nil, "property::selected", set_wallpaper)
-screen.connect_signal("property::geometry", function()
-	set_wallpaper(awful.screen.focused().selected_tag)
+end)
+awful.tag.attached_connect_signal(nil, "property::selected", function(tag)
+	tag.screen:emit_signal("request::wallpaper")
+end)
+screen.connect_signal("property::geometry", function(s)
+	s:emit_signal("request::wallpaper")
 end)

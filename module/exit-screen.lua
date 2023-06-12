@@ -39,7 +39,8 @@ local function buildButton(icon, text, on_release)
 		},
 		{
 			widget = wibox.widget.textbox,
-			align = "center",
+			halign = "center",
+			valign = "center",
 			text = text,
 		},
 		layout = wibox.layout.fixed.vertical,

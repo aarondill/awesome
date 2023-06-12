@@ -82,9 +82,9 @@ local function tagCallback(tag)
 	end
 end
 
-client.connect_signal("manage", clientCallback)
+client.connect_signal("request::manage", clientCallback)
 
-client.connect_signal("unmanage", clientCallback)
+client.connect_signal("request::unmanage", clientCallback)
 
 client.connect_signal("property::hidden", clientCallback)
 
