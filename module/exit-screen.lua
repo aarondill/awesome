@@ -86,7 +86,7 @@ end
 local function suspend_command()
 	exit_screen_hide()
 	awful.spawn(apps.default.lock, false) -- This doesn't block
-	awful.spawn({ "systemctl", "suspend" }, false)
+	awful.spawn({ "systemctl", "suspend-then-hibernate" }, false)
 end
 local function exit_command()
 	exit_screen_hide()
