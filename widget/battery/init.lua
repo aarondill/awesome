@@ -15,7 +15,7 @@ local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/batter
 --beautiful.tooltip_bg = beautiful.bg_normal
 
 local function show_battery_warning()
-	naughty.notify({
+	naughty.notification({
 		icon = PATH_TO_ICONS .. "battery-alert.svg",
 		icon_size = dpi(40),
 		text = "Huston, we have a problem",
