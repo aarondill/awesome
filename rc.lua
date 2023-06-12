@@ -1,5 +1,4 @@
 -- awesome_mode: api-level=9999:screen=on
-local gears = require("gears")
 local awful = require("awful")
 local beautiful = require("beautiful")
 -- Enable hotkeys help widget for VIM and other apps
@@ -13,11 +12,6 @@ require("awful.hotkeys_popup.keys")
 pcall(require, "luarocks.loader")
 
 pcall(require, "awful.autofocus") -- Depreciated in V5
-
--- -- Add configuration directory to package.?path so awesome --config FILE works right
-local conf_dir = gears.filesystem.get_configuration_dir():sub(1, -2) -- Remove slash
-package.path = string.format("%s/?.lua;%s/?/init.lua;%s", conf_dir, conf_dir, package.path)
-package.cpath = string.format("%s/?.so;%s", conf_dir, package.cpath)
 
 -- Theme
 beautiful.init(require("theme"))
