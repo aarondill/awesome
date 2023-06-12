@@ -17,7 +17,8 @@ local text_template = {
 	{
 		id = "text_role",
 		widget = wibox.widget.textbox,
-		align = "center",
+		halign = "center",
+		valign = "center",
 	},
 	id = "text_margin_role",
 	widget = wibox.container.margin,

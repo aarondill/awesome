@@ -30,7 +30,7 @@ client.connect_signal("property::fullscreen", function(c)
 	updateBarsVisibility()
 end)
 
-client.connect_signal("unmanage", function(c)
+client.connect_signal("request::unmanage", function(c)
 	if c.fullscreen then
 		c.screen.selected_tag.fullscreenMode = false
 		updateBarsVisibility()

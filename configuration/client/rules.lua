@@ -4,7 +4,7 @@ local client_keys = require("configuration.keys.client")
 local client_buttons = require("configuration.client.buttons")
 
 -- Rules
-awful.rules.rules = {
+require("ruled").client.append_rules({
 	-- All clients will match this rule.
 	{
 		rule = {},
@@ -63,4 +63,4 @@ awful.rules.rules = {
 			skip_decoration = true,
 		},
 	},
-}
+})
