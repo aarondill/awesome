@@ -1,24 +1,11 @@
--------------------------------------------------
--- Battery Widget for Awesome Window Manager
--- Shows the battery status using the ACPI tool
--- More details could be found here:
+-- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
-
--- @author Pavel Makhov
--- @copyright 2017 Pavel Makhov
--------------------------------------------------
 
 local awful = require("awful")
 local naughty = require("naughty")
-local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
-
--- acpi sample outputs
--- Battery 0: Discharging, 75%, 01:51:38 remaining
--- Battery 0: Charging, 53%, 00:57:43 until charged
--- Battery 0: Discharging, 25%, discharging at zero rate - will never fully discharge.
 
 local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/battery/icons/"
 
@@ -49,12 +36,15 @@ end
 ---@field low_power integer?
 ---How often (in seconds) to wait between alerts about low power (default: 300).
 ---@field low_power_frequency integer?
+---A hard coded path to the /sys/... battery directory (default: first result of /sys/class/power_supply/BAT*)
+---@field battery_path string?
 
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
 function Battery(args)
 	args = args or {}
+	local battery_path = args.battery_path or nil
 
 	local widget = wibox.widget({
 		{
@@ -81,70 +71,92 @@ function Battery(args)
 		preferred_positions = { "right", "left", "top", "bottom" },
 	})
 
+	local function get_bat_info(callback_fn)
+    -- stylua: ignore
+		if not battery_path then return "" end
+
+		local files = { "capacity", "status" }
+		local cmd = { "cat" }
+		for _, f in ipairs(files) do
+			table.insert(cmd, battery_path .. "/" .. f)
+		end
+		awful.spawn.easy_async(cmd, callback_fn)
+	end
+
 	local last_battery_check = os.time()
-	watch("acpi -i", (args.timeout or 15), function(_, stdout)
-		local batteryIconName = "battery"
+	local function set_bat_cb()
+    -- stylua: ignore
+		if not battery_path then return true end
 
-		local battery_info = {}
-		local capacities = {}
-		for s in stdout:gmatch("[^\r\n]+") do
-			local status, charge_str, _ = string.match(s, ".+: ([%a%s]+), (%d?%d?%d)%%,?.*")
-			if status ~= nil then
-				table.insert(battery_info, { status = status, charge = tonumber(charge_str) })
-			else
-				local cap_str = string.match(s, ".+:.+last full capacity (%d+)")
-				table.insert(capacities, tonumber(cap_str))
+		---@param stdout string
+		get_bat_info(function(stdout)
+			local batteryIconName = "battery"
+			local charge, status = stdout:match("(%d+)\n(.+)\n")
+			charge = tonumber(charge) or 100
+			if charge >= 0 and charge < (args.low_power or 15) then
+				if
+					status ~= "Charging"
+					and os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300)
+				then
+					-- if 5 minutes have elapsed since the last warning
+					last_battery_check = os.time()
+
+					show_battery_warning()
+				end
 			end
-		end
-
-		local capacity = 0
-		for _, cap in ipairs(capacities) do
-			capacity = capacity + cap
-		end
-
-		local charge = 0
-		local status
-		for i, batt in ipairs(battery_info) do
-			if batt.charge >= charge then
-				status = batt.status -- use most charged battery status
-				-- this is arbitrary, and maybe another metric should be used
+			if status == "Charging" or status == "Full" then
+				batteryIconName = batteryIconName .. "-charging"
 			end
 
-			charge = charge + batt.charge * capacities[i]
-		end
-		charge = charge / capacity
-
-		if charge >= 0 and charge < (args.low_power or 15) then
-			if
-				status ~= "Charging"
-				and os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300)
-			then
-				-- if 5 minutes have elapsed since the last warning
-				last_battery_check = os.time()
-
-				show_battery_warning()
+			local roundedCharge = math.floor(charge / 10) * 10
+			if roundedCharge == 0 then
+				batteryIconName = batteryIconName .. "-outline"
+			elseif roundedCharge ~= 100 then
+				batteryIconName = batteryIconName .. "-" .. roundedCharge
 			end
-		end
 
-		if status == "Charging" or status == "Full" then
-			batteryIconName = batteryIconName .. "-charging"
-		end
+			widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
+			local f_charge = math.floor(charge)
+			local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
+			widget.text:set_text(non_nan_charge .. "%")
+			-- Update popup text
+			battery_popup.text = status
+			collectgarbage("collect")
+		end)
+		return true
+	end
 
-		local roundedCharge = math.floor(charge / 10) * 10
-		if roundedCharge == 0 then
-			batteryIconName = batteryIconName .. "-outline"
-		elseif roundedCharge ~= 100 then
-			batteryIconName = batteryIconName .. "-" .. roundedCharge
-		end
-
-		widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
-		local f_charge = math.floor(charge)
-		local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
-		widget.text:set_text(non_nan_charge .. "%")
-		-- Update popup text
-		battery_popup.text = string.gsub(stdout, "\n$", "")
-		collectgarbage("collect")
-	end, widget)
+	local timer = gears.timer.new({
+		timeout = args.timeout or 15,
+		call_now = true,
+		autostart = false,
+		callback = set_bat_cb,
+	})
+	if battery_path then
+		set_bat_cb()
+		timer:start()
+	else
+		awful.spawn.easy_async({
+			"find",
+			"-L", -- follow links
+			"/sys/class/power_supply/",
+			"-mindepth",
+			"1",
+			"-maxdepth",
+			"1",
+			"-name",
+			"BAT*",
+			"-type",
+			"d",
+			"-printf",
+			"%p\n",
+		}, function(stdout)
+			-- The path to the battery
+			battery_path = stdout:match("([^\n]+)")
+			set_bat_cb()
+			timer:start()
+		end)
+	end
 
 	return widget_button
 end
