@@ -14,10 +14,8 @@ local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/batter
 --beautiful.tooltip_fg = beautiful.fg_normal
 --beautiful.tooltip_bg = beautiful.bg_normal
 
----Show a warning about battery level
----@param charge number? the current charge
-local function show_battery_warning(charge)
-	naughty.notify({
+local function show_battery_warning()
+	naughty.notification({
 		icon = PATH_TO_ICONS .. "battery-alert.svg",
 		icon_size = dpi(40),
 		text = "Huston, we have a problem",
