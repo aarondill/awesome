@@ -44,12 +44,7 @@ local default = {
 -- Using a table is safer because quoting isn't an issue
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-	{
-		"sh",
-		"-c",
-		'export SSH_AUTH_SOCK=; eval "$(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)"; /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1',
-		-- credential manager
-	},
+	"/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", -- Authentication popup
 	{ "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
