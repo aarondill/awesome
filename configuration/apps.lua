@@ -22,7 +22,7 @@ local default = {
 	rofi_window = rofi_command .. " window",
 	lock = "sh -c 'pgrep -x xss-lock && exec loginctl lock-session || exec lock'", -- Run loginctl if xss-lock is running, otherwise just lock
 	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
-	browser = "google-chrome --enable-features=WebUIDarkMode --force-dark-mode",
+	browser = "google-chrome-stable --enable-features=WebUIDarkMode --force-dark-mode",
 	editor = terminal .. " -e nvim", -- gui text editor
 	-- social = "discord",
 	-- game = "steam",
