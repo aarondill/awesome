@@ -43,12 +43,14 @@ end
 
 local main = Gio.Async.call(function()
 	local bus = bus_get_async(Gio.BusType.SYSTEM)
+	-- The block is lost when this is garbage collected! It is scope leaked into the awesome.connect_signal to avoid this.
 	local fd = inhibit(bus, "handle-power-key", "AwesomeWM", "To manually handle power key", "block")
 	if not fd then
 		return --something went wrong
 	end
 
 	awesome.connect_signal("exit", function(_)
+		-- Stops the block
 		fd:close()
 		-- Speed up deletion of the GDBusMessage that still references the FD
 		collectgarbage("collect")
