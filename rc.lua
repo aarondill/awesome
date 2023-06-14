@@ -51,6 +51,11 @@ require("module.wallpaper")
 -- Keep selected tag on restart
 require("module.persistent-tag")
 
+-- Disable mouse snapping
+awful.mouse.snap.edge_enabled = false
+awful.mouse.snap.client_enabled = false
+awful.mouse.drag_to_tag.enabled = false
+
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
 	-- Set the windows at the slave,
