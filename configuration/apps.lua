@@ -67,4 +67,15 @@ local run_on_start_up = {
 	-- to avoid multipled instances, inside the awspawn script
 	{ filesystem.get_configuration_dir() .. "configuration/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
 }
+if not os.getenv("GDMSESSION") then -- HACK: Only handles gdm case -- should be fixed in the Xorg server
+	table.insert(run_on_start_up, {
+		"systemd-inhibit",
+		"--what=idle",
+		"--who=AwesomeWM",
+		"--why=because idle timeout is broken with startx",
+		"--mode=block",
+		"sleep",
+		"infinity",
+	})
+end
 return { default = default, run_on_start_up = run_on_start_up }
