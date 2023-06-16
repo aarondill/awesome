@@ -44,12 +44,17 @@ if filesystem.file_executable("/usr/lib/notification-daemon/notification-daemon"
 	notification_daemon = "/usr/lib/notification-daemon/notification-daemon -r"
 end
 
+local polkit = "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
+if filesystem.file_executable("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1") then
+	polkit = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+end
+
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
 -- These can be tables or strings. They will *not* be run in a shell, so you must invoke it yourself if you so desire.
 -- Using a table is safer because quoting isn't an issue
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-	"/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", -- Authentication popup
+	polkit, -- Authentication popup
 	{ "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
