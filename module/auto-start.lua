@@ -7,6 +7,16 @@ local naughty = require("naughty")
 local beautiful = require("beautiful")
 local apps = require("configuration.apps")
 
+local function err(cmd, e)
+	naughty.notify({
+		presets = naughty.config.presets.warn,
+		icon = beautiful.icon_noti_error,
+		title = string.format('Error while starting "%s".', type(cmd) == "table" and table.concat(cmd, " ") or cmd),
+		text = tostring(e),
+		timeout = 0,
+	})
+end
+
 ---@param cmd_str string|string[] the thing to run
 ---@return integer? pid of the process or nil if error
 local function run_once(cmd_str)
@@ -20,14 +30,6 @@ local function run_once(cmd_str)
 		cmd = cmd_str
 	else
 		error("Startup apps must be string or table")
-	end
-	if DEBUG then
-		naughty.notify({
-			text = type(cmd) == "table" and table.concat(cmd, " ") or cmd,
-			title = "Startup App",
-			presets = naughty.config.presets.info,
-			timeout = 0,
-		})
 	end
 
 	local pid = awful.spawn.easy_async(
@@ -54,21 +56,14 @@ local function run_once(cmd_str)
 				local no_end_nl = stderr:gsub("\n$", "")
 				text = string.format("exit code: %d" .. "\n" .. "Stderr: %s", exitcode, no_end_nl)
 			end
-			naughty.notify({
-				presets = naughty.config.presets.warn,
-				icon = beautiful.icon_noti_error,
-				title = string.format(
-					'Error while starting "%s".',
-					type(cmd) == "table" and table.concat(cmd, " ") or cmd
-				),
-				text = text,
-				timeout = 0,
-			})
+			err(cmd, text)
 		end
 	)
 	if type(pid) ~= "number" then
 		-- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
 		return nil
+	elseif DEBUG then
+		err(cmd, pid)
 	end
 	return pid
 end
