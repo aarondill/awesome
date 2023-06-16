@@ -39,13 +39,13 @@ local default = {
 	},
 }
 
-local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon -r"
-if filesystem.file_executable("/usr/lib/notification-daemon/notification-daemon") then
-	notification_daemon = "/usr/lib/notification-daemon/notification-daemon -r"
+local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
+if not filesystem.file_executable(notification_daemon) then
+	notification_daemon = "/usr/lib/notification-daemon/notification-daemon"
 end
 
 local polkit = "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
-if filesystem.file_executable("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1") then
+if not filesystem.file_executable(polkit) then
 	polkit = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 end
 
@@ -54,7 +54,7 @@ end
 -- Using a table is safer because quoting isn't an issue
 local run_on_start_up = {
 	"dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-	polkit, -- Authentication popup
+	{ polkit }, -- Authentication popup
 	{ "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
@@ -71,7 +71,7 @@ local run_on_start_up = {
 	}, -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sh -c 'sleep 1.5 && exec ibus-daemon --xim -rd'", -- Run ibus-daemon for language and emoji keyboard support
-	notification_daemon,
+	{ notification_daemon, "-r" },
 	-- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
