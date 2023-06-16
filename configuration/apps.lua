@@ -39,6 +39,11 @@ local default = {
 	},
 }
 
+local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon -r"
+if filesystem.file_executable("/usr/lib/notification-daemon/notification-daemon") then
+	notification_daemon = "/usr/lib/notification-daemon/notification-daemon -r"
+end
+
 -- List of apps to start once on start-up - these will (obviosly) only run if available, but no errors will occur if they aren't.
 -- These can be tables or strings. They will *not* be run in a shell, so you must invoke it yourself if you so desire.
 -- Using a table is safer because quoting isn't an issue
@@ -61,7 +66,7 @@ local run_on_start_up = {
 	}, -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
 	"sh -c 'sleep 1.5 && exec ibus-daemon --xim -rd'", -- Run ibus-daemon for language and emoji keyboard support
-	"/usr/lib/notification-daemon/notification-daemon -r",
+	notification_daemon,
 	-- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
