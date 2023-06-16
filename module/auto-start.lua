@@ -59,13 +59,13 @@ local function run_once(cmd_str)
 			err(cmd, text)
 		end
 	)
-	if type(pid) ~= "number" then
-		-- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
-		return nil
+	if type(pid) == "number" then
+		return pid
 	elseif DEBUG then
+		-- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
 		err(cmd, pid)
 	end
-	return pid
+	return nil
 end
 
 local processes = {}
