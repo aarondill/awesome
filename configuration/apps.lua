@@ -77,7 +77,13 @@ local run_on_start_up = {
 	-- to avoid multipled instances, inside the awspawn script
 	{ filesystem.get_configuration_dir() .. "configuration/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
 }
-if not os.getenv("GDMSESSION") then -- HACK: Only handles gdm case -- should be fixed in the Xorg server
+
+--HACK: Don't use io.popen, but this need to be synchronous.
+--This is fixed in the next release of Xorg, but until then, we've got this to inhibit idle timeouts
+local f = assert(io.popen(("loginctl show-session %s -P Type"):format(os.getenv("XDG_SESSION_ID"))))
+local session_type = f:read("l")
+f:close()
+if session_type == "tty" then
 	table.insert(run_on_start_up, {
 		"systemd-inhibit",
 		"--what=idle",
@@ -88,4 +94,5 @@ if not os.getenv("GDMSESSION") then -- HACK: Only handles gdm case -- should be 
 		"infinity",
 	})
 end
+
 return { default = default, run_on_start_up = run_on_start_up }
