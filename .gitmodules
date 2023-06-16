@@ -1,4 +1,4 @@
-[submodule "widget/brightness/"]
+[submodule "widget/brightness"]
   path = widget/brightness
   ; Temporarily use my fork, until https://github.com/deficient/brightness/pull/2 is merged
 	url = https://github.com/aarondill/brightness
