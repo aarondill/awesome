@@ -50,8 +50,12 @@ local function run_once(cmd_str)
 			end
 			local text = ""
 			if exitreason == "signal" then
-				local signame = tostring(awesome.unix_signal[exitcode])
-				text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
+				if exitcode == awesome.unix_signal.SIGSEGV then -- Segfault
+					text = string.format("Segfaulted!" .. "\n" .. "Stderr: %s", stderr)
+				else
+					local signame = tostring(awesome.unix_signal[exitcode])
+					text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
+				end
 			else
 				local no_end_nl = stderr:gsub("\n$", "")
 				text = string.format("exit code: %d" .. "\n" .. "Stderr: %s", exitcode, no_end_nl)
