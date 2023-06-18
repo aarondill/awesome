@@ -10,6 +10,7 @@ local function setenv()
 		posix.setenv("QT_QPA_PLATFORMTHEME", "gtk2")
 		posix.setenv("SHLVL", "0") -- Fix terminals opened in AwesomeWM
 		posix.setenv("NO_AT_BRIDGE", "1") -- Don't try to connect to an accessibility bus
+		posix.setenv("_JAVA_AWT_WM_NONREPARENTING", "1") -- expose awesome as a non-reparenting window to java
 	end)
 end
 
