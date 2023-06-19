@@ -15,13 +15,13 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 #### Debian-Based
 
 ```
-sudo apt install awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome blueman diodon udiskie xss-lock notification-daemon ibus
+sudo apt install awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx
 ```
 
 #### Arch-Based
 
 ```
-yay -S awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus
+yay -S awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx
 ```
 
 #### Program list
