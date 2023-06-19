@@ -64,6 +64,7 @@ local run_on_start_up = {
 	"xset s 0 0", -- disable screen saver
 	"xset -dpms", -- Disable dpms because doesn't work with keys?
 	"xss-lock -- lock", -- Lock on suspend or dpms
+	"numlockx on",
 	{
 		"udiskie",
 		"-c",
