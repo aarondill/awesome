@@ -59,7 +59,7 @@ local run_on_start_up = {
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
 	"blueman-applet", --bluetooth
-	"pasystray", -- shows an audiocontrol applet in systray when installed.
+	{ "sh", "-c", "pasystray --no-icon-tooltip -d >&2" }, -- shows an audiocontrol applet in systray when installed.
 	-- "exec xfce4-power-manager", -- Power manager
 	"xset s 0 0", -- disable screen saver
 	"xset -dpms", -- Disable dpms because doesn't work with keys?
