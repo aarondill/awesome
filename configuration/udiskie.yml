@@ -48,7 +48,6 @@ device_config:
 
   # Don't show snap loops
   - device_file: /dev/loop*
-    id_type: squashfs
     is_loop: true
     ignore: true
 notifications:
