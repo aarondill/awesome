@@ -71,8 +71,8 @@ local run_on_start_up = {
 		filesystem.get_configuration_dir() .. "configuration/udiskie.yml",
 	}, -- Automount disks.
 	-- Sleep to ensure it's last. My own preference. Feel free to remove it
-	"sh -c 'sleep 1.5 && exec ibus-daemon --xim -rd'", -- Run ibus-daemon for language and emoji keyboard support
-	{ notification_daemon, "-r" },
+	"sh -c 'sleep 1.5 && exec ibus-daemon --xim -d'", -- Run ibus-daemon for language and emoji keyboard support
+	{ notification_daemon },
 	-- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
 	-- Add applications that need to be killed between reloads
 	-- to avoid multipled instances, inside the awspawn script
