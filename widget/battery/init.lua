@@ -120,7 +120,7 @@ function Battery(args)
 			local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
 			widget.text:set_text(non_nan_charge .. "%")
 			-- Update popup text
-			battery_popup.text = status
+			battery_popup.text = status ~= "" and status or nil
 			collectgarbage("collect")
 		end)
 		return true
