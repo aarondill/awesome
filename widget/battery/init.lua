@@ -68,6 +68,7 @@ function Battery(args)
 		objects = { widget_button },
 		mode = "outside",
 		align = "left",
+		text = "No Battery Found",
 		preferred_positions = { "right", "left", "top", "bottom" },
 	})
 
@@ -120,7 +121,7 @@ function Battery(args)
 			local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
 			widget.text:set_text(non_nan_charge .. "%")
 			-- Update popup text
-			battery_popup.text = status ~= "" and status or nil
+			battery_popup.text = status
 			collectgarbage("collect")
 		end)
 		return true
