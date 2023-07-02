@@ -10,8 +10,7 @@ naughty.config.icon_dirs = {
 	"/usr/share/icons/hicolor",
 }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
--- No max depth, This *could* go very wrong, but whatever.
-awful.spawn.easy_async("find /usr/share/icons -type d -print", function(stdout, _, _, exitcode)
+awful.spawn.easy_async("find /usr/share/icons -maxdepth 1 -mindepth 1 -type d -print", function(stdout, _, _, exitcode)
   -- stylua: ignore
 	if exitcode ~= 0 then return end
 	for line in stdout:gmatch("(.-)\n") do
