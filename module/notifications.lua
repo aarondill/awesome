@@ -26,6 +26,7 @@ naughty.config.defaults.margin = dpi(16)
 naughty.config.defaults.ontop = true
 naughty.config.defaults.font = "Roboto Regular 10"
 naughty.config.defaults.icon = nil
+-- This *MUST* be defined, otherwise naughty.notify has some weird behavior when searching for icons without a given size.
 naughty.config.defaults.icon_size = dpi(32)
 naughty.config.defaults.shape = gears.shape.rounded_rect
 naughty.config.defaults.border_width = 0
