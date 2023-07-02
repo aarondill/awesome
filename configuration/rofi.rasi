@@ -4,8 +4,8 @@
  */
 
 configuration {
-  display-drun: "Activate";
-  display-run: "Execute";
+  display-drun: "activate";
+  display-run: "execute";
   modi: [drun, window, ssh];
   show-icons: true;
   sidebar-mode: true;
