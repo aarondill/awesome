@@ -4,11 +4,8 @@ local awful = require("awful")
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Icon directories have to be hard coded.
-naughty.config.icon_dirs = {
-	"/usr/share/pixmaps/",
-	"/usr/share/icons/Yaru",
-	"/usr/share/icons/hicolor",
-}
+naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
+naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
 awful.spawn.easy_async("find /usr/share/icons -maxdepth 1 -mindepth 1 -type d -print", function(stdout, _, _, exitcode)
   -- stylua: ignore
