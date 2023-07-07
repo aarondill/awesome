@@ -7,6 +7,7 @@ local gears = require("gears")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
 local apps = require("configuration.apps")
+local serialize_table = require("util.serialize_table")
 
 --- Directory for logging failed(?) application's output
 local log_dir = gears.filesystem.get_cache_dir() .. "auto-start/"
@@ -45,6 +46,8 @@ local function run_once(cmd)
 		error("Startup apps must be string or table")
 	end
 
+	--- Used in log to ensure that the date matches the *start* date, not the *end* date
+	local CMD_DATE = os.date() ---@cast CMD_DATE string
 	local pid = awful.spawn.easy_async(
 		cmd,
 		---@param stdout string
@@ -71,12 +74,17 @@ local function run_once(cmd)
 				log_file_stderr = log_dir .. "/" .. pid .. "-stderr.log"
 			end
 			if log_file_stdout and log_file_stderr then
+				--- Header for the log file
+				local header = ([[Command: %s
+Date: %s
+----------------------------------------
+]]):format(type(cmd) == "table" and serialize_table(cmd) or cmd, CMD_DATE)
 				-- Ensure it exists!
 				gears.filesystem.make_parent_directories(log_file_stdout)
 				gears.filesystem.make_parent_directories(log_file_stderr)
 				-- *Async* write.
-				file_write(log_file_stdout, stdout)
-				file_write(log_file_stderr, stderr)
+				file_write(log_file_stdout, header .. stdout)
+				file_write(log_file_stderr, header .. stderr)
 			end
 
 			local text = ""
