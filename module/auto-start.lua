@@ -90,7 +90,7 @@ Date: %s
 				text = string.format("exit code: %d", exitcode)
 			end
 			if log_file_stdout and log_file_stderr then
-				text = text .. "\n" .. ("Logs are available at: %s and %s"):format(log_file_stdout, log_file_stderr)
+				text = text .. ("\nLogs are available at:\n%s\n%s"):format(log_file_stdout, log_file_stderr)
 			end
 			err(cmd, text)
 		end
