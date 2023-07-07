@@ -60,7 +60,8 @@ local function run_once(cmd)
 			local pid = processes[cmd]
 			--- Files to write to. These may be nil.
 			local log_file_stdout, log_file_stderr
-			if pid then
+			-- Exclude sigterm, as it was likely user input anyways.
+			if pid and not (exitreason == "signal" and exitcode == awesome.unix_signal.SEGTERM) then
 				log_file_stdout = log_dir .. pid .. "-stdout.log"
 				log_file_stderr = log_dir .. pid .. "-stderr.log"
 			end
