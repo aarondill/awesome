@@ -8,6 +8,7 @@ local naughty = require("naughty")
 local beautiful = require("beautiful")
 local apps = require("configuration.apps")
 local serialize_table = require("util.serialize_table")
+local file_write = require("util.async_file_write")
 
 --- Directory for logging failed(?) application's output
 --- This *MUST* end in a slash
@@ -23,17 +24,6 @@ local function err(cmd, e)
 		text = tostring(e),
 		timeout = 0,
 	})
-end
-
---- Replace a file content or create a new one - Async :)
----@param path string file path to write to
----@param content string content to write to the file
----@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
-local function file_write(path, content)
-	local gio = require("lgi").Gio
-	gio.File.new_for_path(path):replace_contents_async(content, nil, function(file, task)
-		file:replace_contents_finish(task)
-	end, 0)
 end
 
 ---@param cmd string|string[] the thing to run
