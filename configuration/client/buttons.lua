@@ -20,12 +20,5 @@ return gears.table.join(
 	awful.button({ modkey, "Control" }, 1, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 		awful.mouse.client.resize(c)
-	end),
-
-	awful.button({ modkey }, 4, function()
-		awful.layout.inc(1)
-	end),
-	awful.button({ modkey }, 5, function()
-		awful.layout.inc(-1)
 	end)
 )
