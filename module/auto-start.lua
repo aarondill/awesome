@@ -10,7 +10,8 @@ local apps = require("configuration.apps")
 local serialize_table = require("util.serialize_table")
 
 --- Directory for logging failed(?) application's output
-local log_dir = gears.filesystem.get_cache_dir() .. "auto-start/"
+--- This *MUST* end in a slash
+local log_dir = gears.filesystem.get_cache_dir() .. "auto-start" .. "/"
 --- A map of cmds to pids
 local processes = {}
 
@@ -70,8 +71,8 @@ local function run_once(cmd)
 			--- Files to write to. These may be nil.
 			local log_file_stdout, log_file_stderr
 			if pid then
-				log_file_stdout = log_dir .. "/" .. pid .. "-stdout.log"
-				log_file_stderr = log_dir .. "/" .. pid .. "-stderr.log"
+				log_file_stdout = log_dir .. pid .. "-stdout.log"
+				log_file_stderr = log_dir .. pid .. "-stderr.log"
 			end
 			if log_file_stdout and log_file_stderr then
 				--- Header for the log file
