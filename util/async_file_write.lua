@@ -10,8 +10,9 @@ SAVE_FROM_GARBAGE_COLLECTION = SAVE_FROM_GARBAGE_COLLECTION
 --- Replace a file content or create a new one - Async :)
 ---@param path string file path to write to
 ---@param content string content to write to the file
+---@param cb fun()? function to call when done.
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
-local function file_write(path, content)
+local function file_write(path, content, cb)
 	if type(path) ~= "string" or type(content) ~= "string" then
 		error("path and content must be strings", 2)
 	end
@@ -28,6 +29,9 @@ local function file_write(path, content)
 
 		--- Clear the content to allow garbage collection - Avoid a memory leak
 		SAVE_FROM_GARBAGE_COLLECTION[index] = nil
+		if type(cb) == "function" then
+			cb()
+		end
 	end)
 end
 
