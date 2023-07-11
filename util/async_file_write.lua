@@ -12,8 +12,13 @@ SAVE_FROM_GARBAGE_COLLECTION = SAVE_FROM_GARBAGE_COLLECTION
 ---@param content string content to write to the file
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_write(path, content)
+	if type(path) ~= "string" or type(content) ~= "string" then
+		error("path and content must be strings", 2)
+	end
+	--- *Attempt* to remove collisions between inputs. This cannot be done perfectly
+	local index = path .. content .. tostring(math.random(1, 5000)) .. tostring(math.random(1, 5000))
 	--- Store the content in the global array
-	SAVE_FROM_GARBAGE_COLLECTION[content] = true
+	SAVE_FROM_GARBAGE_COLLECTION[index] = content
 
 	---params(replace_contents_async): string contents, string etag, boolean make_backup, GFileCreateFlags flags, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
 	--- NOTE: This function does not copy `content`, so we must protect it from being garbage-collected (resulting in garbage being written to disk)
@@ -22,7 +27,7 @@ local function file_write(path, content)
 		file:replace_contents_finish(task)
 
 		--- Clear the content to allow garbage collection - Avoid a memory leak
-		SAVE_FROM_GARBAGE_COLLECTION[content] = nil
+		SAVE_FROM_GARBAGE_COLLECTION[index] = nil
 	end)
 end
 
