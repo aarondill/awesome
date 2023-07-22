@@ -75,11 +75,11 @@ function Battery(args)
 	local function get_bat_info(battery_path, callback_fn)
 		local status, capacity
 		local function get_capacity(stdout)
-			capacity = stdout:match("%d+")
+			capacity = stdout:match("(%d+)\n")
 			callback_fn(capacity, status)
 		end
 		local function get_status(stdout)
-			status = stdout:match(".+")
+			status = stdout:match("(.+)\n")
 			awful.spawn.easy_async({ "cat", battery_path .. "/capacity" }, get_capacity)
 		end
 		awful.spawn.easy_async({ "cat", battery_path .. "/status" }, get_status)
