@@ -44,7 +44,7 @@ end
 ---@return table BatteryWidget
 function Battery(args)
 	args = args or {}
-	local battery_path = args.battery_path or nil
+	local M_battery_path = args.battery_path or nil
 
 	local widget = wibox.widget({
 		{
@@ -72,33 +72,32 @@ function Battery(args)
 		preferred_positions = { "right", "left", "top", "bottom" },
 	})
 
-	local function get_bat_info(callback_fn)
-    -- stylua: ignore
-		if not battery_path then return "" end
-
-		local files = { "capacity", "status" }
-		local cmd = { "cat" }
-		for _, f in ipairs(files) do
-			table.insert(cmd, battery_path .. "/" .. f)
+	local function get_bat_info(battery_path, callback_fn)
+		local status, capacity
+		local function get_capacity(stdout)
+			capacity = stdout:match("%d+")
+			callback_fn(capacity, status)
 		end
-		awful.spawn.easy_async(cmd, callback_fn)
+		local function get_status(stdout)
+			status = stdout:match(".+")
+			awful.spawn.easy_async({ "cat", battery_path .. "/capacity" }, get_capacity)
+		end
+		awful.spawn.easy_async({ "cat", battery_path .. "/status" }, get_status)
 	end
 
 	local last_battery_check = os.time()
 	local function set_bat_cb()
     -- stylua: ignore
-		if not battery_path then return true end
+		if not M_battery_path then return true end
 
-		---@param stdout string
-		get_bat_info(function(stdout)
+		---@param capacity string?
+		---@param status string?
+		get_bat_info(M_battery_path, function(capacity, status)
 			local batteryIconName = "battery"
-			local charge, status = stdout:match("(%d+)\n(.+)\n")
-			charge = tonumber(charge) or 100
-			if charge >= 0 and charge < (args.low_power or 15) then
-				if
-					status ~= "Charging"
-					and os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300)
-				then
+			local charge = tonumber(capacity) or 0
+
+			if status ~= "Charging" and charge >= 0 and charge < (args.low_power or 15) then
+				if os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300) then
 					-- if 5 minutes have elapsed since the last warning
 					last_battery_check = os.time()
 
@@ -133,7 +132,7 @@ function Battery(args)
 		autostart = false,
 		callback = set_bat_cb,
 	})
-	if battery_path then
+	if M_battery_path then
 		set_bat_cb()
 		timer:start()
 	else
@@ -153,7 +152,7 @@ function Battery(args)
 			"%p\n",
 		}, function(stdout)
 			-- The path to the battery
-			battery_path = stdout:match("([^\n]+)")
+			M_battery_path = stdout:match("([^\n]+)")
 			set_bat_cb()
 			timer:start()
 		end)
