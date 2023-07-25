@@ -14,12 +14,14 @@ local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/batter
 --beautiful.tooltip_fg = beautiful.fg_normal
 --beautiful.tooltip_bg = beautiful.bg_normal
 
-local function show_battery_warning()
+---Show a warning about battery level
+---@param charge number? the current charge
+local function show_battery_warning(charge)
 	naughty.notify({
 		icon = PATH_TO_ICONS .. "battery-alert.svg",
 		icon_size = dpi(40),
 		text = "Huston, we have a problem",
-		title = "Battery is dying",
+		title = ("Battery is dying (%s%%)"):format(charge or "??"),
 		timeout = 5,
 		hover_timeout = 0.5,
 		position = "bottom_left",
@@ -96,12 +98,12 @@ function Battery(args)
 			local batteryIconName = "battery"
 			local charge = tonumber(capacity) or 0
 
-			if status ~= "Charging" and charge >= 0 and charge < (args.low_power or 15) then
+			if status ~= "Charging" and charge >= 0 and charge <= (args.low_power or 15) then
 				if os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300) then
 					-- if 5 minutes have elapsed since the last warning
 					last_battery_check = os.time()
 
-					show_battery_warning()
+					show_battery_warning(charge)
 				end
 			end
 			if status == "Charging" or status == "Full" then
