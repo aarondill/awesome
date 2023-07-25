@@ -99,7 +99,7 @@ function Battery(args)
 			local charge = tonumber(capacity) or 0
 
 			if status ~= "Charging" and charge >= 0 and charge <= (args.low_power or 15) then
-				if os.difftime(os.time(), last_battery_check) > (args.low_power_frequency or 300) then
+				if os.difftime(os.time(), last_battery_check) >= (args.low_power_frequency or 300) then
 					-- if 5 minutes have elapsed since the last warning
 					last_battery_check = os.time()
 
