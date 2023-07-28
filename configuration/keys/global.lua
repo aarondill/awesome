@@ -157,20 +157,25 @@ local globalKeys = gears.table.join(
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn(apps.default.brightness.up, false)
+		-- local pid, _, _, stdout, stderr =
+		awesome.spawn(apps.default.brightness.up, false, false, true, false)
 	end, { description = "Brightness up", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn(apps.default.brightness.down, false)
+		-- local pid, _, _, stdout, stderr =
+		awesome.spawn(apps.default.brightness.down, false, false, true, false)
 	end, { description = "Brightness down", group = "hotkeys" }),
 	-- volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
-		awful.spawn(apps.default.volume.up, false)
+		-- local pid, _, _, stdout, stderr =
+		awesome.spawn(apps.default.volume.up, false, false, true, false)
 	end, { description = "Volume up", group = "hotkeys" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
-		awful.spawn(apps.default.volume.down, false)
+		-- local pid, _, _, stdout, stderr =
+		awesome.spawn(apps.default.volume.down, false, false, true, false)
 	end, { description = "Volume down", group = "hotkeys" }),
 	awful.key({}, "XF86AudioMute", function()
-		awful.spawn(apps.default.volume.toggle_mute, false)
+		-- local pid, _, _, stdout, stderr =
+		awesome.spawn(apps.default.volume.toggle_mute, false, false, true, false)
 	end, { description = "Toggle mute", group = "hotkeys" }),
 
 	awful.key({}, "XF86AudioNext", function()
