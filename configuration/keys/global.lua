@@ -7,7 +7,7 @@ local modkey = require("configuration.keys.mod").modKey
 local altkey = require("configuration.keys.mod").altKey
 local apps = require("configuration.apps")
 local function open_main_menu()
-	local pid_or_err = awesome.spawn(apps.default.rofi, false)
+	local pid_or_err = awesome.spawn(apps.default.rofi, false, false, true, true)
 	-- The return value will be a string in case of failure
 	if type(pid_or_err) == "string" then
 		local s = awful.screen.focused()
@@ -83,14 +83,14 @@ local globalKeys = gears.table.join(
 
 	-- Programs
 	awful.key({ modkey }, "Delete", function()
-		awful.spawn(apps.default.lock, false)
+		awesome.spawn(apps.default.lock, false, false, true, true)
 	end, { description = "Lock the screen", group = "awesome" }),
 
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "Reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "Quit awesome", group = "awesome" }),
 
 	awful.key({}, "Print", function()
-		awful.spawn.with_shell(apps.default.region_screenshot)
+		awful.spawn(apps.default.region_screenshot)
 	end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
 		awful.spawn(apps.default.editor)
@@ -158,24 +158,24 @@ local globalKeys = gears.table.join(
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
 		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.brightness.up, false, false, true, false)
+		awesome.spawn(apps.default.brightness.up, false, false, true, true)
 	end, { description = "Brightness up", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
 		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.brightness.down, false, false, true, false)
+		awesome.spawn(apps.default.brightness.down, false, false, true, true)
 	end, { description = "Brightness down", group = "hotkeys" }),
 	-- volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
 		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.up, false, false, true, false)
+		awesome.spawn(apps.default.volume.up, false, false, true, true)
 	end, { description = "Volume up", group = "hotkeys" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
 		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.down, false, false, true, false)
+		awesome.spawn(apps.default.volume.down, false, false, true, true)
 	end, { description = "Volume down", group = "hotkeys" }),
 	awful.key({}, "XF86AudioMute", function()
 		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.toggle_mute, false, false, true, false)
+		awesome.spawn(apps.default.volume.toggle_mute, false, false, true, true)
 	end, { description = "Toggle mute", group = "hotkeys" }),
 
 	awful.key({}, "XF86AudioNext", function()
