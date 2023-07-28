@@ -189,7 +189,7 @@ local globalKeys = gears.table.join(
 	-- Custom hotkeys
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
-		awful.spawn.with_shell("ibus emoji")
+		awful.spawn({ "ibus", "emoji" })
 	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" })
 )
 
