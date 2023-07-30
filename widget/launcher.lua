@@ -5,6 +5,8 @@ local apps = require("configuration.apps")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local menubar = require("menubar")
 local icons = require("theme.icons")
+local spawn = require("util.spawn")
+local concat_command = require("util.concat_command")
 
 -- Load Debian menu entries
 local has_debian, debian = pcall(require, "debian.menu")
@@ -19,8 +21,18 @@ function Launcher(_)
 				hotkeys_popup.show_help(nil, awful.screen.focused())
 			end,
 		},
-		{ "manual", apps.default.terminal .. " -e man awesome" },
-		{ "edit config", apps.default.editor .. " " .. awesome.conffile },
+		{
+			"manual",
+			function()
+				apps.open.terminal({ "man", "awesome" })
+			end,
+		},
+		{
+			"edit config",
+			function()
+				apps.open.editor(awesome.conffile)
+			end,
+		},
 		{ "restart", awesome.restart },
 		{
 			"quit",
@@ -31,7 +43,12 @@ function Launcher(_)
 	}
 
 	local menu_awesome = { "Awesome", awesome_ctrl_menu }
-	local menu_terminal = { "Open Terminal", apps.default.terminal }
+	local menu_terminal = {
+		"Open Terminal",
+		function()
+			apps.open.terminal()
+		end,
+	}
 
 	local mainmenu
 	if has_fdo then
@@ -57,11 +74,14 @@ function Launcher(_)
 		-- resize = true,
 	})
 
-	-- Menubar configuration
-	menubar.utils.terminal = apps.default.terminal -- Set the terminal for applications that require it
-
 	local m = dpi(6)
 	return wibox.container.margin(launcher, m, m, m, m)
 end
+
+-- Menubar configuration
+-- Set the terminal for applications that require it
+-- HACK: to stringify the terminal, since a table is not permitted here.
+menubar.utils.term = concat_command(apps.default.terminal, "")
+menubar.utils.wm_name = "" -- The logic to check is disabled if this is empty :)
 
 return Launcher

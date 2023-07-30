@@ -1,4 +1,4 @@
-local naughty = require("naughty")
+local notifs = require("util.notifs")
 ---Run func and notify on error
 ---Not typed because generics can't handle it properly
 local function handle_error(func)
@@ -8,10 +8,8 @@ local function handle_error(func)
 			return val_or_err
 		end
 
-		naughty.notify({
-			preset = naughty.config.presets.critical,
+		notifs.critical(tostring(val_or_err), {
 			title = "Something went terribly wrong",
-			text = tostring(val_or_err),
 		})
 		return nil
 	end

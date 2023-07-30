@@ -1,13 +1,19 @@
 local awful = require("awful")
-local naughty = require("naughty")
+local notifs = require("util.notifs")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+local spawn = require("util.spawn")
 
 local modkey = require("configuration.keys.mod").modKey
 local altkey = require("configuration.keys.mod").altKey
 local apps = require("configuration.apps")
+local capi = { awesome = awesome }
+
 local function open_main_menu()
-	local pid_or_err = awesome.spawn(apps.default.rofi, false, false, true, true)
+	local pid_or_err = spawn(apps.default.rofi, {
+		inherit_stdout = false,
+		inherit_stderr = false,
+	})
 	-- The return value will be a string in case of failure
 	if type(pid_or_err) == "string" then
 		local s = awful.screen.focused()
@@ -34,12 +40,9 @@ local globalKeys = gears.table.join(
 	awful.key({ altkey }, "space", open_main_menu, { description = "Main Menu", group = "awesome" }),
 	awful.key({ modkey }, "p", open_main_menu, { description = "Main Menu", group = "awesome" }),
 	awful.key({ modkey }, "w", function()
-		local pid_or_err = awful.spawn(apps.default.rofi_window)
+		local pid_or_err = spawn(apps.default.rofi_window)
 		if type(pid_or_err) == "string" then
-			naughty.notify({
-				text = "Rofi is required to open the window picker.",
-				preset = naughty.config.presets.critical,
-			})
+			notifs.critical("Rofi is required to open the window picker.")
 		end
 	end, { description = "Window Picker", group = "awesome" }),
 
@@ -83,27 +86,28 @@ local globalKeys = gears.table.join(
 
 	-- Programs
 	awful.key({ modkey }, "Delete", function()
-		awesome.spawn(apps.default.lock, false, false, true, true)
+		spawn(apps.default.lock, {
+			inherit_stdin = true, -- Just in case
+			inherit_stderr = false,
+			inherit_stdout = false,
+		})
 	end, { description = "Lock the screen", group = "awesome" }),
 
-	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "Reload awesome", group = "awesome" }),
-	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "Quit awesome", group = "awesome" }),
+	awful.key({ modkey, "Control" }, "r", capi.awesome.restart, { description = "Reload awesome", group = "awesome" }),
+	awful.key({ modkey, "Shift" }, "q", capi.awesome.quit, { description = "Quit awesome", group = "awesome" }),
 
 	awful.key({}, "Print", function()
-		awful.spawn(apps.default.region_screenshot)
+		spawn(apps.default.region_screenshot)
 	end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
-	awful.key({ modkey }, "e", function()
-		awful.spawn(apps.default.editor)
-	end, { description = "Open an editor", group = "launcher" }),
+	awful.key({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
 	awful.key({ modkey }, "b", function()
-		awful.spawn(apps.default.browser)
+		spawn(apps.default.browser, {
+			inherit_stderr = false,
+			inherit_stdout = false,
+		})
 	end, { description = "Open a browser", group = "launcher" }),
-	awful.key({ modkey }, "Return", function()
-		awful.spawn(apps.default.terminal)
-	end, { description = "Open a terminal", group = "launcher" }),
-	awful.key({ modkey }, "x", function()
-		awful.spawn(apps.default.terminal)
-	end, { description = "Open a terminal", group = "launcher" }),
+	awful.key({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
+	awful.key({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
 
 	awful.key({ modkey }, "l", function()
 		awful.tag.incmwfact(0.05)
@@ -157,25 +161,45 @@ local globalKeys = gears.table.join(
 
 	-- Brightness
 	awful.key({}, "XF86MonBrightnessUp", function()
-		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.brightness.up, false, false, true, true)
+		-- local pid, _, stdin, stdout, stderr =
+		spawn(apps.default.brightness.up, {
+			sn_rules = false,
+			inherit_stdout = false,
+			inherit_stderr = false,
+		})
 	end, { description = "Brightness up", group = "hotkeys" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.brightness.down, false, false, true, true)
+		-- local pid, _, stdin, stdout, stderr =
+		spawn(apps.default.brightness.down, {
+			sn_rules = false,
+			inherit_stdout = false,
+			inherit_stderr = false,
+		})
 	end, { description = "Brightness down", group = "hotkeys" }),
 	-- volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
-		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.up, false, false, true, true)
+		-- local pid, _, stdin, stdout, stderr =
+		spawn(apps.default.volume.up, {
+			sn_rules = false,
+			inherit_stdout = false,
+			inherit_stderr = false,
+		})
 	end, { description = "Volume up", group = "hotkeys" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
-		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.down, false, false, true, true)
+		-- local pid, _, stdin, stdout, stderr =
+		spawn(apps.default.volume.down, {
+			sn_rules = false,
+			inherit_stdout = false,
+			inherit_stderr = false,
+		})
 	end, { description = "Volume down", group = "hotkeys" }),
 	awful.key({}, "XF86AudioMute", function()
-		-- local pid, _, _, stdout, stderr =
-		awesome.spawn(apps.default.volume.toggle_mute, false, false, true, true)
+		-- local pid, _, stdin, stdout, stderr =
+		spawn(apps.default.volume.toggle_mute, {
+			sn_rules = false,
+			inherit_stdout = false,
+			inherit_stderr = false,
+		})
 	end, { description = "Toggle mute", group = "hotkeys" }),
 
 	awful.key({}, "XF86AudioNext", function()
@@ -194,7 +218,7 @@ local globalKeys = gears.table.join(
 	-- Custom hotkeys
 	-- Emoji Picker
 	awful.key({ modkey }, "a", function()
-		awful.spawn({ "ibus", "emoji" })
+		spawn({ "ibus", "emoji" })
 	end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" })
 )
 

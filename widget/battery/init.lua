@@ -2,7 +2,7 @@
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 
 local awful = require("awful")
-local naughty = require("naughty")
+local notifs = require("util.notifs")
 local wibox = require("wibox")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -14,11 +14,12 @@ local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/batter
 --beautiful.tooltip_fg = beautiful.fg_normal
 --beautiful.tooltip_bg = beautiful.bg_normal
 
-local function show_battery_warning()
-	naughty.notification({
+---Show a warning about battery level
+---@param charge number? the current charge
+local function show_battery_warning(charge)
+	notifs.normal("Houston, we have a problem", {
 		icon = PATH_TO_ICONS .. "battery-alert.svg",
 		icon_size = dpi(40),
-		text = "Huston, we have a problem",
 		title = ("Battery is dying (%s%%)"):format(charge or "??"),
 		timeout = 5,
 		hover_timeout = 0.5,

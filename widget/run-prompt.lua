@@ -21,9 +21,6 @@ local function Run_prompt(s)
 	promptbox.run = function(...)
 		if promptbox.timer and promptbox.timer.started then
 			promptbox.timer:stop()
-			require("naughty").notify({
-				text = "stop timer",
-			})
 		end
 		old_run(...)
 	end
