@@ -1,10 +1,10 @@
 local filesystem = require("gears.filesystem")
 
--- Thanks to jo148 on github for making rofi dpi aware!
-local xres = require("beautiful").xresources
--- Ends in -show to pick default, but can be overridden by appending a mode
 local function rofi_command(args)
+	-- Thanks to jo148 on github for making rofi dpi aware!
+	local xres = require("beautiful").xresources
 	args = args or {}
+	-- Ends in -show to pick default, but can be overridden by appending a mode
 	local cmd = {
 		"rofi",
 		"-dpi",
