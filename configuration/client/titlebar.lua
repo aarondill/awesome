@@ -23,10 +23,9 @@ client.connect_signal("request::titlebars", function(c)
 			layout = wibox.layout.fixed.horizontal,
 		},
 		{ -- Middle
-			{ -- Title
-				align = "center",
+			gears.table.crush({ -- Title
 				widget = awful.titlebar.widget.titlewidget(c),
-			},
+			}, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
 			buttons = buttons,
 			layout = wibox.layout.flex.horizontal,
 		},
