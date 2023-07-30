@@ -10,9 +10,9 @@ local function rofi_command(args)
 	local cmd = {
 		"rofi",
 		"-dpi",
-		xres.get_dpi(),
+		tostring(xres.get_dpi()),
 		"-width",
-		xres.apply_dpi(400),
+		tostring(xres.apply_dpi(400)),
 		"-theme",
 		filesystem.get_configuration_dir() .. "configuration/rofi.rasi",
 		"-show",
