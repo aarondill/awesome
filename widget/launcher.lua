@@ -24,13 +24,13 @@ function Launcher(_)
 		{
 			"manual",
 			function()
-				spawn(concat_command(apps.default.terminal, { "-e", "man", "awesome" }))
+				apps.open.terminal({ "man", "awesome" })
 			end,
 		},
 		{
 			"edit config",
 			function()
-				spawn(concat_command(apps.default.editor, { awesome.conffile }))
+				apps.open.editor(awesome.conffile)
 			end,
 		},
 		{ "restart", awesome.restart },
@@ -43,7 +43,12 @@ function Launcher(_)
 	}
 
 	local menu_awesome = { "Awesome", awesome_ctrl_menu }
-	local menu_terminal = { "Open Terminal", apps.default.terminal }
+	local menu_terminal = {
+		"Open Terminal",
+		function()
+			apps.open.terminal()
+		end,
+	}
 
 	local mainmenu
 	if has_fdo then
@@ -69,11 +74,14 @@ function Launcher(_)
 		-- resize = true,
 	})
 
-	-- Menubar configuration
-	menubar.utils.terminal = apps.default.terminal -- Set the terminal for applications that require it
-
 	local m = dpi(6)
 	return wibox.container.margin(launcher, m, m, m, m)
 end
+
+-- Menubar configuration
+-- Set the terminal for applications that require it
+-- HACK: to stringify the terminal, since a table is not permitted here.
+menubar.utils.term = concat_command(apps.default.terminal, "")
+menubar.utils.wm_name = "" -- The logic to check is disabled if this is empty :)
 
 return Launcher
