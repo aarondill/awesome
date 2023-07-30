@@ -2,10 +2,10 @@ local filesystem = require("gears.filesystem")
 local concat_command = require("util.concat_command")
 local spawn = require("util.spawn")
 
-local function rofi_command(args)
+local function rofi_command(...)
 	-- Thanks to jo148 on github for making rofi dpi aware!
 	local xres = require("beautiful").xresources
-	args = args or {}
+	local args = { ... }
 	-- Ends in -show to pick default, but can be overridden by appending a mode
 	local cmd = {
 		"rofi",
