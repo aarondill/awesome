@@ -2,8 +2,7 @@
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 
 local awful = require("awful")
-local naughty = require("naughty")
-local notifs = require("notify")
+local notifs = require("util.notifs")
 local wibox = require("wibox")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
