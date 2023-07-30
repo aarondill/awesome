@@ -1,4 +1,6 @@
 local filesystem = require("gears.filesystem")
+local concat_command = require("util.concat_command")
+local spawn = require("util.spawn")
 
 local function rofi_command(args)
 	-- Thanks to jo148 on github for making rofi dpi aware!
@@ -51,6 +53,24 @@ local default = {
 		toggle_mute = { "amixer", "-D", "pulse", "sset", "Master", "toggle" },
 	},
 }
+
+---Open a terminal with the given command
+---@param cmd? string|string[]
+---@param spawn_options SpawnOptions? Options to pass to utils.spawn
+local function open_terminal(cmd, spawn_options)
+	local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
+
+	spawn(do_cmd, spawn_options)
+end
+
+---Open a editor with the given file
+---@param file? string|string[]
+---@param spawn_options SpawnOptions? Options to pass to utils.spawn
+local function open_editor(file, spawn_options)
+	local do_cmd = file and concat_command(concat_command(default.editor, { "-e" }), file) or default.editor
+
+	spawn(do_cmd, spawn_options)
+end
 
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
 if not filesystem.file_executable(notification_daemon) then
@@ -107,5 +127,9 @@ if session_type == "tty" then
 		"infinity",
 	})
 end
+local open = {
+	terminal = open_terminal,
+	editor = open_editor,
+}
 
-return { default = default, run_on_start_up = run_on_start_up }
+return { default = default, run_on_start_up = run_on_start_up, open = open }
