@@ -1,3 +1,5 @@
+local serialize_table = require("util.serialize_table")
+
 local awful = require("awful")
 local naughty = require("naughty")
 local gears = require("gears")
@@ -102,21 +104,15 @@ local globalKeys = gears.table.join(
 	awful.key({}, "Print", function()
 		spawn(apps.default.region_screenshot)
 	end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
-	awful.key({ modkey }, "e", function()
-		spawn(apps.default.editor)
-	end, { description = "Open an editor", group = "launcher" }),
+	awful.key({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
 	awful.key({ modkey }, "b", function()
 		spawn(apps.default.browser, {
 			inherit_stderr = false,
 			inherit_stdout = false,
 		})
 	end, { description = "Open a browser", group = "launcher" }),
-	awful.key({ modkey }, "Return", function()
-		spawn(apps.default.terminal)
-	end, { description = "Open a terminal", group = "launcher" }),
-	awful.key({ modkey }, "x", function()
-		spawn(apps.default.terminal)
-	end, { description = "Open a terminal", group = "launcher" }),
+	awful.key({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
+	awful.key({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
 
 	awful.key({ modkey }, "l", function()
 		awful.tag.incmwfact(0.05)
