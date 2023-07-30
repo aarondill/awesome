@@ -1,5 +1,5 @@
 local gears = require("gears")
-local naughty = require("naughty")
+local notifs = require("util.notifs")
 
 -- NEVER use io.popen. But, I *need* this to be synchronous so the modules are available later in the code.
 -- So, this is a rare exception. This command should only take a long time the first time it is called.
@@ -10,12 +10,12 @@ if io.popen then
 	)
 	local fline = file:read("l") -- Consumes the first line
 	if fline then
-		naughty.notify({ text = "Updating git submodules" })
-		naughty.notify({ text = tostring(fline) })
+		notifs.info({ text = "Updating git submodules" })
+		notifs.info({ text = tostring(fline) })
 	end
 	for line in file:lines("l") do
 		-- Give a progress notification on each line
-		naughty.notify({ text = tostring(line) })
+		notifs.info({ text = tostring(line) })
 	end
 	file:close()
 end

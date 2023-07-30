@@ -1,5 +1,5 @@
 local awful = require("awful")
-local naughty = require("naughty")
+local notifs = require("util.notifs")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local spawn = require("util.spawn")
@@ -42,10 +42,7 @@ local globalKeys = gears.table.join(
 	awful.key({ modkey }, "w", function()
 		local pid_or_err = spawn(apps.default.rofi_window)
 		if type(pid_or_err) == "string" then
-			naughty.notify({
-				text = "Rofi is required to open the window picker.",
-				preset = naughty.config.presets.critical,
-			})
+			notifs.critical("Rofi is required to open the window picker.")
 		end
 	end, { description = "Window Picker", group = "awesome" }),
 

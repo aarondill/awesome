@@ -1,4 +1,5 @@
 local naughty = require("naughty")
+local notifs = require("util.notifs")
 local gears = require("gears")
 local awful = require("awful")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -34,10 +35,8 @@ naughty.config.defaults.hover_timeout = nil
 
 -- Error handling
 if awesome.startup_errors then
-	naughty.notify({
-		preset = naughty.config.presets.critical,
+	notifs.critical(tostring(awesome.startup_errors), {
 		title = "Oops, there were errors during startup!",
-		text = awesome.startup_errors,
 	})
 end
 
@@ -49,10 +48,8 @@ do
 		end
 		in_error = true
 
-		naughty.notify({
-			preset = naughty.config.presets.critical,
+		notifs.critical(tostring(err) .. "\n" .. debug.traceback(nil, 2), {
 			title = "Oops, an error happened!",
-			text = tostring(err) .. "\n" .. debug.traceback(nil, 2),
 		})
 		in_error = false
 	end)
@@ -64,5 +61,5 @@ end
 awesome.connect_signal("debug::deprecate", function(hint, see, args)
 	local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
 
-	naughty.notify({ preset = naughty.config.presets.warn, text = msg })
+	notifs.warn(msg)
 end)

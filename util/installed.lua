@@ -1,5 +1,6 @@
 local awful = require("awful")
 local naughty = require("naughty")
+local notifs = require("util.notifs")
 local handle_error = require("util.handle_error")
 
 -- State to ensure only one notification is sent
@@ -18,10 +19,8 @@ local function installed(program, cb)
 			-- If command not found
 			if exitreason == "exit" and exitcode == 127 then
 				if not has_notified then
-					naughty.notify({
-						preset = naughty.config.presets.warn,
+					notifs.warn("Please ensure 'which' is installed to have a better experience.", {
 						title = "Could not find 'which'",
-						text = "Please ensure 'which' is installed have a better experience.",
 					})
 				end
 			end
