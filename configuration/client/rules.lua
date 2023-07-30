@@ -2,9 +2,8 @@ local awful = require("awful")
 local gears = require("gears")
 local client_keys = require("configuration.keys.client")
 local client_buttons = require("configuration.client.buttons")
-
 -- Rules
-require("ruled").client.append_rules({
+local rules = {
 	-- All clients will match this rule.
 	{
 		rule = {},
@@ -63,4 +62,10 @@ require("ruled").client.append_rules({
 			skip_decoration = true,
 		},
 	},
-})
+}
+
+if awesome.version <= "v4.3" then
+	awful.rules.rules = rules
+else
+	require("ruled").client.append_rules(rules)
+end

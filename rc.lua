@@ -13,6 +13,14 @@ pcall(require, "luarocks.loader")
 
 pcall(require, "awful.autofocus") -- Depreciated in V5
 
+if awesome.version <= "v4.3" then
+	-- Add configuration directory to package.?path so awesome --config FILE works right
+	local gfile = require("gears.filesystem")
+	local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
+	package.path = string.format("%s/?.lua;%s/?/init.lua;%s", conf_dir, conf_dir, package.path)
+	package.cpath = string.format("%s/?.so;%s", conf_dir, package.cpath)
+end
+
 -- Theme
 beautiful.init(require("theme"))
 require("module.notifications")
@@ -48,8 +56,9 @@ awful.mouse.snap.edge_enabled = false
 awful.mouse.snap.client_enabled = false
 awful.mouse.drag_to_tag.enabled = false
 
+local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
 -- Signal function to execute when a new client appears.
-client.connect_signal("request::manage", function(c)
+client.connect_signal(manage_signal, function(c)
 	-- Set the windows at the slave,
 	-- i.e. put it at the end of others instead of setting it master.
 	if not awesome.startup then
@@ -69,8 +78,8 @@ end)
 
 -- Make the focused window have a glowing border
 client.connect_signal("focus", function(c)
-	c.border_color = beautiful.border_color_active
+	c.border_color = awesome.version <= "v4.3" and beautiful.border_focus or beautiful.border_color_active
 end)
 client.connect_signal("unfocus", function(c)
-	c.border_color = beautiful.border_color_normal
+	c.border_color = awesome.version <= "v4.3" and beautiful.border_normal or beautiful.border_color_normal
 end)

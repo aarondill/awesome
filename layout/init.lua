@@ -30,7 +30,8 @@ client.connect_signal("property::fullscreen", function(c)
 	updateBarsVisibility()
 end)
 
-client.connect_signal("request::unmanage", function(c)
+local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
+client.connect_signal(unmanage_signal, function(c)
 	if c.fullscreen then
 		c.screen.selected_tag.fullscreenMode = false
 		updateBarsVisibility()
