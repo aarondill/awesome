@@ -3,6 +3,7 @@ local mat_colors = require("theme.mat-colors")
 local theme_dir = filesystem.get_configuration_dir() .. "/theme"
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
+local theme_assets = require("beautiful.theme_assets")
 local theme = {}
 theme.icons = theme_dir .. "/icons/"
 theme.font = "Roboto medium 10"
@@ -131,6 +132,9 @@ local awesome_overrides = function(theme)
 		.. theme.background.hue_800
 		.. ":1,"
 		.. theme.background.hue_800
+	local taglist_square_size = dpi(4)
+	theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
+	theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
 
 	-- Tasklist
 	theme.tasklist_font = "Roboto medium 11"
