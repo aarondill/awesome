@@ -16,7 +16,7 @@ local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local naughty = require("naughty")
 
 local brightness_widget = nil
-if false then -- HACK: broken in awesome-git
+if false and has_brightness then -- HACK: broken in awesome-git
 	brightness_widget = mat_clickable_cont(Brightness({
 		step = 5,
 		timeout = 10,
