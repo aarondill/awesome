@@ -4,7 +4,6 @@ local DEBUG = require("configuration").DEBUG
 
 local awful = require("awful")
 local gears = require("gears")
-local beautiful = require("beautiful")
 local apps = require("configuration.apps")
 local serialize_table = require("util.serialize_table")
 local file_write = require("util.async_file_write")
@@ -19,7 +18,6 @@ local processes = {}
 local function err(cmd, e)
 	notifs.warn(tostring(e), {
 		title = string.format('Error while starting "%s".', type(cmd) == "table" and table.concat(cmd, " ") or cmd),
-		icon = beautiful.icon_noti_error,
 		timeout = 0,
 	})
 end
