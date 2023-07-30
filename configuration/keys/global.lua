@@ -1,5 +1,3 @@
-local serialize_table = require("util.serialize_table")
-
 local awful = require("awful")
 local naughty = require("naughty")
 local gears = require("gears")
