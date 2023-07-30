@@ -1,5 +1,4 @@
 local awful = require("awful")
-local naughty = require("naughty")
 local notifs = require("util.notifs")
 local handle_error = require("util.handle_error")
 

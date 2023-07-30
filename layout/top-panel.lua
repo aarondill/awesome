@@ -13,14 +13,17 @@ local Battery = require("widget.battery")
 local CPU = require("widget.cpu")
 local Run_prompt = require("widget.run-prompt")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
+local notifs = require("util.notifs")
 
 local brightness_widget = nil
-if has_brightness then
+if awesome.version <= "v4.3" and has_brightness then -- HACK: broken in awesome-git
 	brightness_widget = mat_clickable_cont(Brightness({
 		step = 5,
 		timeout = 10,
 		levels = { 5, 25, 50, 75, 100 },
 	}))
+else
+	notifs.info("Brightness is broken in awesome-git")
 end
 
 -- Titus - Horizontal Tray

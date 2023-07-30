@@ -14,11 +14,11 @@ local icon_template = {
 	margins = dpi(6),
 }
 local text_template = {
-	{
+	gears.table.crush({
 		id = "text_role",
 		widget = wibox.widget.textbox,
-		align = "center",
-	},
+		valign = "center",
+	}, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
 	id = "text_margin_role",
 	widget = wibox.container.margin,
 	left = dpi(6),

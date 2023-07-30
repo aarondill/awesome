@@ -3,7 +3,6 @@ local mat_icon = require("widget.material.icon")
 local icons = require("theme.icons")
 local watch = require("awful.widget.watch")
 local dpi = require("beautiful").xresources.apply_dpi
-local naughty = require("naughty")
 local notifs = require("util.notifs")
 
 local function escape_pattern(str)
@@ -78,7 +77,6 @@ function CPU(args)
 		end)
 		if not ok then
 			notifs.critical(tostring(err), {
-				preset = naughty.config.presets.critical,
 				title = "error",
 			})
 		end

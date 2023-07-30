@@ -37,11 +37,11 @@ local function buildButton(icon, text, on_release)
 			right = dpi(24),
 			clickable,
 		},
-		{
+		gears.table.crush({
 			widget = wibox.widget.textbox,
-			align = "center",
 			text = text,
-		},
+			valign = "center",
+		}, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
 		layout = wibox.layout.fixed.vertical,
 	})
 

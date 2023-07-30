@@ -82,9 +82,11 @@ local function tagCallback(tag)
 	end
 end
 
-client.connect_signal("manage", clientCallback)
+local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
+client.connect_signal(manage_signal, clientCallback)
 
-client.connect_signal("unmanage", clientCallback)
+local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
+client.connect_signal(unmanage_signal, clientCallback)
 
 client.connect_signal("property::hidden", clientCallback)
 

@@ -40,8 +40,14 @@ local awesome_overrides = function(theme)
 	-- Borders
 	theme.useless_gap = dpi(0)
 	theme.border_width = dpi(2)
-	theme.border_normal = theme.background.hue_800
-	theme.border_focus = theme.primary.hue_300
+	if awesome.version <= "v4.3" then
+		theme.border_normal = theme.primary.hue_500
+		theme.border_focus = theme.background.hue_800
+	else
+		theme.border_color_active = theme.primary.hue_500
+		theme.border_color_normal = theme.background.hue_800
+	end
+	theme.border_width = dpi(2)
 	theme.border_marked = "#CC9393"
 
 	-- Menu
@@ -145,11 +151,6 @@ local awesome_overrides = function(theme)
 	theme.tasklist_fg_normal = "#AAAAAA"
 
 	theme.icon_theme = "Papirus-Dark"
-
-	--Client
-	theme.border_width = dpi(2)
-	theme.border_focus = theme.primary.hue_500
-	theme.border_normal = theme.background.hue_800
 end
 return {
 	theme = theme,

@@ -41,8 +41,19 @@ local M = {}
 ---@field actions? function[] Mapping that maps a string to a callback when this action is selected.
 ---@field args.ignore_suspend? boolean If set to true this notification will be shown even if notifications are suspended via `naughty.suspend`. [Default: false]
 
-local function _notify(opts)
-	return naughty.notify(opts)
+---Do NOT call this function directly. Instead, call notify, warn, etc...
+---@param text string?
+---@param opts NotifyOpts This *will* be modified.
+---@return table|nil
+local function _notify(text, opts)
+	text = text or opts.text or opts.message
+	if awesome.version <= "v4.3" then
+		opts.text = text
+		return naughty.notify(opts)
+	else
+		opts.message, opts.text = text, nil
+		return naughty.notification(opts)
+	end
 end
 
 ---@alias loglevel "low"| "normal"| "critical"| "ok"| "info"| "warn"
@@ -69,10 +80,9 @@ function M.notify(loglevel, text, opts)
 
 	opts = opts or {}
 	opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
-	opts.text = text or opts.text
 
 	-- naughty.config.presets.
-	return _notify(opts)
+	return _notify(text, opts)
 end
 
 ---@alias logFunc fun(text: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?

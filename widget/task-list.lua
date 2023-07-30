@@ -135,8 +135,14 @@ local function list_update(w, buttons, label, data, clients)
 		end
 
 		bgb.shape = args.shape
-		bgb.shape_border_width = args.shape_border_width
-		bgb.shape_border_color = args.shape_border_color
+
+		if awesome.version <= "v4.3" then
+			bgb.shape_border_width = args.shape_border_width
+			bgb.shape_border_color = args.shape_border_color
+		else
+			bgb.border_width = args.border_width
+			bgb.border_color = args.border_color
+		end
 
 		w:add(bgb)
 	end
