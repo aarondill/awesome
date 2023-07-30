@@ -47,3 +47,7 @@ end)
 screen.connect_signal("property::geometry", function(s)
 	s:emit_signal("request::wallpaper")
 end)
+
+if awesome.version <= "v4.3" then
+	awful.screen.focused():emit_signal("request::wallpaper")
+end
