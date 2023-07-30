@@ -4,7 +4,6 @@ local DEBUG = require("configuration").DEBUG
 
 local awful = require("awful")
 local gears = require("gears")
-local naughty = require("naughty")
 local beautiful = require("beautiful")
 local apps = require("configuration.apps")
 local serialize_table = require("util.serialize_table")
