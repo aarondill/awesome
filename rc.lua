@@ -1,6 +1,7 @@
 -- awesome_mode: api-level=9999:screen=on
 local awful = require("awful")
 local beautiful = require("beautiful")
+local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 -- Don't show the tmux keymaps
@@ -13,11 +14,12 @@ pcall(require, "luarocks.loader")
 
 pcall(require, "awful.autofocus") -- Depreciated in V5
 
-if awesome.version <= "v4.3" then
-	-- Add configuration directory to package.?path so awesome --config FILE works right
-	local gfile = require("gears.filesystem")
-	local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
+-- Add configuration directory to package.?path so awesome --config FILE works right
+local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
+if not string.find(package.path, conf_dir .. "/?.lua;", nil, true) then -- contains
 	package.path = string.format("%s/?.lua;%s/?/init.lua;%s", conf_dir, conf_dir, package.path)
+end
+if not string.find(package.cpath, conf_dir .. "/?.so;", nil, true) then -- contains
 	package.cpath = string.format("%s/?.so;%s", conf_dir, package.cpath)
 end
 
