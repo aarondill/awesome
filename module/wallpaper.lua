@@ -27,7 +27,7 @@ screen.connect_signal("request::wallpaper", function(s)
 	if not s.selected_tag then return end
 	local wp_path = get_wp_path(s.selected_tag.index)
 	if awesome.version <= "v4.3" then
-		gears.wallpaper.maximized(wp_path, screen)
+		gears.wallpaper.maximized(wp_path, s)
 	else
 		awful.wallpaper({
 			screen = s,
