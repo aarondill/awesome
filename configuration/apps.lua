@@ -111,21 +111,23 @@ local run_on_start_up = {
 	{ filesystem.get_configuration_dir() .. "configuration/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
 }
 
---HACK: Don't use io.popen, but this need to be synchronous.
---This is fixed in the next release of Xorg, but until then, we've got this to inhibit idle timeouts
-local f = assert(io.popen(("loginctl show-session %s -P Type"):format(os.getenv("XDG_SESSION_ID"))))
-local session_type = f:read("l")
-f:close()
-if session_type == "tty" then
-	table.insert(run_on_start_up, {
-		"systemd-inhibit",
-		"--what=idle",
-		"--who=AwesomeWM",
-		"--why=because idle timeout is broken with startx",
-		"--mode=block",
-		"sleep",
-		"infinity",
-	})
+do
+	--HACK: Don't use io.popen, but this needs to be synchronous.
+	--This is fixed in the next release of Xorg, but until then, we've got this to inhibit idle timeouts
+	local f = assert(io.popen(("loginctl show-session %s -P Type"):format(os.getenv("XDG_SESSION_ID"))))
+	local session_type = f:read("l")
+	f:close()
+	if session_type == "tty" then
+		table.insert(run_on_start_up, {
+			"systemd-inhibit",
+			"--what=idle",
+			"--who=AwesomeWM",
+			"--why=because idle timeout is broken with startx",
+			"--mode=block",
+			"sleep",
+			"infinity",
+		})
+	end
 end
 local open = {
 	terminal = open_terminal,
