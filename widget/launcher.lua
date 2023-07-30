@@ -5,6 +5,8 @@ local apps = require("configuration.apps")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local menubar = require("menubar")
 local icons = require("theme.icons")
+local spawn = require("util.spawn")
+local concat_command = require("util.concat_command")
 
 -- Load Debian menu entries
 local has_debian, debian = pcall(require, "debian.menu")
@@ -19,8 +21,18 @@ function Launcher(_)
 				hotkeys_popup.show_help(nil, awful.screen.focused())
 			end,
 		},
-		{ "manual", apps.default.terminal .. " -e man awesome" },
-		{ "edit config", apps.default.editor .. " " .. awesome.conffile },
+		{
+			"manual",
+			function()
+				spawn(concat_command(apps.default.terminal, { "-e", "man", "awesome" }))
+			end,
+		},
+		{
+			"edit config",
+			function()
+				spawn(concat_command(apps.default.editor, { awesome.conffile }))
+			end,
+		},
 		{ "restart", awesome.restart },
 		{
 			"quit",
