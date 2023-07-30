@@ -3,39 +3,52 @@ local filesystem = require("gears.filesystem")
 -- Thanks to jo148 on github for making rofi dpi aware!
 local xres = require("beautiful").xresources
 -- Ends in -show to pick default, but can be overridden by appending a mode
-local rofi_command = string.format(
-	"rofi -dpi '%d' -width '%d' -theme '%s' -show",
-	xres.get_dpi(),
-	xres.apply_dpi(400),
-	("%s/configuration/rofi.rasi"):format(filesystem.get_configuration_dir())
-)
+local function rofi_command(args)
+	args = args or {}
+	local cmd = {
+		"rofi",
+		"-dpi",
+		xres.get_dpi(),
+		"-width",
+		xres.apply_dpi(400),
+		"-theme",
+		filesystem.get_configuration_dir() .. "configuration/rofi.rasi",
+		"-show",
+	}
+	for _, v in ipairs(args) do
+		table.insert(cmd, v)
+	end
+	return cmd
+end
+
 local terminal = "wezterm"
 
 -- List of apps to start by default on some actions - Don't use shell features.
+---@type (string|string[])[]
 local default = {
-	battery_manager = "xfce4-power-manager-settings",
-	system_manager = "gnome-system-monitor",
-	calendar = "gnome-calendar",
+	battery_manager = { "xfce4-power-manager-settings" },
+	system_manager = { "gnome-system-monitor" },
+	calendar = { "gnome-calendar" },
 	-- Above are only used *if* installed
-	terminal = terminal,
-	rofi = rofi_command,
-	rofi_window = rofi_command .. " window",
-	lock = "sh -c 'pgrep -x xss-lock && exec loginctl lock-session || exec lock'", -- Run loginctl if xss-lock is running, otherwise just lock
-	region_screenshot = "flameshot gui -p ~/Pictures/Screenshots/ -c",
-	browser = "sh -c 'exec google-chrome-stable --enable-features=WebUIDarkMode --force-dark-mode \"$@\" 2>/dev/null' --",
-	editor = terminal .. " -e nvim", -- gui text editor
+	terminal = { terminal },
+	rofi = rofi_command(),
+	rofi_window = rofi_command("window"),
+	lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
+	region_screenshot = { "flameshot", "gui", "-p", os.getenv("HOME") .. "/Pictures/Screenshots/", "-c" },
+	browser = { "google-chrome-stable" },
+	editor = { terminal, "-e", "nvim" }, -- gui text editor
 	-- social = "discord",
 	-- game = "steam",
 	-- files = "nautilus",
 	-- music = "spotify",
 	brightness = {
-		up = "brightnessctl set 10%+ -e -n 5",
-		down = "brightnessctl set 10%- -e -n 5",
+		up = { "brightnessctl", "set", "10%+", "-e", "-n", "5" },
+		down = { "brightnessctl", "set", "10%-", "-e", "-n", "5" },
 	},
 	volume = {
-		up = "amixer -D pulse sset Master 5%+ unmute",
-		down = "amixer -D pulse sset Master 5%- unmute",
-		toggle_mute = "amixer -D pulse sset Master toggle",
+		up = { "amixer", "-D", "pulse", "sset", "Master", "5%+", "unmute" },
+		down = { "amixer", "-D", "pulse", "sset", "Master", "5%-", "unmute" },
+		toggle_mute = { "amixer", "-D", "pulse", "sset", "Master", "toggle" },
 	},
 }
 
