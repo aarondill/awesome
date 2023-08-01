@@ -42,11 +42,11 @@ local awesome_overrides = function(theme)
 	theme.useless_gap = dpi(0)
 	theme.border_width = dpi(2)
 	if awesome.version <= "v4.3" then
-		theme.border_normal = theme.primary.hue_500
-		theme.border_focus = theme.background.hue_800
+		theme.border_normal = theme.background.hue_800
+		theme.border_focus = theme.primary.hue_500
 	else
-		theme.border_color_active = theme.primary.hue_500
 		theme.border_color_normal = theme.background.hue_800
+		theme.border_color_active = theme.primary.hue_500
 	end
 	theme.border_width = dpi(2)
 	theme.border_marked = "#CC9393"
