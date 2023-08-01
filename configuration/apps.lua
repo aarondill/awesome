@@ -92,7 +92,7 @@ local run_on_start_up = {
 	"diodon", -- Clipboard after closing window
 	"nm-applet", -- wifi
 	"blueman-applet", --bluetooth
-	{ "systemd-cat", "--identifier=pasystray", "---priority=err", "pasystray", "--no-icon-tooltip" }, -- output to logs
+	{ "systemd-cat", "--identifier=pasystray", "--priority=err", "pasystray", "--no-icon-tooltip" }, -- output to logs
 	-- { "pasystray", "--no-icon-tooltip" }, -- shows an audiocontrol applet in systray when installed.
 	-- "exec xfce4-power-manager", -- Power manager
 	"xset s 0 0", -- disable screen saver
