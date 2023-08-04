@@ -47,6 +47,7 @@ local M = {}
 ---@return table|nil
 local function _notify(text, opts)
 	text = text or opts.text or opts.message
+	text = tostring(text)
 	if awesome.version <= "v4.3" then
 		opts.text = text
 		return naughty.notify(opts)
