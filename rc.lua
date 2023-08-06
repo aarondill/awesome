@@ -23,14 +23,14 @@ if not string.find(package.cpath, conf_dir .. "/?.so;", nil, true) then -- conta
 	package.cpath = string.format("%s/?.so;%s", conf_dir, package.cpath)
 end
 
+-- Set environment variables. (ONLY for POSIX systems)
+require("configuration.environment")()
+
 -- Theme
 beautiful.init(require("theme"))
 require("module.notifications")
 
 require("module.git-submodule")
-
--- Set environment variables. (ONLY for POSIX systems)
-require("configuration.environment")()
 
 -- Layout
 require("layout")
