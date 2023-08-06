@@ -1,3 +1,4 @@
 [submodule "widget/brightness"]
   path = widget/brightness
-	url = https://github.com/deficient/brightness
+  url = https://github.com/aarondill/brightness
+	; url = https://github.com/deficient/brightness
