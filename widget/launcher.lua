@@ -13,69 +13,69 @@ local has_debian, debian = pcall(require, "debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
 
 function Launcher(_)
-	-- Create a launcher widget and a main menu
-	local awesome_ctrl_menu = {
-		{
-			"hotkeys",
-			function()
-				hotkeys_popup.show_help(nil, awful.screen.focused())
-			end,
-		},
-		{
-			"manual",
-			function()
-				apps.open.terminal({ "man", "awesome" })
-			end,
-		},
-		{
-			"edit config",
-			function()
-				apps.open.editor(awesome.conffile)
-			end,
-		},
-		{ "restart", awesome.restart },
-		{
-			"quit",
-			function()
-				awesome.quit()
-			end,
-		},
-	}
+  -- Create a launcher widget and a main menu
+  local awesome_ctrl_menu = {
+    {
+      "hotkeys",
+      function()
+        hotkeys_popup.show_help(nil, awful.screen.focused())
+      end,
+    },
+    {
+      "manual",
+      function()
+        apps.open.terminal({ "man", "awesome" })
+      end,
+    },
+    {
+      "edit config",
+      function()
+        apps.open.editor(awesome.conffile)
+      end,
+    },
+    { "restart", awesome.restart },
+    {
+      "quit",
+      function()
+        awesome.quit()
+      end,
+    },
+  }
 
-	local menu_awesome = { "Awesome", awesome_ctrl_menu }
-	local menu_terminal = {
-		"Open Terminal",
-		function()
-			apps.open.terminal()
-		end,
-	}
+  local menu_awesome = { "Awesome", awesome_ctrl_menu }
+  local menu_terminal = {
+    "Open Terminal",
+    function()
+      apps.open.terminal()
+    end,
+  }
 
-	local mainmenu
-	if has_fdo then
-		mainmenu = freedesktop.menu.build({
-			before = { menu_awesome },
-			after = { menu_terminal },
-		})
-	elseif has_debian then
-		mainmenu = awful.menu({
-			items = {
-				menu_awesome,
-				{ "Debian", debian.menu.Debian_menu.Debian },
-				menu_terminal,
-			},
-		})
-	else
-		mainmenu = awful.menu({ items = { menu_awesome, menu_terminal } })
-	end
+  local mainmenu
+  if has_fdo then
+    mainmenu = freedesktop.menu.build({
+      before = { menu_awesome },
+      after = { menu_terminal },
+    })
+  elseif has_debian then
+    mainmenu = awful.menu({
+      items = {
+        menu_awesome,
+        { "Debian", debian.menu.Debian_menu.Debian },
+        menu_terminal,
+      },
+    })
+  else
+    mainmenu = awful.menu({ items = { menu_awesome, menu_terminal } })
+  end
 
-	local launcher = awful.widget.launcher({
-		menu = mainmenu,
-		image = icons.launcher,
-		-- resize = true,
-	})
+  local launcher = awful.widget.launcher({
+    menu = mainmenu,
+    image = icons.launcher,
+    -- resize = true,
+  })
 
-	local m = dpi(6)
-	return wibox.container.margin(launcher, m, m, m, m)
+  local m = dpi(6)
+  return wibox.container.margin(launcher, m, m, m, m)
 end
 
 -- Menubar configuration

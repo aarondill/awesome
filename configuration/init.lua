@@ -1,5 +1,5 @@
 return {
-	keys = require("configuration.keys"),
-	apps = require("configuration.apps"),
-	DEBUG = false,
+  keys = require("configuration.keys"),
+  apps = require("configuration.apps"),
+  DEBUG = false,
 }

@@ -13,14 +13,14 @@
 --- If table, passed to awful.tag.add(name, table) to create a new tag.
 ---@type tag[]
 local tags = {
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
 }
 return tags

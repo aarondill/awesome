@@ -46,26 +46,26 @@ local awful_spawn = require("awful.spawn")
 ---Note: start_callback only works when opts.sn_rules is given
 ---@source Modified from /usr/share/awesome/lib/awful/spawn.lua
 local function spawn(cmd, opts)
-	if not cmd or #cmd == 0 then
-		error("No command specified.", 2)
-		return -1 -- Should never happen
-	end
-	opts = opts or {}
-	local start_callback, exit_callback = opts.start_callback, opts.exit_callback
-	local use_sn = opts.sn_rules ~= false
-	local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
-	local return_stdout = not opts.inherit_stdout
-	local return_stderr = not opts.inherit_stderr
-	local env_table = opts.env == false and {} or opts.env
-	local pid_or_error, snid, stdin, stdout, stderr =
-		capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
-	if snid then -- The snid will be nil in case of failure
-		local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
-		if awful_spawn.snid_buffer then -- else fail silently
-			awful_spawn.snid_buffer[snid] = { sn_rules, { start_callback } }
-		end
-	end
-	return pid_or_error, snid, stdin, stdout, stderr
+  if not cmd or #cmd == 0 then
+    error("No command specified.", 2)
+    return -1 -- Should never happen
+  end
+  opts = opts or {}
+  local start_callback, exit_callback = opts.start_callback, opts.exit_callback
+  local use_sn = opts.sn_rules ~= false
+  local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
+  local return_stdout = not opts.inherit_stdout
+  local return_stderr = not opts.inherit_stderr
+  local env_table = opts.env == false and {} or opts.env
+  local pid_or_error, snid, stdin, stdout, stderr =
+    capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
+  if snid then -- The snid will be nil in case of failure
+    local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
+    if awful_spawn.snid_buffer then -- else fail silently
+      awful_spawn.snid_buffer[snid] = { sn_rules, { start_callback } }
+    end
+  end
+  return pid_or_error, snid, stdin, stdout, stderr
 end
 
 return spawn

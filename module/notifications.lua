@@ -11,9 +11,9 @@ naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/
 awful.spawn.easy_async("find /usr/share/icons -maxdepth 1 -mindepth 1 -type d -print", function(stdout, _, _, exitcode)
   -- stylua: ignore
 	if exitcode ~= 0 then return end
-	for line in stdout:gmatch("(.-)\n") do
-		table.insert(naughty.config.icon_dirs, line)
-	end
+  for line in stdout:gmatch("(.-)\n") do
+    table.insert(naughty.config.icon_dirs, line)
+  end
 end)
 
 -- Naughty presets
@@ -35,31 +35,31 @@ naughty.config.defaults.hover_timeout = nil
 
 -- Error handling
 if awesome.startup_errors then
-	notifs.critical(tostring(awesome.startup_errors), {
-		title = "Oops, there were errors during startup!",
-	})
+  notifs.critical(tostring(awesome.startup_errors), {
+    title = "Oops, there were errors during startup!",
+  })
 end
 
 do
-	local in_error = false
-	awesome.connect_signal("debug::error", function(err)
-		if in_error then
-			return
-		end
-		in_error = true
+  local in_error = false
+  awesome.connect_signal("debug::error", function(err)
+    if in_error then
+      return
+    end
+    in_error = true
 
-		notifs.critical(tostring(err) .. "\n" .. debug.traceback(nil, 2), {
-			title = "Oops, an error happened!",
-		})
-		in_error = false
-	end)
+    notifs.critical(tostring(err) .. "\n" .. debug.traceback(nil, 2), {
+      title = "Oops, an error happened!",
+    })
+    in_error = false
+  end)
 end
 
 ---@param hint string String with a hint on what to use instead of the deprecated functionality.
 ---@param see string? The name of the newer API (default nil)
 ---@param args table? The args to gears.depreciate? I think?
 awesome.connect_signal("debug::deprecate", function(hint, see, args)
-	local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
+  local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
 
-	notifs.warn(msg)
+  notifs.warn(msg)
 end)

@@ -3,12 +3,12 @@
 ---@param command string[]
 ---@return string
 local function stringify_command(command)
-	local new_command, format = "", "%s '%s'"
-	for _, arg in ipairs(command) do
-		new_command = string.format(format, new_command, arg)
-	end
-	new_command = new_command:match("^%s*(.-)%s*$") -- Remove leading/trailing whitespace
-	return new_command
+  local new_command, format = "", "%s '%s'"
+  for _, arg in ipairs(command) do
+    new_command = string.format(format, new_command, arg)
+  end
+  new_command = new_command:match("^%s*(.-)%s*$") -- Remove leading/trailing whitespace
+  return new_command
 end
 
 ---Modifies a_table!
@@ -17,10 +17,10 @@ end
 ---@param b_table table
 ---@return table
 local function table_merge_append(a_table, b_table)
-	for _, i in ipairs(b_table) do
-		table.insert(a_table, i)
-	end
-	return a_table
+  for _, i in ipairs(b_table) do
+    table.insert(a_table, i)
+  end
+  return a_table
 end
 
 ---concat_command when command is a table
@@ -28,14 +28,14 @@ end
 ---@param args string|string[]
 ---@return string[]|string new_cmd string if args is a string
 local function __concat_command_tbl(command, args)
-	if type(args) == "string" then
-		return stringify_command(command) .. " " .. args
-	end
-	-- shallow copy the table.
-	-- This shouldn't be an issue since strings are stateless
-	---@type string[]
-	local new_command = table.move(command, 1, #command, 1, {})
-	return table_merge_append(new_command, args)
+  if type(args) == "string" then
+    return stringify_command(command) .. " " .. args
+  end
+  -- shallow copy the table.
+  -- This shouldn't be an issue since strings are stateless
+  ---@type string[]
+  local new_command = table.move(command, 1, #command, 1, {})
+  return table_merge_append(new_command, args)
 end
 
 ---concat_command when command is a string
@@ -43,11 +43,11 @@ end
 ---@param args string|string[]
 ---@return string new_cmd
 local function __concat_command_str(command, args)
-	if type(args) == "string" then
-		return command .. " " .. args
-	end
+  if type(args) == "string" then
+    return command .. " " .. args
+  end
 
-	return command .. stringify_command(args) -- handles quotes
+  return command .. stringify_command(args) -- handles quotes
 end
 
 ---Concat arguments to a command.
@@ -61,20 +61,20 @@ end
 ---@overload fun(command: string, args: string|string[]): string
 ---@overload fun(command: string[]|string, args: string): string
 local function concat_command(command, args)
-	do
-		local t_args = type(args)
-		if t_args ~= "string" and t_args ~= "table" then
-			error("args must be a string or a table", 2)
-		end
-	end
+  do
+    local t_args = type(args)
+    if t_args ~= "string" and t_args ~= "table" then
+      error("args must be a string or a table", 2)
+    end
+  end
 
-	if type(command) == "string" then
-		return __concat_command_str(command, args)
-	elseif type(command) == "table" then
-		return __concat_command_tbl(command, args)
-	else
-		error("command must be a string or table", 2)
-	end
+  if type(command) == "string" then
+    return __concat_command_str(command, args)
+  elseif type(command) == "table" then
+    return __concat_command_tbl(command, args)
+  else
+    error("command must be a string or table", 2)
+  end
 end
 
 return concat_command

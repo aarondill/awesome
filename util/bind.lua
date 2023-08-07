@@ -5,11 +5,11 @@
 ---@param ... unknown
 ---@return fun(...: unknown): Ret
 local function bind(func, ...)
-	local outer = { ... }
-	return function(...)
-		local args = { table.unpack(outer), ... }
-		return func(table.unpack(args))
-	end
+  local outer = { ... }
+  return function(...)
+    local args = { table.unpack(outer), ... }
+    return func(table.unpack(args))
+  end
 end
 
 return bind

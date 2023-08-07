@@ -17,17 +17,17 @@ local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/batter
 ---Show a warning about battery level
 ---@param charge number? the current charge
 local function show_battery_warning(charge)
-	notifs.normal("Houston, we have a problem", {
-		icon = PATH_TO_ICONS .. "battery-alert.svg",
-		icon_size = dpi(40),
-		title = ("Battery is dying (%s%%)"):format(charge or "??"),
-		timeout = 5,
-		hover_timeout = 0.5,
-		position = "bottom_left",
-		bg = "#d32f2f",
-		fg = "#EEE9EF",
-		width = 248,
-	})
+  notifs.normal("Houston, we have a problem", {
+    icon = PATH_TO_ICONS .. "battery-alert.svg",
+    icon_size = dpi(40),
+    title = ("Battery is dying (%s%%)"):format(charge or "??"),
+    timeout = 5,
+    hover_timeout = 0.5,
+    position = "bottom_left",
+    bg = "#d32f2f",
+    fg = "#EEE9EF",
+    width = 248,
+  })
 end
 
 ---@class BatteryWidgetConfig
@@ -44,122 +44,122 @@ end
 ---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
 function Battery(args)
-	args = args or {}
-	local M_battery_path = args.battery_path or nil
+  args = args or {}
+  local M_battery_path = args.battery_path or nil
 
-	local widget = wibox.widget({
-		{
-			id = "icon",
-			widget = wibox.widget.imagebox,
-			resize = true,
-			image = PATH_TO_ICONS .. "battery.svg",
-		},
-		{
-			id = "text",
-			widget = wibox.widget.textbox,
-			text = "100%",
-		},
-		layout = wibox.layout.fixed.horizontal,
-	})
+  local widget = wibox.widget({
+    {
+      id = "icon",
+      widget = wibox.widget.imagebox,
+      resize = true,
+      image = PATH_TO_ICONS .. "battery.svg",
+    },
+    {
+      id = "text",
+      widget = wibox.widget.textbox,
+      text = "100%",
+    },
+    layout = wibox.layout.fixed.horizontal,
+  })
 
-	local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
+  local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
 
-	-- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
-	local battery_popup = awful.tooltip({
-		objects = { widget_button },
-		mode = "outside",
-		align = "left",
-		text = "No Battery Found",
-		preferred_positions = { "right", "left", "top", "bottom" },
-	})
+  -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
+  local battery_popup = awful.tooltip({
+    objects = { widget_button },
+    mode = "outside",
+    align = "left",
+    text = "No Battery Found",
+    preferred_positions = { "right", "left", "top", "bottom" },
+  })
 
-	local function get_bat_info(battery_path, callback_fn)
-		local status, capacity
-		local function get_capacity(stdout)
-			capacity = stdout:match("(%d+)\n")
-			callback_fn(capacity, status)
-		end
-		local function get_status(stdout)
-			status = stdout:match("(.+)\n")
-			awful.spawn.easy_async({ "cat", battery_path .. "/capacity" }, get_capacity)
-		end
-		awful.spawn.easy_async({ "cat", battery_path .. "/status" }, get_status)
-	end
+  local function get_bat_info(battery_path, callback_fn)
+    local status, capacity
+    local function get_capacity(stdout)
+      capacity = stdout:match("(%d+)\n")
+      callback_fn(capacity, status)
+    end
+    local function get_status(stdout)
+      status = stdout:match("(.+)\n")
+      awful.spawn.easy_async({ "cat", battery_path .. "/capacity" }, get_capacity)
+    end
+    awful.spawn.easy_async({ "cat", battery_path .. "/status" }, get_status)
+  end
 
-	local last_battery_check = os.time()
-	local function set_bat_cb()
+  local last_battery_check = os.time()
+  local function set_bat_cb()
     -- stylua: ignore
 		if not M_battery_path then return true end
 
-		---@param capacity string?
-		---@param status string?
-		get_bat_info(M_battery_path, function(capacity, status)
-			local batteryIconName = "battery"
-			local charge = tonumber(capacity) or 0
+    ---@param capacity string?
+    ---@param status string?
+    get_bat_info(M_battery_path, function(capacity, status)
+      local batteryIconName = "battery"
+      local charge = tonumber(capacity) or 0
 
-			if status ~= "Charging" and charge >= 0 and charge <= (args.low_power or 15) then
-				if os.difftime(os.time(), last_battery_check) >= (args.low_power_frequency or 300) then
-					-- if 5 minutes have elapsed since the last warning
-					last_battery_check = os.time()
+      if status ~= "Charging" and charge >= 0 and charge <= (args.low_power or 15) then
+        if os.difftime(os.time(), last_battery_check) >= (args.low_power_frequency or 300) then
+          -- if 5 minutes have elapsed since the last warning
+          last_battery_check = os.time()
 
-					show_battery_warning(charge)
-				end
-			end
-			if status == "Charging" or status == "Full" then
-				batteryIconName = batteryIconName .. "-charging"
-			end
+          show_battery_warning(charge)
+        end
+      end
+      if status == "Charging" or status == "Full" then
+        batteryIconName = batteryIconName .. "-charging"
+      end
 
-			local roundedCharge = math.floor(charge / 10) * 10
-			if roundedCharge == 0 then
-				batteryIconName = batteryIconName .. "-outline"
-			elseif roundedCharge ~= 100 then
-				batteryIconName = batteryIconName .. "-" .. roundedCharge
-			end
+      local roundedCharge = math.floor(charge / 10) * 10
+      if roundedCharge == 0 then
+        batteryIconName = batteryIconName .. "-outline"
+      elseif roundedCharge ~= 100 then
+        batteryIconName = batteryIconName .. "-" .. roundedCharge
+      end
 
-			widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
-			local f_charge = math.floor(charge)
-			local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
-			widget.text:set_text(non_nan_charge .. "%")
-			-- Update popup text
-			battery_popup.text = status
-			collectgarbage("collect")
-		end)
-		return true
-	end
+      widget.icon:set_image(PATH_TO_ICONS .. batteryIconName .. ".svg")
+      local f_charge = math.floor(charge)
+      local non_nan_charge = (f_charge ~= f_charge) and 100 or f_charge
+      widget.text:set_text(non_nan_charge .. "%")
+      -- Update popup text
+      battery_popup.text = status
+      collectgarbage("collect")
+    end)
+    return true
+  end
 
-	local timer = gears.timer.new({
-		timeout = args.timeout or 15,
-		call_now = true,
-		autostart = false,
-		callback = set_bat_cb,
-	})
-	if M_battery_path then
-		set_bat_cb()
-		timer:start()
-	else
-		awful.spawn.easy_async({
-			"find",
-			"-L", -- follow links
-			"/sys/class/power_supply/",
-			"-mindepth",
-			"1",
-			"-maxdepth",
-			"1",
-			"-name",
-			"BAT*",
-			"-type",
-			"d",
-			"-printf",
-			"%p\n",
-		}, function(stdout)
-			-- The path to the battery
-			M_battery_path = stdout:match("([^\n]+)")
-			set_bat_cb()
-			timer:start()
-		end)
-	end
+  local timer = gears.timer.new({
+    timeout = args.timeout or 15,
+    call_now = true,
+    autostart = false,
+    callback = set_bat_cb,
+  })
+  if M_battery_path then
+    set_bat_cb()
+    timer:start()
+  else
+    awful.spawn.easy_async({
+      "find",
+      "-L", -- follow links
+      "/sys/class/power_supply/",
+      "-mindepth",
+      "1",
+      "-maxdepth",
+      "1",
+      "-name",
+      "BAT*",
+      "-type",
+      "d",
+      "-printf",
+      "%p\n",
+    }, function(stdout)
+      -- The path to the battery
+      M_battery_path = stdout:match("([^\n]+)")
+      set_bat_cb()
+      timer:start()
+    end)
+  end
 
-	return widget_button
+  return widget_button
 end
 
 return Battery

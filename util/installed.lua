@@ -12,25 +12,25 @@ local has_notified = false
 ---WARNING: Use sparingly, as this function must call 'which' and wait for it's response.
 ---If possible, cache the results and avoid calling it again.
 local function installed(program, cb)
-	awful.spawn.easy_async(
-		{ "which", program },
-		handle_error(function(stdout, _, exitreason, exitcode)
-			-- If command not found
-			if exitreason == "exit" and exitcode == 127 then
-				if not has_notified then
-					notifs.warn("Please ensure 'which' is installed to have a better experience.", {
-						title = "Could not find 'which'",
-					})
-				end
-			end
+  awful.spawn.easy_async(
+    { "which", program },
+    handle_error(function(stdout, _, exitreason, exitcode)
+      -- If command not found
+      if exitreason == "exit" and exitcode == 127 then
+        if not has_notified then
+          notifs.warn("Please ensure 'which' is installed to have a better experience.", {
+            title = "Could not find 'which'",
+          })
+        end
+      end
 
-			if exitreason == "exit" and exitcode == 0 then
-				cb(stdout)
-			else
-				cb(nil)
-			end
-		end)
-	)
+      if exitreason == "exit" and exitcode == 0 then
+        cb(stdout)
+      else
+        cb(nil)
+      end
+    end)
+  )
 end
 
 return installed

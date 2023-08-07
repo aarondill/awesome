@@ -46,15 +46,15 @@ local M = {}
 ---@param opts NotifyOpts This *will* be modified.
 ---@return table|nil
 local function _notify(text, opts)
-	text = text or opts.text or opts.message
-	text = tostring(text)
-	if awesome.version <= "v4.3" then
-		opts.text = text
-		return naughty.notify(opts)
-	else
-		opts.message, opts.text = text, nil
-		return naughty.notification(opts)
-	end
+  text = text or opts.text or opts.message
+  text = tostring(text)
+  if awesome.version <= "v4.3" then
+    opts.text = text
+    return naughty.notify(opts)
+  else
+    opts.message, opts.text = text, nil
+    return naughty.notification(opts)
+  end
 end
 
 ---@alias loglevel "low"| "normal"| "critical"| "ok"| "info"| "warn"
@@ -70,20 +70,20 @@ end
 ---@overload fun(opts: NotifyOpts): notification?
 ---@overload fun(loglevel: loglevel, opts?: NotifyOpts): notification?
 function M.notify(loglevel, text, opts)
-	if type(loglevel) == "table" then
-		opts = loglevel
-		loglevel = nil
-		text = nil
-	elseif type(text) == "table" then
-		opts = text
-		text = nil
-	end
+  if type(loglevel) == "table" then
+    opts = loglevel
+    loglevel = nil
+    text = nil
+  elseif type(text) == "table" then
+    opts = text
+    text = nil
+  end
 
-	opts = opts or {}
-	opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
+  opts = opts or {}
+  opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
 
-	-- naughty.config.presets.
-	return _notify(text, opts)
+  -- naughty.config.presets.
+  return _notify(text, opts)
 end
 
 ---@alias logFunc fun(text: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
