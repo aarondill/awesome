@@ -14,6 +14,7 @@ local CPU = require("widget.cpu")
 local Run_prompt = require("widget.run-prompt")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local notifs = require("util.notifs")
+local spawn = require("util.spawn")
 
 local brightness_widget = nil
 if awesome.version <= "v4.3" and has_brightness then -- HACK: broken in awesome-git
@@ -100,22 +101,31 @@ local TopPanel = function(s)
   end)
 
   -- Setup click click handler if calendar is installed
-  make_clickable_if_prog(apps.default.calendar, clock_widget, panel.widget, function(path)
+  make_clickable_if_prog(apps.default.calendar, clock_widget, panel.widget, function(_)
     -- Hide the calendar on click (won't hide otherwise)
     month_calendar.visible = false
     -- needed to ensure it reapears on next mouse-over
     month_calendar._calendar_clicked_on = false
-    awful.spawn(path)
+    spawn(apps.default.calendar, {
+      inherit_stderr = false,
+      inherit_stdout = false,
+    })
   end)
 
   -- Check if battery_manager is available
-  make_clickable_if_prog(apps.default.battery_manager, battery_widget, panel.widget, function(path)
-    awful.spawn(path)
+  make_clickable_if_prog(apps.default.battery_manager, battery_widget, panel.widget, function(_)
+    spawn(apps.default.battery_manager, {
+      inherit_stderr = false,
+      inherit_stdout = false,
+    })
   end)
 
   -- Check if system_manager is available
-  make_clickable_if_prog(apps.default.system_manager, cpu_widget, panel.widget, function(path)
-    awful.spawn(path)
+  make_clickable_if_prog(apps.default.system_manager, cpu_widget, panel.widget, function(_)
+    spawn(apps.default.system_manager, {
+      inherit_stderr = false,
+      inherit_stdout = false,
+    })
   end)
 
   return panel

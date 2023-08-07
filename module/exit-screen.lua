@@ -7,6 +7,7 @@ local clickable_container = require("widget.material.clickable-container")
 local apps = require("configuration.apps")
 local dpi = require("beautiful").xresources.apply_dpi
 local handle_error = require("util.handle_error")
+local spawn = require("util.spawn")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
@@ -85,8 +86,8 @@ end
 
 local function suspend_command()
   exit_screen_hide()
-  awful.spawn(apps.default.lock, false) -- This doesn't block
-  awful.spawn({ "systemctl", "suspend" }, false)
+  spawn(apps.default.lock, { sn_rules = false }) -- This doesn't block
+  spawn({ "systemctl", "suspend" }, { sn_rules = false })
 end
 local function exit_command()
   exit_screen_hide()
@@ -94,15 +95,15 @@ local function exit_command()
 end
 local function lock_command()
   exit_screen_hide()
-  awful.spawn(apps.default.lock, false)
+  spawn(apps.default.lock, { sn_rules = false })
 end
 local function poweroff_command()
   exit_screen_hide()
-  awful.spawn("poweroff", false)
+  spawn("poweroff", { sn_rules = false })
 end
 local function reboot_command()
   exit_screen_hide()
-  awful.spawn("reboot", false)
+  spawn("reboot", { sn_rules = false })
 end
 
 local poweroff = buildButton(icons.power, "Poweroff (p)", handle_error(poweroff_command))

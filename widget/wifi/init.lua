@@ -14,6 +14,7 @@ local wibox = require("wibox")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
+local spawn = require("util.spawn")
 
 -- acpi sample outputs
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
@@ -35,7 +36,7 @@ local widget = wibox.widget({
 
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
 widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
-  awful.spawn("wicd-client -n", false)
+  spawn("wicd-client -n", { sn_rules = false })
 end)))
 -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
 awful.tooltip({
@@ -56,7 +57,7 @@ awful.tooltip({
 
 local function grabText()
   if connected then
-    awful.spawn.easy_async("iw dev " .. interface .. " link", function(stdout)
+    awful.spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout)
       essid = stdout:match("SSID:(.-)\n")
       if essid == nil then
         essid = "N/A"
