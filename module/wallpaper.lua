@@ -42,7 +42,9 @@ screen.connect_signal("request::wallpaper", function(s)
 end)
 
 awful.tag.attached_connect_signal(nil, "property::selected", function(tag)
-	tag.screen:emit_signal("request::wallpaper")
+  if tag.screen then
+    tag.screen:emit_signal("request::wallpaper")
+  end
 end)
 screen.connect_signal("property::geometry", function(s)
 	s:emit_signal("request::wallpaper")
