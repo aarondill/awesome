@@ -20,9 +20,7 @@ local function Run_prompt(s)
 
   local old_run = promptbox.run
   promptbox.run = function(...)
-    if promptbox.timer and promptbox.timer.started then
-      promptbox.timer:stop()
-    end
+    if promptbox.timer and promptbox.timer.started then promptbox.timer:stop() end
     old_run(...)
   end
   promptbox.exe_callback = function(cmd)
@@ -30,9 +28,7 @@ local function Run_prompt(s)
     if type(result) == "string" then
       promptbox.widget:set_text(result)
 
-      if promptbox.timer and promptbox.timer.again then
-        promptbox.timer:again()
-      end
+      if promptbox.timer and promptbox.timer.again then promptbox.timer:again() end
     end
   end
   s.run_promptbox = promptbox -- HACK: Attaches to screen object. I don't know how else to do this.

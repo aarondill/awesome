@@ -2,16 +2,14 @@ local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local capi = { button = button }
-local gears = require("gears")
 local clickable_container = require("widget.material.clickable-container")
+local gears = require("gears")
 ---Common method to create buttons.
 ---@param buttons table?
 ---@param object table
 ---@return table?
 local function create_buttons(buttons, object)
-  if not buttons then
-    return nil
-  end
+  if not buttons then return nil end
   local btns = {}
   for _, b in ipairs(buttons) do
     -- Create a proxy button object: it will receive the real
@@ -120,9 +118,7 @@ local function list_update(w, buttons, label, data, clients)
       end
       tt:set_text(textOnly)
       tt:add_to_object(tb)
-      if not tb:set_markup_silently(text) then
-        tb:set_markup("<i>&lt;Invalid text&gt;</i>")
-      end
+      if not tb:set_markup_silently(text) then tb:set_markup("<i>&lt;Invalid text&gt;</i>") end
     end
     bgb:set_bg(bg)
     bgb:set_bgimage(bg_image)
@@ -155,9 +151,7 @@ local tasklist_buttons = gears.table.join(
       -- Without this, the following
       -- :isvisible() makes no sense
       c.minimized = false
-      if not c:isvisible() and c.first_tag then
-        c.first_tag:view_only()
-      end
+      if not c:isvisible() and c.first_tag then c.first_tag:view_only() end
       -- This will also un-minimize
       -- the client, if needed
       client.focus = c

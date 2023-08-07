@@ -1,13 +1,11 @@
 local awful = require("awful")
 local gears = require("gears")
-local tags = require("configuration.tags")
 local layouts = require("configuration.layouts")
+local tags = require("configuration.tags")
 
 awful.screen.connect_for_each_screen(function(s)
   for i, tag in pairs(tags) do
-    if not tag then
-      goto continue
-    end
+    if not tag then goto continue end
     if type(tag) ~= "table" then
       if type(tag) == "function" then
         -- Screen, index, array
@@ -29,9 +27,7 @@ awful.screen.connect_for_each_screen(function(s)
     }, tag or {})
 
     -- icon_only not specified, but icon is. Default to only icon.
-    if tag.icon_only == nil and tag.icon and not tag.name then
-      params.icon_only = true
-    end
+    if tag.icon_only == nil and tag.icon and not tag.name then params.icon_only = true end
 
     awful.tag.add(params.name, params)
     ::continue::

@@ -1,7 +1,7 @@
-local wibox = require("wibox")
-local mat_icon = require("widget.material.icon")
 local icons = require("theme.icons")
+local mat_icon = require("widget.material.icon")
 local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local notifs = require("util.notifs")
 
@@ -75,11 +75,9 @@ function CPU(args)
       cpu_total_prev = cpu_total
       idle_prev = idle
     end)
-    if not ok then
-      notifs.critical(tostring(err), {
-        title = "error",
-      })
-    end
+    if not ok then notifs.critical(tostring(err), {
+      title = "error",
+    }) end
     collectgarbage("collect")
   end)
 

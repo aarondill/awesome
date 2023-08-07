@@ -28,9 +28,7 @@ end
 ---@param args string|string[]
 ---@return string[]|string new_cmd string if args is a string
 local function __concat_command_tbl(command, args)
-  if type(args) == "string" then
-    return stringify_command(command) .. " " .. args
-  end
+  if type(args) == "string" then return stringify_command(command) .. " " .. args end
   -- shallow copy the table.
   -- This shouldn't be an issue since strings are stateless
   ---@type string[]
@@ -43,9 +41,7 @@ end
 ---@param args string|string[]
 ---@return string new_cmd
 local function __concat_command_str(command, args)
-  if type(args) == "string" then
-    return command .. " " .. args
-  end
+  if type(args) == "string" then return command .. " " .. args end
 
   return command .. stringify_command(args) -- handles quotes
 end
@@ -63,9 +59,7 @@ end
 local function concat_command(command, args)
   do
     local t_args = type(args)
-    if t_args ~= "string" and t_args ~= "table" then
-      error("args must be a string or a table", 2)
-    end
+    if t_args ~= "string" and t_args ~= "table" then error("args must be a string or a table", 2) end
   end
 
   if type(command) == "string" then

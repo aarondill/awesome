@@ -2,12 +2,12 @@
 -- Run all the apps listed in configuration/apps.lua as run_on_start_up only once when awesome start
 local DEBUG = require("configuration").DEBUG
 
-local awful = require("awful")
-local gears = require("gears")
 local apps = require("configuration.apps")
-local serialize_table = require("util.serialize_table")
+local awful = require("awful")
 local file_write = require("util.async_file_write")
+local gears = require("gears")
 local notifs = require("util.notifs")
+local serialize_table = require("util.serialize_table")
 
 --- Directory for logging failed(?) application's output
 --- This *MUST* end in a slash
@@ -25,13 +25,9 @@ end
 ---@param cmd string|string[] the thing to run
 ---@return integer? pid of the process or nil if error
 local function run_once(cmd)
-  if not cmd then
-    return nil
-  end
+  if not cmd then return nil end
   ---@type string|string[]
-  if not type(cmd) == "string" and not type(cmd) == "table" then
-    error("Startup apps must be string or table")
-  end
+  if not type(cmd) == "string" and not type(cmd) == "table" then error("Startup apps must be string or table") end
 
   --- Used in log to ensure that the date matches the *start* date, not the *end* date
   local CMD_DATE = os.date() ---@cast CMD_DATE string
@@ -42,9 +38,7 @@ local function run_once(cmd)
     ---@param exitreason "exit"|"signal"
     ---@param exitcode integer
     function(stdout, stderr, exitreason, exitcode)
-      if exitreason == "exit" and exitcode == 0 then
-        return
-      end
+      if exitreason == "exit" and exitcode == 0 then return end
       if exitreason == "exit" and exitcode == 127 and not DEBUG then
         -- Command not found.
         -- I don't want a warning.
@@ -103,9 +97,7 @@ end
 
 for _, app in ipairs(apps.run_on_start_up) do
   local pid = run_once(app)
-  if pid then
-    processes[app] = pid
-  end
+  if pid then processes[app] = pid end
 end
 -- Kill them all on exit
 awesome.connect_signal("exit", function(_)

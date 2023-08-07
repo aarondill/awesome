@@ -1,7 +1,7 @@
+local awful = require("awful")
+local gears = require("gears")
 local naughty = require("naughty")
 local notifs = require("util.notifs")
-local gears = require("gears")
-local awful = require("awful")
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Icon directories have to be hard coded.
@@ -43,9 +43,7 @@ end
 do
   local in_error = false
   awesome.connect_signal("debug::error", function(err)
-    if in_error then
-      return
-    end
+    if in_error then return end
     in_error = true
 
     notifs.critical(tostring(err) .. "\n" .. debug.traceback(nil, 2), {

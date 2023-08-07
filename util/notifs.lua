@@ -1,6 +1,6 @@
-local naughty = require("naughty")
-local gtable = require("gears.table")
 local bind = require("util.bind")
+local gtable = require("gears.table")
+local naughty = require("naughty")
 
 local M = {}
 

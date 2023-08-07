@@ -5,8 +5,8 @@ local setmetatable = setmetatable
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Commons requirements
-local wibox = require("wibox")
 local clickable_container = require("widget.material.clickable-container")
+local wibox = require("wibox")
 -- Local declarations
 
 local mat_list_item = { mt = {} }
@@ -37,9 +37,7 @@ function mat_list_item:layout(_, width, height)
   local layout = {}
 
   -- Add divider if present
-  if self._private.divider then
-    table.insert(layout, base.place_widget_at(self._private.separator, 0, 0, width, 1))
-  end
+  if self._private.divider then table.insert(layout, base.place_widget_at(self._private.separator, 0, 0, width, 1)) end
 
   -- Add clickable_container if clickable
   if self._private.clickable then
@@ -73,9 +71,7 @@ function mat_list_item:set_clickable(value)
     self:emit_signal("property::clickable")
     self:emit_signal("widget::layout_changed")
 
-    if self._private.clickable and not self._private.clickable_container then
-      self:build_clickable_container()
-    end
+    if self._private.clickable and not self._private.clickable_container then self:build_clickable_container() end
   end
 end
 
@@ -91,9 +87,7 @@ function mat_list_item:set_divider(value)
     self:emit_signal("property::divider")
     self:emit_signal("widget::layout_changed")
 
-    if self._private.divider and not self._private.separator then
-      self:build_separator()
-    end
+    if self._private.divider and not self._private.separator then self:build_separator() end
   end
 end
 
@@ -102,9 +96,7 @@ function mat_list_item:get_divider()
 end
 
 function mat_list_item:set_prefix(widget)
-  if widget then
-    base.check_widget(widget)
-  end
+  if widget then base.check_widget(widget) end
   self._private.prefix = widget
   self:emit_signal("widget::layout_changed")
 end
@@ -114,9 +106,7 @@ function mat_list_item:get_prefix()
 end
 
 function mat_list_item:set_suffix(widget)
-  if widget then
-    base.check_widget(widget)
-  end
+  if widget then base.check_widget(widget) end
   self._private.suffix = widget
   self:emit_signal("widget::layout_changed")
 end
@@ -130,9 +120,7 @@ end
 -- @tparam widget widget The widget
 
 function mat_list_item:set_content(widget)
-  if widget then
-    base.check_widget(widget)
-  end
+  if widget then base.check_widget(widget) end
   self._private.content = widget
   self:emit_signal("widget::layout_changed")
 end
@@ -157,9 +145,7 @@ function mat_list_item:set_children(children)
     self:set_prefix(children[1])
     self:set_content(children[2])
   end
-  if children[3] then
-    self:set_suffix(children[3])
-  end
+  if children[3] then self:set_suffix(children[3]) end
 end
 
 local function new(widget)

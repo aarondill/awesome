@@ -5,22 +5,16 @@
 ---@param to table what to replace with
 local function replace_in_widget(widget, from, to)
   -- Likely passed wrong thing
-  if widget.widget then
-    widget = widget.widget
-  end
+  if widget.widget then widget = widget.widget end
 
   local seen = {}
   for _, c in ipairs(widget.children) do
     -- If nil or already seen (avoid infinite loop)
-    if not c or seen[c] then
-      goto continue
-    end
+    if not c or seen[c] then goto continue end
 
     seen[c] = true
 
-    if c.children then
-      replace_in_widget(c, from, to)
-    end
+    if c.children then replace_in_widget(c, from, to) end
 
     if type(c.replace_widget) == "function" then
       -- Replace "all" instances of the placeholder with the real thing

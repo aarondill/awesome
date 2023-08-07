@@ -13,9 +13,7 @@ SAVE_FROM_GARBAGE_COLLECTION = SAVE_FROM_GARBAGE_COLLECTION
 ---@param cb fun()? function to call when done.
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_write(path, content, cb)
-  if type(path) ~= "string" or type(content) ~= "string" then
-    error("path and content must be strings", 2)
-  end
+  if type(path) ~= "string" or type(content) ~= "string" then error("path and content must be strings", 2) end
   --- *Attempt* to remove collisions between inputs. This cannot be done perfectly
   local index = path .. content .. tostring(math.random(1, 5000)) .. tostring(math.random(1, 5000))
   --- Store the content in the global array
@@ -29,9 +27,7 @@ local function file_write(path, content, cb)
 
     --- Clear the content to allow garbage collection - Avoid a memory leak
     SAVE_FROM_GARBAGE_COLLECTION[index] = nil
-    if type(cb) == "function" then
-      cb()
-    end
+    if type(cb) == "function" then cb() end
   end)
 end
 

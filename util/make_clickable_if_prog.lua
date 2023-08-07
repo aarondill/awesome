@@ -10,12 +10,8 @@ local function make_clickable_if_prog(cmd, replace_widget, replace_in, cb)
   local awful = require("awful")
   local installed = require("util.installed")
   local replace_in_widget = require("util.replace_in_widget")
-  if not cmd or not replace_widget or not replace_in or not cb then
-    error("Replace_if_present requires 4 arguments")
-  end
-  if type(cmd) == "table" then
-    cmd = cmd[1]
-  end
+  if not cmd or not replace_widget or not replace_in or not cb then error("Replace_if_present requires 4 arguments") end
+  if type(cmd) == "table" then cmd = cmd[1] end
   --stylua: ignore
   if not cmd then return end
   installed(cmd, function(path_or_nil)

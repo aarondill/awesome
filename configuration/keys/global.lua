@@ -1,6 +1,6 @@
 local awful = require("awful")
-local notifs = require("util.notifs")
 local gears = require("gears")
+local notifs = require("util.notifs")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local spawn = require("util.spawn")
 
@@ -17,9 +17,7 @@ local function open_main_menu()
   -- The return value will be a string in case of failure
   if type(pid_or_err) == "string" then
     local s = awful.screen.focused()
-    if s and s.run_promptbox and type(s.run_promptbox.run) == "function" then
-      s.run_promptbox:run()
-    end
+    if s and s.run_promptbox and type(s.run_promptbox.run) == "function" then s.run_promptbox:run() end
   end
 end
 -- Key bindings
@@ -41,9 +39,7 @@ local globalKeys = gears.table.join(
   awful.key({ modkey }, "p", open_main_menu, { description = "Main Menu", group = "awesome" }),
   awful.key({ modkey }, "w", function()
     local pid_or_err = spawn(apps.default.rofi_window)
-    if type(pid_or_err) == "string" then
-      notifs.critical("Rofi is required to open the window picker.")
-    end
+    if type(pid_or_err) == "string" then notifs.critical("Rofi is required to open the window picker.") end
   end, { description = "Window Picker", group = "awesome" }),
 
   -- Tag management
@@ -72,16 +68,12 @@ local globalKeys = gears.table.join(
   awful.key({ altkey }, "Tab", function()
     --awful.client.focus.history.previous()
     awful.client.focus.byidx(1)
-    if client.focus then
-      client.focus:raise()
-    end
+    if client.focus then client.focus:raise() end
   end, { description = "Switch to next window", group = "client" }),
   awful.key({ altkey, "Shift" }, "Tab", function()
     --awful.client.focus.history.previous()
     awful.client.focus.byidx(-1)
-    if client.focus then
-      client.focus:raise()
-    end
+    if client.focus then client.focus:raise() end
   end, { description = "Switch to previous window", group = "client" }),
 
   -- Programs
@@ -154,9 +146,7 @@ local globalKeys = gears.table.join(
   awful.key({ modkey, "Control" }, "n", function()
     local c = awful.client.restore()
     -- Focus restored client
-    if c then
-      c:emit_signal("request::activate", "key.unminimize", { raise = true })
-    end
+    if c then c:emit_signal("request::activate", "key.unminimize", { raise = true }) end
   end, { description = "Restore minimized", group = "client" }),
 
   -- Brightness
@@ -240,34 +230,26 @@ for i = 1, 9 do
     awful.key({ modkey }, "#" .. i + 9, function()
       local screen = awful.screen.focused()
       local tag = screen.tags[i]
-      if tag then
-        tag:view_only()
-      end
+      if tag then tag:view_only() end
     end, descr_view),
     -- Toggle tag display.
     awful.key({ modkey, "Control" }, "#" .. i + 9, function()
       local screen = awful.screen.focused()
       local tag = screen.tags[i]
-      if tag then
-        awful.tag.viewtoggle(tag)
-      end
+      if tag then awful.tag.viewtoggle(tag) end
     end, descr_toggle),
     -- Move client to tag.
     awful.key({ modkey, "Shift" }, "#" .. i + 9, function()
       if client.focus then
         local tag = client.focus.screen.tags[i]
-        if tag then
-          client.focus:move_to_tag(tag)
-        end
+        if tag then client.focus:move_to_tag(tag) end
       end
     end, descr_move),
     -- Toggle tag on focused client.
     awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
       if client.focus then
         local tag = client.focus.screen.tags[i]
-        if tag then
-          client.focus:toggle_tag(tag)
-        end
+        if tag then client.focus:toggle_tag(tag) end
       end
     end, descr_toggle_focus)
   )

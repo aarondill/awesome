@@ -4,10 +4,10 @@
 -- Initialization
 -- ===================================================================
 
-local wibox = require("wibox")
 local awful = require("awful")
-local gears = require("gears")
 local beautiful = require("beautiful")
+local gears = require("gears")
+local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
 
 local offsetx = dpi(56)

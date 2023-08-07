@@ -1,7 +1,7 @@
 local awful = require("awful")
-local gears = require("gears")
-local client_keys = require("configuration.keys.client")
 local client_buttons = require("configuration.client.buttons")
+local client_keys = require("configuration.keys.client")
+local gears = require("gears")
 -- Rules
 local rules = {
   -- All clients will match this rule.

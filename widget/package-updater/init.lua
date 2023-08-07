@@ -1,10 +1,10 @@
 --- uses pacmac and *only* works with pacmac! (manjaro)
 ---
 local awful = require("awful")
-local watch = require("awful.widget.watch")
-local wibox = require("wibox")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
+local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local spawn = require("util.spawn")
 

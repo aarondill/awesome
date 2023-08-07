@@ -1,10 +1,10 @@
-local awful = require("awful")
-local gears = require("gears")
-local wibox = require("wibox")
-local beautiful = require("beautiful")
-local icons = require("theme.icons")
-local clickable_container = require("widget.material.clickable-container")
 local apps = require("configuration.apps")
+local awful = require("awful")
+local beautiful = require("beautiful")
+local clickable_container = require("widget.material.clickable-container")
+local gears = require("gears")
+local icons = require("theme.icons")
+local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local handle_error = require("util.handle_error")
 local spawn = require("util.spawn")
@@ -46,9 +46,7 @@ local function buildButton(icon, text, on_release)
     layout = wibox.layout.fixed.vertical,
   })
 
-  if on_release then
-    clickable:connect_signal("button::release", on_release)
-  end
+  if on_release then clickable:connect_signal("button::release", on_release) end
 
   return widget
 end
@@ -114,9 +112,7 @@ local lock = buildButton(icons.lock, "Lock (l)", handle_error(lock_command))
 
 local function exit_screen_show()
   exit_screen_grabber = awful.keygrabber.run(handle_error(function(mods, key, event)
-    if event == "release" or not #mods == 0 then
-      return false
-    end
+    if event == "release" or not #mods == 0 then return false end
 
     if key == "s" then
       suspend_command()

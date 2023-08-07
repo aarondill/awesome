@@ -1,5 +1,5 @@
-local gears = require("gears")
 local awful = require("awful")
+local gears = require("gears")
 local wibox = require("wibox")
 
 local get_wp_path
@@ -42,14 +42,10 @@ screen.connect_signal("request::wallpaper", function(s)
 end)
 
 awful.tag.attached_connect_signal(nil, "property::selected", function(tag)
-  if tag.screen then
-    tag.screen:emit_signal("request::wallpaper")
-  end
+  if tag.screen then tag.screen:emit_signal("request::wallpaper") end
 end)
 screen.connect_signal("property::geometry", function(s)
   s:emit_signal("request::wallpaper")
 end)
 
-if awesome.version <= "v4.3" then
-  awful.screen.focused():emit_signal("request::wallpaper")
-end
+if awesome.version <= "v4.3" then awful.screen.focused():emit_signal("request::wallpaper") end

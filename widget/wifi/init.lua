@@ -9,10 +9,10 @@
 -------------------------------------------------
 
 local awful = require("awful")
-local watch = require("awful.widget.watch")
-local wibox = require("wibox")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
+local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local spawn = require("util.spawn")
 
@@ -59,9 +59,7 @@ local function grabText()
   if connected then
     awful.spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout)
       essid = stdout:match("SSID:(.-)\n")
-      if essid == nil then
-        essid = "N/A"
-      end
+      if essid == nil then essid = "N/A" end
     end)
   end
 end
@@ -79,9 +77,7 @@ watch("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", 5, funct
     connected = false
     widget.icon:set_image(PATH_TO_ICONS .. widgetIconName .. "-off" .. ".svg")
   end
-  if connected and (essid == "N/A" or essid == nil) then
-    grabText()
-  end
+  if connected and (essid == "N/A" or essid == nil) then grabText() end
   collectgarbage("collect")
 end, widget)
 

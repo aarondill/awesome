@@ -4,9 +4,7 @@ local notifs = require("util.notifs")
 local function handle_error(func)
   return function(...)
     local ok, val_or_err = pcall(func, ...)
-    if ok then
-      return val_or_err
-    end
+    if ok then return val_or_err end
 
     notifs.critical(tostring(val_or_err), {
       title = "Something went terribly wrong",

@@ -1,5 +1,5 @@
-local gtable = require("gears.table")
 local gfile = require("gears.filesystem")
+local gtable = require("gears.table")
 local system_default_ok, system_default = pcall(dofile, gfile.get_themes_dir() .. "default/theme.lua")
 local default_theme = require("theme.default-theme")
 local theme = require("theme.titus-theme")

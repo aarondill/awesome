@@ -2,9 +2,9 @@
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 
 local awful = require("awful")
+local gears = require("gears")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
-local gears = require("gears")
 local dpi = require("beautiful").xresources.apply_dpi
 
 local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/battery/icons/"
@@ -105,9 +105,7 @@ function Battery(args)
           show_battery_warning(charge)
         end
       end
-      if status == "Charging" or status == "Full" then
-        batteryIconName = batteryIconName .. "-charging"
-      end
+      if status == "Charging" or status == "Full" then batteryIconName = batteryIconName .. "-charging" end
 
       local roundedCharge = math.floor(charge / 10) * 10
       if roundedCharge == 0 then

@@ -1,9 +1,7 @@
 local awful = require("awful")
 local filepath = "/tmp/awesomewm-last-selected-tags"
 awesome.connect_signal("exit", function(reason_restart)
-  if not reason_restart then
-    return
-  end
+  if not reason_restart then return end
 
   local file = io.open(filepath, "w+")
   --stylua: ignore
@@ -21,9 +19,7 @@ end)
 
 awesome.connect_signal("startup", function()
   local file = io.open(filepath, "r")
-  if not file then
-    return
-  end
+  if not file then return end
 
   local screen_tags = {}
   for line in file:lines("l") do
@@ -37,14 +33,10 @@ awesome.connect_signal("startup", function()
 
   for s in screen do
     local sel_tags = screen_tags[s.index]
-    if #sel_tags > 0 then
-      awful.tag.viewnone(s)
-    end
+    if #sel_tags > 0 then awful.tag.viewnone(s) end
     for _, i in ipairs(sel_tags) do
       local scr_tag = s.tags[i]
-      if scr_tag then
-        scr_tag.selected = true
-      end
+      if scr_tag then scr_tag.selected = true end
     end
   end
 

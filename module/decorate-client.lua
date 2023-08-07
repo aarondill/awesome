@@ -1,11 +1,9 @@
 local awful = require("awful")
-local gears = require("gears")
 local beautiful = require("beautiful")
+local gears = require("gears")
 
 local function renderClient(client, mode)
-  if client.skip_decoration or (client.rendering_mode == mode) then
-    return
-  end
+  if client.skip_decoration or (client.rendering_mode == mode) then return end
 
   client.rendering_mode = mode
   client.floating = false
@@ -41,9 +39,7 @@ local function changesOnScreen(currentScreen)
   local clientsToManage = {}
 
   for _, client in pairs(currentScreen.clients or {}) do
-    if not client.skip_decoration and not client.hidden then
-      table.insert(clientsToManage, client)
-    end
+    if not client.skip_decoration and not client.hidden then table.insert(clientsToManage, client) end
   end
 
   if tagIsMax or #clientsToManage == 1 then

@@ -5,9 +5,9 @@ local setmetatable = setmetatable
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Commons requirements
-local wibox = require("wibox")
-local gears = require("gears")
 local beautiful = require("beautiful")
+local gears = require("gears")
+local wibox = require("wibox")
 -- Local declarations
 
 local mat_slider = { mt = {} }
@@ -48,9 +48,7 @@ function mat_slider:layout(_, width, height)
 end
 
 function mat_slider:draw(_, _, _, _)
-  if self._private.read_only then
-    self._private.slider.forced_height = 0
-  end
+  if self._private.read_only then self._private.slider.forced_height = 0 end
 end
 
 function mat_slider:fit(_, width, height)

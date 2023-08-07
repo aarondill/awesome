@@ -1,5 +1,5 @@
-local gears = require("gears")
 local awful = require("awful")
+local gears = require("gears")
 local wibox = require("wibox")
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.

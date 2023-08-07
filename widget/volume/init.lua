@@ -1,10 +1,10 @@
-local wibox = require("wibox")
+local icons = require("theme.icons")
+local mat_icon_button = require("widget.material.icon-button")
 local mat_list_item = require("widget.material.list-item")
 local mat_slider = require("widget.material.slider")
-local mat_icon_button = require("widget.material.icon-button")
-local icons = require("theme.icons")
-local watch = require("awful.widget.watch")
 local spawn = require("awful.spawn")
+local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 
 local slider = wibox.widget({
   read_only = false,
