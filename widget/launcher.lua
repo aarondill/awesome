@@ -5,7 +5,6 @@ local apps = require("configuration.apps")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local menubar = require("menubar")
 local icons = require("theme.icons")
-local spawn = require("util.spawn")
 local concat_command = require("util.concat_command")
 
 -- Load Debian menu entries
