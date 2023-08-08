@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "**.lua"
+  workflow_dispatch:
 jobs:
   format_code:
     runs-on: ubuntu-latest
