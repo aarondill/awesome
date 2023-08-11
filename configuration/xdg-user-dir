@@ -15,4 +15,8 @@ if test -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"; then
   . "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"
 fi
 dir="XDG_${1}_DIR"
-printf '%s\n' "${!dir:-}"
+if [ -t 1 ]; then
+  printf "%s\n" "${!dir:-}"
+else
+  printf "%s" "${!dir:-}"
+fi
