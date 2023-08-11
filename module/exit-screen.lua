@@ -8,6 +8,7 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local handle_error = require("util.handle_error")
 local spawn = require("util.spawn")
+local systemctl_cmd = require("utils.systemctl_cmd")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
@@ -82,19 +83,6 @@ local function exit_screen_hide()
   exit_screen.visible = false
 end
 
----@param systemctl_cmd string?
-local function suspend_command(systemctl_cmd)
-  systemctl_cmd = systemctl_cmd or "suspend-then-hibernate"
-  exit_screen_hide()
-  spawn(apps.default.lock, { sn_rules = false }) -- This doesn't block
-  local cb = function(_, code)
-    -- Spawn without sudo if original fails
-    if not code or code == 1 then spawn({ "systemctl", systemctl_cmd }, { sn_rules = false }) end
-  end
-  -- Try with sudo incase no password is needed (for hibernate)
-  local pid = spawn({ "sudo", "-n", "--", "systemctl", systemctl_cmd }, { sn_rules = false, exit_callback = cb })
-  if type(pid) == "string" then cb() end -- If sudo is not found
-end
 local function exit_command()
   exit_screen_hide()
   awesome.quit(0)
@@ -103,13 +91,18 @@ local function lock_command()
   exit_screen_hide()
   spawn(apps.default.lock, { sn_rules = false })
 end
+local function suspend_command()
+  exit_screen_hide()
+  spawn(apps.default.lock, { sn_rules = false }) -- This doesn't block
+  systemctl_cmd("suspend-then-hibernate")
+end
 local function poweroff_command()
   exit_screen_hide()
-  spawn("poweroff", { sn_rules = false })
+  systemctl_cmd("poweroff")
 end
 local function reboot_command()
   exit_screen_hide()
-  spawn("reboot", { sn_rules = false })
+  systemctl_cmd("reboot")
 end
 
 local poweroff = buildButton(icons.power, "Poweroff (p)", handle_error(poweroff_command))
