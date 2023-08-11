@@ -1,5 +1,6 @@
 local concat_command = require("util.concat_command")
 local filesystem = require("gears.filesystem")
+local gears = require("gears")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 
@@ -79,6 +80,8 @@ local function open_browser(url, new_window, spawn_options)
   local do_cmd = default.browser ---@type string|string[]
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
+  -- Use the user specified if present
+  spawn_options = gears.table.crush({ inherit_stderr = false, inherit_stdout = false }, spawn_options or {})
   spawn(do_cmd, spawn_options)
 end
 ---Open the lock screen
