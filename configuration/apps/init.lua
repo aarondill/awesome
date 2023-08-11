@@ -108,4 +108,12 @@ do
   end
 end
 
-return { default = default, run_on_start_up = run_on_start_up, open = require("configuration.apps.open") }
+local mt = {
+  __index = function(self, key)
+    return require("configuration.apps." .. key)
+  end,
+}
+return setmetatable({
+  default = default,
+  run_on_start_up = run_on_start_up,
+}, mt)
