@@ -1,5 +1,6 @@
 local concat_command = require("util.concat_command")
 local filesystem = require("gears.filesystem")
+local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 
 local function rofi_command(...)
@@ -71,6 +72,28 @@ local function open_editor(file, spawn_options)
 
   spawn(do_cmd, spawn_options)
 end
+---Open the lock screen
+---Note, this doesn't block.
+---Don't notify due to failure. This function will handle that.
+---@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
+local function open_lock(exit_cb)
+  local pid = spawn(default.lock, {
+    sn_rules = false,
+    inherit_stdin = false,
+    inherit_stdout = false,
+    inherit_stderr = false,
+    exit_callback = function(reason, code)
+      if code ~= 0 then
+        notifs.warn(string.format("Exit reason: %s, Exit code: %d", reason, code), {
+          title = "Something went wrong running the lock screen",
+        })
+      end
+      -- Call exit_cb with true if the screen closed normally (exit with code 0)
+      if exit_cb then exit_cb(reason == "exit" and code == 0) end
+    end,
+  })
+  if exit_cb and type(pid) == "string" then exit_cb(false) end
+end
 
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
 if not filesystem.file_executable(notification_daemon) then
@@ -130,6 +153,7 @@ end
 local open = {
   terminal = open_terminal,
   editor = open_editor,
+  lock = open_lock,
 }
 
 return { default = default, run_on_start_up = run_on_start_up, open = open }
