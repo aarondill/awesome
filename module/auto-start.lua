@@ -1,5 +1,5 @@
 -- MODULE AUTO-START
--- Run all the apps listed in configuration/apps.lua as run_on_start_up only once when awesome start
+-- Run all the apps listed in configuration/apps.lua as run_on_startup only once when awesome start
 local DEBUG = require("configuration").DEBUG
 
 local apps = require("configuration.apps")
@@ -95,7 +95,7 @@ Date: %s
   return nil
 end
 
-for _, app in ipairs(apps.run_on_start_up) do
+for _, app in ipairs(apps.run_on_startup) do
   local pid = run_once(app)
   if pid then processes[app] = pid end
 end
