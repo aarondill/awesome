@@ -1,4 +1,5 @@
 local filesystem = require("gears.filesystem")
+local notifs = require("util.notifs")
 
 local function rofi_command(...)
   -- Thanks to jo148 on github for making rofi dpi aware!
@@ -109,8 +110,14 @@ do
 end
 
 local mt = {
-  __index = function(self, key)
-    return require("configuration.apps." .. key)
+  __index = function(_, key)
+    local ok, mod = pcall(require, "configuration.apps." .. key)
+    if ok then
+      return mod
+    else
+      notifs.warn("Module configuration.apps." .. key .. " was not found")
+      return nil
+    end
   end,
 }
 return setmetatable({
