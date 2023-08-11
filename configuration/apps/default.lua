@@ -1,7 +1,6 @@
 local rofi_command = require("configuration.apps.rofi_command")
 local xdg_user_dir = require("util.xdg_user_dir")
 local terminal = "wezterm"
-local screenshot_dir = xdg_user_dir("PICTURES") .. "/Screenshots"
 
 -- List of apps to start by default on some actions - Don't use shell features.
 ---@type (string|string[])[]
@@ -14,7 +13,7 @@ local default = {
   rofi = rofi_command(),
   rofi_window = rofi_command("window"),
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
-  region_screenshot = { "flameshot", "gui", "-p", screenshot_dir, "-c" },
+  region_screenshot = { "flameshot", "gui", "-p", xdg_user_dir("PICTURES") .. "/Screenshots", "-c" },
   browser = { "vivaldi" },
   editor = { terminal, "-e", "nvim" }, -- gui text editor
   -- social = "discord",
