@@ -60,7 +60,6 @@ local default = {
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 local function open_terminal(cmd, spawn_options)
   local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
-
   spawn(do_cmd, spawn_options)
 end
 
@@ -69,7 +68,17 @@ end
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 local function open_editor(file, spawn_options)
   local do_cmd = file and concat_command(concat_command(default.editor, { "-e" }), file) or default.editor
-
+  spawn(do_cmd, spawn_options)
+end
+---Open a browser with the given url
+---@param url? string|string[]
+---@param new_window? boolean whether to create a new window - default false
+---@param spawn_options SpawnOptions? Options to pass to utils.spawn
+local function open_browser(url, new_window, spawn_options)
+  local new_window_arg = { "--new-window" }
+  local do_cmd = default.browser ---@type string|string[]
+  if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
+  if url then do_cmd = concat_command(do_cmd, url) end
   spawn(do_cmd, spawn_options)
 end
 ---Open the lock screen
@@ -154,6 +163,7 @@ local open = {
   terminal = open_terminal,
   editor = open_editor,
   lock = open_lock,
+  browser = open_browser,
 }
 
 return { default = default, run_on_start_up = run_on_start_up, open = open }
