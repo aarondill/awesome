@@ -7,8 +7,7 @@ local icons = require("theme.icons")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local handle_error = require("util.handle_error")
-local spawn = require("util.spawn")
-local systemctl_cmd = require("utils.systemctl_cmd")
+local systemctl_cmd = require("util.systemctl_cmd")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
