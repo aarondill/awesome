@@ -77,13 +77,7 @@ local globalKeys = gears.table.join(
   end, { description = "Switch to previous window", group = "client" }),
 
   -- Programs
-  awful.key({ modkey }, "Delete", function()
-    spawn(apps.default.lock, {
-      inherit_stdin = true, -- Just in case
-      inherit_stderr = false,
-      inherit_stdout = false,
-    })
-  end, { description = "Lock the screen", group = "awesome" }),
+  awful.key({ modkey }, "Delete", apps.open.lock, { description = "Lock the screen", group = "awesome" }),
 
   awful.key({ modkey, "Control" }, "r", capi.awesome.restart, { description = "Reload awesome", group = "awesome" }),
   awful.key({ modkey, "Shift" }, "q", capi.awesome.quit, { description = "Quit awesome", group = "awesome" }),
