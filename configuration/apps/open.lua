@@ -1,5 +1,5 @@
+local apps = require("configuration.apps")
 local concat_command = require("util.concat_command")
-local default = require("configuration.apps")
 local gears = require("gears")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
@@ -8,7 +8,7 @@ local spawn = require("util.spawn")
 ---@param cmd? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 local function open_terminal(cmd, spawn_options)
-  local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
+  local do_cmd = cmd and concat_command(concat_command(apps.default.terminal, { "-e" }), cmd) or apps.default.terminal
   spawn(do_cmd, spawn_options)
 end
 
@@ -16,7 +16,7 @@ end
 ---@param file? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 local function open_editor(file, spawn_options)
-  local do_cmd = file and concat_command(concat_command(default.editor, { "-e" }), file) or default.editor
+  local do_cmd = file and concat_command(concat_command(apps.default.editor, { "-e" }), file) or apps.default.editor
   spawn(do_cmd, spawn_options)
 end
 ---Open a browser with the given url
@@ -25,7 +25,7 @@ end
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 local function open_browser(url, new_window, spawn_options)
   local new_window_arg = { "--new-window" }
-  local do_cmd = default.browser ---@type string|string[]
+  local do_cmd = apps.default.browser ---@type string|string[]
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
   -- Use the user specified if present
@@ -37,7 +37,7 @@ end
 ---Don't notify due to failure. This function will handle that.
 ---@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
 local function open_lock(exit_cb)
-  local pid = spawn(default.lock, {
+  local pid = spawn(apps.default.lock, {
     sn_rules = false,
     inherit_stdin = false,
     inherit_stdout = false,
