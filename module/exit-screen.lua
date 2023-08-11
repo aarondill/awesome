@@ -89,11 +89,11 @@ local function exit_command()
 end
 local function lock_command()
   exit_screen_hide()
-  spawn(apps.default.lock, { sn_rules = false })
+  apps.open.lock()
 end
 local function suspend_command()
   exit_screen_hide()
-  spawn(apps.default.lock, { sn_rules = false }) -- This doesn't block
+  apps.open.lock() -- This doesn't block
   systemctl_cmd("suspend-then-hibernate")
 end
 local function poweroff_command()
