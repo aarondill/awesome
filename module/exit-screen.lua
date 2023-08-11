@@ -82,10 +82,18 @@ local function exit_screen_hide()
   exit_screen.visible = false
 end
 
-local function suspend_command()
+---@param systemctl_cmd string?
+local function suspend_command(systemctl_cmd)
+  systemctl_cmd = systemctl_cmd or "suspend-then-hibernate"
   exit_screen_hide()
   spawn(apps.default.lock, { sn_rules = false }) -- This doesn't block
-  spawn({ "systemctl", "suspend" }, { sn_rules = false })
+  local cb = function(_, code)
+    -- Spawn without sudo if original fails
+    if not code or code == 1 then spawn({ "systemctl", systemctl_cmd }, { sn_rules = false }) end
+  end
+  -- Try with sudo incase no password is needed (for hibernate)
+  local pid = spawn({ "sudo", "-n", "--", "systemctl", systemctl_cmd }, { sn_rules = false, exit_callback = cb })
+  if type(pid) == "string" then cb() end -- If sudo is not found
 end
 local function exit_command()
   exit_screen_hide()
