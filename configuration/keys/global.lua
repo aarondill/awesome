@@ -86,12 +86,7 @@ local globalKeys = gears.table.join(
     spawn(apps.default.region_screenshot)
   end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
   awful.key({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
-  awful.key({ modkey }, "b", function()
-    spawn(apps.default.browser, {
-      inherit_stderr = false,
-      inherit_stdout = false,
-    })
-  end, { description = "Open a browser", group = "launcher" }),
+  awful.key({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   awful.key({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   awful.key({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
 
