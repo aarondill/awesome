@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# A rewrite of /usr/bin/xdg-user-dir in bash to avoid eval
+# Changes:
+# The argument is required
+# If the variable is not defined, an empty string is returned (a newline)
+# The DESKTOP specific override has been removed
+set -euC -o pipefail
+
+if [ -z "${1:-}" ]; then
+  printf '%s\n' "The directory argument is required" >&2
+  exit 2
+fi
+if test -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"; then
+  # shellcheck source=../../user-dirs.dirs
+  . "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"
+fi
+dir="XDG_${1}_DIR"
+printf '%s\n' "${!dir:-}"
