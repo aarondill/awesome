@@ -106,7 +106,7 @@ end
 
 local poweroff = buildButton(icons.power, "Poweroff (p)", handle_error(poweroff_command))
 local reboot = buildButton(icons.restart, "Restart (r)", handle_error(reboot_command))
-local suspend = buildButton(icons.sleep, "Suspend (s)", handle_error(suspend_command))
+local suspend = buildButton(icons.sleep, "Suspend-Then-Hibernate (s)", handle_error(suspend_command))
 local exit = buildButton(icons.logout, "Exit AWM (e)", handle_error(exit_command))
 local lock = buildButton(icons.lock, "Lock (l)", handle_error(lock_command))
 
