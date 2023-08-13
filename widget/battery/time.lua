@@ -4,7 +4,7 @@ local function format_message(seconds, poststr)
   seconds = seconds - (3600 * hours)
   local minutes = math.floor(seconds / 60)
   seconds = seconds - (60 * minutes)
-  return string.format("%02.0f:%02.0f:%02.0f%s", hours, minutes, seconds, poststr or "")
+  return string.format("%02.0f:%02.0f:%02.0f %s", hours, minutes, seconds, poststr or "")
 end
 ---Calculate the time remaining until full/dead battery
 ---@param info battery_info
