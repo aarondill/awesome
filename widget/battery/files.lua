@@ -23,7 +23,7 @@ local battery_files = {
 local function get_battery_stat(battery_path, stat, ret, cb, cb_args)
   local battery_file = battery_files[stat]
   read_async(battery_path .. battery_file.path, function(content)
-    ret[stat] = content:match(battery_file.match)
+    if content then ret[stat] = content:match(battery_file.match) end
     cb(table.unpack(cb_args))
   end)
 end
