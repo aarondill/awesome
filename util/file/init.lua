@@ -6,6 +6,9 @@ local M = {
   exists = require("util.file.exists"),
   scan_directory = require("util.file.scan_directory"),
   list_directory = require("util.file.list_directory"),
+  watch = require("util.file.watch"),
+  watch_directory = require("util.file.watch_directory"),
+  watch_file = require("util.file.watch_file"),
 }
 return setmetatable(M, { -- Just incase I forget to update the init table
   __index = function(_, key)
