@@ -1,10 +1,10 @@
 local gio = require("lgi").Gio
-local garbage_collection = require("util.garbage_collection")
 local handle_error = require("util.handle_error")
 ---@alias GioFileMonitorMethod "monitor" | "monitor_directory" | "monitor_file"
 ---@alias GioFileMonitorFlags "NONE" | "WATCH_HARD_LINKS" | "SEND_MOVED" | "WATCH_MOVES" | "WATCH_MOUNTS"
 ---@alias GioFileMonitorEvent "CHANGED" | "CHANGES_DONE_HINT" | "DELETED" | "CREATED" | "ATTRIBUTE_CHANGED" | "PRE_UNMOUNT" | "UNMOUNTED" | "MOVED" | "RENAMED" | "MOVED_IN" | "MOVED_OUT"
 ---@alias GioFileWatcherHandler fun(type: GioFileMonitorEvent, path1: string, path2: string?)
+---@class GioFileMonitor
 
 ---A common interface for implementing file watch functions
 ---@param path string the file path to watch
@@ -12,6 +12,7 @@ local handle_error = require("util.handle_error")
 ---See https://docs.gtk.org/gio/flags.FileMonitorFlags.html
 ---@param flags GioFileMonitorFlags[]? the flags to pass to the file watch method. nil corresponds to G_FILE_MONITOR_NONE
 ---@param cb GioFileWatcherHandler
+---@return GioFileMonitor monitor Make sure this is not garbage collected!
 local function watch_common(path, method, flags, cb)
   if type(cb) ~= "function" then error("callback must be a function", 2) end
   if type(method) ~= "string" then error("method must be a string", 2) end
@@ -30,7 +31,6 @@ local function watch_common(path, method, flags, cb)
   end
 
   local monitor = file[method](file, flag_int)
-  garbage_collection.save(monitor)
   ---@param type GioFileMonitorEvent can't guarentee, but best I can do
   monitor.on_changed:connect(handle_error(function(_, file1, file2, type)
     local path1 = file1:get_path() ---@type string
@@ -38,6 +38,7 @@ local function watch_common(path, method, flags, cb)
     local path2 = file2 and file2:get_path() ---@type string?
     return cb(type, path1, path2) ---path2 is likely nil
   end))
+  return monitor
 end
 
 return watch_common
