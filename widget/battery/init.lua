@@ -1,5 +1,7 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
+-- Time remaining (when not charging):
+-- echo "$(cat /sys/class/power_supply/BAT0/energy_now) / $(cat /sys/class/power_supply/BAT0/power_now)" | bc
 
 local awful = require("awful")
 local gears = require("gears")
