@@ -53,6 +53,16 @@ local function handle_battery_info(info)
 
   if status == "Charging" or status == "Full" then batteryIconName = batteryIconName .. "-charging" end
 
+  local remaining = nil
+  if status ~= "Charging" then
+    local hr_remaining, min_remaining, sec_remaining
+    local rem = info.energy_now / info.power_now
+    hr_remaining, rem = math.modf(rem)
+    min_remaining, rem = math.modf(rem * 60)
+    sec_remaining, rem = math.modf(rem * 60)
+    remaining = string.format(", %02.0f:%02.0f:%02.0f remaining", hr_remaining, min_remaining, sec_remaining)
+  end
+
   local roundedCharge = math.floor(charge / 10) * 10
   if roundedCharge == 0 then
     batteryIconName = batteryIconName .. "-outline"
@@ -65,7 +75,7 @@ local function handle_battery_info(info)
   return {
     icon = files.get_icon(batteryIconName),
     charge = non_nan_charge,
-    status = status,
+    status = status .. (remaining or ""),
   }
 end
 
