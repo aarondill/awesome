@@ -1,71 +1,57 @@
-local function num_dev_1000_or_neg_1(num)
-  return num and tonumber(num) / 1000 or -1
+local function format_message(seconds, poststr)
+  if not seconds or seconds <= 0 then return poststr or "" end
+  local hours = math.floor(seconds / 3600)
+  seconds = seconds - (3600 * hours)
+  local minutes = math.floor(seconds / 60)
+  seconds = seconds - (60 * minutes)
+  return string.format("%02.0f:%02.0f:%02.0f%s", hours, minutes, seconds, poststr or "")
 end
+---Calculate the time remaining until full/dead battery
 ---@param info battery_info
+---@source ACPIclient source code
 ---@return string
 local function calculate_time_remaining(info)
   local MIN_PRESENT_RATE = 0.01 -- Less than this is considered zero
   local status = string.lower(info.status)
-  local present_rate = num_dev_1000_or_neg_1(info.current_now or info.power_now)
-  local remaining_capacity = num_dev_1000_or_neg_1(info.charge_now)
-  local last_capacity = num_dev_1000_or_neg_1(info.charge_full)
-  local voltage = num_dev_1000_or_neg_1(info.voltage_now)
-  local remaining_energy = num_dev_1000_or_neg_1(info.energy_now)
-  local last_capacity_unit = num_dev_1000_or_neg_1(info.energy_full)
+  local power_now = info.current_now or info.power_now
+  local present_rate = power_now and tonumber(power_now) / 1000
+  local voltage = info.voltage_now and tonumber(info.voltage_now) / 1000
+  local last_capacity = info.charge_full and tonumber(info.charge_full) / 1000
+  local last_capacity_unit = info.energy_full and tonumber(info.energy_full) / 1000
+  local remaining_energy = info.energy_now and tonumber(info.energy_now) / 1000
+  local remaining_capacity = info.charge_now and tonumber(info.charge_now) / 1000
 
-  if remaining_energy ~= -1 and remaining_capacity == -1 then
-    if voltage ~= -1 then
+  if not present_rate then return format_message(nil, "rate information unavailable") end
+
+  if remaining_energy and not remaining_capacity then
+    if voltage then
       remaining_capacity = (remaining_energy * 1000) / voltage
       present_rate = (present_rate * 1000) / voltage
     else
       remaining_capacity = remaining_energy
     end
   end
+
   -- convert energy values (in mWh) to charge values (in mAh) if needed and possible
-  if last_capacity_unit ~= -1 and last_capacity == -1 then
-    if voltage ~= -1 then
-      last_capacity = last_capacity_unit * 1000 / voltage
-    else
-      last_capacity = last_capacity_unit
-    end
+  if last_capacity_unit and not last_capacity then
+    last_capacity = voltage and (last_capacity_unit * 1000 / voltage) or last_capacity_unit
   end
 
-  local poststr = nil -- The string to append
+  if present_rate <= MIN_PRESENT_RATE then present_rate = 0 end
   local seconds = nil -- The seconds left until full/zero
-  if present_rate == -1 then
-    poststr = "rate information unavailable"
-    seconds = -1
-  elseif status == "charging" then
-    if present_rate > MIN_PRESENT_RATE then
-      seconds = (3600 * (last_capacity - remaining_capacity)) / present_rate
-      poststr = " until charged"
-    else
-      poststr = "charging at zero rate - will never fully charge."
-      seconds = -1
-    end
-  elseif status == "discharging" then
-    if present_rate > MIN_PRESENT_RATE then
-      seconds = (3600 * remaining_capacity) / present_rate
-      poststr = " remaining"
-    else
-      poststr = "discharging at zero rate - will never fully discharge."
-      seconds = -1
-    end
-  else
-    poststr = nil
-    seconds = -1
+
+  if status == "charging" then
+    if present_rate == 0 then return format_message(nil, "charging at zero rate - will never fully charge.") end
+    seconds = (3600 * (last_capacity - remaining_capacity)) / present_rate
+    return format_message(seconds, " until charged")
   end
 
-  local remaining
-  if seconds > 0 then
-    local hours = math.floor(seconds / 3600)
-    seconds = seconds - (3600 * hours)
-    local minutes = math.floor(seconds / 60)
-    seconds = seconds - (60 * minutes)
-    remaining = string.format(", %02.0f:%02.0f:%02.0f%s", hours, minutes, seconds, poststr)
-  elseif poststr then
-    remaining = string.format(", %s", poststr)
+  if status == "discharging" then
+    if present_rate == 0 then return format_message(nil, "discharging at zero rate - will never fully discharge.") end
+    seconds = (3600 * remaining_capacity) / present_rate
+    return format_message(seconds, " remaining")
   end
-  return remaining
+
+  return format_message(nil, nil)
 end
 return calculate_time_remaining
