@@ -2,15 +2,15 @@ local gfilesystem = require("gears.filesystem")
 local list_directory = require("util.file.list_directory")
 local read_async = require("util.file.read_async")
 local PATH_TO_ICONS = gfilesystem.get_configuration_dir() .. "widget/battery/icons/"
----@class battery_info
----@field status string?
----@field capacity number?
-
----@type table<string, {path:string, match:string}>
+---@alias battery_info_types "capacity" | "status"
+---@alias battery_info table<battery_info_types, string?>
+---@alias path_info { path: string , match: string }
+---@type { [battery_info_types]: path_info}
 local battery_files = {
   capacity = { path = "/capacity", match = "(%d+)\n" },
   status = { path = "/status", match = "(.+)\n" },
 }
+
 ---Get the battery stat from battery_files
 ---@param battery_path string path to the sysfs folder
 ---@param stat string battery_files[stat]
