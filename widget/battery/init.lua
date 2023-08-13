@@ -8,6 +8,8 @@ local gears = require("gears")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local list_directory = require("util.file.list_directory")
+local read_async = require("util.file.read_async")
 
 local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/battery/icons/"
 
@@ -83,9 +85,9 @@ function Battery(args)
     end
     local function get_status(stdout)
       status = stdout:match("(.+)\n")
-      awful.spawn.easy_async({ "cat", battery_path .. "/capacity" }, get_capacity)
+      read_async(battery_path .. "/capacity", get_capacity)
     end
-    awful.spawn.easy_async({ "cat", battery_path .. "/status" }, get_status)
+    read_async(battery_path .. "/status", get_status)
   end
 
   local last_battery_check = os.time()
@@ -137,23 +139,9 @@ function Battery(args)
     set_bat_cb()
     timer:start()
   else
-    awful.spawn.easy_async({
-      "find",
-      "-L", -- follow links
-      "/sys/class/power_supply/",
-      "-mindepth",
-      "1",
-      "-maxdepth",
-      "1",
-      "-name",
-      "BAT*",
-      "-type",
-      "d",
-      "-printf",
-      "%p\n",
-    }, function(stdout)
-      -- The path to the battery
-      M_battery_path = stdout:match("([^\n]+)")
+    local power_supply_dir = "/sys/class/power_supply/"
+    list_directory(power_supply_dir, { match = "BAT.+" }, function(files)
+      M_battery_path = power_supply_dir .. files[1]
       set_bat_cb()
       timer:start()
     end)
