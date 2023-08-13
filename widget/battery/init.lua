@@ -47,7 +47,7 @@ end
 ---@return {icon: string, charge: number, status: string}
 local function handle_battery_info(info)
   local status = info.status
-  local charge = tonumber(info.percentage) or 0
+  local charge = tonumber(info.capacity) or 0
   local batteryIconName = "battery"
   local default_charge = 100
 

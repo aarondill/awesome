@@ -4,10 +4,9 @@ local read_async = require("util.file.read_async")
 local PATH_TO_ICONS = gfilesystem.get_configuration_dir() .. "widget/battery/icons/"
 ---@class battery_info
 ---@field status string?
----@field percentage number?
+---@field capacity number?
 
----@alias battery_files  "capacity" | "status"
----@type table<battery_files, {path:string, match:string}>
+---@type table<string, {path:string, match:string}>
 local battery_files = {
   capacity = { path = "/capacity", match = "(%d+)\n" },
   status = { path = "/status", match = "(.+)\n" },
@@ -21,7 +20,7 @@ local battery_files = {
 local function get_battery_stat(battery_path, stat, ret, cb, cb_args)
   local battery_file = battery_files[stat]
   read_async(battery_path .. battery_file.path, function(content)
-    ret.capacity = content:match(battery_file.match)
+    ret[stat] = content:match(battery_file.match)
     cb(table.unpack(cb_args))
   end)
 end
