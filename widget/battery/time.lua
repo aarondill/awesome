@@ -43,13 +43,13 @@ local function calculate_time_remaining(info)
   if status == "charging" then
     if present_rate == 0 then return format_message(nil, "charging at zero rate - will never fully charge.") end
     seconds = (3600 * (last_capacity - remaining_capacity)) / present_rate
-    return format_message(seconds, " until charged")
+    return format_message(seconds, "until charged")
   end
 
   if status == "discharging" then
     if present_rate == 0 then return format_message(nil, "discharging at zero rate - will never fully discharge.") end
     seconds = (3600 * remaining_capacity) / present_rate
-    return format_message(seconds, " remaining")
+    return format_message(seconds, "remaining")
   end
 
   return format_message(nil, nil)
