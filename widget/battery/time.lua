@@ -12,7 +12,7 @@ end
 ---@return string
 local function calculate_time_remaining(info)
   local MIN_PRESENT_RATE = 0.01 -- Less than this is considered zero
-  local status = string.lower(info.status)
+  local status = info.status and string.lower(info.status)
   local power_now = info.current_now or info.power_now
   local present_rate = power_now and tonumber(power_now) / 1000
   local voltage = info.voltage_now and tonumber(info.voltage_now) / 1000

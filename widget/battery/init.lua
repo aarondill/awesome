@@ -50,8 +50,8 @@ end
 ---@param info battery_info
 ---@return {icon: string, charge: number, status: string}
 local function handle_battery_info(info)
-  local charge = tonumber(info.capacity) or 0
-  local status = string.lower(info.status)
+  local charge = info.capacity and tonumber(info.capacity) or 0
+  local status = info.status and string.lower(info.status)
   local batteryIconName = "battery"
   local default_charge = 100
 
@@ -71,7 +71,7 @@ local function handle_battery_info(info)
   return {
     icon = files.get_icon(batteryIconName),
     charge = non_nan_charge,
-    status = status .. (remaining and ", " .. remaining or ""),
+    status = (status or "") .. (remaining and ", " .. remaining or ""),
   }
 end
 
