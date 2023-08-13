@@ -3,7 +3,7 @@ local list_directory = require("util.file.list_directory")
 local read_async = require("util.file.read_async")
 local PATH_TO_ICONS = gfilesystem.get_configuration_dir() .. "widget/battery/icons/"
 
----@alias battery_info_types "capacity" | "status" | "power_now" | "energy_now" | "current_now" | "charge_now" | "charge_full" | "voltage_now"
+---@alias battery_info_types "capacity" | "status" | "power_now" | "energy_now" | "current_now" | "charge_now" | "charge_full" | "voltage_now" | "energy_full"
 ---@alias battery_info table<battery_info_types, string?>
 ---@alias path_info { path: string , match: string }
 ---@type { [battery_info_types]: path_info}

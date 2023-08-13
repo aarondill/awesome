@@ -1,14 +1,15 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
--- Time remaining (when not charging):
--- echo "$(cat /sys/class/power_supply/BAT0/energy_now) / $(cat /sys/class/power_supply/BAT0/power_now)" | bc
+-- Time remaining came from acpi source code
 
 local awful = require("awful")
 local gears = require("gears")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local calculate_time_remaining = require("widget.battery.time")
 local files = require("widget.battery.files")
+local handle_error = require("util.handle_error")
 
 -- To use colors from beautiful theme put
 -- following lines in rc.lua before require("battery"):
@@ -41,27 +42,20 @@ local function should_warn_battery(last_warning_time, status, charge, low_power,
   local time_since_last = os.difftime(os.time(), last_warning_time)
   if time_since_last < low_power_frequency then return end
 end
+local function str_first_upper(str)
+  return (str:sub(1, 1):upper()) .. (str:sub(2):lower())
+end
 
 ---Handler for files.get_battery_info
 ---@param info battery_info
 ---@return {icon: string, charge: number, status: string}
 local function handle_battery_info(info)
-  local status = info.status
   local charge = tonumber(info.capacity) or 0
+  local status = string.lower(info.status)
   local batteryIconName = "battery"
   local default_charge = 100
 
-  if status == "Charging" or status == "Full" then batteryIconName = batteryIconName .. "-charging" end
-
-  local remaining = nil
-  if status ~= "Charging" then
-    local hr_remaining, min_remaining, sec_remaining
-    local rem = info.energy_now / info.power_now
-    hr_remaining, rem = math.modf(rem)
-    min_remaining, rem = math.modf(rem * 60)
-    sec_remaining, rem = math.modf(rem * 60)
-    remaining = string.format(", %02.0f:%02.0f:%02.0f remaining", hr_remaining, min_remaining, sec_remaining)
-  end
+  if status == "charging" or status == "full" then batteryIconName = batteryIconName .. "-charging" end
 
   local roundedCharge = math.floor(charge / 10) * 10
   if roundedCharge == 0 then
@@ -69,6 +63,8 @@ local function handle_battery_info(info)
   elseif roundedCharge ~= 100 then
     batteryIconName = batteryIconName .. "-" .. roundedCharge
   end
+
+  local remaining = calculate_time_remaining(info)
 
   local f_charge = math.floor(charge)
   local non_nan_charge = (f_charge ~= f_charge) and default_charge or f_charge
@@ -113,7 +109,7 @@ function Battery(args)
     local res = handle_battery_info(info)
     widget.icon:set_image(res.icon)
     widget.text:set_text(tostring(res.charge) .. "%")
-    battery_popup.text = res.status
+    battery_popup.text = str_first_upper(res.status)
     -- if X minutes have elapsed since the last warning
     if should_warn_battery(last_warning_time, res.status, res.charge, low_power, low_power_frequency) then
       last_warning_time = os.time()
@@ -123,7 +119,7 @@ function Battery(args)
 
   ---@return true
   local callback = function()
-    if battery_path then files.get_battery_info(battery_path, update_widget) end
+    if battery_path then files.get_battery_info(battery_path, handle_error(update_widget)) end
     return true
   end
 
