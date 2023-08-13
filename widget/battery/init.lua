@@ -111,10 +111,8 @@ function Battery(args)
     end
   end
 
-  ---@param path string?
-  ---@return boolean
-  local callback = function(path)
-    battery_path = path or battery_path
+  ---@return true
+  local callback = function()
     if battery_path then files.get_battery_info(battery_path, update_widget) end
     return true
   end
@@ -125,10 +123,13 @@ function Battery(args)
     autostart = not not battery_path,
     callback = callback,
   })
-  if not battery_path then files.find_battery_path(function(path)
-    callback(path)
-    timer:start()
-  end) end
+  if not battery_path then
+    files.find_battery_path(function(path)
+      battery_path = path or battery_path
+      callback()
+      timer:start()
+    end)
+  end
 
   return widget_button
 end
