@@ -29,10 +29,25 @@ end
 ---@param callback_fn fun(info: battery_info) the function to call when the data has been retrieved
 local function get_battery_info(battery_path, callback_fn)
   local ret = {}
-  local callback_fn_args = { ret }
-  local get_status_args = { battery_path, "status", ret, callback_fn, callback_fn_args }
-  local get_capacity_args = { battery_path, "capacity", ret, get_battery_stat, get_status_args }
-  get_battery_stat(table.unpack(get_capacity_args))
+  local args
+  for k, _ in pairs(battery_files) do
+    local t_args = { battery_path, k, ret }
+    if not args then
+      -- If args is not yet defined, then this is the inner (last) table, which should call the callback function
+      table.insert(t_args, callback_fn)
+      table.insert(t_args, { ret })
+    else
+      -- If args is already defined, then we will eventually call the callback function, we just need to pass those args to the get_battery_stat function
+      table.insert(t_args, get_battery_stat)
+      table.insert(t_args, args)
+    end
+    args = t_args
+  end
+  if args then
+    get_battery_stat(table.unpack(args))
+  else
+    callback_fn(ret)
+  end
 end
 
 ---Find the first battery in the sysfs
