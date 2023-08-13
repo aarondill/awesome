@@ -1,11 +1,5 @@
 local gio = require("lgi").Gio
-
----This array is in module scope, allowing values to be placed inside of it, without worrying they will be garbage collected
----Be *CERTAIN* to clear the values when you are done with them. This can and will being a memory leak otherwise.
----@type any[]
-local SAVE_FROM_GARBAGE_COLLECTION = {}
---- Used to disable lua-language-server warning about unused variables
-SAVE_FROM_GARBAGE_COLLECTION = SAVE_FROM_GARBAGE_COLLECTION
+local garbage_collection = require("util.garbage_collection")
 
 --- Replace a file content or create a new one - Async :)
 ---@param path string file path to write to
@@ -14,9 +8,7 @@ SAVE_FROM_GARBAGE_COLLECTION = SAVE_FROM_GARBAGE_COLLECTION
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_write(path, content, cb)
   if type(path) ~= "string" or type(content) ~= "string" then error("path and content must be strings", 2) end
-  local index = {} -- Use a table as the index, as all tables are unique
-  --- Store the content in the global array
-  SAVE_FROM_GARBAGE_COLLECTION[index] = content
+  local index = garbage_collection.save(content)
 
   ---params(replace_contents_async): string contents, string etag, boolean make_backup, GFileCreateFlags flags, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   --- NOTE: This function does not copy `content`, so we must protect it from being garbage-collected (resulting in garbage being written to disk)
@@ -25,7 +17,8 @@ local function file_write(path, content, cb)
     file:replace_contents_finish(task)
 
     --- Clear the content to allow garbage collection - Avoid a memory leak
-    SAVE_FROM_GARBAGE_COLLECTION[index], index = nil, nil
+    garbage_collection.release(index)
+    index = nil
     collectgarbage("collect")
     if type(cb) == "function" then cb() end
     collectgarbage("collect")
