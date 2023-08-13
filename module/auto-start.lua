@@ -4,7 +4,7 @@ local DEBUG = require("configuration").DEBUG
 
 local apps = require("configuration.apps")
 local awful = require("awful")
-local file_write = require("util.async_file_write")
+local file_write = require("util.file.write_async")
 local gears = require("gears")
 local notifs = require("util.notifs")
 local serialize_table = require("util.serialize_table")
