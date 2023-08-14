@@ -59,7 +59,7 @@ local TopPanel = function(s)
     x = s.geometry.x,
     y = s.geometry.y,
     stretch = false,
-    bg = beautiful.background.hue_800,
+    bg = (beautiful.background or {}).hue_800,
     fg = beautiful.fg_normal,
   })
 

@@ -72,7 +72,7 @@ screen.connect_signal("property::geometry", function()
   exit_screen.y = s.geometry.y
 end)
 
-exit_screen.bg = beautiful.background.hue_800 .. "dd"
+exit_screen.bg = beautiful.background and beautiful.background.hue_800 .. "dd" or nil
 exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or "#FEFEFE"
 
 local exit_screen_grabber
