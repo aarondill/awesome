@@ -57,7 +57,7 @@ local spawn = {}
 ---@return string? stderr_fd
 ---
 ---Note: start_callback only works when opts.sn_rules is given
----@source Modified from /usr/share/awesome/lib/awful/spawn.lua
+---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.spawn(cmd, opts)
   if not cmd or #cmd == 0 then
     error("No command specified.", 2)
@@ -89,7 +89,7 @@ end
 ---@return integer? stdin_fd
 ---@return integer? stdout_fd
 ---@return string? stderr_fd
----@source Modified from /usr/share/awesome/lib/awful/spawn.lua
+---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.noninteractive(cmd, opts)
   opts = opts or {}
   opts.inherit_stdin = opts.inherit_stdin or false
