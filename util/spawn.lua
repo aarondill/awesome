@@ -1,6 +1,9 @@
 local capi = { awesome = awesome }
 local awful_spawn = require("awful.spawn")
 
+---@class SpawnModule
+local spawn = {}
+
 ---@class SpawnOptions
 ---The callback to call when the application starts.
 ---This is passed the client object (https://awesomewm.org/doc/api/classes/client.html)
@@ -55,7 +58,7 @@ local awful_spawn = require("awful.spawn")
 ---
 ---Note: start_callback only works when opts.sn_rules is given
 ---@source Modified from /usr/share/awesome/lib/awful/spawn.lua
-local function spawn(cmd, opts)
+function spawn.spawn(cmd, opts)
   if not cmd or #cmd == 0 then
     error("No command specified.", 2)
     return -1 -- Should never happen
@@ -77,5 +80,28 @@ local function spawn(cmd, opts)
   end
   return pid_or_error, snid, stdin, stdout, stderr
 end
+
+---See spawn.spawn for more information
+---@param cmd string|string[]
+---@param opts SpawnOptions?
+---@return integer|string pid_or_error
+---@return string? snid
+---@return integer? stdin_fd
+---@return integer? stdout_fd
+---@return string? stderr_fd
+---@source Modified from /usr/share/awesome/lib/awful/spawn.lua
+function spawn.noninteractive(cmd, opts)
+  opts = opts or {}
+  opts.inherit_stdin = opts.inherit_stdin or false
+  opts.inherit_stdout = opts.inherit_stdout or false
+  opts.inherit_stderr = opts.inherit_stderr or false
+  return spawn(cmd, opts)
+end
+
+setmetatable(spawn, {
+  __call = function(_, ...)
+    return spawn.spawn(...)
+  end,
+})
 
 return spawn
