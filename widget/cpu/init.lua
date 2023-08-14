@@ -1,9 +1,11 @@
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
-local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local gears = require("gears")
+local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
+local read_async = require("util.file.read_async")
 
 local function escape_pattern(str)
   -- Taken from gears.string.quote_pattern
@@ -21,6 +23,29 @@ end
 ---@field precision integer?
 ---How often to update the widget in seconds (default: 15).
 ---@field timeout integer?
+
+---@return integer cpu_idle_time
+---@return integer cpu_total
+local function parse_proc_stat(content)
+  local rem = content:match("^cpu%s+([^\n]*)")
+  if not rem then return 0, 0 end
+  local user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice
+  -- find values, even if not exist
+  user, rem = rem:match("(%d+)(.*)")
+  nice, rem = rem:match("(%d+)(.*)")
+  system, rem = rem:match("(%d+)(.*)")
+  idle, rem = rem:match("(%d+)(.*)")
+  iowait, rem = rem:match("(%d+)(.*)")
+  irq, rem = rem:match("(%d+)(.*)")
+  softirq, rem = rem:match("(%d+)(.*)")
+  steal, rem = rem:match("(%d+)(.*)")
+  guest, rem = rem:match("(%d+)(.*)")
+  guest_nice, rem = rem:match("(%d+)(.*)")
+
+  local cpu_total = user + nice + system + idle + iowait + irq + softirq + steal + guest + guest_nice
+  -- return user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice, cpu_total
+  return idle, cpu_total
+end
 
 ---Create a new CPU usage widget
 ---@param args CPUWidgetConfig?
@@ -42,44 +67,34 @@ function CPU(args)
     text = string.format(format, 0),
   })
 
-  watch([[bash -c "cat /proc/stat | grep '^cpu '"]], args.timeout or 15, function(_, stdout)
-    local ok, err = pcall(function()
-      local rem = stdout:match("cpu%s+(.*)")
-      local user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice
-      -- find values, even if not exist
-      user, rem = rem:match("(%d+)(.*)")
-      nice, rem = rem:match("(%d+)(.*)")
-      system, rem = rem:match("(%d+)(.*)")
-      idle, rem = rem:match("(%d+)(.*)")
-      iowait, rem = rem:match("(%d+)(.*)")
-      irq, rem = rem:match("(%d+)(.*)")
-      softirq, rem = rem:match("(%d+)(.*)")
-      steal, rem = rem:match("(%d+)(.*)")
-      guest, rem = rem:match("(%d+)(.*)")
-      guest_nice, rem = rem:match("(%d+)(.*)")
+  local file_callback = function(content)
+    local idle, cpu_total = parse_proc_stat(content)
 
-      local cpu_total = user + nice + system + idle + iowait + irq + softirq + steal + guest + guest_nice
+    -- Get the delta between two reads
+    local diff_cpu = cpu_total - cpu_total_prev
+    -- Get the idle time delta
+    local diff_idle = idle - idle_prev
+    -- Calc time spent working
+    local cpu_used = diff_cpu - diff_idle
+    -- Calc percentage
+    local cpu_usage = 100 * cpu_used / diff_cpu
 
-      -- Get the delta between two reads
-      local diff_cpu = cpu_total - cpu_total_prev
-      -- Get the idle time delta
-      local diff_idle = idle - idle_prev
-      -- Calc time spent working
-      local cpu_used = diff_cpu - diff_idle
-      -- Calc percentage
-      local cpu_usage = 100 * cpu_used / diff_cpu
+    -- Round to percentage
+    text_box:set_text(string.format(format, cpu_usage))
 
-      -- Round to percentage
-      text_box:set_text(string.format(format, cpu_usage))
-
-      cpu_total_prev = cpu_total
-      idle_prev = idle
-    end)
-    if not ok then notifs.critical(tostring(err), {
-      title = "error",
-    }) end
+    cpu_total_prev = cpu_total
+    idle_prev = idle
     collectgarbage("collect")
-  end)
+  end
+
+  gears.timer.new({
+    autostart = true,
+    call_now = true,
+    timeout = args.timeout or 15,
+    callback = function()
+      read_async("/proc/stat", handle_error(file_callback))
+    end,
+  })
 
   local cpu_meter = wibox.widget({
     wibox.widget({

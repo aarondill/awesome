@@ -2,10 +2,6 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
 
---TODO: async read file
---Use GIO to async read files instead of calling cat.
---This can improve performance in the battery widget (and later brightness) by avoiding the fork system call
-
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
