@@ -28,6 +28,8 @@ local defaults = {
   max_width = dpi(70),
   ---Speed to scroll the widget text.
   scroll_speed = 20,
+  ---The fps to render the scrolling widget at
+  fps = 15,
 }
 
 ---@class MediaControl
@@ -52,6 +54,7 @@ function MediaControl:init(args)
   if args.autohide ~= nil then self.autohide = args.autohide end
   self.max_width = args.max_width or defaults.max_width
   self.scroll_speed = args.scroll_speed or defaults.scroll_speed
+  self.fps = args.fps or defaults.fps
 
   self.widget = wibox.widget({
     layout = wibox.layout.fixed.horizontal,
@@ -62,12 +65,13 @@ function MediaControl:init(args)
     {
       layout = wibox.container.scroll.horizontal,
       step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+      max_size = self.max_width ~= 0 and self.max_width or nil,
+      speed = self.scroll_speed,
+      fps = self.fps,
       {
         id = "current_song",
         widget = wibox.widget.textbox,
       },
-      max_size = self.max_width ~= 0 and self.max_width or nil,
-      speed = self.scroll_speed,
     },
     set_status = function(self, image)
       self:get_children_by_id("icon")[1].image = image
