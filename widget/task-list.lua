@@ -1,6 +1,5 @@
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
-local escape_xml = require("util.escape_xml")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -117,7 +116,7 @@ local function list_update(w, buttons, label, data, clients)
       if textOnly:len() > max_tab_width then
         text = text:gsub(">(.-)<", ">" .. textOnly:sub(1, max_tab_width - 3) .. "...<")
       end
-      tt:set_text(escape_xml(textOnly))
+      tt:set_text(gears.string.xml_escape(textOnly))
       tt:add_to_object(tb)
       if not tb:set_markup_silently(text) then tb:set_markup("<i>&lt;Invalid text&gt;</i>") end
     end
