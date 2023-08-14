@@ -172,15 +172,35 @@ end
 ---Get info about the media source
 ---@param cb fun(info: MediaControl.info?)
 function MediaControl:info(cb)
-  awful.spawn.easy_async(self:handle_name({ "playerctl", "metadata" }), function(stdout, _, exit_reason, exit_code)
+  local variables =
+    { "album", "albumArtist", "artUrl", "artist", "length", "playerName", "status", "title", "url", "volume" }
+  local cmd
+  do
+    local format_stats = {}
+    for _, v in ipairs(variables) do
+      table.insert(format_stats, "{{" .. v .. "}}")
+    end
+    cmd = self:handle_name({
+      "playerctl",
+      "metadata",
+      "--format",
+      table.concat(format_stats, "\n"),
+    })
+  end
+  awful.spawn.easy_async(cmd, function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
     ---@class MediaControl.info
     local info = {
-      artist = nil,
-      title = nil,
-      artUrl = nil,
       album = nil,
       albumArtist = nil,
+      artUrl = nil,
+      artist = nil,
+      length = nil,
+      playerName = nil,
+      status = nil,
+      title = nil,
+      url = nil,
+      volume = nil,
     }
 
     -- mpris:trackid
@@ -194,8 +214,11 @@ function MediaControl:info(cb)
     -- xesam:title
     -- xesam:trackNumber
     -- xesam:url
-    for k, v in string.gmatch(stdout, "[^:]+:(%S+)[ \t]+([^\n]*)\n") do
-      info[k] = v -- artUrl, artist, title, album, albumArtist, autoRating, etc...
+    local i = 1
+    for line in stdout:gmatch("([^\n]*)\n?") do -- Order is defined by variables[]
+      if #line == 0 then line = nil end -- Skip empty lines
+      info[variables[i]] = line
+      i = i + 1
     end
     cb(info)
   end)
