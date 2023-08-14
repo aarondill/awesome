@@ -81,6 +81,8 @@ local awesome_overrides = function(theme)
   theme.titlebar_maximized_button_focus_inactive = theme.icons .. "titlebar/maximized_focus_inactive.png"
   theme.titlebar_maximized_button_normal_active = theme.icons .. "titlebar/maximized_normal_active.png"
   theme.titlebar_maximized_button_focus_active = theme.icons .. "titlebar/maximized_focus_active.png"
+  theme.titlebar_bg = theme.background.hue_800
+  theme.titlebar_fg = theme.fg_normal
 
   -- Tooltips
   theme.tooltip_bg = "#232323"
