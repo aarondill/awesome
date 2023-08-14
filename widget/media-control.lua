@@ -5,24 +5,7 @@ local concat_command = require("util.concat_command")
 local gears = require("gears")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
-
-local widget_template = {
-  {
-    id = "icon",
-    widget = wibox.widget.imagebox,
-  },
-  {
-    id = "current_song",
-    widget = wibox.widget.textbox,
-  },
-  layout = wibox.layout.fixed.horizontal,
-  set_status = function(self, image)
-    self.icon.image = image
-  end,
-  set_text = function(self, text)
-    self.current_song.markup = text
-  end,
-}
+local dpi = require("beautiful").xresources.apply_dpi
 
 ---@class MediaControl.args
 local defaults = {
@@ -41,6 +24,10 @@ local defaults = {
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
   format = "{artist} | {title}",
+  ---The maximum width of the widget text (px). Set to 0 for no limit.
+  max_width = dpi(70),
+  ---Speed to scroll the widget text.
+  scroll_speed = 20,
 }
 
 ---@class MediaControl
@@ -63,7 +50,32 @@ function MediaControl:init(args)
 
   self.autohide = defaults.autohide
   if args.autohide ~= nil then self.autohide = args.autohide end
-  self.widget = wibox.widget(widget_template)
+  self.max_width = args.max_width or defaults.max_width
+  self.scroll_speed = args.scroll_speed or defaults.scroll_speed
+
+  self.widget = wibox.widget({
+    layout = wibox.layout.fixed.horizontal,
+    {
+      id = "icon",
+      widget = wibox.widget.imagebox,
+    },
+    {
+      layout = wibox.container.scroll.horizontal,
+      step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+      {
+        id = "current_song",
+        widget = wibox.widget.textbox,
+      },
+      max_size = self.max_width ~= 0 and self.max_width or nil,
+      speed = self.scroll_speed,
+    },
+    set_status = function(self, image)
+      self:get_children_by_id("icon")[1].image = image
+    end,
+    set_text = function(self, text)
+      self:get_children_by_id("current_song")[1].markup = text
+    end,
+  })
 
   self.format = args.format or defaults.format
   self.name = args.name or defaults.name
@@ -88,7 +100,15 @@ end
 ---@param status string?
 function MediaControl:update_widget_icon(status)
   status = status and string.gsub(status, "\n", "")
-  self.widget:set_status((status == "Playing") and self.icons.play or self.icons.pause)
+  local icon = self.icons.stop -- default to stop
+  if status == "Playing" then
+    icon = self.icons.play
+  elseif status == "Paused" then
+    icon = self.icons.pause
+  elseif status == "Stopped" then
+    icon = self.icons.stop
+  end
+  self.widget:set_status(icon)
 end
 
 ---@param text string
@@ -140,7 +160,7 @@ end
 function MediaControl:status(cb)
   awful.spawn.easy_async(self:handle_name({ "playerctl", "status" }), function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
-    local status = string.match(stdout, "Playing") or string.match(stdout, "Paused")
+    local status = string.match(stdout, "^[^\n]*\n?")
     cb(status)
   end)
 end
@@ -170,7 +190,7 @@ function MediaControl:info(cb)
     -- xesam:title
     -- xesam:trackNumber
     -- xesam:url
-    for k, v in string.gmatch(stdout, "[^:]+:(%S+)[%s]+([^\n]*)") do
+    for k, v in string.gmatch(stdout, "[^:]+:(%S+)[ \t]+([^\n]*)\n") do
       info[k] = v -- artUrl, artist, title, album, albumArtist, autoRating, etc...
     end
     cb(info)
