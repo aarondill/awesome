@@ -1,5 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
+local concat_command = require("util.concat_command")
 local gears = require("gears")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
@@ -30,6 +31,7 @@ local defaults = {
   autohide = true,
   refresh_rate = 10,
   name = "",
+  format = "{author} | {title}",
 }
 
 ---@class MediaControl
@@ -54,7 +56,8 @@ function MediaControl:init(args)
   if args.autohide ~= nil then self.autohide = args.autohide end
   self.widget = wibox.widget(widget_template)
 
-  self.name = args.name or defaults.refresh_rate
+  self.format = args.format or defaults.format
+  self.name = args.name or defaults.name
   -- Higher refresh_rate == less CPU requirements
   -- Lower refresh_rate == better Widget response time
   self:watch(args.refresh_rate or defaults.refresh_rate)
@@ -100,23 +103,35 @@ function MediaControl:hide_widget()
   self.widget:set_visible(not self.autohide)
 end
 
+---@private
+---@param cmd string[]
+---@return string[]
+function MediaControl:handle_name(cmd)
+  if self.name and #self.name > 0 then
+    local cmd_new = concat_command(cmd, { "--player", self.name })
+    ---@cast cmd_new string[] this is fine
+    return cmd_new
+  else
+    return cmd
+  end
+end
 ---@param cb fun(success: boolean)
 function MediaControl:PlayPause(cb)
-  local pid = spawn("playerctl play-pause")
+  local pid = spawn.noninteractive(self:handle_name({ "playerctl", "play-pause" }))
   cb(type(pid) ~= "string")
 end
 ---@param cb fun(success: boolean)
 function MediaControl:Previous(cb)
-  local pid = spawn("playerctl previous")
+  local pid = spawn.noninteractive(self:handle_name({ "playerctl", "previous" }))
   cb(type(pid) ~= "string")
 end
 ---@param cb fun(success: boolean)
 function MediaControl:Next(cb)
-  local pid = spawn("playerctl next")
+  local pid = spawn.noninteractive(self:handle_name({ "playerctl", "next" }))
   cb(type(pid) ~= "string")
 end
 function MediaControl:status(cb)
-  awful.spawn.easy_async({ "playerctl", "status" }, function(stdout, _, exit_reason, exit_code)
+  awful.spawn.easy_async(self:handle_name({ "playerctl", "status" }), function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
     local status = string.match(stdout, "Playing") or string.match(stdout, "Paused")
     cb(status)
@@ -126,7 +141,7 @@ end
 ---Get info about the media source
 ---@param cb fun(info: MediaControl.info?)
 function MediaControl:info(cb)
-  awful.spawn.easy_async({ "playerctl", "metadata" }, function(stdout, _, exit_reason, exit_code)
+  awful.spawn.easy_async(self:handle_name({ "playerctl", "metadata" }), function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
     ---@class MediaControl.info
     local info = {
@@ -163,6 +178,8 @@ function MediaControl:update_widget()
     self:info(function(info)
       if info and info.artist and info.title then
         -- Change the artist and title fields in case they aren't nil
+
+        -- format = "{author} | {title}"
         self:update_widget_text(string.format("%s | %s", info.artist, info.title))
       end
     end)
