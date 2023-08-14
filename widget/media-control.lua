@@ -25,13 +25,21 @@ local widget_template = {
 
 ---@class MediaControl.args
 local defaults = {
+  ---Icon to show when media is playing
   play_icon = beautiful.play,
+  ---Icon to show when media is paused
   pause_icon = beautiful.pause,
+  ---Icon to show when media is stopped (no media)
   stop_icon = beautiful.stop,
+  ---Whether to hide the widget when no media is playing
   autohide = true,
+  --How often to update the widget
   refresh_rate = 10,
+  --The MPRIS name of the player to search for (playerctl -p NAME)
   name = "",
-  format = "{author} | {title}",
+  ---The format to set the widget text to. {text} escapes are recogized
+  --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
+  format = "{artist} | {title}",
 }
 
 ---@class MediaControl
@@ -176,12 +184,9 @@ function MediaControl:update_widget()
     if not status then return self:hide_widget() end
     self:update_widget_icon(status)
     self:info(function(info)
-      if info and info.artist and info.title then
-        -- Change the artist and title fields in case they aren't nil
-
-        -- format = "{author} | {title}"
-        self:update_widget_text(string.format("%s | %s", info.artist, info.title))
-      end
+      if not info then return end
+      local str = string.gsub(self.format, "{([^}]*)}", info)
+      self:update_widget_text(str)
     end)
   end)
 end
