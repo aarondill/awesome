@@ -9,6 +9,7 @@
 local function serializeTable(val, name, skipnewlines, depth)
   skipnewlines = skipnewlines or false
   depth = depth or 0
+  if depth > 25 then return "DEPTH LIMIT: " .. depth end
 
   local tmp = string.rep(" ", depth)
 
