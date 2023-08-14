@@ -12,7 +12,13 @@ local function serializeTable(val, name, skipnewlines, depth)
 
   local tmp = string.rep(" ", depth)
 
-  if name then tmp = tmp .. name .. " = " end
+  if name then
+    if type(name) == "string" then
+      tmp = tmp .. name .. " = "
+    else
+      tmp = tmp .. '"[inserializeable datatype:' .. type(name) .. ']" = '
+    end
+  end
 
   if type(val) == "table" then
     tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
