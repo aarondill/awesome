@@ -86,16 +86,15 @@ function MediaControl:init(args)
   -- Higher refresh_rate == less CPU requirements
   -- Lower refresh_rate == better Widget response time
   self:watch(args.refresh_rate or defaults.refresh_rate)
-  local update_widget_icon = bind(self.update_widget_icon, self)
-  local spawn_update = bind(self.status, self, update_widget_icon)
+  local update_widget = bind(self.update_widget, self)
 
   self.widget:buttons(awful.util.table.join(
     -- button 1: left click  - play/pause
-    awful.button({}, 1, bind(self.PlayPause, self, spawn_update)),
+    awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
     -- button 4: scroll up   - next song
-    awful.button({}, 4, bind(self.Next, self, spawn_update)),
+    awful.button({}, 4, bind(self.Next, self, update_widget)),
     -- button 5: scroll down - previous song
-    awful.button({}, 5, bind(self.Previous, self, spawn_update))
+    awful.button({}, 5, bind(self.Previous, self, update_widget))
   ))
 
   return self.widget
@@ -161,19 +160,22 @@ function MediaControl:Next(cb)
   })
 end
 
-function MediaControl:status(cb)
-  awful.spawn.easy_async(self:handle_name({ "playerctl", "status" }), function(stdout, _, exit_reason, exit_code)
-    if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
-    local status = string.match(stdout, "^[^\n]*\n?")
-    cb(status)
-  end)
-end
-
 ---Get info about the media source
 ---@param cb fun(info: MediaControl.info?)
 function MediaControl:info(cb)
-  local variables =
-    { "album", "albumArtist", "artUrl", "artist", "length", "playerName", "status", "title", "url", "volume" }
+  -- Some of these are unneeded, but we gather them for the sake of the user's format string
+  local variables = {
+    "album",
+    "albumArtist",
+    "artUrl",
+    "artist",
+    "length",
+    "playerName",
+    "status",
+    "title",
+    "url",
+    "volume",
+  }
   local cmd
   do
     local format_stats = {}
@@ -225,15 +227,12 @@ function MediaControl:info(cb)
 end
 
 function MediaControl:update_widget()
-  self:status(function(status)
+  self:info(function(info)
     -- Status unavailable? Media Player isn't active, hide the widget
-    if not status then return self:hide_widget() end
-    self:update_widget_icon(status)
-    self:info(function(info)
-      if not info then return end
-      local str = string.gsub(self.format, "{([^}]*)}", info)
-      self:update_widget_text(str)
-    end)
+    if not info or not info.status then return self:hide_widget() end
+    self:update_widget_icon(info.status)
+    local str = string.gsub(self.format, "{([^}]*)}", info)
+    self:update_widget_text(str)
   end)
 end
 
