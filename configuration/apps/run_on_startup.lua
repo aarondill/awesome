@@ -17,7 +17,7 @@ local run_on_startup = {
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
-  { "sh", "-c", "pasystray --no-icon-tooltip >~/.cache/pasystray-output.log 2>&1" }, -- shows an audiocontrol applet in systray when installed.
+  { "pasystray", "--no-icon-tooltip" }, -- shows an audiocontrol applet in systray when installed.
   -- "exec xfce4-power-manager", -- Power manager
   "xset s 0 0", -- disable screen saver
   "xset -dpms", -- Disable dpms because doesn't work with keys?
@@ -30,6 +30,7 @@ local run_on_startup = {
   }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { notification_daemon },
+  { "xsettingsd", "-c", filesystem.get_configuration_dir() .. "configuration/xsettingsd.conf" },
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
   -- to avoid multipled instances, inside the awspawn script
