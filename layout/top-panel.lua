@@ -16,6 +16,7 @@ local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local has_brightness, Brightness = pcall(require, "widget.brightness")
+local icons = require("theme.icons")
 
 local brightness_widget = nil
 if awesome.version <= "v4.3" and has_brightness then -- HACK: broken in awesome-git
@@ -85,7 +86,11 @@ local TopPanel = function(s)
     TaskList(s),
     {
       layout = wibox.layout.fixed.horizontal,
-      MediaControl:new(),
+      MediaControl:new({
+        play_icon = icons.play,
+        stop_icon = icons.stop,
+        pause_icon = icons.pause,
+      }),
       wibox.container.margin(systray, dpi(3), dpi(3), dpi(6), dpi(3)),
       -- Layout box
       LayoutBox(s),

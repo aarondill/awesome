@@ -13,4 +13,7 @@ return {
   harddisk = dir .. "/harddisk.svg",
   thermometer = dir .. "/thermometer.svg",
   launcher = dir .. "/awesome.svg",
+  play = dir .. "/play.svg",
+  pause = dir .. "/pause.svg",
+  stop = dir .. "/stop.svg",
 }
