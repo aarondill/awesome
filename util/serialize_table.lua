@@ -6,12 +6,13 @@
 ---@param depth integer? used for the recursive implementation. DO NOT use this.
 ---@return string
 ---@source https://stackoverflow.com/a/6081639
-local function serializeTable(val, name, skipnewlines, depth)
+local function serializeTable(val, name, skipnewlines, depth, already_visited)
   skipnewlines = skipnewlines or false
   depth = depth or 0
-  if depth > 25 then return "DEPTH LIMIT: " .. depth end
 
   local tmp = string.rep(" ", depth)
+
+  if depth > 25 then return tmp .. "DEPTH LIMIT: " .. depth end
 
   if name then
     if type(name) == "string" then
@@ -19,6 +20,8 @@ local function serializeTable(val, name, skipnewlines, depth)
     else
       tmp = tmp .. '"[inserializeable datatype:' .. type(name) .. ']" = '
     end
+    if already_visited[name] == val then return tmp .. "ALREADY VISITED" end
+    already_visited[name] = val
   end
 
   if type(val) == "table" then
@@ -51,5 +54,10 @@ end
 ---@param skipnewlines boolean? Should newlines be present in the output
 ---@return string
 return function(val, name, skipnewlines)
-  return serializeTable(val, name, skipnewlines, 0)
+  local already_visited = {}
+  local res = serializeTable(val, name, skipnewlines, 0, already_visited)
+  already_visited = nil
+  collectgarbage("collect") -- Cleanup already_visited
+  collectgarbage("collect")
+  return res
 end
