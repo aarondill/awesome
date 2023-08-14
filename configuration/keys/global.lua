@@ -181,12 +181,27 @@ local globalKeys = gears.table.join(
     })
   end, { description = "Toggle mute", group = "hotkeys" }),
 
+  awful.key({}, "XF86AudioPlay", function()
+    spawn({ "playerctl", "play-pause" }, {
+      sn_rules = false,
+      inherit_stdout = false,
+      inherit_stderr = false,
+    })
+  end, { description = "Play/Pause Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioNext", function()
-    --
-  end, { description = "Next Audio Track (Unimplimented)", group = "hotkeys" }),
+    spawn({ "playerctl", "next" }, {
+      sn_rules = false,
+      inherit_stdout = false,
+      inherit_stderr = false,
+    })
+  end, { description = "Next Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioPrev", function()
-    --
-  end, { description = "Previous Audio Track (Unimplimented)", group = "hotkeys" }),
+    spawn({ "playerctl", "previous" }, {
+      sn_rules = false,
+      inherit_stdout = false,
+      inherit_stderr = false,
+    })
+  end, { description = "Previous Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86PowerDown", function()
     require("module.exit-screen").show()
   end, { description = "Open Poweroff Menu", group = "hotkeys" }),
