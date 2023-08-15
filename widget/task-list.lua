@@ -3,6 +3,8 @@ local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local notifs = require("util.notifs")
+local utf8_sub = require("util.utf8_sub")
 local capi = { button = button }
 ---Common method to create buttons.
 ---@param buttons table?
@@ -113,10 +115,15 @@ local function list_update(w, buttons, label, data, clients)
     else
       -- truncate when title is too long
       local textOnly = text:match(">(.-)<")
-      if textOnly:len() > max_tab_width then
-        text = text:gsub(">(.-)<", ">" .. textOnly:sub(1, max_tab_width - 3) .. "...<")
+      local len = textOnly:len()
+      textOnly = gears.string.xml_escape(textOnly) or textOnly
+      if len > max_tab_width then
+        local shortened = utf8_sub(textOnly, 1, max_tab_width - 3)
+        text = text:gsub(">(.-)<", ">" .. shortened .. "...<")
+      else
+        text = text:gsub(">(.-)<", ">" .. textOnly .. "...<")
       end
-      tt:set_text(gears.string.xml_escape(textOnly))
+      tt:set_text(textOnly)
       tt:add_to_object(tb)
       if not tb:set_markup_silently(text) then tb:set_markup("<i>&lt;Invalid text&gt;</i>") end
     end
