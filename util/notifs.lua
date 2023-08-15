@@ -2,8 +2,6 @@ local bind = require("util.bind")
 local gtable = require("gears.table")
 local naughty = require("naughty")
 
-local M = {}
-
 ---@alias screen table
 ---@alias gears.shape table
 ---@alias gears.opacity table
@@ -12,6 +10,8 @@ local M = {}
 ---@alias naughty.notificationClosedReason table
 
 ---@class NotifyOpts
+---@field once? boolean Whether the notification should only be shown once [Default: false]
+---@field message? string Text of the notification, used if text is not defined. [Default: nil]
 ---@field text? string Text of the notification. [Default: ""]
 ---@field title? string Title of the notification.
 ---@field timeout? integer Time in seconds after which popup expires. Set 0 for no timeout. [Default: 5]
@@ -41,6 +41,26 @@ local M = {}
 ---@field actions? function[] Mapping that maps a string to a callback when this action is selected.
 ---@field ignore_suspend? boolean If set to true this notification will be shown even if notifications are suspended via `naughty.suspend`. [Default: false]
 
+---@alias logFunc fun(text: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
+
+---@class NotifsClass
+---@field low logFunc
+---@field normal logFunc
+---@field critical logFunc
+---@field ok logFunc
+---@field info logFunc
+---@field warn logFunc
+---@field low_once logFunc
+---@field normal_once logFunc
+---@field critical_once logFunc
+---@field ok_once logFunc
+---@field info_once logFunc
+---@field warn_once logFunc
+local M = {}
+
+---A table for use in notify_once
+local displayed_notifications = {}
+
 ---Do NOT call this function directly. Instead, call notify, warn, etc...
 ---@param text string?
 ---@param opts NotifyOpts This *will* be modified.
@@ -48,6 +68,11 @@ local M = {}
 local function _notify(text, opts)
   text = text or opts.text or opts.message
   text = tostring(text)
+  if opts.once then
+    local tb = debug.traceback()
+    if displayed_notifications[tb] == text then return end -- Only when text is same from the same place
+    displayed_notifications[tb] = text
+  end
   if awesome.version <= "v4.3" then
     opts.text = text
     return naughty.notify(opts)
@@ -62,6 +87,7 @@ end
 ---@param text? string The text to display
 ---@param loglevel? loglevel  the naughty.preset.LEVEL to use [Default: "normal"]
 ---@param opts? NotifyOpts
+---@param extra_opts? NotifyOpts Extra options to merge with opts. Mostly for use in library functions.
 ---usage:
 ---```lua
 ---notify("You're idling", "normal", { title = "Achtung!", timeout = 0 })
@@ -69,7 +95,7 @@ end
 ---@return notification? notification The notification object, or nil in case a notification was not displayed.
 ---@overload fun(opts: NotifyOpts): notification?
 ---@overload fun(loglevel: loglevel, opts?: NotifyOpts): notification?
-function M.notify(loglevel, text, opts)
+function M.notify(loglevel, text, opts, extra_opts)
   if type(loglevel) == "table" then
     opts = loglevel
     loglevel = nil
@@ -79,26 +105,28 @@ function M.notify(loglevel, text, opts)
     text = nil
   end
 
-  opts = opts or {}
+  opts = opts and gtable.clone(opts, true) or {}
   opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
+  if extra_opts then gtable.crush(opts, extra_opts) end
 
-  -- naughty.config.presets.
   return _notify(text, opts)
 end
+function M.notify_once(loglevel, text, opts)
+  return M.notify(loglevel, text, opts, { once = true })
+end
 
----@alias logFunc fun(text: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
-
----@type logFunc
 M.low = bind(M.notify, "low")
----@type logFunc
 M.normal = bind(M.notify, "normal")
----@type logFunc
 M.critical = bind(M.notify, "critical")
----@type logFunc
 M.ok = bind(M.notify, "ok")
----@type logFunc
 M.info = bind(M.notify, "info")
----@type logFunc
 M.warn = bind(M.notify, "warn")
+-- Once
+M.low_once = bind(M.notify_once, "low")
+M.normal_once = bind(M.notify_once, "normal")
+M.critical_once = bind(M.notify_once, "critical")
+M.ok_once = bind(M.notify_once, "ok")
+M.info_once = bind(M.notify_once, "info")
+M.warn_once = bind(M.notify_once, "warn")
 
 return M
