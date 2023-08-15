@@ -3,7 +3,6 @@ local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local notifs = require("util.notifs")
 local utf8_sub = require("util.utf8_sub")
 local capi = { button = button }
 ---Common method to create buttons.
@@ -109,15 +108,12 @@ local function list_update(w, buttons, label, data, clients)
     local text, bg, bg_image, icon, args = label(o, tb)
     args = args or {}
 
-    -- The text might be invalid, so use pcall.
     if text == nil or text == "" then
       tbm:set_margins(0)
     else
       -- truncate when title is too long
       local textOnly = text:match(">(.-)<")
-      local len = textOnly:len()
-      textOnly = gears.string.xml_escape(textOnly) or textOnly
-      if len > max_tab_width then
+      if utf8.len(textOnly) > max_tab_width then
         local shortened = utf8_sub(textOnly, 1, max_tab_width - 3)
         text = text:gsub(">(.-)<", ">" .. shortened .. "...<")
       else
