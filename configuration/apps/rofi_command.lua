@@ -12,7 +12,7 @@ local function rofi_command(...)
     "-width",
     tostring(xres.apply_dpi(400)),
     "-theme",
-    filesystem.get_configuration_dir() .. "configuration/rofi.rasi",
+    filesystem.get_configuration_dir() .. "configuration/rofi/config.rasi",
     "-show",
   }
   for _, v in ipairs(args) do

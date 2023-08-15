@@ -1,0 +1,16 @@
+configuration {
+  display-drun: "activate";
+  display-run: "execute";
+  modi: [drun, window, ssh];
+  show-icons: true;
+  sidebar-mode: true;
+  matching: "regex";
+  drun-match-fields: [all];
+  drun-display-format: "{name} [<span weight='light' size='small'><i>({comment})</i></span>]";
+  drun-show-actions: true;
+  window-match-fields: [all];
+  window-format: "{w}: {c} ({r}) - {t}";
+  run-command: "{cmd}";
+}
+@theme "rofi"
+// vim:ft=css:
