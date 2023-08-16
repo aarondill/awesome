@@ -8,11 +8,11 @@ end
 ---@param depth integer used for the recursive implementation. DO NOT use this.
 ---@return string
 local function type_tostring(val, skipnewlines, depth, memoize)
-  if depth > 25 then return string_warning("DEPTH LIMIT:" .. depth) end
   local tval = type(val)
   if tval == "nil" then
     return "nil"
   elseif tval == "table" then
+    if depth > 25 then return string_warning("DEPTH LIMIT:" .. depth) end
     local tmp = ""
     tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
 
@@ -20,7 +20,7 @@ local function type_tostring(val, skipnewlines, depth, memoize)
       tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1, memoize) .. "," .. (not skipnewlines and "\n" or "")
     end
 
-    tmp = string.rep(" ", depth) .. tmp .. "}"
+    tmp = tmp .. string.rep(" ", depth) .. "}"
     return tmp
   elseif tval == "number" then
     return tostring(val)
@@ -42,11 +42,12 @@ end
 ---@return string
 ---@source https://stackoverflow.com/a/6081639
 function serializeTable(val, name, skipnewlines, depth, memoize)
-  local tmp = string.rep(" ", depth)
+  local tmp = ""
 
   if name then
     local res = memoize(name) or type_tostring(name, skipnewlines, depth, memoize)
     memoize(name, res)
+    tmp = string.rep(" ", depth)
     if depth == 0 and type(name) == "string" then
       tmp = tmp .. name .. " = "
     else
