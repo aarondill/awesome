@@ -88,7 +88,7 @@ function MediaControl:init(args)
   self:watch(args.refresh_rate or defaults.refresh_rate)
   local update_widget = bind(self.update_widget, self)
 
-  self.widget:buttons(awful.util.table.join(
+  self.widget:buttons(gears.table.join(
     -- button 1: left click  - play/pause
     awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
     -- button 4: scroll up   - next song
