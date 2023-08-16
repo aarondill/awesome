@@ -23,9 +23,9 @@ end
 
 function mat_list_item:build_clickable_container()
   self._private.clickable_container = wibox.widget({
-    wibox.widget({
+    {
       widget = wibox.widget.textbox,
-    }),
+    },
     widget = clickable_container,
   })
   self:emit_signal("widget::layout_changed")
