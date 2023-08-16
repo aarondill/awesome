@@ -41,7 +41,7 @@ local naughty = require("naughty")
 ---@field actions? function[] Mapping that maps a string to a callback when this action is selected.
 ---@field ignore_suspend? boolean If set to true this notification will be shown even if notifications are suspended via `naughty.suspend`. [Default: false]
 
----@alias logFunc fun(text: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
+---@alias logFunc fun(text?: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
 
 ---@class NotifsClass
 ---@field low logFunc
@@ -96,13 +96,12 @@ end
 ---@overload fun(opts: NotifyOpts): notification?
 ---@overload fun(loglevel: loglevel, opts?: NotifyOpts): notification?
 function M.notify(loglevel, text, opts, extra_opts)
-  if type(loglevel) == "table" then
-    opts = loglevel
-    loglevel = nil
-    text = nil
-  elseif type(text) == "table" then
+  if type(text) == "table" and opts == nil then -- notify("warn", { opts }) || notify("warn", { opts }, nil, { extra_opts })
     opts = text
     text = nil
+  elseif type(loglevel) == "table" and text == nil and opts == nil then -- notify({ opts }) || notify({ opts }, nil, nil, { extra_opts })
+    opts = loglevel
+    loglevel = nil
   end
 
   opts = opts and gtable.clone(opts, true) or {}
