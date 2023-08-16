@@ -1,11 +1,14 @@
 local serializeTable -- Define this within the scope of type_tostring to resolve the circular dependencies
 
+local function string_warning(warning)
+  return string.format('"[%s]"', warning)
+end
 ---@param val unknown the value to serialize
 ---@param skipnewlines boolean Should newlines be present in the output
 ---@param depth integer used for the recursive implementation. DO NOT use this.
 ---@return string
 local function type_tostring(val, skipnewlines, depth, memoize)
-  if depth > 25 then return "DEPTH LIMIT: " .. depth end
+  if depth > 25 then return string_warning("DEPTH LIMIT:" .. depth) end
   local tval = type(val)
   if tval == "nil" then
     return "nil"
@@ -27,7 +30,7 @@ local function type_tostring(val, skipnewlines, depth, memoize)
     return (val and "true" or "false")
   end
 
-  return '"[inserializeable datatype:' .. tval .. ']"'
+  return string_warning("inserializeable datatype:" .. tval)
 end
 ---Serialize a table into a string. Use for output
 ---*Could* be executed like this to get a table back: loadstring(serializeTable(...))()
@@ -75,7 +78,7 @@ return function(val, name, skipnewlines)
       local t = memoize_table[k]
       if not t then return end
       t[2] = t[2] + 1
-      if t[2] > max_count and type(val) == "table" then return "[value seen " .. t[2] .. " times]" end
+      if t[2] > max_count and type(val) == "table" then return string_warning("value seen " .. t[2] .. " times") end
       return t[1]
     else
       memoize_table[k] = { v, 0 }
