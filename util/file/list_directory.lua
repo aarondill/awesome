@@ -5,7 +5,7 @@ local scan_directory = require("util.file.scan_directory")
 --- Return a file list (name only)
 ---@param path string
 ---@param args list_directory_args
----@param cb any
+---@param cb fun(names: string[])
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function list_directory(path, args, cb)
   if not path then return end
