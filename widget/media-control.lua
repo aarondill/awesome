@@ -36,7 +36,7 @@ local defaults = {
   debounce = 1, ---@type number
 }
 
----@class MediaControl
+---@class MediaControl :MediaControl.args
 local MediaControl = {}
 
 ---@param args MediaControl.args?
@@ -47,47 +47,28 @@ end
 ---@param args MediaControl.args?
 ---@return MediaControl
 function MediaControl:init(args)
-  args = args or {}
+  gears.table.crush(self, defaults, true) -- Set default
+  if args then gears.table.crush(self, args or {}, true) end -- Set any user overrides
 
-  self.autohide = defaults.autohide
-  self.max_width = args.max_width or defaults.max_width
-  self.scroll_speed = args.scroll_speed or defaults.scroll_speed
-  self.fps = args.fps or defaults.fps
-  self.format = args.format or defaults.format
-  self.name = args.name or defaults.name
-  self.refresh_rate = args.refresh_rate or defaults.refresh_rate
-  self.debounce = args.debounce or defaults.debounce
-
-  self.icons = {
-    play = args.play_icon or defaults.play_icon,
-    pause = args.pause_icon or defaults.pause_icon,
-    stop = args.stop_icon or defaults.stop_icon,
-  }
-  if args.autohide ~= nil then self.autohide = args.autohide end
-  self.widget = wibox.widget({
+  local widget_template = {
     layout = wibox.layout.fixed.horizontal,
-    {
-      id = "icon",
-      widget = wibox.widget.imagebox,
-    },
+    { id = "icon", widget = wibox.widget.imagebox },
     {
       layout = wibox.container.scroll.horizontal,
       step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
       max_size = self.max_width ~= 0 and self.max_width or nil,
       speed = self.scroll_speed,
       fps = self.fps,
-      {
-        id = "current_song",
-        widget = wibox.widget.textbox,
-      },
+      { id = "current_song", widget = wibox.widget.textbox },
     },
-    set_status = function(self, image)
-      self:get_children_by_id("icon")[1].image = image
-    end,
-    set_text = function(self, text)
-      self:get_children_by_id("current_song")[1].markup = text
-    end,
-  })
+  }
+  function widget_template:set_status(image)
+    self:get_children_by_id("icon")[1].image = image
+  end
+  function widget_template:set_text(text)
+    self:get_children_by_id("current_song")[1].markup = text
+  end
+  self.widget = wibox.widget(widget_template)
 
   self:watch(self.refresh_rate)
 
@@ -113,13 +94,13 @@ end
 ---@param status string?
 function MediaControl:update_widget_icon(status)
   status = status and string.gsub(status, "\n", "")
-  local icon = self.icons.stop -- default to stop
+  local icon = self.stop_icon -- default to stop
   if status == "Playing" then
-    icon = self.icons.play
+    icon = self.play_icon
   elseif status == "Paused" then
-    icon = self.icons.pause
+    icon = self.pause_icon
   elseif status == "Stopped" then
-    icon = self.icons.stop
+    icon = self.stop_icon
   end
   self.widget:set_status(icon)
 end
@@ -132,7 +113,7 @@ end
 
 function MediaControl:hide_widget()
   self.widget:set_text("Offline")
-  self.widget:set_status(self.icons.stop)
+  self.widget:set_status(self.stop_icon)
   self.widget:set_visible(not self.autohide)
 end
 
