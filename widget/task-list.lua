@@ -3,6 +3,7 @@ local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local handle_error = require("util.handle_error")
 local utf8_sub = require("util.utf8_sub")
 local capi = { button = button }
 ---Common method to create buttons.
@@ -119,7 +120,11 @@ local function list_update(w, buttons, label, data, clients)
       else
         text = text:gsub(">(.-)<", ">" .. textOnly .. "...<")
       end
-      tt:set_text(textOnly)
+      if tt.textbox:set_markup_silently(text) then
+        tt:set_markup(textOnly) -- Needed to update geometry of the other widgets
+      else
+        tt:set_markup("<i>&lt;Invalid text&gt;</i>")
+      end
       tt:add_to_object(tb)
       if not tb:set_markup_silently(text) then tb:set_markup("<i>&lt;Invalid text&gt;</i>") end
     end
@@ -177,7 +182,7 @@ local function TaskList(s)
     screen = s,
     filter = awful.widget.tasklist.filter.currenttags,
     buttons = tasklist_buttons,
-    update_function = list_update,
+    update_function = handle_error(list_update),
     layout = wibox.layout.fixed.horizontal(),
   })
 end
