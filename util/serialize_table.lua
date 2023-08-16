@@ -6,7 +6,10 @@ local serializeTable -- Define this within the scope of type_tostring to resolve
 ---@return string
 local function type_tostring(val, skipnewlines, depth, memoize)
   if depth > 25 then return "DEPTH LIMIT: " .. depth end
-  if type(val) == "table" then
+  local tval = type(val)
+  if tval == "nil" then
+    return "nil"
+  elseif tval == "table" then
     local tmp = ""
     tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
 
@@ -16,15 +19,15 @@ local function type_tostring(val, skipnewlines, depth, memoize)
 
     tmp = tmp .. "}"
     return tmp
-  elseif type(val) == "number" then
+  elseif tval == "number" then
     return tostring(val)
-  elseif type(val) == "string" then
+  elseif tval == "string" then
     return string.format("%q", val)
-  elseif type(val) == "boolean" then
+  elseif tval == "boolean" then
     return (val and "true" or "false")
   end
 
-  return '"[inserializeable datatype:' .. type(val) .. ']"'
+  return '"[inserializeable datatype:' .. tval .. ']"'
 end
 ---Serialize a table into a string. Use for output
 ---*Could* be executed like this to get a table back: loadstring(serializeTable(...))()
@@ -32,16 +35,15 @@ end
 ---@param name unknown? a name to assign to the table (most useful for loadstring)
 ---@param skipnewlines boolean Should newlines be present in the output
 ---@param depth integer used for the recursive implementation. DO NOT use this.
+---@param memoize fun(k: any, v: string?): string? function to manage memoization. call with just key to retreive, or with k and v to store.
 ---@return string
 ---@source https://stackoverflow.com/a/6081639
 function serializeTable(val, name, skipnewlines, depth, memoize)
-  local tmp = ""
+  local tmp = string.rep(" ", depth)
 
   if name then
-    if memoize[name] then return memoize[name] end
-    local res = type_tostring(name, skipnewlines, depth, memoize)
-    memoize[name] = res
-    tmp = string.rep(" ", depth)
+    local res = memoize(name) or type_tostring(name, skipnewlines, depth, memoize)
+    memoize(name, res)
     if depth == 0 and type(name) == "string" then
       tmp = tmp .. name .. " = "
     else
@@ -49,12 +51,9 @@ function serializeTable(val, name, skipnewlines, depth, memoize)
     end
   end
 
-  if memoize[val] then return memoize[val] end
-  local res = type_tostring(val, skipnewlines, depth, memoize)
-  memoize[val] = res
-  for line in string.gmatch(res, "([^\n]*)\n") do
-    tmp = string.rep(" ", depth) .. tmp .. line
-  end
+  local res = memoize(val) or type_tostring(val, skipnewlines, depth, memoize)
+  memoize(val, res)
+  tmp = tmp .. res
 
   return tmp
 end
@@ -68,10 +67,23 @@ end
 ---@param skipnewlines boolean? Should newlines be present in the output
 ---@return string
 return function(val, name, skipnewlines)
-  local memoize = {}
+  local memoize_table = {} -- {val, count}
+  local function memoize(k, v)
+    if k == nil then return nil end -- Can't index with nil
+    local max_count = 3
+    if v == nil then
+      local t = memoize_table[k]
+      if not t then return end
+      t[2] = t[2] + 1
+      if t[2] > max_count and type(val) == "table" then return "[value seen " .. t[2] .. " times]" end
+      return t[1]
+    else
+      memoize_table[k] = { v, 0 }
+    end
+  end
   skipnewlines = skipnewlines or false
   local res = serializeTable(val, name, skipnewlines, 0, memoize)
-  memoize = nil
+  memoize_table = nil
   collectgarbage("collect") -- Cleanup already_visited
   collectgarbage("collect")
   return res
