@@ -83,7 +83,7 @@ local TopPanel = function(s)
       TagList(s),
       Run_prompt(s),
     },
-    TaskList({ screen = s, max_width = 150 }),
+    TaskList({ screen = s, max_width = dpi(150) }),
     {
       layout = wibox.layout.fixed.horizontal,
       MediaControl:new({
