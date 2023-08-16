@@ -32,8 +32,8 @@ end
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
 systray:set_horizontal(true)
-systray:set_base_size(20)
--- systray.forced_height = 20
+systray:set_base_size(dpi(20))
+-- systray.forced_height = dpi(20)
 
 -- Clock / Calendar 24h format
 -- local textclock = wibox.widget.textclock('<span font="Roboto Mono bold 9">%d.%m.%Y\n     %H:%M</span>')
