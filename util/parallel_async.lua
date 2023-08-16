@@ -2,13 +2,13 @@ local gears = require("gears")
 ---Runs each_cb on each of for_each in parellel and calls done_cb when all are done
 ---@generic T, R
 ---@param val T
----@param ret table a table to store the result in. It will be stored in ret[stat]
+---@param ret table a table to store the result in. It will be stored in ret[val]
 ---@param done_tbl boolean[] A table to store true in when done
 ---@param index integer
 ---@param each_cb fun(val: T, cb: fun(res: R), ...: any) the function to call with each piece of information. The return value is kept
 ---@param done_cb fun(res: R[], ...: any) the function to call when the data has been retrieved
 ---@param ... any passed to each_cb and done_cb functions after all other arguments
-local function run_callbacks_in_parellel(done_tbl, index, ret, each_cb, done_cb, val, ...)
+local function run_callbacks_in_parellel(done_tbl, ret, each_cb, done_cb, index, val, ...)
   local function is_false(v)
     return v == false
   end
@@ -42,7 +42,7 @@ local function parallel_async(for_each, each_cb, done_cb, ...)
   local done = {}
   for index, v in ipairs(for_each) do
     done[index] = false -- Assign an order to them.
-    run_callbacks_in_parellel(done, index, ret, each_cb, done_cb, v, ...)
+    run_callbacks_in_parellel(done, ret, each_cb, done_cb, index, v, ...)
   end
 end
 
