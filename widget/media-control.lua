@@ -33,7 +33,7 @@ local defaults = {
   ---The fps to render the scrolling widget at
   fps = 15,
   ---Number of seconds between song changes while scrolling (ignores inputs between).
-  debounce = 2,
+  debounce = 1, ---@type number
 }
 
 ---@class MediaControl
@@ -91,20 +91,21 @@ function MediaControl:init(args)
 
   self:watch(self.refresh_rate)
 
+  local update_widget = bind(self.update_widget, self)
   self.widget:buttons(gears.table.join(
     -- button 1: left click  - play/pause
-    awful.button({}, 1, bind(self.PlayPause, self, self.update_widget, self)),
-    -- button 4: scroll up   - next song
-    awful.button({}, 4, bind(self.debounce_song_changes, self, self.Next, self, self.update_widget, self)),
-    -- button 5: scroll down - previous song
-    awful.button({}, 5, bind(self.debounce_song_changes, self, self.Previous, self, self.update_widget, self))
+    awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
+    -- button 4: scroll up - previous song
+    awful.button({}, 4, bind(self.debounce_song_changes, self, self.Previous, self, update_widget)),
+    -- button 5: scroll down   - next song
+    awful.button({}, 5, bind(self.debounce_song_changes, self, self.Next, self, update_widget))
   ))
 
   return self.widget
 end
 
 function MediaControl:debounce_song_changes(cb, ...)
-  local should_call = (not self._last_change_time) or os.difftime(self._last_change_time, os.time()) > self.debounce
+  local should_call = (not self._last_change_time) or (os.difftime(os.time(), self._last_change_time) > self.debounce)
   self._last_change_time = os.time() -- update regardless
   if should_call then return cb(...) end
 end
