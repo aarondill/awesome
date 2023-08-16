@@ -9,19 +9,21 @@ local gears = require("gears")
 ---@param done_cb fun(res: R[], ...: any) the function to call when the data has been retrieved
 ---@param ... any passed to each_cb and done_cb functions after all other arguments
 local function run_callbacks_in_parellel(done_tbl, ret, each_cb, done_cb, index, val, ...)
-  local function is_false(v)
+  local function is_false(_, v)
     return v == false
   end
+  local user_args = { ... }
   each_cb(val, function(res)
     ret[val] = res
     done_tbl[index] = true
-    local first_false = gears.table.find_first_key(done_tbl, is_false, false)
+    local first_false = gears.table.find_first_key(done_tbl, is_false, true)
     local is_done = first_false == nil -- All are true
     if is_done then
       done_tbl[index] = false -- Reduce the chance of race conditions, subsequent calculations will return false
-      return done_cb(ret)
+      done_cb(ret, table.unpack(user_args))
+      return
     end
-  end, ...)
+  end, table.unpack(user_args))
 end
 
 ---Runs each_cb on each of for_each in parellel and calls done_cb when all are done
