@@ -14,7 +14,7 @@ local function type_tostring(val, skipnewlines, depth, memoize)
       tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1, memoize) .. "," .. (not skipnewlines and "\n" or "")
     end
 
-    tmp = tmp .. string.rep(" ", depth) .. "}"
+    tmp = tmp .. "}"
     return tmp
   elseif type(val) == "number" then
     return tostring(val)
@@ -35,23 +35,26 @@ end
 ---@return string
 ---@source https://stackoverflow.com/a/6081639
 function serializeTable(val, name, skipnewlines, depth, memoize)
-  local tmp = string.rep(" ", depth)
+  local tmp = ""
 
   if name then
     if memoize[name] then return memoize[name] end
     local res = type_tostring(name, skipnewlines, depth, memoize)
     memoize[name] = res
+    tmp = string.rep(" ", depth)
     if depth == 0 and type(name) == "string" then
       tmp = tmp .. name .. " = "
     else
-      tmp = string.format("%s[%s] = ", tmp, res)
+      tmp = tmp .. string.format("[%s] = ", res)
     end
   end
 
   if memoize[val] then return memoize[val] end
   local res = type_tostring(val, skipnewlines, depth, memoize)
   memoize[val] = res
-  tmp = tmp .. res
+  for line in string.gmatch(res, "([^\n]*)\n") do
+    tmp = string.rep(" ", depth) .. tmp .. line
+  end
 
   return tmp
 end
