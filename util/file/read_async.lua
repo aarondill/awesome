@@ -10,10 +10,14 @@ local function file_read(path, cb)
 
   ---params(load_contents_async) GFile* file, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   gio.File.new_for_path(path):load_contents_async(nil, function(file, task)
-    local content, error = file:load_contents_finish(task)
-    if not content then
+    -- onsuccess: content, etag_out
+    -- onfail: success(false), error
+    local success, error = file:load_contents_finish(task)
+    if not success then
       cb(nil, error)
     else
+      local content = success
+      -- local etag_out = error
       cb(content, nil)
     end
   end)
