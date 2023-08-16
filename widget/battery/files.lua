@@ -1,10 +1,8 @@
 local gears = require("gears")
 local gfilesystem = require("gears.filesystem")
 local list_directory = require("util.file.list_directory")
-local notifs = require("util.notifs")
 local parallel_async = require("util.parallel_async")
 local read_async = require("util.file.read_async")
-local serialize_table = require("util.serialize_table")
 local PATH_TO_ICONS = gfilesystem.get_configuration_dir() .. "widget/battery/icons/"
 
 ---@alias battery_info_types "capacity" | "status" | "power_now" | "energy_now" | "current_now" | "charge_now" | "charge_full" | "voltage_now" | "energy_full"
@@ -30,7 +28,8 @@ local keys = gears.table.keys(battery_files) ---@type string[]
 local function get_battery_info(battery_path, callback_fn)
   parallel_async(keys, function(key, done)
     local battery_file = battery_files[key]
-    read_async(battery_path .. battery_file.path, function(content)
+    read_async(battery_path .. battery_file.path, function(content, error)
+      -- notifs.warn(tostring(error))
       done(content and content:match(battery_file.match))
     end)
   end, callback_fn)

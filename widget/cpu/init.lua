@@ -4,7 +4,6 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local gears = require("gears")
 local handle_error = require("util.handle_error")
-local notifs = require("util.notifs")
 local read_async = require("util.file.read_async")
 
 local function escape_pattern(str)
@@ -68,6 +67,7 @@ function CPU(args)
   })
 
   local file_callback = function(content)
+    if not content then return end
     local idle, cpu_total = parse_proc_stat(content)
 
     -- Get the delta between two reads
