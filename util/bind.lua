@@ -8,7 +8,8 @@ local gtable = require("gears.table")
 local function bind(func, ...)
   local outer = { ... }
   return function(...)
-    local args = gtable.join(outer, { ... })
+    -- Avoid the copy if possible
+    local args = select("#", ...) > 0 and gtable.join(outer, { ... }) or outer
     return func(table.unpack(args))
   end
 end
