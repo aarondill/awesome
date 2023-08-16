@@ -7,6 +7,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
+local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -65,10 +66,10 @@ local EXPONENTIAL_SCALE_FACTOR = 4
 -- show backlight-adjust when "backlight_change" signal is emitted
 awesome.connect_signal("widget::backlight_changed", function()
   -- set new brightness value
-  awful.spawn.easy_async_with_shell("cat /sys/class/backlight/intel_backlight/actual_brightness", function(stdout)
-    local backlight_brightness = tonumber(stdout)
-    awful.spawn.easy_async_with_shell("cat /sys/class/backlight/intel_backlight/max_brightness", function(max_stdout)
-      local max_brightness = tonumber(max_stdout)
+  read_async("/sys/class/backlight/intel_backlight/actual_brightness", function(brightness_str)
+    local backlight_brightness = tonumber(brightness_str)
+    read_async("/sys/class/backlight/intel_backlight/max_brightness", function(max_brightness_str)
+      local max_brightness = tonumber(max_brightness_str)
       local backlight_level = backlight_brightness * 100 / max_brightness
       backlight_level = (backlight_level ^ (1 / EXPONENTIAL_SCALE_FACTOR))
         * (100 / (100 ^ (1 / EXPONENTIAL_SCALE_FACTOR)))
