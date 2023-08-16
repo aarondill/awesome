@@ -17,9 +17,12 @@ local function make_clickable_if_prog(cmd, replace_widget, replace_in, cb)
   installed(cmd, function(path_or_nil)
     if path_or_nil then
       local clickable = require("widget.material.clickable-container")(replace_widget)
-      clickable:buttons(gears.table.join(awful.button({}, 1, nil, function()
-        return cb(path_or_nil, replace_widget, replace_in)
-      end)))
+      clickable:buttons(gears.table.join(
+        -- Call callback on click
+        awful.button({}, 1, nil, function()
+          return cb(path_or_nil, replace_widget, replace_in)
+        end)
+      ))
       replace_in_widget(replace_in, replace_widget, clickable)
     end
   end)
