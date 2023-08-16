@@ -97,11 +97,11 @@ function CPU(args)
   })
 
   local cpu_meter = wibox.widget({
-    wibox.widget({
+    {
       icon = icons.chart,
       size = dpi(24),
       widget = mat_icon,
-    }),
+    },
     text_box,
     widget = wibox.layout.fixed.horizontal,
   })
