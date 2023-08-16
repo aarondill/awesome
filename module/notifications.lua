@@ -2,14 +2,15 @@ local gears = require("gears")
 local naughty = require("naughty")
 local notifs = require("util.notifs")
 local dpi = require("beautiful").xresources.apply_dpi
-local bind = require("util.bind")
 local list_directory = require("util.file.list_directory")
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
 naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
-list_directory("/usr/share/icons", bind(gears.table.merge, naughty.config.icon_dirs))
+list_directory("/usr/share/icons", function(names, _)
+  if names then gears.table.merge(naughty.config.icon_dirs, names) end
+end)
 
 -- Naughty presets
 naughty.config.padding = 8

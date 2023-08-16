@@ -2,11 +2,12 @@ local scan_directory = require("util.file.scan_directory")
 ---@class list_directory_args
 ---@field match string? a lua pattern to match against the file names
 
+---@alias list_directory_cb fun(names?: string[], error?: userdata)
 --- Return a file list (name only)
 ---@param path string
 ---@param args list_directory_args?
----@param cb fun(names?: string[], error?: userdata)
----@overload fun(path: string, cb: fun(names: string[]))
+---@param cb list_directory_cb
+---@overload fun(path: string, cb: list_directory_cb)
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function list_directory(path, args, cb)
   if not path then return end

@@ -28,7 +28,7 @@ local keys = gears.table.keys(battery_files) ---@type string[]
 local function get_battery_info(battery_path, callback_fn)
   parallel_async(keys, function(key, done)
     local battery_file = battery_files[key]
-    read_async(battery_path .. battery_file.path, function(content, error)
+    read_async(battery_path .. battery_file.path, function(content, _)
       -- notifs.warn(tostring(error))
       done(content and content:match(battery_file.match))
     end)

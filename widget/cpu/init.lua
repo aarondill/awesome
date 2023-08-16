@@ -66,7 +66,7 @@ function CPU(args)
     text = string.format(format, 0),
   })
 
-  local file_callback = function(content)
+  local file_callback = function(content, _)
     if not content then return end
     local idle, cpu_total = parse_proc_stat(content)
 

@@ -66,10 +66,10 @@ local EXPONENTIAL_SCALE_FACTOR = 4
 -- show backlight-adjust when "backlight_change" signal is emitted
 awesome.connect_signal("widget::backlight_changed", function()
   -- set new brightness value
-  read_async("/sys/class/backlight/intel_backlight/actual_brightness", function(brightness_str)
+  read_async("/sys/class/backlight/intel_backlight/actual_brightness", function(brightness_str, _)
     if not brightness_str then return end
     local backlight_brightness = tonumber(brightness_str)
-    read_async("/sys/class/backlight/intel_backlight/max_brightness", function(max_brightness_str)
+    read_async("/sys/class/backlight/intel_backlight/max_brightness", function(max_brightness_str, _)
       if not max_brightness_str then return end
       local max_brightness = tonumber(max_brightness_str)
       local backlight_level = backlight_brightness * 100 / max_brightness
