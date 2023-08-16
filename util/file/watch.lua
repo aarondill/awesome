@@ -12,7 +12,8 @@ local handle_error = require("util.handle_error")
 ---See https://docs.gtk.org/gio/flags.FileMonitorFlags.html
 ---@param flags GioFileMonitorFlags[]? the flags to pass to the file watch method. nil corresponds to G_FILE_MONITOR_NONE
 ---@param cb GioFileWatcherHandler
----@return GioFileMonitor monitor Make sure this is not garbage collected!
+---@return GioFileMonitor? monitor Make sure this is not garbage collected!
+---@return userdata? error error if monitor ir nil
 local function watch_common(path, method, flags, cb)
   if type(cb) ~= "function" then error("callback must be a function", 2) end
   if type(method) ~= "string" then error("method must be a string", 2) end
@@ -30,7 +31,8 @@ local function watch_common(path, method, flags, cb)
     end
   end
 
-  local monitor = file[method](file, flag_int)
+  local monitor, error = file[method](file, flag_int)
+  if not monitor then return nil, error end
   ---@param type GioFileMonitorEvent can't guarentee, but best I can do
   monitor.on_changed:connect(handle_error(function(_, file1, file2, type)
     local path1 = file1:get_path() ---@type string
@@ -38,7 +40,7 @@ local function watch_common(path, method, flags, cb)
     local path2 = file2 and file2:get_path() ---@type string?
     return cb(type, path1, path2) ---path2 is likely nil
   end))
-  return monitor
+  return monitor, nil
 end
 
 return watch_common
