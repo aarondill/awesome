@@ -106,12 +106,11 @@ local function list_update(w, buttons, label, data, clients)
       tbm:set_margins(0)
     else
       -- truncate when title is too long
-      local textOnly = text:match(">(.-)<")
+      local pattern = "(%b<>)(.-)(</span>)"
+      local _, textOnly, _ = text:match(pattern)
       if utf8.len(textOnly) > max_tab_width then
         local shortened = utf8_sub(textOnly, 1, max_tab_width - 3)
-        text = text:gsub(">(.-)<", ">" .. shortened .. "...<")
-      else
-        text = text:gsub(">(.-)<", ">" .. textOnly .. "...<")
+        text = text:gsub(pattern, "%1" .. shortened .. "...%3", 1)
       end
       if tt.textbox:set_markup_silently(text) then
         tt:set_markup(textOnly) -- Needed to update geometry of the other widgets
