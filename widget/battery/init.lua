@@ -28,7 +28,6 @@ local function show_battery_warning(charge)
     position = "bottom_left",
     bg = "#d32f2f",
     fg = "#EEE9EF",
-    width = 248,
   })
 end
 local widget_template = {
@@ -96,7 +95,7 @@ function Battery(args)
   local last_warning_time = os.time()
 
   local widget = wibox.widget(widget_template)
-  local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), 4, 4)
+  local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4))
   local battery_popup = awful.tooltip({
     objects = { widget_button },
     mode = "outside",
