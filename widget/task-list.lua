@@ -3,9 +3,9 @@ local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local bind = require("util.bind")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
-local utf8_sub = require("util.utf8_sub")
 local capi = { button = button }
 ---Common method to create buttons.
 ---@param buttons table?
@@ -20,76 +20,81 @@ local function create_buttons(buttons, object)
     -- button object the user provided, but with the object as
     -- argument.
     local btn = capi.button({ modifiers = b.modifiers, button = b.button })
-    btn:connect_signal("press", function()
-      b:emit_signal("press", object)
-    end)
-    btn:connect_signal("release", function()
-      b:emit_signal("release", object)
-    end)
+    btn:connect_signal("press", bind(b.emit_signal, b, "press", object))
+    btn:connect_signal("release", bind(b.emit_signal, b, "release", object))
     btns[#btns + 1] = btn
   end
 
   return btns
 end
 
----commen1w
----@param w table widget
+---Creates tasklist widgets and returns them
+---@param buttons table a set of `button`s
+---@param c table a client
+---@param max_width integer the maximum width of each textbox
+---@return table widgets the set of tasklist widgets
+local function create_tasklist_widgets(buttons, c, max_width)
+  local ib = wibox.widget.imagebox()
+  local tb = wibox.widget.textbox()
+  local cb = clickable_container(wibox.container.margin(wibox.widget.imagebox(icons.tag_close), 4, 4, 4, 4))
+  cb.shape = gears.shape.circle
+  local cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
+  cbm:buttons(gears.table.join(awful.button({}, 1, nil, bind(c.kill, c))))
+  local bg_clickable = clickable_container()
+  local bgb = wibox.container.background()
+  local tbc = wibox.container.constraint(tb, "max", max_width)
+  local tbm = wibox.container.margin(tbc, dpi(4), dpi(4))
+  local ibm = wibox.container.margin(ib, dpi(4), dpi(4), dpi(4), dpi(4))
+  local l = wibox.layout.fixed.horizontal()
+  local ll = wibox.layout.fixed.horizontal()
+
+  -- All of this is added in a fixed widget
+  l:fill_space(true)
+  l:add(ibm)
+  l:add(tbm)
+  ll:add(l)
+  ll:add(cbm)
+
+  bg_clickable:set_widget(ll)
+  -- And all of this gets a background
+  bgb:set_widget(bg_clickable)
+
+  l:buttons(create_buttons(buttons, c))
+
+  -- Tooltip to display whole title, if it was truncated
+  local tt = awful.tooltip({
+    objects = { tb },
+    mode = "outside",
+    align = "bottom",
+    delay_show = 1,
+  })
+  return {
+    ib = ib,
+    tb = tb,
+    bgb = bgb,
+    tbm = tbm,
+    ibm = ibm,
+    tt = tt,
+  }
+end
+
+---setup and update widgets on the titlebar
+---@param config TaskListArgs
+---@param self table widget
 ---@param buttons table of buttons
 ---@param label fun(client:table, textbox: table): text:string, bg:string, bg_image:string, icon:string
----@param data table
----@param clients table
-local function list_update(w, buttons, label, data, clients)
+---@param data table a weekly referenced (keys) table for use in caching
+---@param clients table a table of the clients to display
+local function list_update(config, self, buttons, label, data, clients)
   -- update the widgets, creating them if needed
-  w:reset()
-  local max_tab_width = 24
-  for _, o in ipairs(clients) do
-    local cache = data[o]
-    local ib, cb, tb, cbm, bgb, tbm, ibm, tt, l, ll, bg_clickable
-    if cache then
-      ib = cache.ib
-      tb = cache.tb
-      bgb = cache.bgb
-      tbm = cache.tbm
-      ibm = cache.ibm
-      tt = cache.tt
-    else
-      ib = wibox.widget.imagebox()
-      tb = wibox.widget.textbox()
-      cb = clickable_container(wibox.container.margin(wibox.widget.imagebox(icons.tag_close), 4, 4, 4, 4))
-      cb.shape = gears.shape.circle
-      cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
-      cbm:buttons(gears.table.join(awful.button({}, 1, nil, function()
-        o.kill(o)
-      end)))
-      bg_clickable = clickable_container()
-      bgb = wibox.container.background()
-      tbm = wibox.container.margin(tb, dpi(4), dpi(4))
-      ibm = wibox.container.margin(ib, dpi(4), dpi(4), dpi(4), dpi(4))
-      l = wibox.layout.fixed.horizontal()
-      ll = wibox.layout.fixed.horizontal()
+  self:reset()
+  for _, c in ipairs(clients) do
+    local cache = data[c]
 
-      -- All of this is added in a fixed widget
-      l:fill_space(true)
-      l:add(ibm)
-      l:add(tbm)
-      ll:add(l)
-      ll:add(cbm)
-
-      bg_clickable:set_widget(ll)
-      -- And all of this gets a background
-      bgb:set_widget(bg_clickable)
-
-      l:buttons(create_buttons(buttons, o))
-
-      -- Tooltip to display whole title, if it was truncated
-      tt = awful.tooltip({
-        objects = { tb },
-        mode = "outside",
-        align = "bottom",
-        delay_show = 1,
-      })
-
-      data[o] = {
+    local widgets = cache or create_tasklist_widgets(buttons, c, config.max_width)
+    local ib, tb, bgb, tbm, ibm, tt = widgets.ib, widgets.tb, widgets.bgb, widgets.tbm, widgets.ibm, widgets.tt
+    if not cache then
+      data[c] = {
         ib = ib,
         tb = tb,
         bgb = bgb,
@@ -99,21 +104,15 @@ local function list_update(w, buttons, label, data, clients)
       }
     end
 
-    local text, bg, bg_image, icon, args = label(o, tb)
+    local text, bg, bg_image, icon, args = label(c, tb)
     args = args or {}
 
     if text == nil or text == "" then
       tbm:set_margins(0)
     else
-      -- truncate when title is too long
-      local pattern = "(%b<>)(.-)(</span>)"
-      local _, textOnly, _ = text:match(pattern)
-      if utf8.len(textOnly) > max_tab_width then
-        local shortened = utf8_sub(textOnly, 1, max_tab_width - 3)
-        text = text:gsub(pattern, "%1" .. shortened .. "...%3", 1)
-      end
+      -- Needed to update geometry of the other widgets
       if tt.textbox:set_markup_silently(text) then
-        tt:set_markup(textOnly) -- Needed to update geometry of the other widgets
+        tt:set_markup(text)
       else
         tt:set_markup("<i>&lt;Invalid text&gt;</i>")
       end
@@ -138,7 +137,7 @@ local function list_update(w, buttons, label, data, clients)
       bgb.border_color = args.border_color
     end
 
-    w:add(bgb)
+    self:add(bgb)
   end
 end
 
@@ -169,14 +168,28 @@ local tasklist_buttons = gears.table.join(
   end)
 )
 
-local function TaskList(s)
-  return awful.widget.tasklist({
-    screen = s,
+---@class TaskListArgs
+local defaults = {
+  ---Passed to awful.widget.tasklist
+  screen = nil,
+  --- The maximum width of each textbox in the tasklist
+  ---@type integer?
+  max_width = nil,
+}
+---@class TaskList
+
+---@param args TaskListArgs
+---@return TaskList
+local function TaskList(args)
+  local config = gears.table.crush(gears.table.clone(defaults), args)
+  local tl = awful.widget.tasklist({
+    screen = args.screen,
     filter = awful.widget.tasklist.filter.currenttags,
     buttons = tasklist_buttons,
-    update_function = handle_error(list_update),
+    update_function = bind(handle_error(list_update), config),
     layout = wibox.layout.fixed.horizontal(),
   })
+  return tl
 end
 
 return TaskList
