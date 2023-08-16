@@ -1,20 +1,15 @@
-local awful = require("awful")
 local gears = require("gears")
 local naughty = require("naughty")
 local notifs = require("util.notifs")
 local dpi = require("beautiful").xresources.apply_dpi
+local bind = require("util.bind")
+local list_directory = require("util.file.list_directory")
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
 naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
-awful.spawn.easy_async("find /usr/share/icons -maxdepth 1 -mindepth 1 -type d -print", function(stdout, _, _, exitcode)
-  -- stylua: ignore
-	if exitcode ~= 0 then return end
-  for line in stdout:gmatch("(.-)\n") do
-    table.insert(naughty.config.icon_dirs, line)
-  end
-end)
+list_directory("/usr/share/icons", bind(gears.table.merge, naughty.config.icon_dirs))
 
 -- Naughty presets
 naughty.config.padding = 8
