@@ -17,9 +17,11 @@ local defaults = {
   stop_icon = beautiful.stop,
   ---Whether to hide the widget when no media is playing
   autohide = true,
-  --How often to update the widget
+  ---How often to update the widget
+  ---Higher refresh_rate == less CPU requirements
+  ---Lower refresh_rate == better Widget response time
   refresh_rate = 10,
-  --The MPRIS name of the player to search for (playerctl -p NAME)
+  ---The MPRIS name of the player to search for (playerctl -p NAME)
   name = "",
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
@@ -30,6 +32,8 @@ local defaults = {
   scroll_speed = 20,
   ---The fps to render the scrolling widget at
   fps = 15,
+  ---Number of seconds between song changes while scrolling (ignores inputs between).
+  debounce = 2,
 }
 
 ---@class MediaControl
@@ -44,18 +48,22 @@ end
 ---@return MediaControl
 function MediaControl:init(args)
   args = args or {}
+
+  self.autohide = defaults.autohide
+  self.max_width = args.max_width or defaults.max_width
+  self.scroll_speed = args.scroll_speed or defaults.scroll_speed
+  self.fps = args.fps or defaults.fps
+  self.format = args.format or defaults.format
+  self.name = args.name or defaults.name
+  self.refresh_rate = args.refresh_rate or defaults.refresh_rate
+  self.debounce = args.debounce or defaults.debounce
+
   self.icons = {
     play = args.play_icon or defaults.play_icon,
     pause = args.pause_icon or defaults.pause_icon,
     stop = args.stop_icon or defaults.stop_icon,
   }
-
-  self.autohide = defaults.autohide
   if args.autohide ~= nil then self.autohide = args.autohide end
-  self.max_width = args.max_width or defaults.max_width
-  self.scroll_speed = args.scroll_speed or defaults.scroll_speed
-  self.fps = args.fps or defaults.fps
-
   self.widget = wibox.widget({
     layout = wibox.layout.fixed.horizontal,
     {
@@ -81,23 +89,24 @@ function MediaControl:init(args)
     end,
   })
 
-  self.format = args.format or defaults.format
-  self.name = args.name or defaults.name
-  -- Higher refresh_rate == less CPU requirements
-  -- Lower refresh_rate == better Widget response time
-  self:watch(args.refresh_rate or defaults.refresh_rate)
-  local update_widget = bind(self.update_widget, self)
+  self:watch(self.refresh_rate)
 
   self.widget:buttons(gears.table.join(
     -- button 1: left click  - play/pause
-    awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
+    awful.button({}, 1, bind(self.PlayPause, self, self.update_widget, self)),
     -- button 4: scroll up   - next song
-    awful.button({}, 4, bind(self.Next, self, update_widget)),
+    awful.button({}, 4, bind(self.debounce_song_changes, self, self.Next, self, self.update_widget, self)),
     -- button 5: scroll down - previous song
-    awful.button({}, 5, bind(self.Previous, self, update_widget))
+    awful.button({}, 5, bind(self.debounce_song_changes, self, self.Previous, self, self.update_widget, self))
   ))
 
   return self.widget
+end
+
+function MediaControl:debounce_song_changes(cb, ...)
+  local should_call = (not self._last_change_time) or os.difftime(self._last_change_time, os.time()) > self.debounce
+  self._last_change_time = os.time() -- update regardless
+  if should_call then return cb(...) end
 end
 
 ---@param status string?
