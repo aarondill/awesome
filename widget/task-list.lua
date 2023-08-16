@@ -4,6 +4,7 @@ local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local handle_error = require("util.handle_error")
+local icons = require("theme.icons")
 local utf8_sub = require("util.utf8_sub")
 local capi = { button = button }
 ---Common method to create buttons.
@@ -54,15 +55,7 @@ local function list_update(w, buttons, label, data, clients)
     else
       ib = wibox.widget.imagebox()
       tb = wibox.widget.textbox()
-      cb = clickable_container(
-        wibox.container.margin(
-          wibox.widget.imagebox(gears.filesystem.get_configuration_dir() .. "theme/icons/tag-list/tag/close.png"),
-          4,
-          4,
-          4,
-          4
-        )
-      )
+      cb = clickable_container(wibox.container.margin(wibox.widget.imagebox(icons.tag_close), 4, 4, 4, 4))
       cb.shape = gears.shape.circle
       cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
       cbm:buttons(gears.table.join(awful.button({}, 1, nil, function()
