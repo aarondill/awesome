@@ -14,12 +14,12 @@ local function calculate_time_remaining(info)
   local MIN_PRESENT_RATE = 0.01 -- Less than this is considered zero
   local status = info.status and string.lower(info.status)
   local power_now = info.current_now or info.power_now
-  local present_rate = power_now and tonumber(power_now) / 1000
-  local voltage = info.voltage_now and tonumber(info.voltage_now) / 1000
-  local last_capacity = info.charge_full and tonumber(info.charge_full) / 1000
-  local last_capacity_unit = info.energy_full and tonumber(info.energy_full) / 1000
-  local remaining_energy = info.energy_now and tonumber(info.energy_now) / 1000
-  local remaining_capacity = info.charge_now and tonumber(info.charge_now) / 1000
+  local present_rate = power_now and (tonumber(power_now) / 1000) or nil
+  local voltage = info.voltage_now and (tonumber(info.voltage_now) / 1000) or nil
+  local last_capacity = info.charge_full and (tonumber(info.charge_full) / 1000) or nil
+  local last_capacity_unit = info.energy_full and (tonumber(info.energy_full) / 1000) or nil
+  local remaining_energy = info.energy_now and (tonumber(info.energy_now) / 1000) or nil
+  local remaining_capacity = info.charge_now and (tonumber(info.charge_now) / 1000) or nil
 
   if not present_rate then return format_message(nil, "rate information unavailable") end
 
