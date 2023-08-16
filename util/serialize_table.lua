@@ -20,7 +20,7 @@ local function type_tostring(val, skipnewlines, depth, memoize)
       tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1, memoize) .. "," .. (not skipnewlines and "\n" or "")
     end
 
-    tmp = tmp .. "}"
+    tmp = string.rep(" ", depth) .. tmp .. "}"
     return tmp
   elseif tval == "number" then
     return tostring(val)
