@@ -10,18 +10,18 @@ local dpi = require("beautiful").xresources.apply_dpi
 ---@class MediaControl.args
 local defaults = {
   ---Icon to show when media is playing
-  play_icon = beautiful.play,
+  play_icon = beautiful.play, ---@type string?
   ---Icon to show when media is paused
-  pause_icon = beautiful.pause,
+  pause_icon = beautiful.pause, ---@type string?
   ---Icon to show when media is stopped (no media)
-  stop_icon = beautiful.stop,
+  stop_icon = beautiful.stop, ---@type string?
   ---Whether to hide the widget when no media is playing
   autohide = true,
   ---How often to update the widget
   ---Higher refresh_rate == less CPU requirements
   ---Lower refresh_rate == better Widget response time
   refresh_rate = 10,
-  ---The MPRIS name of the player to search for (playerctl -p NAME)
+  ---The MPRIS name of the player to search for (playerctl -p NAME), empty for first available player
   name = "",
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
