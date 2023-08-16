@@ -16,4 +16,5 @@ return {
   play = dir .. "/play.svg",
   pause = dir .. "/pause.svg",
   stop = dir .. "/stop.svg",
+  tag_close = dir .. "./tag-list/tag/close.png",
 }
