@@ -10,11 +10,18 @@ local gio = require("lgi").Gio
 ---basic file list.
 ---@param path string the directory to scan
 ---@param args scan_directory_args? a table describing the list of requestion attributes
----@param cb fun(info?: table) The function to call when done. If failed, it will be called with nil
+---@param cb fun(info?: table, error?: userdata) The function to call when done. If failed, it will be called with nil
+---@overload fun(path: string, cb: fun(info?: table))
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function scan_directory(path, args, cb)
   if not path then return end
+  if type(args) == "function" and cb == nil then
+    cb, args = args, nil
+  end
   args = args or {}
+  assert(type(path) == "string", "path must be a string")
+  assert(type(args) == "table", "args must be a table")
+  assert(type(cb) == "function", "callback must be a function")
 
   local attr_str = ""
   if args.attributes then
@@ -24,8 +31,8 @@ local function scan_directory(path, args, cb)
   end
 
   gio.File.new_for_path(path):enumerate_children_async(attr_str, 0, 0, nil, function(gfile, task)
-    local content, _ = gfile:enumerate_children_finish(task)
-    if not content then return cb(nil) end
+    local content, error = gfile:enumerate_children_finish(task)
+    if not content then return cb(nil, error) end
     content:next_files_async(99999, 0, nil, function(file_enum, task2)
       local ret = {}
       local all_files = file_enum:next_files_finish(task2)
@@ -47,7 +54,7 @@ local function scan_directory(path, args, cb)
         if has_attr then ret[#ret + 1] = ret_attr end
       end
       content:close_async(0, nil)
-      return cb(ret)
+      return cb(ret, nil)
     end)
   end)
 end
