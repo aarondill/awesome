@@ -1,6 +1,6 @@
 local awful = require("awful")
 local gears = require("gears")
-local layouts = require("configuration.layouts")
+local layouts = require("configuration").layouts
 local tags = require("configuration.tags")
 
 awful.screen.connect_for_each_screen(function(s)

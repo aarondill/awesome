@@ -45,7 +45,7 @@ require("module.tags")
 -- Setup all configurations
 require("configuration.client")
 require("widget.launcher") -- Sets up menubar.utils.term
-awful.layout.layouts = require("configuration.layouts")
+awful.layout.layouts = require("configuration").layouts
 root.keys(require("configuration.keys.global"))
 
 -- Different tags for each wallpaper
