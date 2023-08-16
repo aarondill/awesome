@@ -13,7 +13,7 @@ local function handle_error(func, on_error)
     local res = table.pack(pcall(func, ...))
     local ok = res[1]
     if ok then
-      return select(2, table.unpack(res)) -- Remove the ok boolean
+      return table.unpack(res, 2, res.n) -- Remove the ok boolean
     end
 
     local err = res[2]
