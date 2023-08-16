@@ -7,7 +7,6 @@ if true then return end
 --  Keep the widgets for the sake of convenience
 
 --TODO: WIDGETS
---Battery Widget show time remaining till full/dead
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
 --  These don't work (I think)
