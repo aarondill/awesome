@@ -13,7 +13,7 @@ if not filesystem.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/p
 local run_on_startup = {
   "dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
   { polkit }, -- Authentication popup
-  { "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
+  -- { "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
