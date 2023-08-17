@@ -57,7 +57,7 @@ notifications:
   #   false                   disable
   #   -1                      use the libnotify default timeout
 
-  # timeout: 1.5 # set the default for all notifications
+  timeout: 0.5 # set the default for all notifications
 
   # Specify only if you want to overwrite the default:
   device_mounted: -1 # mount notification
