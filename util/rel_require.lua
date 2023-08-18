@@ -1,3 +1,14 @@
+---Gets the file name of the file that contains the function at level 'level'
+---Doesn't include the path or the extension of the file
+---@param level integer? pass the same number as you would to debug.getinfo(level).
+-- Defaults to 2. The caller of the caller of this function
+---@return string
+local function filename(level)
+  level = level or 2 -- caller of caller
+  local str = debug.getinfo(level + 1, "S").source:sub(2)
+  return str:match("^.*/(.*).lua$") or str
+end
+
 ---Use in place of require to require relative to the current path
 ---This will likely need a '@module "MODULE"'
 ---@param this_path string? pass ...
@@ -14,15 +25,18 @@ local function relative_require(this_path, path, assert)
     _G.assert(this_path, ("Could not find module. Call %s from a required file."):format(debug.getinfo(1, "n").name))
   end
   if not this_path then return nil end
+  --- True if the calling file is an init.lua and is called by require('module.sub')
+  local is_init_not_called = filename(2) == "init" and not this_path:match("%.init$")
+  local this_module = is_init_not_called and (this_path .. ".") or (this_path):match("^(.-)[^%.]+$") -- returns 'lib.foo.'
 
-  local this_module = (this_path):match("^(.-)[^%.]+$") -- returns 'lib.foo.'
   if assert then _G.assert(this_module, ("Could not find dir of module '%s'"):format(this_path)) end
   if not this_module then return nil end
 
   local module_path = this_module .. path
   local ok, mod = pcall(require, module_path)
   if assert then _G.assert(ok, ("Could not require module '%s'.\nerror:\n%s"):format(module_path, mod)) end
-  return ok or nil and mod
+  if not ok then return nil end
+  return mod
 end
 
 return relative_require
