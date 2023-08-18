@@ -80,7 +80,7 @@ end
 -- Menubar configuration
 -- Set the terminal for applications that require it
 -- HACK: to stringify the terminal, since a table is not permitted here.
-menubar.utils.term = concat_command(apps.default.terminal, "")
+menubar.utils.terminal = concat_command(apps.default.terminal, "")
 menubar.utils.wm_name = "" -- The logic to check is disabled if this is empty :)
 
 return Launcher
