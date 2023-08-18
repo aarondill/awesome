@@ -11,12 +11,19 @@ end
 
 ---Use in place of require to require relative to the current path
 ---This will likely need a '@module "MODULE"'
+---If called with just one argument, it will immediately call require and return the result
 ---@param this_path string? pass ...
 ---@param path string the path to require
 ---@param assert boolean? Whether to error on failure. Default: true
 ---@return any? mod the module required or nil if not found
----@overload fun(this_path: string, path: string, assert: true): any -- Not nil
+---@return unknown? loaderdata the second param returned from require (or nil if not found)
+---@overload fun(this_path: string, path: string, assert: true): any, unknown -- Not nil
+---@overload fun(module: string): any, unknown -- The regular require
 local function relative_require(this_path, path, assert)
+  if type(this_path) == "string" and path == nil and assert == nil then
+    -- Native require function
+    return require(this_path)
+  end
   _G.assert(type(this_path or "") == "string", "this_path must be a string or nil")
   _G.assert(type(path) == "string", "Path must be a string")
   _G.assert(type(assert or false) == "boolean", "assert must be a boolean or nil")
@@ -33,10 +40,10 @@ local function relative_require(this_path, path, assert)
   if not this_module then return nil end
 
   local module_path = this_module .. path
-  local ok, mod = pcall(require, module_path)
+  local ok, mod, loaderdata = pcall(require, module_path)
   if assert then _G.assert(ok, ("Could not require module '%s'.\nerror:\n%s"):format(module_path, mod)) end
   if not ok then return nil end
-  return mod
+  return mod, loaderdata
 end
 
 return relative_require
