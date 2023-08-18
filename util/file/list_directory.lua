@@ -1,4 +1,6 @@
-local scan_directory = require("util.file.scan_directory")
+local require = require("util.rel_require")
+
+local scan_directory = require(..., "scan_directory") ---@module "util.file.scan_directory"
 ---@class list_directory_args
 ---@field match string? a lua pattern to match against the file names
 

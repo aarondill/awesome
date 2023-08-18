@@ -1,5 +1,7 @@
+local require = require("util.rel_require")
+
 local awful = require("awful")
-local top_panel = require("layout.top-panel")
+local top_panel = require(..., "top-panel") ---@module "layout.top-panel"
 
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)

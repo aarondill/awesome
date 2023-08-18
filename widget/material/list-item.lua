@@ -1,3 +1,4 @@
+local require = require("util.rel_require")
 -- Default widget requirements
 local base = require("wibox.widget.base")
 local gtable = require("gears.table")
@@ -5,7 +6,7 @@ local setmetatable = setmetatable
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Commons requirements
-local clickable_container = require("widget.material.clickable-container")
+local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
 local wibox = require("wibox")
 -- Local declarations
 

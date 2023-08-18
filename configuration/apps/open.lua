@@ -1,5 +1,7 @@
+local require = require("util.rel_require")
+
 local concat_command = require("util.concat_command")
-local default = require("configuration.apps.default")
+local default = require(..., "default") ---@module 'configuration.apps.default'
 local gears = require("gears")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")

@@ -1,4 +1,6 @@
-local rofi_command = require("configuration.apps.rofi_command")
+local require = require("util.rel_require")
+
+local rofi_command = require(..., "rofi_command") ---@module "configuration.apps.rofi_command"
 local xdg_user_dir = require("util.xdg_user_dir")
 local terminal = "wezterm"
 

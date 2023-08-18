@@ -1,6 +1,8 @@
+local require = require("util.rel_require")
+
 local awful = require("awful")
-local client_buttons = require("configuration.client.buttons")
-local client_keys = require("configuration.keys.client")
+local client_buttons = require(..., "buttons") ---@module "configuration.client.buttons"
+local client_keys = require(..., "client") ---@module "configuration.keys.client"
 local gears = require("gears")
 -- Rules
 local rules = {

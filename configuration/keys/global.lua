@@ -1,11 +1,13 @@
+local require = require("util.rel_require")
+
 local awful = require("awful")
 local gears = require("gears")
 local notifs = require("util.notifs")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local spawn = require("util.spawn")
 
-local modkey = require("configuration.keys.mod").modKey
-local altkey = require("configuration.keys.mod").altKey
+local modkey = require(..., "mod").modKey ---@module "configuration.keys.mod"
+local altkey = require(..., "mod").altKey ---@module "configuration.keys.mod"
 local apps = require("configuration.apps")
 local capi = { awesome = awesome }
 
