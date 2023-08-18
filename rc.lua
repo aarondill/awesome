@@ -2,7 +2,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gfile = require("gears.filesystem")
-local gstring = require("gears.string")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 -- Don't show the tmux keymaps
@@ -17,13 +16,10 @@ pcall(require, "awful.autofocus") -- Depreciated in V5
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
 local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
-
-if not string.find(package.path, gstring.quote_pattern(conf_dir .. "/?.lua;"), nil, true) then -- contains
-  package.path = string.format("%s/?.lua;%s/?/init.lua;%s", conf_dir, conf_dir, package.path)
-end
-if not string.find(package.cpath, gstring.quote_pattern(conf_dir .. "/?.so;"), nil, true) then -- contains
-  package.cpath = string.format("%s/?.so;%s", conf_dir, package.cpath)
-end
+local this_dir = (debug.getinfo(1, "S").source:sub(2):match("(.*/)") or "./")
+local package_path_utils = require("util.package_path")
+package_path_utils.add_to_path(conf_dir)
+package_path_utils.add_to_path(this_dir)
 
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
