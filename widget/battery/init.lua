@@ -7,8 +7,10 @@ local gears = require("gears")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local calculate_time_remaining = require("widget.battery.time")
-local files = require("widget.battery.files")
+local rel_require = require("util.rel_require")
+---@module "widget.battery.time"
+local calculate_time_remaining = rel_require(..., "time")
+local files = rel_require(..., "files")
 local handle_error = require("util.handle_error")
 
 -- To use colors from beautiful theme put
