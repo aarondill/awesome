@@ -10,6 +10,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 local rel_require = require("util.rel_require")
 ---@module "widget.battery.time"
 local calculate_time_remaining = rel_require(..., "time")
+---@module "widget.battery.files"
 local files = rel_require(..., "files")
 local handle_error = require("util.handle_error")
 
