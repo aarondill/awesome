@@ -29,7 +29,7 @@ local function append_or_prepend(prepend, to, format, args)
   assert(type(format) == "string")
   assert(type(args) == "table")
   table.insert(args, prepend and 1 or #args, to) -- order
-  format = prepend and (format .. ";%s") or ("%s;" .. format)
+  format = prepend and ("%s;" .. format) or (format .. ";%s")
   return format:format(table.unpack(args))
 end
 
@@ -48,13 +48,13 @@ end
 ---Add to packge.path
 ---@param dir string
 ---@param prepend boolean? default true
----@return string cpath the new cpath (for convenience)
+---@return string path the new path (for convenience)
 function M.add_to_path(dir, prepend)
   assert(type(dir) == "string")
   prepend = prepend == nil and true or not not prepend
-  if M.path_contains(dir) then return package.cpath end
+  if M.path_contains(dir) then return package.path end
   local format = "%s/?.lua;%s/?/init.lua"
-  package.path = append_or_prepend(prepend, package.cpath, format, { dir, dir })
+  package.path = append_or_prepend(prepend, package.path, format, { dir, dir })
   return package.path
 end
 
