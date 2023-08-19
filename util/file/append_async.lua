@@ -15,7 +15,7 @@ local function outputstream_write(stream, content, cb)
   end)
 end
 
---- Replace a file content or create a new one - Async :)
+--- Append to a file's content - Async :)
 ---@param path string file path to append to
 ---@param content string content to append to the file
 ---@param cb fun(err?: userdata)? function to call when done.
