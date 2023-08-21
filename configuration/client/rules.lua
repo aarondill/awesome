@@ -42,15 +42,21 @@ local rules = {
   -- 		c.titlebars_enabled = true
   -- 	end,
   -- },
-  -- Dialog clients should float and have rounded corners
   {
     rule_any = { role = { "browser" } },
-    properties = {
-      opacity = 0.90,
-    },
+    properties = { opacity = 0.90 },
   },
   {
-    rule_any = { type = { "dialog" }, class = { "Wicd-client.py", "calendar.google.com" }, role = { "pop-up" } },
+    rule_any = { class = { "ripdrag" } }, -- Make ripdrag follow the tag
+    properties = { sticky = true },
+  },
+  -- Dialog clients should float and have rounded corners
+  {
+    rule_any = {
+      type = { "dialog" },
+      class = { "Wicd-client.py", "calendar.google.com", "ripdrag" },
+      role = { "pop-up" },
+    },
     properties = {
       placement = awful.placement.centered,
       ontop = true,
