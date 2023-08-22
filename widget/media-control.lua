@@ -96,9 +96,9 @@ function MediaControl:update_widget_icon(status)
   status = status and string.gsub(status, "\n", "")
   local icon = self.stop_icon -- default to stop
   if status == "Playing" then
-    icon = self.play_icon
-  elseif status == "Paused" then
     icon = self.pause_icon
+  elseif status == "Paused" then
+    icon = self.play_icon
   elseif status == "Stopped" then
     icon = self.stop_icon
   end
