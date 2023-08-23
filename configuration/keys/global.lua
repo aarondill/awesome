@@ -12,10 +12,7 @@ local apps = require("configuration.apps")
 local capi = { awesome = awesome }
 
 local function open_main_menu()
-  local pid_or_err = spawn(apps.default.rofi, {
-    inherit_stdout = false,
-    inherit_stderr = false,
-  })
+  local pid_or_err = spawn.noninteractive(apps.default.rofi)
   -- The return value will be a string in case of failure
   if type(pid_or_err) == "string" then
     local s = awful.screen.focused()
@@ -143,66 +140,34 @@ local globalKeys = gears.table.join(
   -- Brightness
   awful.key({}, "XF86MonBrightnessUp", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn(apps.default.brightness.up, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive(apps.default.brightness.up, { sn_rules = false })
   end, { description = "Brightness up", group = "hotkeys" }),
   awful.key({}, "XF86MonBrightnessDown", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn(apps.default.brightness.down, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive(apps.default.brightness.down, { sn_rules = false })
   end, { description = "Brightness down", group = "hotkeys" }),
   -- volume control
   awful.key({}, "XF86AudioRaiseVolume", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn(apps.default.volume.up, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive(apps.default.volume.up, { sn_rules = false })
   end, { description = "Volume up", group = "hotkeys" }),
   awful.key({}, "XF86AudioLowerVolume", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn(apps.default.volume.down, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive(apps.default.volume.down, { sn_rules = false })
   end, { description = "Volume down", group = "hotkeys" }),
   awful.key({}, "XF86AudioMute", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn(apps.default.volume.toggle_mute, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive(apps.default.volume.toggle_mute, { sn_rules = false })
   end, { description = "Toggle mute", group = "hotkeys" }),
 
   awful.key({}, "XF86AudioPlay", function()
-    spawn({ "playerctl", "play-pause" }, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive({ "playerctl", "play-pause" }, { sn_rules = false })
   end, { description = "Play/Pause Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioNext", function()
-    spawn({ "playerctl", "next" }, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive({ "playerctl", "next" }, { sn_rules = false })
   end, { description = "Next Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioPrev", function()
-    spawn({ "playerctl", "previous" }, {
-      sn_rules = false,
-      inherit_stdout = false,
-      inherit_stderr = false,
-    })
+    spawn.noninteractive({ "playerctl", "previous" }, { sn_rules = false })
   end, { description = "Previous Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86PowerDown", function()
     require("module.exit-screen").show()

@@ -2,7 +2,6 @@ local require = require("util.rel_require")
 
 local concat_command = require("util.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
-local gears = require("gears")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 
@@ -31,19 +30,15 @@ local function open_browser(url, new_window, spawn_options)
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
   -- Use the user specified if present
-  spawn_options = gears.table.crush({ inherit_stderr = false, inherit_stdout = false }, spawn_options or {})
-  spawn(do_cmd, spawn_options)
+  spawn.noninteractive(do_cmd, spawn_options)
 end
 ---Open the lock screen
 ---Note, this doesn't block.
 ---Don't notify due to failure. This function will handle that.
 ---@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
 local function open_lock(exit_cb)
-  local pid = spawn(default.lock, {
+  local pid = spawn.noninteractive(default.lock, {
     sn_rules = false,
-    inherit_stdin = false,
-    inherit_stdout = false,
-    inherit_stderr = false,
     exit_callback = function(reason, code)
       if code ~= 0 then
         notifs.warn(string.format("Exit reason: %s, Exit code: %d", reason, code), {
