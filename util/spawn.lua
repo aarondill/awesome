@@ -82,6 +82,7 @@ function spawn.spawn(cmd, opts)
 end
 
 ---See spawn.spawn for more information
+---Stops the process from inheriting the process io
 ---@param cmd string|string[]
 ---@param opts SpawnOptions?
 ---@return integer|string pid_or_error
@@ -95,7 +96,7 @@ function spawn.noninteractive(cmd, opts)
   opts.inherit_stdin = opts.inherit_stdin or false
   opts.inherit_stdout = opts.inherit_stdout or false
   opts.inherit_stderr = opts.inherit_stderr or false
-  return spawn(cmd, opts)
+  return spawn.spawn(cmd, opts)
 end
 
 setmetatable(spawn, {
