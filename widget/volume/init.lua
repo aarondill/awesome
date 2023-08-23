@@ -2,7 +2,7 @@ local icons = require("theme.icons")
 local mat_icon_button = require("widget.material.icon-button")
 local mat_list_item = require("widget.material.list-item")
 local mat_slider = require("widget.material.slider")
-local spawn = require("awful.spawn")
+local spawn = require("util.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 
@@ -12,11 +12,11 @@ local slider = wibox.widget({
 })
 
 slider:connect_signal("property::value", function()
-  spawn("amixer -D pulse sset Master " .. slider.value .. "%", false)
+  spawn.noninteractive({ "amixer", "-D", "pulse", "sset", "Master", slider.value .. "%" }, { sn_rules = false })
 end)
 
 watch("amixer -D pulse sget Master", 1, function(_, stdout)
-  local mute = string.match(stdout, "%[(o%D%D?)%]")
+  -- local mute = string.match(stdout, "%[(o%D%D?)%]")
   local volume = string.match(stdout, "(%d?%d?%d)%%")
   slider:set_value(tonumber(volume))
   collectgarbage("collect")
