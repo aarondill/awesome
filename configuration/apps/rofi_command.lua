@@ -19,7 +19,7 @@ local function rofi_command(...)
     "-show",
   }
   for i, v in ipairs(args) do
-    if type(args) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v))) end
+    if type(v) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v))) end
     table.insert(cmd, v)
   end
   return cmd
