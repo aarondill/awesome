@@ -1,5 +1,8 @@
 local filesystem = require("gears.filesystem")
 
+---create a rofi command
+---@param ... string
+---@return string[]
 local function rofi_command(...)
   -- Thanks to jo148 on github for making rofi dpi aware!
   local xres = require("beautiful").xresources
@@ -15,7 +18,8 @@ local function rofi_command(...)
     filesystem.get_configuration_dir() .. "configuration/rofi/config.rasi",
     "-show",
   }
-  for _, v in ipairs(args) do
+  for i, v in ipairs(args) do
+    if type(args) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v))) end
     table.insert(cmd, v)
   end
   return cmd
