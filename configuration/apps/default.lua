@@ -7,7 +7,7 @@ local terminal = "wezterm"
 -- List of apps to start by default on some actions - Don't use shell features.
 ---@type (string|string[])[]
 local default = {
-  battery_manager = { "xfce4-power-manager-settings" },
+  battery_manager = { "gnome-power-statistics" },
   system_manager = { "gnome-system-monitor" },
   calendar = { "gnome-calendar" },
   -- Above are only used *if* installed
