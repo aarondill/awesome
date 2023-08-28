@@ -1,8 +1,10 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
+local quake_class = require("module.quake").class
 
 local function renderClient(client, mode)
+  if client.instance == quake_class then return end
   if client.skip_decoration or (client.rendering_mode == mode) then return end
 
   client.rendering_mode = mode

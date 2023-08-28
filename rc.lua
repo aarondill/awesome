@@ -38,6 +38,7 @@ require("module.git-submodule")
 require("layout")
 
 -- Init all modules
+require("module.quake") -- Should prob be before decorate-client, and keys.global, as they both require it.
 require("module.auto-start")
 require("module.inhibit-power-key")
 require("module.decorate-client")

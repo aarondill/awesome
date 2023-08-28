@@ -12,6 +12,13 @@ local function open_terminal(cmd, spawn_options)
   local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
   spawn(do_cmd, spawn_options)
 end
+---Open a quake terminal
+---@param class string
+local function open_quake_terminal(class)
+  --HACK: This only works with wezterm!
+  local do_cmd = concat_command(default.terminal, { "start", "--class", class })
+  spawn(do_cmd)
+end
 
 ---Open a editor with the given file
 ---@param file? string|string[]
@@ -53,8 +60,9 @@ local function open_lock(exit_cb)
 end
 
 return {
-  terminal = open_terminal,
+  browser = open_browser,
   editor = open_editor,
   lock = open_lock,
-  browser = open_browser,
+  quake_terminal = open_quake_terminal,
+  terminal = open_terminal,
 }
