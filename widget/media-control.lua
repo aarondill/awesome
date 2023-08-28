@@ -62,13 +62,20 @@ function MediaControl:init(args)
       { id = "current_song", widget = wibox.widget.textbox },
     },
   }
-  function widget_template:set_status(image)
+  self.widget = wibox.widget(widget_template)
+  self.widget.tooltip = awful.tooltip({
+    objects = { self.widget },
+    mode = "outside",
+    align = "bottom",
+    delay_show = 1,
+  })
+  function self.widget:set_status(image)
     self:get_children_by_id("icon")[1].image = image
   end
-  function widget_template:set_text(text)
-    self:get_children_by_id("current_song")[1].markup = text
+  function self.widget:set_text(text)
+    self:get_children_by_id("current_song")[1].text = text
+    self.tooltip:set_text(text)
   end
-  self.widget = wibox.widget(widget_template)
 
   self:watch(self.refresh_rate)
 
@@ -107,7 +114,7 @@ end
 
 ---@param text string
 function MediaControl:update_widget_text(text)
-  self.widget:set_text(gears.string.xml_escape(text))
+  self.widget:set_text(text)
   self.widget:set_visible(true)
 end
 
