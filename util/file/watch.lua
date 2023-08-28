@@ -1,4 +1,4 @@
-local gio = require("lgi").Gio
+local gio = require("lgi").require("Gio")
 local handle_error = require("util.handle_error")
 ---@alias GioFileMonitorMethod "monitor" | "monitor_directory" | "monitor_file"
 ---@alias GioFileMonitorFlags "NONE" | "WATCH_HARD_LINKS" | "SEND_MOVED" | "WATCH_MOVES" | "WATCH_MOUNTS"

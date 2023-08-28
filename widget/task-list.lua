@@ -1,11 +1,11 @@
 local awful = require("awful")
+local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
-local wibox = require("wibox")
-local dpi = require("beautiful").xresources.apply_dpi
-local bind = require("util.bind")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
+local wibox = require("wibox")
+local dpi = require("beautiful").xresources.apply_dpi
 local capi = { button = button }
 ---Common method to create buttons.
 ---@param buttons table?

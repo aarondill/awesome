@@ -1,11 +1,11 @@
-local awful = require("awful")
+local layout_suit = require("awful.layout.suit")
 local layouts = {
-  awful.layout.suit.tile,
-  awful.layout.suit.fair,
-  awful.layout.suit.max,
-  awful.layout.suit.max.fullscreen,
-  awful.layout.suit.magnifier,
-  awful.layout.suit.floating,
+  layout_suit.tile,
+  layout_suit.fair,
+  layout_suit.max,
+  layout_suit.max.fullscreen,
+  layout_suit.magnifier,
+  layout_suit.floating,
 }
 
 return layouts

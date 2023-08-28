@@ -1,11 +1,11 @@
-local awful = require("awful")
-local dpi = require("beautiful").xresources.apply_dpi
 local apps = require("configuration.apps")
+local awful = require("awful")
 local concat_command = require("util.concat_command")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local icons = require("theme.icons")
 local menubar = require("menubar")
 local wibox = require("wibox")
+local dpi = require("beautiful").xresources.apply_dpi
 
 -- Load Debian menu entries
 local has_debian, debian = pcall(require, "debian.menu")

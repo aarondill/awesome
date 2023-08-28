@@ -1,4 +1,4 @@
-local gio = require("lgi").Gio
+local gio = require("lgi").require("Gio")
 --- Return whether a file exists. Syncronously
 ---@param path string?
 ---@return boolean

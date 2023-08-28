@@ -1,14 +1,14 @@
 local require = require("util.rel_require")
 
+local apps = require("configuration.apps")
 local awful = require("awful")
 local gears = require("gears")
+local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
 local spawn = require("util.spawn")
+local hotkeys_popup = require("awful.hotkeys_popup").widget
 
-local modkey = require(..., "mod").modKey ---@module "configuration.keys.mod"
-local altkey = require(..., "mod").altKey ---@module "configuration.keys.mod"
-local apps = require("configuration.apps")
+local modkey, altkey = mod.modKey, mod.altKey
 local capi = { awesome = awesome }
 
 local function open_main_menu()

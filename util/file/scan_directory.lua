@@ -1,4 +1,4 @@
-local gio = require("lgi").Gio
+local gio = require("lgi").require("Gio")
 ---@class scan_directory_args
 ---@field attributes string[]?
 

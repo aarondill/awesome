@@ -1,9 +1,9 @@
 local require = require("util.rel_require")
 
+local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
 
 local function build(imagebox, _)
   -- return wibox.container.margin(container, 6, 6, 6, 6)

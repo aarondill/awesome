@@ -1,8 +1,8 @@
 local awful = require("awful")
+local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local clickable_container = require("widget.material.clickable-container")
 local modkey = require("configuration.keys.mod").modKey
 local icon_template = {
   {

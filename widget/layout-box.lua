@@ -1,8 +1,8 @@
 local awful = require("awful")
-local gears = require("gears")
-local dpi = require("beautiful").xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
+local gears = require("gears")
 local wibox = require("wibox")
+local dpi = require("beautiful").xresources.apply_dpi
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.

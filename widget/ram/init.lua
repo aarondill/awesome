@@ -1,11 +1,11 @@
+local awful = require("awful")
+local gears = require("gears")
+local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
 local mat_slider = require("widget.material.slider")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local awful = require("awful")
-local gears = require("gears")
-local handle_error = require("util.handle_error")
 
 local slider = wibox.widget({
   read_only = true,

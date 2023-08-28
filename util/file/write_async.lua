@@ -1,5 +1,5 @@
-local gio = require("lgi").Gio
 local garbage_collection = require("util.garbage_collection")
+local gio = require("lgi").require("Gio")
 
 --- Replace a file content or create a new one - Async :)
 ---@param path string file path to write to

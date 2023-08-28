@@ -1,8 +1,8 @@
 local gears = require("gears")
+local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
 local notifs = require("util.notifs")
 local dpi = require("beautiful").xresources.apply_dpi
-local list_directory = require("util.file.list_directory")
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
@@ -54,6 +54,5 @@ end
 ---@param args table? The args to gears.depreciate? I think?
 awesome.connect_signal("debug::deprecate", function(hint, see, args)
   local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
-
   notifs.warn(msg)
 end)

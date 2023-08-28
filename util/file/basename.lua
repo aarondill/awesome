@@ -1,4 +1,4 @@
-local gio = require("lgi").Gio
+local gio = require("lgi").require("Gio")
 ---Return the basename of a file from a path. This doesn't perform any IO, so it can be called without concern for the event loop.
 ---@param path string
 ---@return string

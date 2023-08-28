@@ -11,10 +11,10 @@
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
+local spawn = require("util.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local spawn = require("util.spawn")
 
 -- acpi sample outputs
 -- Battery 0: Discharging, 75%, 01:51:38 remaining

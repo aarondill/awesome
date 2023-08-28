@@ -1,10 +1,10 @@
-local icons = require("theme.icons")
-local mat_icon = require("widget.material.icon")
-local wibox = require("wibox")
-local dpi = require("beautiful").xresources.apply_dpi
 local gears = require("gears")
 local handle_error = require("util.handle_error")
+local icons = require("theme.icons")
+local mat_icon = require("widget.material.icon")
 local read_async = require("util.file.read_async")
+local wibox = require("wibox")
+local dpi = require("beautiful").xresources.apply_dpi
 
 local function escape_pattern(str)
   -- Taken from gears.string.quote_pattern

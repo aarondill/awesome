@@ -1,18 +1,16 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
+local require = require("util.rel_require")
 
 local awful = require("awful")
+local calculate_time_remaining = require(..., "time") ---@module "widget.battery.time"
+local files = require(..., "files") ---@module "widget.battery.files"
 local gears = require("gears")
+local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local rel_require = require("util.rel_require")
----@module "widget.battery.time"
-local calculate_time_remaining = rel_require(..., "time")
----@module "widget.battery.files"
-local files = rel_require(..., "files")
-local handle_error = require("util.handle_error")
 
 -- To use colors from beautiful theme put
 -- following lines in rc.lua before require("battery"):

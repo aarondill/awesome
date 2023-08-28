@@ -1,4 +1,4 @@
-local filesystem = require("gears.filesystem")
+local gfile = require("gears.filesystem")
 
 ---create a rofi command
 ---@param ... string
@@ -15,11 +15,11 @@ local function rofi_command(...)
     "-width",
     tostring(xres.apply_dpi(400)),
     "-theme",
-    filesystem.get_configuration_dir() .. "configuration/rofi/config.rasi",
+    gfile.get_configuration_dir() .. "configuration/rofi/config.rasi",
     "-show",
   }
   for i, v in ipairs(args) do
-    if type(v) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v))) end
+    if type(v) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v)), 2) end
     table.insert(cmd, v)
   end
   return cmd

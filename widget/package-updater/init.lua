@@ -3,10 +3,10 @@
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
+local spawn = require("util.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local spawn = require("util.spawn")
 
 local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/package-updater/icons/"
 local updateAvailable = false

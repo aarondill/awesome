@@ -1,5 +1,5 @@
-local gio = require("lgi").Gio
 local garbage_collection = require("util.garbage_collection")
+local gio = require("lgi").require("Gio")
 
 -- Write to a stream
 local function outputstream_write(stream, content, cb)

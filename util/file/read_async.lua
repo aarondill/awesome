@@ -1,4 +1,4 @@
-local gio = require("lgi").Gio
+local gio = require("lgi").require("Gio")
 
 --- Replace a file content or create a new one - Async :)
 ---@param path string file path to write to

@@ -3,11 +3,11 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local clickable_container = require("widget.material.clickable-container")
 local gears = require("gears")
+local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
+local systemctl_cmd = require("util.systemctl_cmd")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local handle_error = require("util.handle_error")
-local systemctl_cmd = require("util.systemctl_cmd")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
