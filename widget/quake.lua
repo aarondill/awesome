@@ -144,7 +144,7 @@ function quake:_managed(c)
   if not self:_client_is_self(c) then return end
   self:_display()
 end
-function quake:_unmanged(c)
+function quake:_unmanaged(c)
   if not self:_client_is_self(c) then return end
   self.visible = false
 end
