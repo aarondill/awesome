@@ -216,8 +216,13 @@ function MediaControl:info(cb)
     -- xesam:url
     local i = 1
     for line in stdout:gmatch("([^\n]*)\n?") do -- Order is defined by variables[]
-      if #line == 0 then line = nil end -- Skip empty lines
-      info[variables[i]] = line
+      local prop = variables[i]
+      if #line == 0 then -- Empty lines
+        -- Transform camel case to lower case words -- albumArtist -> album artist
+        -- Source: https://love2d.org/forums/viewtopic.php?t=81128
+        line = "Unknown " .. prop:gsub(".%f[%l]", " %1"):gsub("%l%f[%u]", "%1 "):lower()
+      end
+      info[prop] = line
       i = i + 1
     end
     cb(info)

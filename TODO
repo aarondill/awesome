@@ -2,9 +2,6 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
 
--- TODO:
--- Set any nil fields in media widget to 'Unknown ${Field}' so you don't maintain the template
-
 --TODO: Find better way to abstract in rc.lua when require is effectively offlimits (due to NS installation)
 --TODO: CLEANUP
 --Remove unused code
