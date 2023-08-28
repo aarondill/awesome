@@ -2,6 +2,8 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
 
+--TODO: try a quake terminal
+
 --TODO: CLEANUP
 --Remove unused code
 --  Keep the widgets for the sake of convenience
