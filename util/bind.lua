@@ -6,6 +6,7 @@ local array_join = require("util.array_join")
 ---@param ... unknown
 ---@return fun(...: unknown): Ret
 local function bind(func, ...)
+  if not func then error("Func is required", 2) end
   local outer = table.pack(...)
   return function(...)
     -- Avoid the copy if possible
