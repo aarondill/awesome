@@ -3,6 +3,7 @@
 if true then return end
 
 -- TODO: Add a tooltip for media coltrol to show full text
+-- Set any nil fields to 'Unknown ${Field}' so you don't maintain the template
 
 --TODO: Find better way to abstract in rc.lua when require is effectively offlimits (due to NS installation)
 --TODO: CLEANUP
