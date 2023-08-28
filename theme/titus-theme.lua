@@ -1,23 +1,22 @@
-local filesystem = require("gears.filesystem")
 local mat_colors = require("theme.mat-colors")
-local theme_dir = filesystem.get_configuration_dir() .. "/theme"
 
-local theme = {}
-theme.icons = theme_dir .. "/icons/"
-theme.font = "Roboto medium 10"
+local function do_theme(theme, theme_dir)
+  theme.icons = theme_dir .. "/icons/"
+  theme.font = "Roboto medium 10"
 
--- Colors Pallets
+  -- Colors Pallets
 
--- Primary
-theme.primary = mat_colors.indigo
-theme.primary.hue_500 = "#003f6b"
--- Accent
-theme.accent = mat_colors.pink
+  -- Primary
+  theme.primary = mat_colors.indigo
+  theme.primary.hue_500 = "#003f6b"
+  -- Accent
+  theme.accent = mat_colors.pink
 
--- Background
-theme.background = mat_colors.blue_grey
+  -- Background
+  theme.background = mat_colors.blue_grey
 
-theme.background.hue_800 = "#192933"
-theme.background.hue_900 = "#121e25"
+  theme.background.hue_800 = "#192933"
+  theme.background.hue_900 = "#121e25"
+end
 
-return theme
+return do_theme
