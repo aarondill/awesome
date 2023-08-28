@@ -1,4 +1,5 @@
 local Battery = require("widget.battery")
+local Brightness = require("widget.brightness")
 local CPU = require("widget.cpu")
 local LayoutBox = require("widget.layout-box")
 local MediaControl = require("widget.media-control")
@@ -8,26 +9,13 @@ local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
 local awful = require("awful")
 local beautiful = require("beautiful")
+local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local mat_clickable_cont = require("widget.material.clickable-container")
-local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local has_brightness, Brightness = pcall(require, "widget.brightness")
-local icons = require("theme.icons")
-
-local brightness_widget = nil
-if awesome.version <= "v4.3" and has_brightness then -- HACK: broken in awesome-git
-  brightness_widget = mat_clickable_cont(Brightness({
-    step = 5,
-    timeout = 10,
-    levels = { 5, 25, 50, 75, 100 },
-  }))
-else
-  notifs.info("Brightness is broken in awesome-git")
-end
 
 -- Titus - Horizontal Tray
 local systray = wibox.widget.systray()
@@ -98,7 +86,11 @@ local TopPanel = function(s)
       clock_widget,
       battery_widget,
       cpu_widget,
-      brightness_widget,
+      mat_clickable_cont(Brightness({
+        step = 5,
+        timeout = 10,
+        levels = { 5, 25, 50, 75, 100 },
+      })),
     },
   })
   s:connect_signal("property::geometry", function()
