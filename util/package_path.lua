@@ -1,3 +1,7 @@
+--- DON'T require anything local here.
+--- The package.path may not be set up correctly.
+--- Only awesomewm library is available.
+
 local M = {}
 ---@param path string
 ---@return string

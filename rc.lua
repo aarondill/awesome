@@ -16,10 +16,14 @@ pcall(require, "awful.autofocus") -- Depreciated in V5
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
 local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
-local this_dir = (debug.getinfo(1, "S").source:sub(2):match("(.*/)") or "./")
-local package_path_utils = require("util.package_path") -- This wouldn't work in the case that we actually need this.
-package_path_utils.add_to_path(conf_dir)
-package_path_utils.add_to_path(this_dir)
+local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)/.-$") or ".")
+local utils_path = this_dir .. "/util/package_path.lua"
+if gfile.file_readable(utils_path) then
+  local util_package_path = dofile(utils_path)
+  package.loaded["util.package_path"] = util_package_path -- cache it for later
+  util_package_path.add_to_path(conf_dir)
+  util_package_path.add_to_path(this_dir)
+end
 
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
