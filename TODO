@@ -2,18 +2,16 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
 
---TODO: try a quake terminal
-
---TODO: CLEANUP
---Remove unused code
---  Keep the widgets for the sake of convenience
+-- TODO: implement notification center (only in awesome-git)
+-- awesome-shell@widgets/noti-center.lua is a good place to start
+-- This is not possible in v4.3 because naughty is too simple and doesn't provide signals
 
 --TODO: WIDGETS
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
 --  These don't work (I think)
---    Tempurature - WORKS? test.
---    Volumne - works? patterns?
+--    Temperature - WORKS? test.
+--    Volume - works? patterns?
 --    WiFi - spawns defined program, needs fixed. Defined interface. relies on iw - not stable
 --    Bluetooth - Not even exists.
 --    Hard-Drive - Relies on `df`, and only checks /home
