@@ -6,6 +6,9 @@ if true then return end
 -- awesome-shell@widgets/noti-center.lua is a good place to start
 -- This is not possible in v4.3 because naughty is too simple and doesn't provide signals
 
+-- TODO: Improve titlebars
+-- Take inspiration from awesome-shell. They are awesome!
+
 --TODO: WIDGETS
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
