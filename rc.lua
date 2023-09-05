@@ -37,13 +37,15 @@ require("module.git-submodule")
 -- Layout
 require("layout")
 
+require("module.tags") -- Setup tags
+require("module.persistent-tag") -- Keep selected tag on restart
+
 -- Init all modules
 require("module.quake") -- Should prob be before decorate-client, and keys.global, as they both require it.
 require("module.auto-start")
 require("module.inhibit-power-key")
 require("module.decorate-client")
 require("module.exit-screen")
-require("module.tags")
 
 -- Setup all configurations
 require("configuration.client")
@@ -53,8 +55,6 @@ root.keys(require("configuration.keys.global"))
 
 -- Different tags for each wallpaper
 require("module.wallpaper")
--- Keep selected tag on restart
-require("module.persistent-tag")
 
 -- Disable mouse snapping
 awful.mouse.snap.edge_enabled = false
