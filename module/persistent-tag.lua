@@ -18,7 +18,8 @@ end)
 
 awesome.connect_signal("startup", function()
   -- This is intentionally synchronous to ensure it's done *before* user control.
-  local f = assert(io.open(filepath, "r"))
+  local f = io.open(filepath, "r")
+  if not f then return end -- file doesn't exist
   local content = f:read("a")
   f:close()
   if not content then return end
