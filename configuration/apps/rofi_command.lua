@@ -1,3 +1,6 @@
+local require = require("util.rel_require")
+
+local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 
 ---create a rofi command
@@ -15,7 +18,7 @@ local function rofi_command(...)
     "-width",
     tostring(xres.apply_dpi(400)),
     "-theme",
-    gfile.get_configuration_dir() .. "configuration/rofi/config.rasi",
+    config_file_dir .. "/rofi/config.rasi",
     "-show",
   }
   for i, v in ipairs(args) do

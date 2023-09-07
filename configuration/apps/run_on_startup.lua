@@ -1,3 +1,6 @@
+local require = require("util.rel_require")
+
+local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
 if not gfile.file_executable(notification_daemon) then
@@ -12,8 +15,9 @@ if not gfile.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/polkit
 -- Using a table is safer because quoting isn't an issue
 local run_on_startup = {
   "dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
+  { "xsettingsd", "-c", config_file_dir .. "/xsettingsd.conf" },
   { polkit }, -- Authentication popup
-  -- { "picom", "--config", filesystem.get_configuration_dir() .. "configuration/picom.conf" },
+  -- { "picom", "--config", config_file_dir .. "/picom.conf" },
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
@@ -26,15 +30,20 @@ local run_on_startup = {
   {
     "udiskie",
     "-c",
-    gfile.get_configuration_dir() .. "configuration/udiskie.yml",
+    config_file_dir .. "/udiskie.yml",
   }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { notification_daemon },
-  { "xsettingsd", "-c", gfile.get_configuration_dir() .. "configuration/xsettingsd.conf" },
+  {
+    "libinput-gestures",
+    "--verbose",
+    "--conffile",
+    config_file_dir .. "/libinput-gestures.conf",
+  }, -- Enable touch gesture support
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
   -- to avoid multipled instances, inside the awspawn script
-  { gfile.get_configuration_dir() .. "configuration/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
+  { gfile.get_configuration_dir() .. "scripts/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
 }
 
 do

@@ -29,7 +29,7 @@ local function get_xdg_user_dir_impl(dir)
   -- `xdg-user-dir` command
   do
     local conf = gears.filesystem.get_configuration_dir()
-    local cmd = string.format("exec '%sconfiguration/xdg-user-dir' '%s'", conf, dir)
+    local cmd = string.format("exec '%sscripts/xdg-user-dir' '%s'", conf, dir)
     local f = assert(io.popen(cmd))
     local result = f:read("*a")
     f:close()

@@ -20,14 +20,16 @@ end
 ---@overload fun(this_path: string, path: string, assert: true): any, unknown -- Not nil
 ---@overload fun(module: string): any, unknown -- The regular require
 local function relative_require(this_path, path, assert)
-  if type(this_path) == "string" and path == nil and assert == nil then
-    -- Native require function
-    return require(this_path)
-  end
-  _G.assert(type(this_path or "") == "string", "this_path must be a string or nil")
-  _G.assert(type(path) == "string", "Path must be a string")
   _G.assert(type(assert or false) == "boolean", "assert must be a boolean or nil")
+  _G.assert(type(this_path or "") == "string", "this_path must be a string or nil")
   assert = assert == nil and true or assert
+  if type(this_path) == "string" and path == nil then
+    -- Native require function
+    if assert then return require(this_path) end
+    local ret = table.pack(require(this_path))
+    return ret[1] and table.unpack(ret, 2, ret.n) or nil
+  end
+  _G.assert(type(path) == "string", "Path must be a string") -- wait until after above check, in case used like normal require
   if assert then
     _G.assert(this_path, ("Could not find module. Call %s from a required file."):format(debug.getinfo(1, "n").name))
   end
