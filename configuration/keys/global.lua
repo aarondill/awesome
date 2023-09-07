@@ -11,7 +11,6 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey, altkey = mod.modKey, mod.altKey
 local capi = { awesome = awesome }
-local qterm = require("module.quake").instance
 
 local function open_main_menu()
   local pid_or_err = spawn.noninteractive(apps.default.rofi)
@@ -90,7 +89,12 @@ local globalKeys = gears.table.join(
   awful.key({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   awful.key({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   awful.key({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
-  awful.key({}, "F12", bind(qterm.toggle, qterm), { description = "Open a quake terminal", group = "launcher" }),
+  awful.key(
+    {},
+    "F12",
+    bind(awesome.emit_signal, "quake::toggle"),
+    { description = "Open a quake terminal", group = "launcher" }
+  ),
   awful.key({ modkey }, "l", function()
     awful.tag.incmwfact(0.05)
   end, { description = "Increase master width factor", group = "layout" }),
