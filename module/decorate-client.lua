@@ -1,10 +1,10 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
-local quake_class = require("module.quake").class
+local quake = require("module.quake")
 
 local function renderClient(client, mode)
-  if client.instance == quake_class then return end
+  if quake:client_is_quake(client) then return end
   if client.skip_decoration or (client.rendering_mode == mode) then return end
 
   client.rendering_mode = mode
@@ -41,7 +41,9 @@ local function changesOnScreen(currentScreen)
   local clientsToManage = {}
 
   for _, client in pairs(currentScreen.clients or {}) do
-    if not client.skip_decoration and not client.hidden then table.insert(clientsToManage, client) end
+    if not client.skip_decoration and not client.hidden and not quake:client_is_quake(client) then
+      table.insert(clientsToManage, client)
+    end
   end
 
   if tagIsMax or #clientsToManage == 1 then
