@@ -1,7 +1,8 @@
+local gtable = require("gears.table")
 local require = require("util.rel_require")
 
 local scan_directory = require(..., "scan_directory") ---@module "util.file.scan_directory"
----@class list_directory_args
+---@class list_directory_args :scan_directory_args
 ---@field match string? a lua pattern to match against the file names
 
 ---@alias list_directory_cb fun(names?: string[], error?: userdata)
@@ -16,10 +17,11 @@ local function list_directory(path, args, cb)
   if type(args) == "function" and cb == nil then
     cb, args = args, nil
   end
-  args = args or {}
+  args = args and gtable.clone(args) or {}
   assert(type(args) == "table", "args must be a table")
-  if args.match then assert(type(args.match) == "string", "args.match must be a string") end
-  scan_directory(path, { attributes = { "FILE_ATTRIBUTE_STANDARD_NAME" } }, function(contents, error)
+  assert(type(args.match or "") == "string", "args.match must be a string")
+  args.attributes = { "FILE_ATTRIBUTE_STANDARD_NAME" } -- override user provided
+  scan_directory(path, args, function(contents, error)
     if not contents then return cb(contents, error) end
     local ret = {}
     for _, v in ipairs(contents) do
