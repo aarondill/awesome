@@ -23,7 +23,7 @@ local function Run_prompt(s)
     old_run(...)
   end
   promptbox.exe_callback = function(cmd)
-    local result = spawn(cmd, { sn_rules = false })
+    local result = spawn.noninteractive(cmd)
     if type(result) == "string" then
       promptbox.widget:set_text(result)
 
