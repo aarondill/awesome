@@ -40,7 +40,7 @@ end
 local function find_battery_path(cb)
   local power_supply_dir = "/sys/class/power_supply/"
   list_directory(power_supply_dir, { match = "BAT.+" }, function(files)
-    cb(power_supply_dir .. files[1])
+    if files[1] then cb(("%s%s"):format(power_supply_dir, files[1])) end
   end)
 end
 ---find an icon specific to this widget
