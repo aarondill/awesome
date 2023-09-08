@@ -7,8 +7,10 @@ local open = require("configuration.apps.open")
 local wibox = require("wibox")
 
 local QuakeButton = function()
-  local imgbox = wibox.widget.imagebox(icons.term or icons.power)
-  local iconbutton = IconButton(imgbox)
+  local iconbutton = wibox.widget({
+    image = icons.term or icons.power,
+    widget = IconButton,
+  })
   local open_terminal = bind.with_args(open.terminal)
   iconbutton:buttons(gtable.join(
     awful.button({}, 1, bind.with_args(awesome.emit_signal, "quake::toggle")),
