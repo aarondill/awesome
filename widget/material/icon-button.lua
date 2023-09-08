@@ -12,6 +12,8 @@ local IconButton = {}
 function IconButton:set_image(img)
   return self:get_children_by_id("iconbox")[1]:set_image(img)
 end
+IconButton.set_icon = IconButton.set_image -- alias icon to image
+
 for _, v in pairs({ "margins", "left", "right", "top", "bottom" }) do
   for _, t in ipairs({ "set", "get" }) do
     local method = string.format("%s_%s", t, v)
