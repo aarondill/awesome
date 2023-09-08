@@ -10,6 +10,17 @@ local quake = require("module.quake")
 local function renderClient(client, mode)
   if quake:client_is_quake(client) then return end
   if client.skip_decoration or (client.rendering_mode == mode) then return end
+  if client.is_new then
+    client.floating = false
+    client.maximized = false
+    client.above = false
+    client.below = false
+    client.ontop = false
+    client.sticky = false
+    client.maximized_horizontal = false
+    client.maximized_vertical = false
+    client.is_new = false
+  end
 
   client.rendering_mode = mode
   if client.rendering_mode == "maximized" then
@@ -73,16 +84,7 @@ end
 
 local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
 capi.client.connect_signal(manage_signal, function(c)
-  if not c.skip_decoration then
-    c.floating = false
-    c.maximized = false
-    c.above = false
-    c.below = false
-    c.ontop = false
-    c.sticky = false
-    c.maximized_horizontal = false
-    c.maximized_vertical = false
-  end
+  c.is_new = true
   clientCallback(c)
 end)
 
