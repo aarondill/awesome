@@ -1,3 +1,4 @@
+local capi = { client = client }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
@@ -10,15 +11,6 @@ local function renderClient(client, mode)
   if client.skip_decoration or (client.rendering_mode == mode) then return end
 
   client.rendering_mode = mode
-  client.floating = false
-  client.maximized = false
-  client.above = false
-  client.below = false
-  client.ontop = false
-  client.sticky = false
-  client.maximized_horizontal = false
-  client.maximized_vertical = false
-
   if client.rendering_mode == "maximized" then
     client.border_width = 0
     client.shape = gshape.rectangle
@@ -79,16 +71,28 @@ local function tagCallback(tag)
 end
 
 local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
-client.connect_signal(manage_signal, clientCallback)
+capi.client.connect_signal(manage_signal, function(c)
+  if not c.skip_decoration then
+    c.floating = false
+    c.maximized = false
+    c.above = false
+    c.below = false
+    c.ontop = false
+    c.sticky = false
+    c.maximized_horizontal = false
+    c.maximized_vertical = false
+  end
+  clientCallback(c)
+end)
 
 local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
-client.connect_signal(unmanage_signal, clientCallback)
+capi.client.connect_signal(unmanage_signal, clientCallback)
 
-client.connect_signal("property::hidden", clientCallback)
+capi.client.connect_signal("property::hidden", clientCallback)
 
-client.connect_signal("property::minimized", clientCallback)
+capi.client.connect_signal("property::minimized", clientCallback)
 
-client.connect_signal("property::fullscreen", function(c)
+capi.client.connect_signal("property::fullscreen", function(c)
   if c.fullscreen then
     renderClient(c, "maximized")
   else
