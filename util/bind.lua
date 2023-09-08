@@ -25,8 +25,9 @@ Bind.with_start_args = Bind.bind -- Alias for symetry with Bind.with_args
 ---@return fun(): Ret
 function Bind.with_args(func, ...)
   if type(func) ~= "function" then error("func must be a function", 2) end
-  local args = table.pack(...)
+  local args = select("#", ...) > 0 and table.pack(...) or nil -- nil if no arguments are passed
   return function()
+    if not args then return func() end -- save processing/memory in storing the above table
     return func(table.unpack(args, 1, args.n))
   end
 end
