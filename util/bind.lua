@@ -8,10 +8,10 @@ local Bind = {}
 ---@return fun(...: unknown): Ret
 function Bind.bind(func, ...)
   if type(func) ~= "function" then error("func must be a function", 2) end
-  local outer = table.pack(...)
+  local outer = select("#", ...) > 0 and table.pack(...) or nil -- nil if no arguments are passed
   return function(...)
-    -- Avoid the copy if possible
-    local args = select("#", ...) > 0 and array_join.concat(outer, ...) or outer
+    if not outer then return func(...) end -- save processing/memory in storing the above table
+    local args = select("#", ...) > 0 and array_join.concat(outer, ...) or outer -- Avoid the copy if possible
     return func(table.unpack(args, 1, args.n))
   end
 end
