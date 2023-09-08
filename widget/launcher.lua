@@ -72,9 +72,9 @@ function Launcher(_)
     image = icons.launcher,
     -- resize = true,
   })
-
-  local m = dpi(6)
-  return wibox.container.margin(launcher, m, m, m, m)
+  local margin = wibox.container.margin(launcher)
+  margin:set_margins(dpi(6))
+  return margin
 end
 
 -- Menubar configuration
