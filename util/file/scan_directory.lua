@@ -59,8 +59,9 @@ end
 
 ---https://developer.gnome.org/gio/stable/GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-TYPE:CAPS
 ---for details. The list of requestion attributes can be passed in the args.attributes
----argument. The default only return the file name. Use gears.async.directory.list for a more
+---argument. The default only return the file name. Use list_directory for a more
 ---basic file list.
+---The most useful attributes are: FILE_ATTRIBUTE_STANDARD_NAME and FILE_ATTRIBUTE_STANDARD_TYPE
 -- NOTE: when operating on local files, returned files will be sorted by inode number
 ---
 ---@param path string the directory to scan
