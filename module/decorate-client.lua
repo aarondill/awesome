@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line undefined-global
 local capi = { client = client }
 local awful = require("awful")
 local beautiful = require("beautiful")
