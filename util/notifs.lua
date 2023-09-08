@@ -73,12 +73,12 @@ local function _notify(text, opts)
     if displayed_notifications[tb] == text then return end -- Only when text is same from the same place
     displayed_notifications[tb] = text
   end
-  if awesome.version <= "v4.3" then
-    opts.text = text
-    return naughty.notify(opts)
-  else
+  if naughty.notification then
     opts.message, opts.text = text, nil
     return naughty.notification(opts)
+  else
+    opts.text = text
+    return naughty.notify(opts)
   end
 end
 

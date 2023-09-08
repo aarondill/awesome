@@ -72,8 +72,9 @@ local rules = {
   },
 }
 
-if awesome.version <= "v4.3" then
-  awful.rules.rules = rules
+local has_ruled, ruled = pcall(require, "ruled")
+if has_ruled then
+  ruled.client.append_rules(rules)
 else
-  require("ruled").client.append_rules(rules)
+  awful.rules.rules = rules
 end
