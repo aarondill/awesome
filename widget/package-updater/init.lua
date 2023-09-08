@@ -2,13 +2,14 @@
 ---
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
+local gtable = require("gears.table")
 local spawn = require("util.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local source_path = require("util.source_path")
 
-local PATH_TO_ICONS = gears.filesystem.get_configuration_dir() .. "widget/package-updater/icons/"
+local PATH_TO_ICONS = source_path.dirname(1) .. "/icons/"
 local updateAvailable = false
 local numOfUpdatesAvailable
 
@@ -22,7 +23,7 @@ local widget = wibox.widget({
 })
 
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
-widget_button:buttons(gears.table.join(awful.button({}, 1, nil, function()
+widget_button:buttons(gtable.join(awful.button({}, 1, nil, function()
   if updateAvailable then
     spawn("pamac-manager --updates", { sn_rules = false })
   else

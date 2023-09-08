@@ -1,9 +1,9 @@
-local gears = require("gears")
-local gfilesystem = require("gears.filesystem")
+local gtable = require("gears.table")
 local list_directory = require("util.file.list_directory")
 local parallel_async = require("util.parallel_async")
 local read_async = require("util.file.read_async")
-local PATH_TO_ICONS = gfilesystem.get_configuration_dir() .. "widget/battery/icons/"
+local source_path = require("util.source_path")
+local PATH_TO_ICONS = source_path.dirname(1) .. "/icons/"
 
 ---@alias battery_info_types "capacity" | "status" | "power_now" | "energy_now" | "current_now" | "charge_now" | "charge_full" | "voltage_now" | "energy_full"
 ---@alias battery_info table<battery_info_types, string?>
@@ -20,7 +20,7 @@ local battery_files = {
   voltage_now = { path = "/voltage_now", match = "(%d+)\n" },
   energy_full = { path = "/energy_full", match = "(%d+)\n" },
 }
-local keys = gears.table.keys(battery_files) ---@type string[]
+local keys = gtable.keys(battery_files) ---@type string[]
 
 ---returns battery information
 ---@param battery_path string the path to the battery directory (sysfs)
