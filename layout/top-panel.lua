@@ -3,6 +3,7 @@ local Brightness = require("widget.brightness")
 local CPU = require("widget.cpu")
 local LayoutBox = require("widget.layout-box")
 local MediaControl = require("widget.media-control")
+local QuakeButton = require("widget.quake-button")
 local Run_prompt = require("widget.run-prompt")
 local TagList = require("widget.tag-list")
 local TaskList = require("widget.task-list")
@@ -82,6 +83,7 @@ local TopPanel = function(s)
       wibox.container.margin(systray, dpi(3), dpi(3), dpi(6), dpi(3)),
       -- Layout box
       LayoutBox(s),
+      QuakeButton(),
       -- Clock
       clock_widget,
       battery_widget,
