@@ -1,13 +1,4 @@
----Gets the file name of the file that contains the function at level 'level'
----Doesn't include the path or the extension of the file
----@param level integer? pass the same number as you would to debug.getinfo(level).
--- Defaults to 2. The caller of the caller of this function
----@return string
-local function filename(level)
-  level = level or 2 -- caller of caller
-  local str = debug.getinfo(level + 1, "S").source:sub(2)
-  return str:match("^.*/(.*).lua$") or str
-end
+local source_path = require("util.source_path")
 
 ---Use in place of require to require relative to the current path
 ---This will likely need a '@module "MODULE"'
@@ -35,7 +26,7 @@ local function relative_require(this_path, path, assert)
   end
   if not this_path then return nil end
   --- True if the calling file is an init.lua and is called by require('module.sub')
-  local is_init_not_called = filename(2) == "init" and not this_path:match("%.init$")
+  local is_init_not_called = source_path.filename(2) == "init" and not this_path:match("%.init$")
   local this_module = is_init_not_called and (this_path .. ".") or (this_path):match("^(.-)[^%.]+$") -- returns 'lib.foo.'
 
   if assert then _G.assert(this_module, ("Could not find dir of module '%s'"):format(this_path)) end
