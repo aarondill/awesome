@@ -1,6 +1,6 @@
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
+local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
@@ -8,7 +8,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 -- We need one layoutbox per screen.
 local LayoutBox = function(s)
   local layoutBox = awful.widget.layoutbox(awesome.version <= "v4.3" and s or { screen = s })
-  layoutBox:buttons(gears.table.join(
+  layoutBox:buttons(gtable.join(
     awful.button({}, 1, function()
       awful.layout.inc(1)
     end),

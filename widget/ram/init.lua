@@ -1,5 +1,5 @@
 local awful = require("awful")
-local gears = require("gears")
+local gtimer = require("gears.timer")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
@@ -22,7 +22,7 @@ local function free_handler(stdout)
   slider:set_value(math.floor((total - available) / total * 100))
 end
 
-local timer = gears.timer.new({
+local timer = gtimer.new({
   timeout = 1,
   call_now = true,
   callback = function()

@@ -3,7 +3,7 @@ local require = require("util.rel_require")
 local awful = require("awful")
 local client_buttons = require(..., "buttons") ---@module "configuration.client.buttons"
 local client_keys = require("configuration.keys.client")
-local gears = require("gears")
+local gshape = require("gears.shape")
 -- Rules
 local rules = {
   -- All clients will match this rule.
@@ -64,7 +64,7 @@ local rules = {
       drawBackdrop = true,
       shape = function()
         return function(cr, w, h)
-          gears.shape.rounded_rect(cr, w, h, 8)
+          gshape.rounded_rect(cr, w, h, 8)
         end
       end,
       skip_decoration = true,

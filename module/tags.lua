@@ -1,5 +1,5 @@
 local awful = require("awful")
-local gears = require("gears")
+local gtable = require("gears.table")
 local tags = require("configuration.tags")
 local layouts = require("configuration").layouts
 
@@ -17,7 +17,7 @@ awful.screen.connect_for_each_screen(function(s)
       end
     end
 
-    local params = gears.table.crush({
+    local params = gtable.crush({
       name = i,
       layout = layouts[1] or awful.layout.suit.tile,
       gap_single_client = true,

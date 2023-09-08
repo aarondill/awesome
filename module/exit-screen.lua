@@ -2,7 +2,8 @@ local apps = require("configuration.apps")
 local awful = require("awful")
 local beautiful = require("beautiful")
 local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
+local gshape = require("gears.shape")
+local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local systemctl_cmd = require("util.systemctl_cmd")
@@ -26,7 +27,7 @@ local function buildButton(icon, text, on_release)
   })
   local clickable = wibox.widget({
     widget = clickable_container,
-    shape = gears.shape.circle,
+    shape = gshape.circle,
     forced_width = icon_size,
     forced_height = icon_size,
     imagebox,
@@ -38,7 +39,7 @@ local function buildButton(icon, text, on_release)
       right = dpi(24),
       clickable,
     },
-    gears.table.crush({
+    gtable.crush({
       widget = wibox.widget.textbox,
       text = text,
       valign = "center",
@@ -131,15 +132,11 @@ local function exit_screen_show()
   exit_screen.visible = true
 end
 
-exit_screen:buttons(gears.table.join(
+exit_screen:buttons(gtable.join(
   -- Middle click - Hide exit_screen
-  awful.button({}, 2, function()
-    exit_screen_hide()
-  end),
+  awful.button({}, 2, exit_screen_hide),
   -- Right click - Hide exit_screen
-  awful.button({}, 3, function()
-    exit_screen_hide()
-  end)
+  awful.button({}, 3, exit_screen_hide)
 ))
 -- Item placement
 exit_screen:setup({

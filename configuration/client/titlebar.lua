@@ -1,11 +1,11 @@
 local awful = require("awful")
-local gears = require("gears")
+local gtable = require("gears.table")
 local wibox = require("wibox")
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
   -- buttons for the titlebar
-  local buttons = gears.table.join(
+  local buttons = gtable.join(
     awful.button({}, 1, function()
       c:emit_signal("request::activate", "titlebar", { raise = true })
       awful.mouse.client.move(c)
@@ -23,7 +23,7 @@ client.connect_signal("request::titlebars", function(c)
       layout = wibox.layout.fixed.horizontal,
     },
     { -- Middle
-      gears.table.crush({ -- Title
+      gtable.crush({ -- Title
         widget = awful.titlebar.widget.titlewidget(c),
       }, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
       buttons = buttons,

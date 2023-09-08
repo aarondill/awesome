@@ -6,7 +6,7 @@ local require = require("util.rel_require")
 local awful = require("awful")
 local calculate_time_remaining = require(..., "time") ---@module "widget.battery.time"
 local files = require(..., "files") ---@module "widget.battery.files"
-local gears = require("gears")
+local gtimer = require("gears.timer")
 local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
@@ -123,7 +123,7 @@ function Battery(args)
     return true
   end
 
-  local timer = gears.timer.new({
+  local timer = gtimer.new({
     timeout = args.timeout or 15,
     call_now = true,
     autostart = not not battery_path,

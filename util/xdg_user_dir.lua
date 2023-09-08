@@ -1,5 +1,5 @@
 local find_home = require("util.find_home")
-local gears = require("gears")
+local gfilesystem = require("gears.filesystem")
 local cache = {}
 local defaults = {
   CONFIG = "/.config",
@@ -28,9 +28,10 @@ local function get_xdg_user_dir_impl(dir)
 
   -- `xdg-user-dir` command
   do
-    local conf = gears.filesystem.get_configuration_dir()
+    local conf = gfilesystem.get_configuration_dir()
     local cmd = string.format("exec '%sscripts/xdg-user-dir' '%s'", conf, dir)
     local f = assert(io.popen(cmd))
+    if not f then return "" end
     local result = f:read("*a")
     f:close()
     if result and #result > 0 then return result end

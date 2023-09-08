@@ -5,13 +5,13 @@ local DEBUG = require("configuration").DEBUG
 local apps = require("configuration.apps")
 local awful = require("awful")
 local file_write = require("util.file.write_async")
-local gears = require("gears")
+local gfilesystem = require("gears.filesystem")
 local notifs = require("util.notifs")
 local serialize_table = require("util.serialize_table")
 
 --- Directory for logging failed(?) application's output
 --- This *MUST* end in a slash
-local log_dir = gears.filesystem.get_cache_dir() .. "auto-start" .. "/"
+local log_dir = gfilesystem.get_cache_dir() .. "auto-start" .. "/"
 --- A map of cmds to pids
 local processes = {}
 
@@ -62,8 +62,8 @@ Date: %s
 ----------------------------------------
 ]]):format(type(cmd) == "table" and serialize_table(cmd) or cmd, CMD_DATE)
         -- Ensure it exists!
-        gears.filesystem.make_parent_directories(log_file_stdout)
-        gears.filesystem.make_parent_directories(log_file_stderr)
+        gfilesystem.make_parent_directories(log_file_stdout)
+        gfilesystem.make_parent_directories(log_file_stderr)
         -- *Async* write.
         file_write(log_file_stdout, header .. stdout)
         file_write(log_file_stderr, header .. stderr)

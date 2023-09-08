@@ -6,7 +6,8 @@
 
 local awful = require("awful")
 local beautiful = require("beautiful")
-local gears = require("gears")
+local gshape = require("gears.shape")
+local gtimer = require("gears.timer")
 local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
@@ -27,14 +28,14 @@ local backlight_adjust = wibox({
   width = dpi(48),
   height = offsety,
   bg = beautiful.hud_panel_bg,
-  shape = gears.shape.rounded_rect,
+  shape = gshape.rounded_rect,
   visible = false,
   ontop = true,
 })
 
 local backlight_bar = wibox.widget({
   widget = wibox.widget.progressbar,
-  shape = gears.shape.rounded_bar,
+  shape = gshape.rounded_bar,
   color = beautiful.hud_slider_fg,
   background_color = beautiful.hud_slider_bg,
   max_value = 100,
@@ -53,7 +54,7 @@ backlight_adjust:setup({
 
 -- create a 4 second timer to hide the volume adjust
 -- component whenever the timer is started
-local hide_backlight_adjust = gears.timer({
+local hide_backlight_adjust = gtimer({
   timeout = 4,
   autostart = true,
   callback = function()

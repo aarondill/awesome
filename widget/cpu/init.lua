@@ -1,4 +1,4 @@
-local gears = require("gears")
+local gtimer = require("gears.timer")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
@@ -87,7 +87,7 @@ function CPU(args)
     collectgarbage("collect")
   end
 
-  gears.timer.new({
+  gtimer.new({
     autostart = true,
     call_now = true,
     timeout = args.timeout or 15,

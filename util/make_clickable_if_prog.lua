@@ -1,5 +1,5 @@
 local awful = require("awful")
-local gears = require("gears")
+local gtable = require("gears.table")
 local installed = require("util.installed")
 local replace_in_widget = require("util.replace_in_widget")
 -- replace_if_present(cmd, replace_widget, replace_in, function(path, replace_widget, replace_in)
@@ -17,7 +17,7 @@ local function make_clickable_if_prog(cmd, replace_widget, replace_in, cb)
   installed(cmd, function(path_or_nil)
     if path_or_nil then
       local clickable = require("widget.material.clickable-container")(replace_widget)
-      clickable:buttons(gears.table.join(
+      clickable:buttons(gtable.join(
         -- Call callback on click
         awful.button({}, 1, nil, function()
           return cb(path_or_nil, replace_widget, replace_in)

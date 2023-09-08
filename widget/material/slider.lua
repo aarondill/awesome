@@ -6,7 +6,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 
 -- Commons requirements
 local beautiful = require("beautiful")
-local gears = require("gears")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 -- Local declarations
 
@@ -69,7 +69,7 @@ local function new(args)
     value = 25,
     forced_height = dpi(6),
     paddings = 0,
-    shape = gears.shape.rounded_rect,
+    shape = gshape.rounded_rect,
     background_color = beautiful.background.hue_800,
     color = beautiful.primary.hue_500,
     widget = wibox.widget.progressbar,
@@ -77,11 +77,11 @@ local function new(args)
 
   ret._private.slider = wibox.widget({
     forced_height = dpi(8),
-    bar_shape = gears.shape.rounded_rect,
+    bar_shape = gshape.rounded_rect,
     bar_height = 0,
     bar_color = beautiful.primary.hue_500,
     handle_color = beautiful.primary.hue_300,
-    handle_shape = gears.shape.circle,
+    handle_shape = gshape.circle,
     handle_border_color = "#00000012",
     handle_border_width = dpi(3),
     value = 25,

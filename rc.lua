@@ -88,10 +88,8 @@ client.connect_signal("unfocus", function(c)
 end)
 
 -- Run garbage collector regularly to prevent memory leaks
-require("gears").timer({
+require("gears.timer")({
   timeout = 30,
   autostart = true,
-  callback = function()
-    collectgarbage("collect")
-  end,
+  callback = require("util.bind").bind(collectgarbage, "collect"),
 })

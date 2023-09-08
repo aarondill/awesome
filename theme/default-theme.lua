@@ -1,4 +1,4 @@
-local gears = require("gears")
+local gshape = require("gears.shape")
 local mat_colors = require("theme.mat-colors")
 local theme_assets = require("beautiful.theme_assets")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -85,7 +85,7 @@ local function do_theme(theme, theme_dir)
   --theme.tooltip_border_color = '#232323'
   theme.tooltip_border_width = 0
   theme.tooltip_shape = function(cr, w, h)
-    gears.shape.rounded_rect(cr, w, h, dpi(6))
+    gshape.rounded_rect(cr, w, h, dpi(6))
   end
 
   -- Layout

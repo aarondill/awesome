@@ -3,7 +3,7 @@ local require = require("util.rel_require")
 local apps = require("configuration.apps")
 local awful = require("awful")
 local bind = require("util.bind")
-local gears = require("gears")
+local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
@@ -21,7 +21,7 @@ local function open_main_menu()
   end
 end
 -- Key bindings
-local globalKeys = gears.table.join(
+local globalKeys = gtable.join(
   -- Hotkeys
   awful.key({ modkey }, "F1", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
   awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
@@ -201,7 +201,7 @@ for i = 1, 9 do
     descr_move = { description = "Move focused client to tag #", group = "tag" }
     descr_toggle_focus = { description = "Toggle focused client on tag #", group = "tag" }
   end
-  globalKeys = gears.table.join(
+  globalKeys = gtable.join(
     globalKeys,
     -- View tag only.
     awful.key({ modkey }, "#" .. i + 9, function()

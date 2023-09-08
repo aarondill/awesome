@@ -1,6 +1,6 @@
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
+local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local modkey = require("configuration.keys.mod").modKey
@@ -14,7 +14,7 @@ local icon_template = {
   margins = dpi(6),
 }
 local text_template = {
-  gears.table.crush({
+  gtable.crush({
     id = "text_role",
     widget = wibox.widget.textbox,
     valign = "center",
@@ -29,7 +29,7 @@ local TagList = function(s)
   return awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
-    buttons = gears.table.join(
+    buttons = gtable.join(
       awful.button({}, 1, function(t)
         t:view_only()
       end),

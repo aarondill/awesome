@@ -1,16 +1,15 @@
-local awful = require("awful")
-local gears = require("gears")
+local gfilesystem = require("gears.filesystem")
+local gtimer = require("gears.timer")
+local prompt = require("awful.widget.prompt")
 local spawn = require("util.spawn")
 
-local timer = gears.timer or timer
-
 local function Run_prompt(s)
-  local promptbox = awful.widget.prompt({
-    history_path = gears.filesystem.get_cache_dir() .. "run_prompt_history",
+  local promptbox = prompt({
+    history_path = gfilesystem.get_cache_dir() .. "run_prompt_history",
     prompt = "Run: ",
   })
 
-  promptbox.timer = timer({
+  promptbox.timer = gtimer({
     timeout = 5,
     callback = function()
       promptbox.widget:set_text("")

@@ -1,7 +1,8 @@
 local awful = require("awful")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
-local gears = require("gears")
+local gshape = require("gears.shape")
+local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local wibox = require("wibox")
@@ -37,9 +38,9 @@ local function create_tasklist_widgets(buttons, c, max_width)
   local ib = wibox.widget.imagebox()
   local tb = wibox.widget.textbox()
   local cb = clickable_container(wibox.container.margin(wibox.widget.imagebox(icons.tag_close), 4, 4, 4, 4))
-  cb.shape = gears.shape.circle
+  cb.shape = gshape.circle
   local cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
-  cbm:buttons(gears.table.join(awful.button({}, 1, nil, bind(c.kill, c))))
+  cbm:buttons(gtable.join(awful.button({}, 1, nil, bind(c.kill, c))))
   local bg_clickable = clickable_container()
   local bgb = wibox.container.background()
   local tbc = wibox.container.constraint(tb, "max", max_width)
@@ -142,7 +143,7 @@ local function list_update(config, self, buttons, label, data, clients)
 end
 
 -- we can use a global set of buttons because they work with their parameters
-local tasklist_buttons = gears.table.join(
+local tasklist_buttons = gtable.join(
   awful.button({}, 1, function(c)
     if c == client.focus then
       c.minimized = true
@@ -181,7 +182,7 @@ local defaults = {
 ---@param args TaskListArgs
 ---@return TaskList
 local function TaskList(args)
-  local config = gears.table.crush(gears.table.clone(defaults), args)
+  local config = gtable.crush(gtable.clone(defaults), args)
   local tl = awful.widget.tasklist({
     screen = args.screen,
     filter = awful.widget.tasklist.filter.currenttags,

@@ -2,7 +2,8 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
 local concat_command = require("util.concat_command")
-local gears = require("gears")
+local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -47,8 +48,8 @@ end
 ---@param args MediaControl.args?
 ---@return MediaControl
 function MediaControl:init(args)
-  gears.table.crush(self, defaults, true) -- Set default
-  if args then gears.table.crush(self, args or {}, true) end -- Set any user overrides
+  gtable.crush(self, defaults, true) -- Set default
+  if args then gtable.crush(self, args or {}, true) end -- Set any user overrides
 
   local widget_template = {
     layout = wibox.layout.fixed.horizontal,
@@ -80,7 +81,7 @@ function MediaControl:init(args)
   self:watch(self.refresh_rate)
 
   local update_widget = bind(self.update_widget, self)
-  self.widget:buttons(gears.table.join(
+  self.widget:buttons(gtable.join(
     -- button 1: left click  - play/pause
     awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
     -- button 4: scroll up - previous song
@@ -240,7 +241,7 @@ function MediaControl:update_widget()
 end
 
 function MediaControl:watch(refresh_rate)
-  gears.timer.new({
+  gtimer.new({
     timeout = refresh_rate,
     callback = bind(self.update_widget, self),
     autostart = true,

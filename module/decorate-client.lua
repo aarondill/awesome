@@ -1,6 +1,8 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
-local gears = require("gears")
+local bind = require("util.bind")
+local gshape = require("gears.shape")
+local gtimer = require("gears.timer")
 local quake = require("module.quake")
 
 local function renderClient(client, mode)
@@ -19,13 +21,11 @@ local function renderClient(client, mode)
 
   if client.rendering_mode == "maximized" then
     client.border_width = 0
-    client.shape = function(cr, w, h)
-      gears.shape.rectangle(cr, w, h)
-    end
+    client.shape = gshape.rectangle
   elseif client.rendering_mode == "tiled" then
     client.border_width = beautiful.border_width
     client.shape = function(cr, w, h)
-      gears.shape.rounded_rect(cr, w, h, 8)
+      gshape.rounded_rect(cr, w, h, 8)
     end
   end
 end
@@ -63,9 +63,7 @@ local function clientCallback(client)
     if not client.skip_decoration and client.screen then
       changesOnScreenCalled = true
       local screen = client.screen
-      gears.timer.delayed_call(function()
-        changesOnScreen(screen)
-      end)
+      gtimer.delayed_call(bind.with_args(changesOnScreen, screen))
     end
   end
 end
@@ -75,9 +73,7 @@ local function tagCallback(tag)
     if tag.screen then
       changesOnScreenCalled = true
       local screen = tag.screen
-      gears.timer.delayed_call(function()
-        changesOnScreen(screen)
-      end)
+      gtimer.delayed_call(bind.with_args(changesOnScreen, screen))
     end
   end
 end

@@ -1,11 +1,11 @@
 local require = require("util.rel_require")
 
 local awful = require("awful")
-local gears = require("gears")
+local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local modkey = mod.modKey
 -- Key bindings
-local clientkeys = gears.table.join(
+local clientkeys = gtable.join(
   awful.key({ modkey }, "f", function(c)
     c.fullscreen = not c.fullscreen
     c:raise()
