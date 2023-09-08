@@ -17,7 +17,7 @@ local function open_main_menu()
   -- The return value will be a string in case of failure
   if type(pid_or_err) == "string" then
     local s = awful.screen.focused()
-    if s and s.run_promptbox and type(s.run_promptbox.run) == "function" then s.run_promptbox:run() end
+    if s and s.run_promptbox then s.run_promptbox:run() end
   end
 end
 -- Key bindings
