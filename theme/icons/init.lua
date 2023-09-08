@@ -1,7 +1,7 @@
-local gears = require("gears")
-local dir = gears.filesystem.get_configuration_dir() .. "theme/icons"
+local gfile = require("gears.filesystem")
+local dir = gfile.get_configuration_dir() .. "theme/icons"
 
-return {
+local icons = {
   logout = dir .. "/logout.svg",
   sleep = dir .. "/power-sleep.svg",
   power = dir .. "/power.svg",
@@ -19,3 +19,19 @@ return {
   tag_close = dir .. "/tasklist_close.png",
   term = dir .. "/term.svg",
 }
+setmetatable(icons, {
+  __index = function(_, key)
+    local exts = {
+      "svg",
+      "png",
+    }
+    for _, ext in ipairs(exts) do
+      local f = ("%s/%s.%s"):format(dir, key, ext)
+      -- file exists
+      if gfile.file_readable(f) then return f end
+    end
+    return nil
+  end,
+})
+
+return icons
