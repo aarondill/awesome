@@ -17,4 +17,5 @@ return {
   pause = dir .. "/pause.svg",
   stop = dir .. "/stop.svg",
   tag_close = dir .. "/tasklist_close.png",
+  term = dir .. "/term.svg",
 }
