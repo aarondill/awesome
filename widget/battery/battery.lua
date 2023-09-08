@@ -32,9 +32,17 @@ local function show_battery_warning(charge)
   })
 end
 local widget_template = {
-  { id = "icon", widget = wibox.widget.imagebox, resize = true, image = files.get_icon("battery") },
-  { id = "text", widget = wibox.widget.textbox, text = "100%" },
-  layout = wibox.layout.fixed.horizontal,
+  {
+    { id = "icon", widget = wibox.widget.imagebox, resize = true, image = files.get_icon("battery") },
+    { id = "text", widget = wibox.widget.textbox, text = "100%" },
+    layout = wibox.layout.fixed.horizontal,
+  },
+  left = dpi(14),
+  right = dpi(14),
+  top = dpi(4),
+  bottom = dpi(4),
+
+  widget = wibox.container.margin,
 }
 local function should_warn_battery(last_warning_time, status, charge, low_power, low_power_frequency)
   if status == "Charging" then return end
@@ -96,9 +104,8 @@ function Battery(args)
   local last_warning_time = os.time()
 
   local widget = wibox.widget(widget_template)
-  local widget_button = wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4))
   local battery_popup = awful.tooltip({
-    objects = { widget_button },
+    objects = { widget },
     mode = "outside",
     align = "left",
     text = "No Battery Found",
@@ -107,8 +114,11 @@ function Battery(args)
 
   local update_widget = function(info)
     local res = handle_battery_info(info)
-    widget.icon:set_image(res.icon)
-    widget.text:set_text(tostring(res.charge) .. "%")
+    local icon = widget:get_children_by_id("icon")[1]
+    local text = widget:get_children_by_id("text")[1]
+
+    icon:set_image(res.icon)
+    text:set_text(tostring(res.charge) .. "%")
     battery_popup.text = str_first_upper(res.status)
     -- if X minutes have elapsed since the last warning
     if should_warn_battery(last_warning_time, res.status, res.charge, low_power, low_power_frequency) then
@@ -137,7 +147,7 @@ function Battery(args)
     end)
   end
 
-  return widget_button
+  return widget
 end
 
 return Battery
