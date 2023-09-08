@@ -21,13 +21,15 @@ local function list_directory(path, args, cb)
   assert(type(args) == "table", "args must be a table")
   assert(type(args.match or "") == "string", "args.match must be a string")
   args.attributes = { "FILE_ATTRIBUTE_STANDARD_NAME" } -- override user provided
+  local match = args.match
+  args.match = nil -- don't pass to scan_directory
   scan_directory(path, args, function(contents, error)
     if not contents then return cb(contents, error) end
     local ret = {}
     for _, v in ipairs(contents) do
       ---@type string
       local name = v["FILE_ATTRIBUTE_STANDARD_NAME"]
-      if (not args.match) or name:match(args.match) ~= nil then
+      if (not match) or name:match(match) ~= nil then
         ret[#ret + 1] = name -- handle match pattern
       end
     end
