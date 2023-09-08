@@ -26,11 +26,13 @@ local LayoutBox = function(s)
   -- local imgbox = layoutBox:get_children_by_id("imagebox")[1]
   -- imgbox:set_stylesheet([[ svg{ color: white; } ]])
 
-  local margin_box = wibox.widget({
-    layoutBox,
-    margins = dpi(5),
-    widget = wibox.container.margin,
+  return wibox.widget({
+    {
+      layoutBox,
+      margins = dpi(5),
+      widget = wibox.container.margin,
+    },
+    widget = clickable_container,
   })
-  return clickable_container(margin_box)
 end
 return LayoutBox
