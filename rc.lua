@@ -1,4 +1,6 @@
 -- awesome_mode: api-level=9999:screen=on
+---@diagnostic disable-next-line  :undefined-global
+local capi = { client = client }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gfile = require("gears.filesystem")
@@ -63,7 +65,7 @@ awful.mouse.drag_to_tag.enabled = false
 
 local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
 -- Signal function to execute when a new client appears.
-client.connect_signal(manage_signal, function(c)
+capi.client.connect_signal(manage_signal, function(c)
   -- Set the windows at the slave,
   -- i.e. put it at the end of others instead of setting it master.
   if not awesome.startup then awful.client.setslave(c) end
@@ -75,15 +77,15 @@ client.connect_signal(manage_signal, function(c)
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
+capi.client.connect_signal("mouse::enter", function(c)
   c:emit_signal("request::activate", "mouse_enter", { raise = true })
 end)
 
 -- Make the focused window have a glowing border
-client.connect_signal("focus", function(c)
+capi.client.connect_signal("focus", function(c)
   c.border_color = awesome.version <= "v4.3" and beautiful.border_focus or beautiful.border_color_active
 end)
-client.connect_signal("unfocus", function(c)
+capi.client.connect_signal("unfocus", function(c)
   c.border_color = awesome.version <= "v4.3" and beautiful.border_normal or beautiful.border_color_normal
 end)
 
