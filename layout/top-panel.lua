@@ -8,36 +8,15 @@ local Run_prompt = require("widget.run-prompt")
 local TagList = require("widget.tag-list")
 local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
-local awful = require("awful")
 local beautiful = require("beautiful")
+local calendar_popup = require("awful.widget.calendar_popup")
+local clickable_container = require("widget.material.clickable-container")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
-local mat_clickable_cont = require("widget.material.clickable-container")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-
--- Titus - Horizontal Tray
-local systray = wibox.widget.systray()
-systray:set_horizontal(true)
-systray:set_base_size(dpi(20))
--- systray.forced_height = dpi(20)
-
--- Clock / Calendar 24h format
--- local textclock = wibox.widget.textclock('<span font="Roboto Mono bold 9">%d.%m.%Y\n     %H:%M</span>')
--- Clock / Calendar 12AM/PM fornat
-local textclock = wibox.widget.textclock('<span font="Roboto Mono 12">%I:%M %p</span>')
--- textclock.forced_height = dpi(36)
-
--- Add a calendar (credits to kylekewley for the original code)
-local month_calendar = awful.widget.calendar_popup.month({
-  start_sunday = true,
-  week_numbers = false,
-})
-
-local clock_widget = wibox.container.margin(textclock, dpi(13), dpi(13), dpi(9), dpi(8))
-month_calendar:attach(clock_widget)
 
 local TopPanel = function(s)
   local panel = wibox({
@@ -51,10 +30,23 @@ local TopPanel = function(s)
     bg = (beautiful.background or {}).hue_800,
     fg = beautiful.fg_normal,
   })
-
-  panel:struts({
-    top = dpi(32),
+  panel:struts({ top = dpi(32) })
+  local clock_widget = wibox.widget({
+    {
+      -- 24h format: %H:%M
+      -- 12h fornat: %I:%M %p
+      -- dd/mm/yyyy: %d/%m/%Y
+      format = '<span font="Roboto Mono 12">%I:%M %p</span>',
+      refresh = 30, -- TRY to fix issues with refresh after suspend
+      widget = wibox.widget.textclock,
+    },
+    left = dpi(13),
+    right = dpi(13),
+    top = dpi(9),
+    bottom = dpi(9),
+    widget = wibox.container.margin,
   })
+  local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
 
   -- Empty widget to replace with the battery when it's ready
   local battery_widget = Battery({ timeout = 15 })
@@ -68,7 +60,7 @@ local TopPanel = function(s)
     layout = wibox.layout.align.horizontal,
     {
       layout = wibox.layout.fixed.horizontal,
-      launcher(s),
+      { widget = launcher },
       TagList(s),
       Run_prompt(s),
     },
@@ -80,19 +72,34 @@ local TopPanel = function(s)
         stop_icon = icons.stop,
         pause_icon = icons.pause,
       }),
-      wibox.container.margin(systray, dpi(3), dpi(3), dpi(6), dpi(3)),
+      {
+        {
+          horizontal = true,
+          base_size = dpi(20),
+          -- forced_height = dpi(20),
+          widget = wibox.widget.systray,
+        },
+        left = dpi(3),
+        right = dpi(3),
+        top = dpi(6),
+        bottom = dpi(3),
+        widget = wibox.container.margin,
+      },
       -- Layout box
       LayoutBox(s),
-      QuakeButton(),
+      { widget = QuakeButton },
       -- Clock
       clock_widget,
       battery_widget,
       cpu_widget,
-      mat_clickable_cont(Brightness({
-        step = 5,
-        timeout = 10,
-        levels = { 5, 25, 50, 75, 100 },
-      })),
+      {
+        Brightness({
+          step = 5,
+          timeout = 10,
+          levels = { 5, 25, 50, 75, 100 },
+        }),
+        widget = clickable_container,
+      },
     },
   })
   s:connect_signal("property::geometry", function()
