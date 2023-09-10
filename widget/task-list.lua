@@ -102,21 +102,16 @@ local function create_tasklist_widgets(buttons, c, max_width)
     },
     widget = wibox.container.background,
   })
-  local tb = bgb:get_children_by_id("tb")[1]
-  local ib = bgb:get_children_by_id("ib")[1]
-
-  -- Tooltip to display whole title, if it was truncated
-  local tt = awful.tooltip({ --- tooltip
-    objects = { tb },
-    mode = "outside",
-    align = "bottom",
-    delay_show = 1,
-  })
   return {
-    ib = ib,
-    tb = tb,
     bgb = bgb,
-    tt = tt,
+    tb = bgb:get_children_by_id("tb")[1],
+    ib = bgb:get_children_by_id("ib")[1],
+    --- Tooltip to display whole title, if it was truncated
+    tt = awful.tooltip({ --- tooltip
+      mode = "outside",
+      align = "bottom",
+      delay_show = 1,
+    }),
   }
 end
 
@@ -142,7 +137,7 @@ local function list_update(config, self, buttons, label, data, clients)
     if not pcall(tt.set_markup, tt, text) then -- set_markup_silently is not available on awful.tooltip
       tt:set_markup(error_string)
     end
-    tt:add_to_object(tb) -- just in case
+    tt:add_to_object(tb)
 
     if not tb:set_markup_silently(text) then tb:set_markup(error_string) end
 
