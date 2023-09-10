@@ -1,3 +1,4 @@
+local pcall_handler = require("util.pcall_handler")
 local source_path = require("util.source_path")
 
 ---Use in place of require to require relative to the current path
@@ -9,16 +10,17 @@ local source_path = require("util.source_path")
 ---@return any? mod the module required or nil if not found
 ---@return unknown? loaderdata the second param returned from require (or nil if not found)
 ---@overload fun(this_path: string, path: string, assert: true): any, unknown -- Not nil
----@overload fun(module: string): any, unknown -- The regular require
+---@overload fun(module: string, path: nil, assert?: boolean): any, unknown -- The regular require
 local function relative_require(this_path, path, assert)
-  _G.assert(type(assert or false) == "boolean", "assert must be a boolean or nil")
+  if assert == nil then assert = true end
+  _G.assert(type(assert) == "boolean", "assert must be a boolean")
   _G.assert(type(this_path or "") == "string", "this_path must be a string or nil")
-  assert = assert == nil and true or assert
   if type(this_path) == "string" and path == nil then
+    path, this_path = this_path, nil -- swap the arguments
     -- Native require function
-    if assert then return require(this_path) end
-    local ret = table.pack(require(this_path))
-    return ret[1] and table.unpack(ret, 2, ret.n) or nil
+    if assert then return require(path) end
+    local ok, ret = pcall_handler(pcall(require, path))
+    return ok and table.unpack(ret, 1, ret.n) or nil
   end
   _G.assert(type(path) == "string", "Path must be a string") -- wait until after above check, in case used like normal require
   if assert then
@@ -33,10 +35,10 @@ local function relative_require(this_path, path, assert)
   if not this_module then return nil end
 
   local module_path = this_module .. path
-  local ok, mod, loaderdata = pcall(require, module_path)
-  if assert then _G.assert(ok, ("Could not require module '%s'.\nerror:\n%s"):format(module_path, mod)) end
+  local ok, ret = pcall_handler(pcall(require, module_path))
+  if assert then _G.assert(ok, ("Could not require module '%s'.\nerror:\n%s"):format(module_path, ret)) end
   if not ok then return nil end
-  return mod, loaderdata
+  return table.unpack(ret, 1, ret.n)
 end
 
 return relative_require

@@ -1,17 +1,5 @@
 local notifs = require("util.notifs")
-
----Handle pcall by packing the return values if ok
----@param ok boolean?
----@param ... unknown
----@return boolean
----@return table|unknown
-local function pcall_handler(ok, ...)
-  ok = not not ok ---@cast ok boolean
-  if ok then -- only return a table if ok
-    return ok, table.pack(...)
-  end
-  return ok, ...
-end
+local pcall_handler = require("util.pcall_handler")
 
 ---@generic T :function
 ---Run func and notify on error
@@ -27,7 +15,7 @@ local function handle_error(func, on_error)
   return function(...)
     local ok, ret = pcall_handler(pcall(func, ...))
     if ok then
-      return table.unpack(ret, 2, ret.n) -- Remove the ok boolean
+      return table.unpack(ret, 1, ret.n) -- Remove the ok boolean
     end
 
     local err = ret
