@@ -4,7 +4,7 @@
 
 This branch is the latest branch! It will not work properly with the git repo. To use the git repo, use the `awesome-git` branch.
 
-An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opiniated mouse/keyboard workflow to increase daily productivity and comfort.
+An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opinionated mouse/keyboard workflow to increase daily productivity and comfort.
 
 [![](./theme/titus-theme/demo.png)](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)
 
@@ -14,14 +14,21 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 
 #### Debian-Based
 
-```
-sudo apt install awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl
+```shell
+sudo apt install awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl libinput-tools
+( # install libinput-gestures
+  dir=/tmp/libinput-gestures.git &&
+  git clone --filter=tree:0 https://github.com/bulletmark/libinput-gestures.git "$dir" && \
+  cd "$dir" && \
+  sudo ./libinput-gestures-setup install
+  rm -rf "$dir"
+)
 ```
 
 #### Arch-Based
 
-```
-yay -S --needed awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl
+```shell
+yay -S --needed awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl libinput-gestures
 ```
 
 #### Program list
