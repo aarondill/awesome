@@ -13,7 +13,7 @@ local function Run_prompt(s)
     timeout = 5,
     callback = function()
       promptbox.widget:set_text("")
-      return false
+      return false -- don't repeat
     end,
   })
 
