@@ -1,3 +1,5 @@
+local require = require("util.rel_require")
+
 local ascreen = require("awful.screen")
 local atag = require("awful.tag")
 local gfilesystem = require("gears.filesystem")
@@ -25,9 +27,9 @@ screen.connect_signal("request::wallpaper", function(s)
   --stylua: ignore
 	if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
-  local has_awall, awallpaper = pcall(require, "awful.wallpaper")
-  if has_awall then
-    awallpaper({
+  local awallpaper = require("awful.wallpaper", nil, false)
+  if awallpaper then
+    return awallpaper({
       screen = s,
       widget = {
         horizontal_fit_policy = "fit",
@@ -36,9 +38,8 @@ screen.connect_signal("request::wallpaper", function(s)
         widget = wibox.widget.imagebox,
       },
     })
-  else
-    require("gears.wallpaper").maximized(wp_path, s)
   end
+  require("gears.wallpaper").maximized(wp_path, s)
 end)
 
 atag.attached_connect_signal(nil, "property::selected", function(tag)
@@ -49,6 +50,6 @@ screen.connect_signal("property::geometry", function(s)
 end)
 
 if awesome.version <= "v4.3" and ascreen.focused() then
-  -- This is not signalled for the first wallpaper in older versions
+  -- This is not signaled for the first wallpaper in older versions
   ascreen.focused():emit_signal("request::wallpaper")
 end
