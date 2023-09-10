@@ -21,8 +21,8 @@ local function create_buttons(buttons, object)
     -- button object the user provided, but with the object as
     -- argument.
     local btn = capi.button({ modifiers = b.modifiers, button = b.button })
-    btn:connect_signal("press", bind(b.emit_signal, b, "press", object))
-    btn:connect_signal("release", bind(b.emit_signal, b, "release", object))
+    btn:connect_signal("press", bind.with_args(b.emit_signal, b, "press", object))
+    btn:connect_signal("release", bind.with_args(b.emit_signal, b, "release", object))
     btns[#btns + 1] = btn
   end
 
@@ -35,35 +35,62 @@ end
 ---@param max_width integer the maximum width of each textbox
 ---@return table widgets the set of tasklist widgets
 local function create_tasklist_widgets(buttons, c, max_width)
-  local ib = wibox.widget.imagebox()
-  local tb = wibox.widget.textbox()
-  local cb = clickable_container(wibox.container.margin(wibox.widget.imagebox(icons.tag_close), 4, 4, 4, 4))
-  cb.shape = gshape.circle
-  local cbm = wibox.container.margin(cb, dpi(4), dpi(4), dpi(4), dpi(4))
-  cbm:buttons(gtable.join(awful.button({}, 1, nil, bind(c.kill, c))))
-  local bg_clickable = clickable_container()
-  local bgb = wibox.container.background()
-  local tbc = wibox.container.constraint(tb, "max", max_width)
-  local tbm = wibox.container.margin(tbc, dpi(4), dpi(4))
-  local ibm = wibox.container.margin(ib, dpi(4), dpi(4), dpi(4), dpi(4))
-  local l = wibox.layout.fixed.horizontal()
-  local ll = wibox.layout.fixed.horizontal()
-
-  -- All of this is added in a fixed widget
-  l:fill_space(true)
-  l:add(ibm)
-  l:add(tbm)
-  ll:add(l)
-  ll:add(cbm)
-
-  bg_clickable:set_widget(ll)
-  -- And all of this gets a background
-  bgb:set_widget(bg_clickable)
-
-  l:buttons(create_buttons(buttons, c))
+  local ib = wibox.widget.imagebox() --- imagebox
+  local tb = wibox.widget.textbox() --- textbox
+  local tbm = wibox.widget({ --- textbox margin
+    { --- textbox constraint
+      tb,
+      strategy = "max",
+      width = max_width,
+      widget = wibox.container.constraint,
+    },
+    left = dpi(4),
+    widget = wibox.container.margin,
+  })
+  local ibm = wibox.widget({ --- imagebox margin
+    ib,
+    widget = wibox.container.margin,
+    margins = dpi(4),
+  })
+  local bgb = wibox.widget({ --- background
+    { -- clickable_container
+      { --- layout
+        ibm,
+        tbm,
+        { --- close button margin (non-clickable)
+          { --- clickable container for close button
+            { -- margin for close button (clickable)
+              { --- center the close button
+                { --- close button
+                  image = icons.tag_close,
+                  forced_height = dpi(20),
+                  forced_width = dpi(20),
+                  widget = wibox.widget.imagebox,
+                },
+                valign = "center",
+                [awesome.version <= "v4.3" and "align" or "halign"] = "center",
+                widget = wibox.container.place,
+              },
+              margins = dpi(2),
+              widget = wibox.container.margin,
+            },
+            shape = gshape.circle,
+            buttons = awful.button({}, 1, nil, bind.with_args(c.kill, c)),
+            widget = clickable_container,
+          },
+          margins = dpi(2),
+          widget = wibox.container.margin,
+        },
+        buttons = create_buttons(buttons, c),
+        widget = wibox.layout.fixed.horizontal,
+      },
+      widget = clickable_container,
+    },
+    widget = wibox.container.background,
+  })
 
   -- Tooltip to display whole title, if it was truncated
-  local tt = awful.tooltip({
+  local tt = awful.tooltip({ --- tooltip
     objects = { tb },
     mode = "outside",
     align = "bottom",
@@ -182,12 +209,12 @@ local defaults = {
 ---@param args TaskListArgs
 ---@return TaskList
 local function TaskList(args)
-  local config = gtable.crush(gtable.clone(defaults), args)
+  local config = gtable.join(defaults, args)
   local tl = awful.widget.tasklist({
-    screen = args.screen,
+    screen = config.screen,
     filter = awful.widget.tasklist.filter.currenttags,
     buttons = tasklist_buttons,
-    update_function = bind(handle_error(list_update), config),
+    update_function = bind.with_start_args(handle_error(list_update), config),
     layout = wibox.layout.fixed.horizontal(),
   })
   return tl
