@@ -1,3 +1,4 @@
+local compat = require("util.compat")
 local require = require("util.rel_require")
 
 local awful = require("awful")
@@ -31,8 +32,7 @@ client.connect_signal("property::fullscreen", function(c)
   updateBarsVisibility()
 end)
 
-local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
-client.connect_signal(unmanage_signal, function(c)
+client.connect_signal(compat.signal.unmanage, function(c)
   if c.fullscreen then
     c.screen.selected_tag.fullscreenMode = false
     updateBarsVisibility()

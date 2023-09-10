@@ -9,6 +9,7 @@ local icons = require("theme.icons")
 local systemctl_cmd = require("util.systemctl_cmd")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local compat = require("util.compat")
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
@@ -39,11 +40,12 @@ local function buildButton(icon, text, on_release)
       right = dpi(24),
       clickable,
     },
-    gtable.crush({
+    {
       widget = wibox.widget.textbox,
       text = text,
       valign = "center",
-    }, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
+      [compat.widget.halign] = "center",
+    },
     layout = wibox.layout.fixed.vertical,
   })
 

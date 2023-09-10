@@ -3,6 +3,7 @@
 local capi = { client = client }
 local awful = require("awful")
 local beautiful = require("beautiful")
+local compat = require("util.compat")
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
@@ -63,9 +64,8 @@ awful.mouse.snap.edge_enabled = false
 awful.mouse.snap.client_enabled = false
 awful.mouse.drag_to_tag.enabled = false
 
-local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
 -- Signal function to execute when a new client appears.
-capi.client.connect_signal(manage_signal, function(c)
+capi.client.connect_signal(compat.signal.manage, function(c)
   -- Set the windows at the slave,
   -- i.e. put it at the end of others instead of setting it master.
   if not awesome.startup then awful.client.setslave(c) end
@@ -83,10 +83,10 @@ end)
 
 -- Make the focused window have a glowing border
 capi.client.connect_signal("focus", function(c)
-  c.border_color = awesome.version <= "v4.3" and beautiful.border_focus or beautiful.border_color_active
+  c.border_color = compat.beautiful.get_border_focus(beautiful)
 end)
 capi.client.connect_signal("unfocus", function(c)
-  c.border_color = awesome.version <= "v4.3" and beautiful.border_normal or beautiful.border_color_normal
+  c.border_color = compat.beautiful.get_border_normal(beautiful)
 end)
 
 -- Run garbage collector regularly to prevent memory leaks

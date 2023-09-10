@@ -2,6 +2,7 @@
 
 local awful = require("awful")
 local bind = require("util.bind")
+local compat = require("util.compat")
 local gtable = require("gears.table")
 local capi = { client = client }
 
@@ -173,10 +174,8 @@ function quake.new(conf)
   self.maximized = false
   self.fullscreen = false
 
-  local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
-  local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
-  capi.client.connect_signal(manage_signal, bind(self._managed, self))
-  capi.client.connect_signal(unmanage_signal, bind(self._unmanaged, self))
+  capi.client.connect_signal(compat.signal.manage, bind(self._managed, self))
+  capi.client.connect_signal(compat.signal.unmanage, bind(self._unmanaged, self))
 
   self:_display() -- Handle initial self.visible
 

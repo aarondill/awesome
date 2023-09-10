@@ -6,6 +6,7 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local modkey = require("configuration.keys.mod").modKey
+local compat = require("util.compat")
 local icon_template = {
   {
     id = "icon_role",
@@ -16,11 +17,12 @@ local icon_template = {
   margins = dpi(6),
 }
 local text_template = {
-  gtable.crush({
+  {
     id = "text_role",
     widget = wibox.widget.textbox,
     valign = "center",
-  }, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
+    [compat.widget.halign] = "center",
+  },
   id = "text_margin_role",
   widget = wibox.container.margin,
   left = dpi(6),

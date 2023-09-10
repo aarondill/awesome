@@ -3,6 +3,7 @@ local capi = { client = client }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
+local compat = require("util.compat")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
 local quake = require("module.quake")
@@ -82,14 +83,11 @@ local function tagCallback(tag)
   end
 end
 
-local manage_signal = awesome.version <= "v4.3" and "manage" or "request::manage"
-capi.client.connect_signal(manage_signal, function(c)
+capi.client.connect_signal(compat.signal.manage, function(c)
   c.is_new = true
   clientCallback(c)
 end)
-
-local unmanage_signal = awesome.version <= "v4.3" and "unmanage" or "request::unmanage"
-capi.client.connect_signal(unmanage_signal, clientCallback)
+capi.client.connect_signal(compat.signal.unmanage, clientCallback)
 
 capi.client.connect_signal("property::hidden", clientCallback)
 

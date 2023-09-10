@@ -1,4 +1,5 @@
 local awful = require("awful")
+local compat = require("util.compat")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 
@@ -23,9 +24,10 @@ client.connect_signal("request::titlebars", function(c)
       layout = wibox.layout.fixed.horizontal,
     },
     { -- Middle
-      gtable.crush({ -- Title
+      { -- Title
         widget = awful.titlebar.widget.titlewidget(c),
-      }, awesome.version <= "v4.3" and { align = "center" } or { halign = "center" }),
+        [compat.widget.halign] = "center",
+      },
       buttons = buttons,
       layout = wibox.layout.flex.horizontal,
     },

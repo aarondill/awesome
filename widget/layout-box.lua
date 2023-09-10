@@ -4,11 +4,12 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local bind = require("util.bind")
+local compat = require("util.compat")
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.
 local LayoutBox = function(s)
-  local layoutBox = awful.widget.layoutbox(awesome.version <= "v4.3" and s or { screen = s })
+  local layoutBox = awful.widget.layoutbox(compat.widget.get_layoutbox_args({ screen = s }))
   local up = bind.with_args(awful.layout.inc, 1)
   local down = bind.with_args(awful.layout.inc, -1)
   layoutBox:buttons(
