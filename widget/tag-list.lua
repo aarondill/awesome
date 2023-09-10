@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { client = client }
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
 local gtable = require("gears.table")
@@ -34,14 +36,14 @@ local TagList = function(s)
         t:view_only()
       end),
       awful.button({ modkey }, 1, function(t)
-        if client.focus then
-          client.focus:move_to_tag(t)
+        if capi.client.focus then
+          capi.client.focus:move_to_tag(t)
           t:view_only()
         end
       end),
       awful.button({}, 3, awful.tag.viewtoggle),
       awful.button({ modkey }, 3, function(t)
-        if client.focus then client.focus:toggle_tag(t) end
+        if capi.client.focus then capi.client.focus:toggle_tag(t) end
       end),
       awful.button({}, 4, function(t)
         awful.tag.viewprev(t.screen)
