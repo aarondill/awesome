@@ -39,9 +39,9 @@ local function launcher_new(args)
   })
 end
 
-function Launcher(_)
-  -- Create a launcher widget and a main menu
-
+---Create a launcher widget and a main menu
+---@return table widget
+function Launcher()
   -- function(item, menu) end
   local menu_awesome = {
     "Awesome",
