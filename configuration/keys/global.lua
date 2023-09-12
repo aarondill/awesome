@@ -90,7 +90,7 @@ local globalKeys = gtable.join(
   awful.key({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   awful.key({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   awful.key(
-    {},
+    { modkey },
     "F12",
     bind(awesome.emit_signal, "quake::toggle"),
     { description = "Open a quake terminal", group = "launcher" }
