@@ -1,7 +1,7 @@
 local require = require("util.rel_require")
 
 local awful = require("awful")
-local client_buttons = require(..., "buttons") ---@module "configuration.client.buttons"
+local client_buttons = require(..., "buttons") ---@module "module.client.buttons"
 local client_keys = require("configuration.keys.client")
 local gshape = require("gears.shape")
 -- Rules

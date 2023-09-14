@@ -49,10 +49,10 @@ require("module.auto-start")
 require("module.inhibit-power-key")
 require("module.decorate-client")
 require("module.exit-screen")
+require("module.client")
 
 -- Setup all configurations
 require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
-require("configuration.client")
 require("widget.launcher") -- Sets up menubar.utils.term
 awful.layout.layouts = require("configuration").layouts
 root.keys(require("configuration.keys.global"))
