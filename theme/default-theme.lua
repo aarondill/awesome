@@ -3,9 +3,10 @@ local mat_colors = require("theme.mat-colors")
 local theme_assets = require("beautiful.theme_assets")
 local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.compat")
+local icons = require("theme.icons")
 
 local function do_theme(theme, theme_dir)
-  theme.icons = theme_dir .. "/icons/"
+  theme.icons = icons.DIR .. "/"
 
   theme.font = "Roboto medium 10"
   -- Colors Pallets
@@ -48,31 +49,31 @@ local function do_theme(theme, theme_dir)
   theme.menu_width = dpi(160)
 
   -- Titlebar
-  theme.titlebar_close_button_normal = theme.icons .. "titlebar/close_normal.png"
-  theme.titlebar_close_button_focus = theme.icons .. "titlebar/close_focus.png"
+  theme.titlebar_close_button_normal = icons.titlebar.close_button_normal
+  theme.titlebar_close_button_focus = icons.titlebar.close_button_focus
 
-  theme.titlebar_minimize_button_normal = theme.icons .. "titlebar/minimize_normal.png"
-  theme.titlebar_minimize_button_focus = theme.icons .. "titlebar/minimize_focus.png"
+  theme.titlebar_minimize_button_normal = icons.titlebar.minimize_button_normal
+  theme.titlebar_minimize_button_focus = icons.titlebar.minimize_button_focus
 
-  theme.titlebar_ontop_button_normal_inactive = theme.icons .. "titlebar/ontop_normal_inactive.png"
-  theme.titlebar_ontop_button_focus_inactive = theme.icons .. "titlebar/ontop_focus_inactive.png"
-  theme.titlebar_ontop_button_normal_active = theme.icons .. "titlebar/ontop_normal_active.png"
-  theme.titlebar_ontop_button_focus_active = theme.icons .. "titlebar/ontop_focus_active.png"
+  theme.titlebar_ontop_button_normal_inactive = icons.titlebar.ontop_button_normal_inactive
+  theme.titlebar_ontop_button_focus_inactive = icons.titlebar.ontop_button_focus_inactive
+  theme.titlebar_ontop_button_normal_active = icons.titlebar.ontop_button_normal_active
+  theme.titlebar_ontop_button_focus_active = icons.titlebar.ontop_button_focus_active
 
-  theme.titlebar_sticky_button_normal_inactive = theme.icons .. "titlebar/sticky_normal_inactive.png"
-  theme.titlebar_sticky_button_focus_inactive = theme.icons .. "titlebar/sticky_focus_inactive.png"
-  theme.titlebar_sticky_button_normal_active = theme.icons .. "titlebar/sticky_normal_active.png"
-  theme.titlebar_sticky_button_focus_active = theme.icons .. "titlebar/sticky_focus_active.png"
+  theme.titlebar_sticky_button_normal_inactive = icons.titlebar.sticky_button_normal_inactive
+  theme.titlebar_sticky_button_focus_inactive = icons.titlebar.sticky_button_focus_inactive
+  theme.titlebar_sticky_button_normal_active = icons.titlebar.sticky_button_normal_active
+  theme.titlebar_sticky_button_focus_active = icons.titlebar.sticky_button_focus_active
 
-  theme.titlebar_floating_button_normal_inactive = theme.icons .. "titlebar/floating_normal_inactive.png"
-  theme.titlebar_floating_button_focus_inactive = theme.icons .. "titlebar/floating_focus_inactive.png"
-  theme.titlebar_floating_button_normal_active = theme.icons .. "titlebar/floating_normal_active.png"
-  theme.titlebar_floating_button_focus_active = theme.icons .. "titlebar/floating_focus_active.png"
+  theme.titlebar_floating_button_normal_inactive = icons.titlebar.floating_button_normal_inactive
+  theme.titlebar_floating_button_focus_inactive = icons.titlebar.floating_button_focus_inactive
+  theme.titlebar_floating_button_normal_active = icons.titlebar.floating_button_normal_active
+  theme.titlebar_floating_button_focus_active = icons.titlebar.floating_button_focus_active
 
-  theme.titlebar_maximized_button_normal_inactive = theme.icons .. "titlebar/maximized_normal_inactive.png"
-  theme.titlebar_maximized_button_focus_inactive = theme.icons .. "titlebar/maximized_focus_inactive.png"
-  theme.titlebar_maximized_button_normal_active = theme.icons .. "titlebar/maximized_normal_active.png"
-  theme.titlebar_maximized_button_focus_active = theme.icons .. "titlebar/maximized_focus_active.png"
+  theme.titlebar_maximized_button_normal_inactive = icons.titlebar.maximized_button_normal_inactive
+  theme.titlebar_maximized_button_focus_inactive = icons.titlebar.maximized_button_focus_inactive
+  theme.titlebar_maximized_button_normal_active = icons.titlebar.maximized_button_normal_active
+  theme.titlebar_maximized_button_focus_active = icons.titlebar.maximized_button_focus_active
   theme.titlebar_bg = theme.background.hue_800
   theme.titlebar_fg = theme.fg_normal
 
@@ -85,23 +86,23 @@ local function do_theme(theme, theme_dir)
   end
 
   -- Layout
-  theme.layout_tile = theme.icons .. "layouts/tile-right.svg"
-  theme.layout_tileleft = theme.icons .. "layouts/tile-left.svg"
-  theme.layout_spiral = theme.icons .. "layouts/spiral.svg"
-  theme.layout_dwindle = theme.icons .. "layouts/dwindle.svg"
-  theme.layout_tilebottom = theme.icons .. "layouts/tile-bottom.svg"
-  theme.layout_tiletop = theme.icons .. "layouts/tile-top.svg"
-  theme.layout_fairh = theme.icons .. "layouts/fair-horizontal.svg"
-  theme.layout_fairv = theme.icons .. "layouts/fair.svg"
-  theme.layout_floating = theme.icons .. "layouts/floating.svg"
-  theme.layout_magnifier = theme.icons .. "layouts/magnifier.svg"
+  theme.layout_tile = icons.layout.tile
+  theme.layout_tileleft = icons.layout.tileleft
+  theme.layout_spiral = icons.layout.spiral
+  theme.layout_dwindle = icons.layout.dwindle
+  theme.layout_tilebottom = icons.layout.tilebottom
+  theme.layout_tiletop = icons.layout.tiletop
+  theme.layout_fairh = icons.layout.fairh
+  theme.layout_fairv = icons.layout.fairv
+  theme.layout_floating = icons.layout.floating
+  theme.layout_magnifier = icons.layout.magnifier
 
-  theme.layout_cornerne = theme.icons .. "layouts/cornerne.svg"
-  theme.layout_cornernw = theme.icons .. "layouts/cornernw.svg"
-  theme.layout_cornersw = theme.icons .. "layouts/cornersw.svg"
-  theme.layout_cornerse = theme.icons .. "layouts/cornerse.svg"
-  theme.layout_fullscreen = theme.icons .. "layouts/fullscreen.svg"
-  theme.layout_max = theme.icons .. "layouts/max.svg"
+  theme.layout_cornerne = icons.layout.cornerne
+  theme.layout_cornernw = icons.layout.cornernw
+  theme.layout_cornersw = icons.layout.cornersw
+  theme.layout_cornerse = icons.layout.cornerse
+  theme.layout_fullscreen = icons.layout.fullscreen
+  theme.layout_max = icons.layout.max
 
   -- Taglist
   theme.taglist_bg_empty = theme.background.hue_800
@@ -149,6 +150,21 @@ local function do_theme(theme, theme_dir)
   theme.tasklist_fg_normal = "#AAAAAA"
 
   theme.icon_theme = "Papirus-Dark"
+
+  -- Titlebar
+  --- Define the image to load
+  theme.titlebar_close_button_normal = icons.titlebar.window_close_normal
+  theme.titlebar_close_button_focus = icons.titlebar.window_close
+
+  theme.titlebar_minimize_button_normal = icons.titlebar.go_down
+  theme.titlebar_minimize_button_focus = icons.titlebar.go_down
+
+  theme.titlebar_maximized_button_normal_inactive = icons.titlebar.go_up
+  theme.titlebar_maximized_button_focus_inactive = icons.titlebar.go_up
+  theme.titlebar_maximized_button_normal_active = icons.titlebar.go_up
+  theme.titlebar_maximized_button_focus_active = icons.titlebar.go_up
+  theme.titlebar_bg_focus = theme.bg_normal
+  theme.titlebar_bg_normal = theme.bg_normal
 end
 
 return do_theme
