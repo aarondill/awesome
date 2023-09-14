@@ -1,9 +1,11 @@
 ---@diagnostic disable-next-line :undefined-global
 local capi = { client = client, tag = tag }
+local IconButton = require("widget.material.icon-button")
 local awful = require("awful")
 local compat = require("util.compat")
 local gtable = require("gears.table")
 local wibox = require("wibox")
+local dpi = require("beautiful").xresources.apply_dpi
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 capi.client.connect_signal("request::titlebars", function(c)
@@ -22,23 +24,55 @@ capi.client.connect_signal("request::titlebars", function(c)
   awful.titlebar(c):setup({
     { -- Left
       awful.titlebar.widget.iconwidget(c),
+      left = dpi(6),
+      top = dpi(4),
+      bottom = dpi(4),
+      widget = wibox.container.margin,
       buttons = buttons,
-      layout = wibox.layout.fixed.horizontal,
     },
-    { -- Middle
-      { -- Title
-        widget = awful.titlebar.widget.titlewidget(c),
-        [compat.widget.halign] = "center",
-      },
+    { -- Title
+      widget = awful.titlebar.widget.titlewidget(c),
+      [compat.widget.halign] = "center",
       buttons = buttons,
-      layout = wibox.layout.flex.horizontal,
     },
     { -- Right
-      awful.titlebar.widget.floatingbutton(c),
-      awful.titlebar.widget.maximizedbutton(c),
-      awful.titlebar.widget.stickybutton(c),
-      awful.titlebar.widget.ontopbutton(c),
-      awful.titlebar.widget.closebutton(c),
+      {
+        {
+          awful.titlebar.widget.minimizebutton(c),
+          forced_height = dpi(16),
+          forced_width = dpi(16),
+          widget = wibox.container.place,
+        },
+        right = dpi(6),
+        top = dpi(4),
+        bottom = dpi(4),
+        widget = wibox.container.margin,
+      },
+      {
+        {
+          awful.titlebar.widget.maximizedbutton(c),
+          forced_height = dpi(16),
+          forced_width = dpi(16),
+          widget = wibox.container.place,
+        },
+        right = dpi(6),
+        top = dpi(4),
+        bottom = dpi(4),
+
+        widget = wibox.container.margin,
+      },
+      {
+        {
+          awful.titlebar.widget.closebutton(c),
+          forced_height = dpi(16),
+          forced_width = dpi(16),
+          widget = wibox.container.place,
+        },
+        right = dpi(6),
+        top = dpi(4),
+        bottom = dpi(4),
+        widget = wibox.container.margin,
+      },
       layout = wibox.layout.fixed.horizontal(),
     },
     layout = wibox.layout.align.horizontal,
