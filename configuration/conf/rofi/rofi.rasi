@@ -1,11 +1,12 @@
 * {
-  bg: #183037; // Normal background color
-  fg: #d3d7cf; // Text color
-  active-background: #37474F; // The background color for selected
+  --bg: #183037; // Normal background color
+  --fg: #d3d7cf; // Text color
+  --active-background: #37474F; // The background color for selected
+  --font: "Roboto medium 10"; // the font to use
 
   // Actual properties
-  background-color: @bg;
-  text-color: @fg;
+  background-color: var(--bg);
+  text-color: var(--fg);
 }
 
 window {
@@ -19,7 +20,7 @@ window {
   line-padding: 2;
   margin: 0px;
   padding: 0px;
-  font: "Roboto medium 10";
+  font: var(--font);
   separator-style: "none";
   hide-scrollbar: "true";
   children: [mainbox];
@@ -38,7 +39,7 @@ button {
 }
 // mode-switcher buttons
 button.selected {
-  background-color: @active-background;
+  background-color: var(--active-background);
 }
 
 inputbar { children: [entry]; }
@@ -47,8 +48,7 @@ entry {
   vertical-align: 1;
   padding: 12px;
   border: 0 0 3px 0 solid;
-  border-color: @active-background;
-  font: "Roboto medium 13";
+  border-color: var(--active-background);
 }
 
 listview {
@@ -61,10 +61,10 @@ element {
   padding: 10px 5px;
 }
 element selected {
-  background-color: @active-background;
+  background-color: var(--active-background);
   padding: 16px;
   border: 0 0 0 5px solid;
-  border-color: @active-background;
+  border-color: var(--active-background);
 }
 element-icon, element-text {
     background-color: inherit;
