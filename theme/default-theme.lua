@@ -137,14 +137,9 @@ local function do_theme(theme, theme_dir)
   theme.titlebar_bg_focus = theme.bg_normal
   theme.titlebar_bg_normal = theme.bg_normal
   ---Rofi Settings
-
-  theme.rofi_background_color = theme.bg_normal
-  theme.rofi_text_color = theme.fg_normal
-  theme.rofi_selbg = theme.bg_focus
-  theme.rofi_actbg = theme.bg_focus
-  theme.rofi_urgbg = theme.bg_urgent
-  theme.rofi_entry_background = theme.rofi_selbg
-  theme.rofi_winbg = theme.rofi_winbg
+  theme.rofi_bg = theme.bg_normal -- Normal background color
+  theme.rofi_fg = theme.fg_normal -- Text color
+  theme.rofi_active_background = theme.bg_focus -- The background color for selected
 
   return theme
 end
