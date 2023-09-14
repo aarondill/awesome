@@ -27,7 +27,7 @@ local TopPanel = function(s)
     x = s.geometry.x,
     y = s.geometry.y,
     stretch = false,
-    bg = (beautiful.background or {}).hue_800,
+    bg = beautiful.bg_normal,
     fg = beautiful.fg_normal,
   })
   panel:struts({ top = dpi(32) })
