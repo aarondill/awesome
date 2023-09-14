@@ -84,7 +84,7 @@ local function tagCallback(tag)
 end
 
 capi.client.connect_signal(compat.signal.manage, function(c)
-  c.is_new = true
+  if not awesome.startup then c.is_new = true end
   clientCallback(c)
 end)
 capi.client.connect_signal(compat.signal.unmanage, clientCallback)
