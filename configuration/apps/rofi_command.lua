@@ -1,7 +1,30 @@
 local require = require("util.rel_require")
 
+local beautiful = require("beautiful")
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
-local gfile = require("gears.filesystem")
+local write_async = require("util.file.write_async")
+
+local conf = ([[* {
+  background-color: %s;
+  text-color: %s;
+  selbg: %s;
+  actbg: %s;
+  urgbg: %s;
+  entry-background: %s;
+  winbg: %s;
+}
+// vim:ft=css:
+]]):format(
+  beautiful.rofi_background_color,
+  beautiful.rofi_text_color,
+  beautiful.rofi_selbg,
+  beautiful.rofi_actbg,
+  beautiful.rofi_urgbg,
+  beautiful.rofi_entry_background,
+  beautiful.rofi_wingb
+)
+
+write_async(config_file_dir .. "/rofi/dynamic.rasi", conf) -- this file should be ignored
 
 ---create a rofi command
 ---@param ... string

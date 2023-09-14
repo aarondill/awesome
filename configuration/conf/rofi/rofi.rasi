@@ -5,6 +5,7 @@
   actbg: rgb(22, 37, 46);
   urgbg: #e53935;
   winbg: #26c6da;
+  entry-background: rgb(25, 41, 51);
 
   selected-normal-foreground: @winbg;
   normal-foreground: @text-color;
@@ -81,7 +82,7 @@ element {
 entry {
   expand: true;
   text-color: @normal-foreground;
-  background-color: rgb(25, 41, 51);
+  background-color: @entry-background;
   vertical-align: 1;
   padding: 12px;
   font: "Roboto medium 13";
@@ -134,4 +135,5 @@ element alternate.active {
   background-color: @active-background;
   text-color: @active-foreground;
 }
+@import "./dynamic.rasi"
 // vim:ft=css:

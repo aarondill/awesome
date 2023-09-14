@@ -6,6 +6,7 @@ local compat = require("util.compat")
 local icons = require("theme.icons")
 
 local function do_theme(theme, theme_dir)
+  theme = theme or {}
   theme.icons = icons.DIR .. "/"
 
   theme.font = "Roboto medium 10"
@@ -135,6 +136,17 @@ local function do_theme(theme, theme_dir)
   theme.titlebar_maximized_button_focus_active = icons.titlebar.go_up
   theme.titlebar_bg_focus = theme.bg_normal
   theme.titlebar_bg_normal = theme.bg_normal
+  ---Rofi Settings
+
+  theme.rofi_background_color = theme.bg_normal
+  theme.rofi_text_color = theme.fg_normal
+  theme.rofi_selbg = theme.bg_focus
+  theme.rofi_actbg = theme.background.hue_800
+  theme.rofi_urgbg = theme.bg_urgent
+  theme.rofi_entry_background = theme.rofi_selbg
+  theme.rofi_winbg = theme.rofi_winbg
+
+  return theme
 end
 
 return do_theme
