@@ -1,6 +1,14 @@
 local wibox = require("wibox")
 
-local function build(widget)
+---@class clickable_container
+---@field buttons fun(b: table)
+
+---Create a clickable containter
+---Call :buttons to set up the widget
+---@param widget table
+---@param buttons unknown[]
+---@return clickable_container
+local function build(widget, buttons)
   local container = wibox.widget({
     widget,
     widget = wibox.container.background,
@@ -36,6 +44,8 @@ local function build(widget)
   container:connect_signal("button::release", function()
     container.bg = "#ffffff11"
   end)
+
+  if buttons then container:buttons(buttons) end
 
   return container
 end

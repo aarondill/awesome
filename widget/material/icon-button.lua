@@ -34,7 +34,13 @@ function IconButton:set_children(children) -- allow set own iconbox
   end
 end
 
-local function new(img, margins)
+--- Creates a button with the path specified
+--- Ensure to call :buttons() to setup the button
+---@param img? string|userdata
+---@param margins? integer
+---@param buttons? unknown[]
+---@return clickable_container
+local function new(img, margins, buttons)
   local ret = wibox.widget({
     {
       {
@@ -46,6 +52,7 @@ local function new(img, margins)
       margins = margins or dpi(5),
       widget = wibox.container.margin,
     },
+    buttons = buttons,
     widget = clickable_container,
   })
   gtable.crush(ret, IconButton, true)
