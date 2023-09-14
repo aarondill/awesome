@@ -70,8 +70,8 @@ local function new(args)
     forced_height = dpi(6),
     paddings = 0,
     shape = gshape.rounded_rect,
-    background_color = beautiful.background.hue_800,
-    color = beautiful.primary.hue_500,
+    background_color = beautiful.bg_normal,
+    color = beautiful.fg.hue_900,
     widget = wibox.widget.progressbar,
   })
 
@@ -79,8 +79,8 @@ local function new(args)
     forced_height = dpi(8),
     bar_shape = gshape.rounded_rect,
     bar_height = 0,
-    bar_color = beautiful.primary.hue_500,
-    handle_color = beautiful.primary.hue_300,
+    bar_color = beautiful.fg.hue_900,
+    handle_color = beautiful.fg.hue_300,
     handle_shape = gshape.circle,
     handle_border_color = "#00000012",
     handle_border_width = dpi(3),

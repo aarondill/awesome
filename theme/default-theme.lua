@@ -11,33 +11,27 @@ local function do_theme(theme, theme_dir)
 
   theme.font = "Roboto medium 10"
   -- Colors Pallets
-  -- Primary
-  theme.primary = mat_colors.indigo
-  theme.primary.hue_500 = "#003f6b"
-  -- Accent
+  theme.fg = mat_colors.hue_blue
   theme.accent = mat_colors.deep_orange
-  -- Background
-  theme.background = mat_colors.blue_grey
-  theme.background.hue_800 = "#212126EE"
+  theme.background = mat_colors.grey
 
-  theme.wallpaper = "#e0e0e0"
   theme.font = "Roboto medium 10"
   theme.title_font = "Roboto medium 14"
 
-  theme.fg_normal = "#ffffffde"
-  theme.fg_focus = "#e4e4e4"
+  theme.fg_normal = mat_colors.white
+  theme.fg_focus = theme.fg.hue_900
   theme.fg_urgent = theme.accent.hue_900
 
-  theme.bg_normal = theme.background.hue_800
+  theme.bg_normal = theme.background.hue_900
   theme.bg_focus = "#5a5a5a"
   theme.bg_urgent = theme.accent.hue_900
-  theme.bg_systray = theme.background.hue_800
+  theme.bg_systray = theme.bg_normal
 
   -- Borders
   theme.useless_gap = dpi(0)
   theme.border_width = dpi(2)
-  compat.beautiful.set_border_normal(theme, theme.background.hue_800)
-  compat.beautiful.set_border_focus(theme, theme.primary.hue_500)
+  compat.beautiful.set_border_normal(theme, theme.bg_normal)
+  compat.beautiful.set_border_focus(theme, theme.fg_focus)
   theme.border_width = dpi(2)
   theme.border_marked = "#CC9393"
 
@@ -73,8 +67,8 @@ local function do_theme(theme, theme_dir)
   theme.layout_max = icons.layout.max
 
   -- Taglist
-  theme.taglist_bg_empty = theme.background.hue_800
-  theme.taglist_bg_occupied = theme.background.hue_800
+  theme.taglist_bg_empty = theme.bg_normal
+  theme.taglist_bg_occupied = theme.bg_normal
   theme.taglist_bg_urgent = "linear:0,0:"
     .. dpi(40)
     .. ",0:0,"
@@ -82,37 +76,37 @@ local function do_theme(theme, theme_dir)
     .. ":0.08,"
     .. theme.accent.hue_500
     .. ":0.08,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
     .. ":1,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
   theme.taglist_bg_focus = "linear:0,0:"
     .. dpi(40)
     .. ",0:0,"
-    .. theme.primary.hue_500
+    .. theme.fg.hue_900
     .. ":0.08,"
-    .. theme.primary.hue_500
+    .. theme.fg.hue_900
     .. ":0.08,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
     .. ":1,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
   local taglist_square_size = dpi(4)
   theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
   theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
 
   -- Tasklist
   theme.tasklist_font = "Roboto medium 11"
-  theme.tasklist_bg_normal = theme.background.hue_800
+  theme.tasklist_bg_normal = theme.bg_normal
   theme.tasklist_bg_focus = "linear:0,0:0,"
     .. dpi(40)
     .. ":0,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
     .. ":0.95,"
-    .. theme.background.hue_800
+    .. theme.bg_normal
     .. ":0.95,"
     .. theme.fg_normal
     .. ":1,"
     .. theme.fg_normal
-  theme.tasklist_bg_urgent = theme.primary.hue_800
+  theme.tasklist_bg_urgent = theme.fg.hue_800
   theme.tasklist_fg_focus = "#DDDDDD"
   theme.tasklist_fg_urgent = theme.fg_normal
   theme.tasklist_fg_normal = "#AAAAAA"
