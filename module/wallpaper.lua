@@ -5,21 +5,17 @@ local atag = require("awful.tag")
 local gfilesystem = require("gears.filesystem")
 local wibox = require("wibox")
 
-local get_wp_path
-do
+local function get_wp_path(num)
   -- Set according to wallpaper directory
   local path = gfilesystem.get_configuration_dir() .. "wallpapers"
-  -- Other variables
-  local default = path .. "/1.jpg"
-  if not gfilesystem.file_readable(default) then default = gfilesystem.get_themes_dir() .. "default/background.png" end
-
-  get_wp_path = function(num)
-    local wp = string.format("%s/%s.jpg", path, tostring(num))
-    if gfilesystem.file_readable(wp) then
-      return wp
-    else
-      return default
-    end
+  local wp = string.format("%s/%d.jpg", path, num)
+  local default = string.format("%s/%d.jpg", path, 1)
+  if gfilesystem.file_readable(wp) then
+    return wp
+  elseif gfilesystem.file_readable(default) then
+    return default
+  else
+    return gfilesystem.get_themes_dir() .. "default/background.png"
   end
 end
 
