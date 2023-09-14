@@ -51,6 +51,7 @@ require("module.decorate-client")
 require("module.exit-screen")
 
 -- Setup all configurations
+require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
 require("configuration.client")
 require("widget.launcher") -- Sets up menubar.utils.term
 awful.layout.layouts = require("configuration").layouts
