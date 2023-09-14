@@ -141,7 +141,7 @@ local function do_theme(theme, theme_dir)
   theme.rofi_background_color = theme.bg_normal
   theme.rofi_text_color = theme.fg_normal
   theme.rofi_selbg = theme.bg_focus
-  theme.rofi_actbg = theme.background.hue_800
+  theme.rofi_actbg = theme.bg_focus
   theme.rofi_urgbg = theme.bg_urgent
   theme.rofi_entry_background = theme.rofi_selbg
   theme.rofi_winbg = theme.rofi_winbg
