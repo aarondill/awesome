@@ -9,7 +9,6 @@ local function do_theme(theme, theme_dir)
   theme = theme or {}
   theme.icons = icons.DIR .. "/"
 
-  theme.font = "Roboto medium 10"
   -- Colors Pallets
   theme.fg = mat_colors.hue_blue
   theme.accent = mat_colors.deep_orange
@@ -131,6 +130,12 @@ local function do_theme(theme, theme_dir)
   theme.rofi_bg = theme.bg_normal -- Normal background color
   theme.rofi_fg = theme.fg_normal -- Text color
   theme.rofi_active_background = theme.bg_focus -- The background color for selected
+
+  theme.notification_margin = dpi(8)
+  -- This *MUST* be defined, otherwise naughty.notify has some weird behavior when searching for icons without a given size.
+  theme.notification_icon_size = dpi(24)
+  theme.notification_shape = gshape.rounded_rect
+  theme.notification_border_width = 0
 
   return theme
 end

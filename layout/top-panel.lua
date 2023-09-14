@@ -36,7 +36,7 @@ local TopPanel = function(s)
       -- 24h format: %H:%M
       -- 12h fornat: %I:%M %p
       -- dd/mm/yyyy: %d/%m/%Y
-      format = '<span font="Roboto Mono 12">%I:%M %p</span>',
+      format = '<span font="' .. beautiful.font .. '">%I:%M %p</span>',
       refresh = 30, -- TRY to fix issues with refresh after suspend
       widget = wibox.widget.textclock,
     },

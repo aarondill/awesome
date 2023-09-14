@@ -3,7 +3,6 @@ local gtable = require("gears.table")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
 local notifs = require("util.notifs")
-local dpi = require("beautiful").xresources.apply_dpi
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
@@ -20,14 +19,7 @@ naughty.config.spacing = 8
 naughty.config.defaults.timeout = 5
 naughty.config.defaults.screen = 1
 naughty.config.defaults.position = "bottom_left"
-naughty.config.defaults.margin = dpi(08)
 naughty.config.defaults.ontop = true
-naughty.config.defaults.font = "Roboto Regular 10"
-naughty.config.defaults.icon = nil
--- This *MUST* be defined, otherwise naughty.notify has some weird behavior when searching for icons without a given size.
-naughty.config.defaults.icon_size = dpi(24)
-naughty.config.defaults.shape = gshape.rounded_rect
-naughty.config.defaults.border_width = 0
 naughty.config.defaults.hover_timeout = nil
 
 -- Error handling
