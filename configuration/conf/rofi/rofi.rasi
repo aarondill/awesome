@@ -1,11 +1,10 @@
 * {
-  background-color: rgb(18, 30, 37);
-  text-color: #d3d7cf;
-  selbg: rgb(0, 86, 136);
-  actbg: rgb(22, 37, 46);
-  urgbg: #e53935;
-  winbg: #26c6da;
-  entry-background: rgb(25, 41, 51);
+  background-color: rgb(18, 30, 37); // BG
+  text-color: #d3d7cf; // Text color
+  selbg: rgb(0, 86, 136); // Selected marker color
+  actbg: rgb(22, 37, 46); // BG of selected
+  urgbg: #e53935; // no clue
+  entry-background: rgb(25, 41, 51); // Entry Box
 
   selected-normal-foreground: @winbg;
   normal-foreground: @text-color;
@@ -136,4 +135,4 @@ element alternate.active {
   text-color: @active-foreground;
 }
 @import "./dynamic.rasi"
-// vim:ft=css:
+// vim:ft=css commentstring=//%s:
