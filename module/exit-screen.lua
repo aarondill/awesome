@@ -75,11 +75,9 @@ screen.connect_signal("property::geometry", function()
   exit_screen.y = s.geometry.y
 end)
 
-exit_screen.bg = beautiful.background
-    and type(beautiful.background.hue_800) == "string"
-    and (beautiful.background.hue_800:match("^#......") .. "DD")
-  or nil
-exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or "#FEFEFE"
+local bg = beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
+exit_screen.bg = bg:match("^#......") .. "DD" -- light transparency
+exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or beautiful.fg_normal or "#FEFEFE"
 
 local exit_screen_grabber
 
