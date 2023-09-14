@@ -36,11 +36,11 @@ local function do_theme(theme, theme_dir)
   theme.title_font = font(14)
 
   theme.fg_normal = mat_colors.white
-  theme.fg_focus = theme.fg.hue_900
+  theme.fg_focus = theme.fg_normal
   theme.fg_urgent = theme.accent.hue_900
 
   theme.bg_normal = theme.background.hue_900
-  theme.bg_focus = "#5a5a5a"
+  theme.bg_focus = theme.background.hue_800
   theme.bg_urgent = theme.accent.hue_900
   theme.bg_systray = theme.bg_normal
 
@@ -48,16 +48,16 @@ local function do_theme(theme, theme_dir)
   theme.useless_gap = dpi(0)
   theme.border_width = dpi(2)
   compat.beautiful.set_border_normal(theme, theme.bg_normal)
-  compat.beautiful.set_border_focus(theme, theme.fg_focus)
+  compat.beautiful.set_border_focus(theme, theme.fg_urgent)
   theme.border_width = dpi(2)
-  theme.border_marked = "#CC9393"
+  theme.border_marked = theme.fg_urgent
 
   -- Menu
   theme.menu_height = dpi(16)
   theme.menu_width = dpi(160)
 
   -- Tooltips
-  theme.tooltip_bg = "#232323"
+  theme.tooltip_bg = theme.bg_normal
   --theme.tooltip_border_color = '#232323'
   theme.tooltip_border_width = 0
   theme.tooltip_shape = function(cr, w, h)
@@ -124,9 +124,9 @@ local function do_theme(theme, theme_dir)
     .. ":1,"
     .. theme.fg_normal
   theme.tasklist_bg_urgent = theme.fg.hue_800
-  theme.tasklist_fg_focus = "#DDDDDD"
+  theme.tasklist_fg_focus = theme.fg_focus
   theme.tasklist_fg_urgent = theme.fg_normal
-  theme.tasklist_fg_normal = "#AAAAAA"
+  theme.tasklist_fg_normal = theme.fg_normal
 
   theme.icon_theme = "Papirus-Dark"
 
