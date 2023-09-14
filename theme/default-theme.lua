@@ -15,25 +15,22 @@ local function do_theme(theme, theme_dir)
   theme.primary = mat_colors.indigo
   theme.primary.hue_500 = "#003f6b"
   -- Accent
-  theme.accent = mat_colors.pink
+  theme.accent = mat_colors.deep_orange
   -- Background
   theme.background = mat_colors.blue_grey
   theme.background.hue_800 = "#212126EE"
 
-  --theme.wallpaper = theme_dir .. '/wallpapers/DarkCyan.png'
   theme.wallpaper = "#e0e0e0"
   theme.font = "Roboto medium 10"
   theme.title_font = "Roboto medium 14"
 
   theme.fg_normal = "#ffffffde"
   theme.fg_focus = "#e4e4e4"
-  theme.fg_urgent = "#CC9393"
-
-  theme.bat_fg_critical = "#232323"
+  theme.fg_urgent = theme.accent.hue_900
 
   theme.bg_normal = theme.background.hue_800
   theme.bg_focus = "#5a5a5a"
-  theme.bg_urgent = "#3F3F3F"
+  theme.bg_urgent = theme.accent.hue_900
   theme.bg_systray = theme.background.hue_800
 
   -- Borders
