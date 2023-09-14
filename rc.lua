@@ -32,10 +32,10 @@ end
 require("configuration.environment")()
 
 -- Theme
-beautiful.init(require("theme"))
-require("module.notifications")
+beautiful.init(require("theme")) -- Import the theme BEFORE layout/widgets!
 
-require("module.git-submodule")
+require("module.notifications")
+require("module.git-submodule") -- Import *after* notifications for nice status messages
 
 -- Layout
 require("layout")

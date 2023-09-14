@@ -17,8 +17,7 @@ local function do_theme(theme, theme_dir)
   theme.accent = mat_colors.pink
   -- Background
   theme.background = mat_colors.blue_grey
-  theme.background.hue_800 = "#192933"
-  theme.background.hue_900 = "#121e25"
+  theme.background.hue_800 = "#212126EE"
 
   --theme.wallpaper = theme_dir .. '/wallpapers/DarkCyan.png'
   theme.wallpaper = "#e0e0e0"
@@ -47,35 +46,6 @@ local function do_theme(theme, theme_dir)
   -- Menu
   theme.menu_height = dpi(16)
   theme.menu_width = dpi(160)
-
-  -- Titlebar
-  theme.titlebar_close_button_normal = icons.titlebar.close_button_normal
-  theme.titlebar_close_button_focus = icons.titlebar.close_button_focus
-
-  theme.titlebar_minimize_button_normal = icons.titlebar.minimize_button_normal
-  theme.titlebar_minimize_button_focus = icons.titlebar.minimize_button_focus
-
-  theme.titlebar_ontop_button_normal_inactive = icons.titlebar.ontop_button_normal_inactive
-  theme.titlebar_ontop_button_focus_inactive = icons.titlebar.ontop_button_focus_inactive
-  theme.titlebar_ontop_button_normal_active = icons.titlebar.ontop_button_normal_active
-  theme.titlebar_ontop_button_focus_active = icons.titlebar.ontop_button_focus_active
-
-  theme.titlebar_sticky_button_normal_inactive = icons.titlebar.sticky_button_normal_inactive
-  theme.titlebar_sticky_button_focus_inactive = icons.titlebar.sticky_button_focus_inactive
-  theme.titlebar_sticky_button_normal_active = icons.titlebar.sticky_button_normal_active
-  theme.titlebar_sticky_button_focus_active = icons.titlebar.sticky_button_focus_active
-
-  theme.titlebar_floating_button_normal_inactive = icons.titlebar.floating_button_normal_inactive
-  theme.titlebar_floating_button_focus_inactive = icons.titlebar.floating_button_focus_inactive
-  theme.titlebar_floating_button_normal_active = icons.titlebar.floating_button_normal_active
-  theme.titlebar_floating_button_focus_active = icons.titlebar.floating_button_focus_active
-
-  theme.titlebar_maximized_button_normal_inactive = icons.titlebar.maximized_button_normal_inactive
-  theme.titlebar_maximized_button_focus_inactive = icons.titlebar.maximized_button_focus_inactive
-  theme.titlebar_maximized_button_normal_active = icons.titlebar.maximized_button_normal_active
-  theme.titlebar_maximized_button_focus_active = icons.titlebar.maximized_button_focus_active
-  theme.titlebar_bg = theme.background.hue_800
-  theme.titlebar_fg = theme.fg_normal
 
   -- Tooltips
   theme.tooltip_bg = "#232323"
