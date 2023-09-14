@@ -5,6 +5,24 @@ local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.compat")
 local icons = require("theme.icons")
 
+local font
+do
+  local f = "Roboto medium"
+  local has_checked = false
+  ---Return a valid font of size given
+  ---@param size integer?
+  ---@return string
+  function font(size)
+    if not has_checked then
+      local _, reason, code = os.execute("fc-list -q -- '" .. f .. "'")
+      if reason == "exit" and code == 1 then f = "serif" end
+      has_checked = true
+    end
+
+    return f .. " " .. tostring(size or 10)
+  end
+end
+
 local function do_theme(theme, theme_dir)
   theme = theme or {}
   theme.icons = icons.DIR .. "/"
@@ -14,8 +32,8 @@ local function do_theme(theme, theme_dir)
   theme.accent = mat_colors.deep_orange
   theme.background = mat_colors.grey
 
-  theme.font = "Roboto medium 10"
-  theme.title_font = "Roboto medium 14"
+  theme.font = font()
+  theme.title_font = font(14)
 
   theme.fg_normal = mat_colors.white
   theme.fg_focus = theme.fg.hue_900
@@ -93,7 +111,7 @@ local function do_theme(theme, theme_dir)
   theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
 
   -- Tasklist
-  theme.tasklist_font = "Roboto medium 11"
+  theme.tasklist_font = font(11)
   theme.tasklist_bg_normal = theme.bg_normal
   theme.tasklist_bg_focus = "linear:0,0:0,"
     .. dpi(40)
