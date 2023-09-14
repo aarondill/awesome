@@ -7,11 +7,13 @@ local write_async = require("util.file.write_async")
 
 ---@param p string?
 ---@param v string?
+---@param quote boolean?
 ---@return string?
-local function prop(p, v)
+local function prop(p, v, quote)
   if not p or not v then return nil end
+  local format = quote and '%s: "%s"' or "%s: %s"
   -- Add new property
-  return ("\t%s: %s;"):format(p, v)
+  return ("\t" .. format .. ";"):format(p, v)
 end
 
 local conf = strings.line2str({
@@ -20,7 +22,7 @@ local conf = strings.line2str({
   prop("--bg", beautiful.rofi_bg),
   prop("--fg", beautiful.rofi_fg),
   prop("--active-background", beautiful.rofi_active_background),
-  prop("--font", beautiful.font),
+  prop("--font", beautiful.font, true),
   "}",
   "// vim" .. ":ft=css commentstring=//%s:", -- hack to stop vim from processing this modeline here
 })
