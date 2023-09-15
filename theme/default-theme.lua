@@ -43,6 +43,7 @@ local function do_theme(theme, theme_dir)
   theme.bg_focus = theme.background.hue_700
   theme.bg_urgent = theme.accent.hue_900
   theme.bg_systray = theme.bg_normal
+  theme.hotkeys_bg = theme.bg_normal:match("^#......") .. "DD" -- Add transparency
 
   -- Borders
   theme.useless_gap = dpi(0)
