@@ -10,10 +10,14 @@ local IconButton = {}
 ---@param img string the path to the image
 ---@return boolean success
 function IconButton:set_image(img)
-  return self:get_children_by_id("iconbox")[1]:set_image(img)
+  local i = self:get_children_by_id("iconbox")[1]
+  if not i then return false end
+  return i:set_image(img)
 end
 function IconButton:get_image()
-  return self:get_children_by_id("iconbox")[1]:get_image()
+  local i = self:get_children_by_id("iconbox")[1]
+  if not i then return nil end
+  return i:get_image()
 end
 -- alias icon to image
 IconButton.set_icon = IconButton.set_image
@@ -24,19 +28,25 @@ for _, v in pairs({ "margins", "left", "right", "top", "bottom" }) do
     local method = string.format("%s_%s", t, v)
     IconButton[method] = function(self, m)
       local margin = self:get_children_by_id("margin")[1]
+      if not m then return {} end
       return margin[method](margin, m)
     end
   end
 end
 
 ---@param children table[]
+---@return nil
 ---Note: ensure that the iconbox has an id="iconbox"
 function IconButton:set_children(children)
   if #children <= 0 then return {} end
-  return self:get_children_by_id("margin")[1]:set_children(children)
+  local m = self:get_children_by_id("margin")[1]
+  if not m then return end
+  m:set_children(children)
 end
 function IconButton:get_children() ---@return table[] children
-  return self:get_children_by_id("margin")[1]:get_children()
+  local m = self:get_children_by_id("margin")[1]
+  if not m then return {} end
+  return m:get_children()
 end
 
 --- Creates a button with the path specified
