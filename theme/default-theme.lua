@@ -133,7 +133,7 @@ local function do_theme(theme, theme_dir)
 
   -- Titlebar
   --- Define the image to load
-  theme.titlebar_close_button_normal = icons.titlebar.window_close_normal
+  theme.titlebar_close_button_normal = icons.titlebar.window_close
   theme.titlebar_close_button_focus = icons.titlebar.window_close
 
   theme.titlebar_minimize_button_normal = icons.titlebar.go_down
