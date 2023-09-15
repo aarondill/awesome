@@ -80,7 +80,7 @@ local function handle_battery_info(info)
   return {
     icon = files.get_icon(batteryIconName),
     charge = non_nan_charge,
-    status = (status or "") .. (remaining and ", " .. remaining or ""),
+    status = (status or "") .. (remaining and (", " .. remaining) or ""),
   }
 end
 
