@@ -153,7 +153,11 @@ local function do_theme(theme, theme_dir)
   theme.notification_margin = dpi(8)
   -- This *MUST* be defined, otherwise naughty.notify has some weird behavior when searching for icons without a given size.
   theme.notification_icon_size = dpi(24)
-  theme.notification_shape = gshape.rounded_rect
+  theme.notification_shape = function(cr, width, height)
+    -- If width is too low, the rectange has issues with large values
+    gshape.rounded_rect(cr, width, height, width < 25 and 0 or 10)
+  end
+
   theme.notification_border_width = 0
 
   return theme
