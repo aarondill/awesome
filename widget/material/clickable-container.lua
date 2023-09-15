@@ -3,6 +3,23 @@ local wibox = require("wibox")
 ---@class clickable_container
 ---@field buttons fun(b: table)
 
+local set_alpha_cb
+do
+  -- Weak cache for functions, as they can be the same if given the same alpha
+  local cache = setmetatable({}, { __mode = "kv" })
+  ---@param alpha string two digit hex value
+  ---@return fun(container: clickable_container)
+  function set_alpha_cb(alpha)
+    if not cache[alpha] then
+      local c = ("#%s%s"):format("ffffff", alpha) -- white + alpha
+      cache[alpha] = function(container)
+        container.set_bg(c)
+      end
+    end
+    return cache[alpha]
+  end
+end
+
 ---Create a clickable containter
 ---Call :buttons to set up the widget
 ---@param widget table
@@ -13,10 +30,9 @@ local function build(widget, buttons)
     widget,
     widget = wibox.container.background,
   })
-  local saved_cursor, containing_wibox
 
+  local saved_cursor, containing_wibox
   container:connect_signal("mouse::enter", function()
-    container.bg = "#ffffff11"
     -- Hm, no idea how to get the wibox from this signal's arguments...
     local w = mouse.current_wibox
     if w and not w.is_moused_over then
@@ -27,9 +43,7 @@ local function build(widget, buttons)
       w.cursor = "hand1"
     end
   end)
-
   container:connect_signal("mouse::leave", function()
-    container.bg = "#ffffff00"
     if containing_wibox then
       containing_wibox.cursor = saved_cursor
       containing_wibox.is_moused_over = false
@@ -37,13 +51,10 @@ local function build(widget, buttons)
     end
   end)
 
-  container:connect_signal("button::press", function()
-    container.bg = "#ffffff22"
-  end)
-
-  container:connect_signal("button::release", function()
-    container.bg = "#ffffff11"
-  end)
+  container:connect_signal("mouse::enter", set_alpha_cb("11"))
+  container:connect_signal("mouse::leave", set_alpha_cb("00"))
+  container:connect_signal("button::press", set_alpha_cb("22"))
+  container:connect_signal("button::release", set_alpha_cb("11"))
 
   if buttons then container:buttons(buttons) end
 
