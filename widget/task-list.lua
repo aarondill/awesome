@@ -159,26 +159,23 @@ local tasklist_buttons = gtable.join(
   awful.button({}, 1, function(c)
     if c == capi.client.focus then
       c.minimized = true
-    else
-      -- Without this, the following
-      -- :isvisible() makes no sense
-      c.minimized = false
-      if not c:isvisible() and c.first_tag then c.first_tag:view_only() end
-      -- This will also un-minimize
-      -- the client, if needed
-      capi.client.focus = c
-      c:raise()
+      return
     end
+    -- Without this, the following
+    -- :isvisible() makes no sense
+    c.minimized = false
+    if not c:isvisible() and c.first_tag then c.first_tag:view_only() end
+    capi.client.focus = c
+    c:raise()
   end),
-  awful.button({}, 2, function(c)
-    c.kill(c)
+  awful.button({}, 2, function(c) -- middle click
+    c:kill()
   end),
-  awful.button({}, 4, function()
-    awful.client.focus.byidx(1)
+  awful.button({}, 3, function(c) -- right click
+    c.fullscreen = not c.fullscreen
   end),
-  awful.button({}, 5, function()
-    awful.client.focus.byidx(-1)
-  end)
+  awful.button({}, 4, bind.with_args(awful.client.focus.byidx, 1)), -- scroll up
+  awful.button({}, 5, bind.with_args(awful.client.focus.byidx, -1)) -- scroll down
 )
 
 ---@class TaskListArgs
