@@ -28,6 +28,7 @@ end
 local function build(widget, buttons)
   local container = wibox.widget({
     widget,
+    buttons = buttons,
     widget = wibox.container.background,
   })
 
@@ -55,8 +56,6 @@ local function build(widget, buttons)
   container:connect_signal("mouse::leave", set_alpha_cb("00"))
   container:connect_signal("button::press", set_alpha_cb("22"))
   container:connect_signal("button::release", set_alpha_cb("11"))
-
-  if buttons then container:buttons(buttons) end
 
   return container
 end
