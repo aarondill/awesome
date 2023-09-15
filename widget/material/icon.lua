@@ -37,6 +37,9 @@ end
 function Icon:get_icon()
   return self._private.icon
 end
+-- alias icon to image
+Icon.set_image = Icon.set_icon
+Icon.get_image = Icon.get_icon
 
 function Icon:set_size(size)
   self._private.size = size
