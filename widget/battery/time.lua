@@ -38,6 +38,8 @@ local function calculate_time_remaining(info)
 
   if present_rate <= MIN_PRESENT_RATE then present_rate = 0 end
 
+  if status == "full" then return format_message(nil, "battery is full") end
+
   if status == "charging" then
     if present_rate == 0 then return format_message(nil, "charging at zero rate - will never fully charge.") end
     -- The seconds left until full
@@ -51,6 +53,6 @@ local function calculate_time_remaining(info)
     return format_message(seconds, "remaining")
   end
 
-  return format_message(nil, nil)
+  return format_message(nil, "could not calculate battery time remaining")
 end
 return calculate_time_remaining
