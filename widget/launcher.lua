@@ -19,29 +19,37 @@ local function open_main_menu()
 end
 
 ---Create a button widget which will launch a command.
----@param args table Standard widget table arguments, plus image for the image path
+---@param args LauncherArgs? Standard widget table arguments, plus image for the image path
+---@param menu table
 ---and command for the command to run on click, or either menu to create menu.
 ---@return table launcher_widget
-local function launcher_new(args)
-  if not args.menu then
+local function launcher_new(args, menu)
+  args = args or {}
+  if not menu then
     return wibox.widget({ -- empty widget
       widget = wibox.widget.base.empty_widget,
     })
   end
-  return wibox.widget({
-    margins = args.margins,
-    image = args.image or icons.launcher,
-    buttons = gtable.join(
-      awful.button.new({}, 1, nil, open_main_menu),
-      awful.button.new({}, 3, nil, bind.with_args(args.menu.toggle, args.menu))
-    ),
-    widget = IconButton,
-  })
+  local opts = gtable.crush({ image = icons.launcher }, args, true)
+  opts.buttons = gtable.join(
+    awful.button.new({}, 1, nil, open_main_menu),
+    awful.button.new({}, 3, nil, bind.with_args(menu.toggle, menu))
+  )
+  opts.widget = IconButton
+  return wibox.widget(opts)
 end
+---@class LauncherArgs
+---@field left integer?
+---@field right integer?
+---@field top integer?
+---@field bottom integer?
+---@field margins integer?
+---@field image string?
 
 ---Create a launcher widget and a main menu
+---@param args LauncherArgs?
 ---@return table widget
-function Launcher()
+function Launcher(args)
   -- function(item, menu) end
   local menu_awesome = {
     "Awesome",
@@ -59,7 +67,7 @@ function Launcher()
     local has_fdo, fdo_menu = pcall(require, "freedesktop.menu")
     if has_fdo then
       local menu = fdo_menu.build({ before = { menu_awesome }, after = { menu_terminal } })
-      return launcher_new({ menu = menu })
+      return launcher_new(args, menu)
     end
   end
 
@@ -74,7 +82,7 @@ function Launcher()
     end
   end
 
-  return launcher_new({ menu = menu })
+  return launcher_new(args, menu)
 end
 
 -- Menubar configuration
