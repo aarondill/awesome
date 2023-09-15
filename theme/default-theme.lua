@@ -40,7 +40,7 @@ local function do_theme(theme, theme_dir)
   theme.fg_urgent = theme.accent.hue_900
 
   theme.bg_normal = theme.background.hue_900
-  theme.bg_focus = theme.background.hue_800
+  theme.bg_focus = theme.background.hue_700
   theme.bg_urgent = theme.accent.hue_900
   theme.bg_systray = theme.bg_normal
 
@@ -99,9 +99,9 @@ local function do_theme(theme, theme_dir)
   theme.taglist_bg_focus = "linear:0,0:"
     .. dpi(40)
     .. ",0:0,"
-    .. theme.fg.hue_900
+    .. theme.bg_focus
     .. ":0.08,"
-    .. theme.fg.hue_900
+    .. theme.bg_focus
     .. ":0.08,"
     .. theme.bg_normal
     .. ":1,"
