@@ -52,10 +52,8 @@ local TopPanel = function(s)
       refresh = 30, -- TRY to fix issues with refresh after suspend
       widget = wibox.widget.textclock,
     },
-    left = dpi(13),
-    right = dpi(13),
-    top = dpi(9),
-    bottom = dpi(9),
+    left = dpi(3),
+    right = dpi(3),
     widget = wibox.container.margin,
   })
   local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
