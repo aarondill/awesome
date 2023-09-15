@@ -1,4 +1,3 @@
-local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
