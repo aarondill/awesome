@@ -124,7 +124,7 @@ local function do_theme(theme, theme_dir)
     .. theme.fg_normal
     .. ":1,"
     .. theme.fg_normal
-  theme.tasklist_bg_urgent = theme.fg.hue_800
+  theme.tasklist_bg_urgent = theme.accent.hue_500
   theme.tasklist_fg_focus = theme.fg_focus
   theme.tasklist_fg_urgent = theme.fg_normal
   theme.tasklist_fg_normal = theme.fg_normal
