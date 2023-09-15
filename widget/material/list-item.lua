@@ -2,8 +2,8 @@ local require = require("util.rel_require")
 -- Default widget requirements
 local base = require("wibox.widget.base")
 local gtable = require("gears.table")
-local setmetatable = setmetatable
 local dpi = require("beautiful").xresources.apply_dpi
+local gdebug = require("gears.debug")
 
 -- Commons requirements
 local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
@@ -149,7 +149,12 @@ function mat_list_item:set_children(children)
   if children[3] then self:set_suffix(children[3]) end
 end
 
+---Note: this widget is deprecated
+---@param widget any
+---@return table widget
+---@deprecated
 local function new(widget)
+  gdebug.deprecate("mat_list_item is deprecated due to bad design. Please don't use it.")
   local ret = base.make_widget(nil, nil, {
     enable_properties = true,
   })
@@ -160,12 +165,4 @@ local function new(widget)
   return ret
 end
 
-function mat_list_item.mt:__call(...)
-  return new(...)
-end
-
---@DOC_widget_COMMON@
-
---@DOC_object_COMMON@
-
-return setmetatable(mat_list_item, mat_list_item.mt)
+return new
