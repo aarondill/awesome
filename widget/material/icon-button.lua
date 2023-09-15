@@ -12,7 +12,12 @@ local IconButton = {}
 function IconButton:set_image(img)
   return self:get_children_by_id("iconbox")[1]:set_image(img)
 end
-IconButton.set_icon = IconButton.set_image -- alias icon to image
+function IconButton:get_image()
+  return self:get_children_by_id("iconbox")[1]:get_image()
+end
+-- alias icon to image
+IconButton.set_icon = IconButton.set_image
+IconButton.get_icon = IconButton.get_image
 
 for _, v in pairs({ "margins", "left", "right", "top", "bottom" }) do
   for _, t in ipairs({ "set", "get" }) do
@@ -26,12 +31,12 @@ end
 
 ---@param children table[]
 ---Note: ensure that the iconbox has an id="iconbox"
-function IconButton:set_children(children) -- allow set own iconbox
-  if #children > 0 then
-    return self:get_children_by_id("margin")[1]:set_children(children)
-  else
-    return false
-  end
+function IconButton:set_children(children)
+  if #children <= 0 then return {} end
+  return self:get_children_by_id("margin")[1]:set_children(children)
+end
+function IconButton:get_children() ---@return table[] children
+  return self:get_children_by_id("margin")[1]:get_children()
 end
 
 --- Creates a button with the path specified
