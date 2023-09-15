@@ -1,6 +1,7 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
+local icon = require("widget.material.icon")
 local require = require("util.rel_require")
 
 local awful = require("awful")
@@ -33,12 +34,16 @@ local function show_battery_warning(charge)
 end
 local widget_template = {
   {
-    { id = "icon", widget = wibox.widget.imagebox, resize = true, image = files.get_icon("battery") },
+    {
+      id = "icon",
+      widget = icon,
+      icon = files.get_icon("battery"),
+    },
     { id = "text", widget = wibox.widget.textbox, text = "100%" },
     layout = wibox.layout.fixed.horizontal,
   },
-  left = dpi(14),
-  right = dpi(14),
+  left = dpi(4),
+  right = dpi(4),
   top = dpi(4),
   bottom = dpi(4),
 
