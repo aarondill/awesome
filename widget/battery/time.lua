@@ -1,5 +1,8 @@
+---@param seconds number?
+---@param poststr string?
+---@return string?
 local function format_message(seconds, poststr)
-  if not seconds or seconds <= 0 then return poststr or "" end
+  if not seconds or seconds <= 0 then return poststr end
   local hours = math.floor(seconds / 3600)
   seconds = seconds - (3600 * hours)
   local minutes = math.floor(seconds / 60)
@@ -9,7 +12,7 @@ end
 ---Calculate the time remaining until full/dead battery
 ---@param info battery_info
 ---@source ACPIclient source code
----@return string
+---@return string?
 local function calculate_time_remaining(info)
   local MIN_PRESENT_RATE = 0.01 -- Less than this is considered zero
   local status = info.status and string.lower(info.status)
@@ -38,7 +41,7 @@ local function calculate_time_remaining(info)
 
   if present_rate <= MIN_PRESENT_RATE then present_rate = 0 end
 
-  if status == "full" then return format_message(nil, "battery is full") end
+  if status == "full" then return format_message(nil, nil) end
 
   if status == "charging" then
     if present_rate == 0 then return format_message(nil, "charging at zero rate - will never fully charge.") end
