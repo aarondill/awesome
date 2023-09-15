@@ -34,11 +34,7 @@ local function show_battery_warning(charge)
 end
 local widget_template = {
   {
-    {
-      id = "icon",
-      widget = icon,
-      icon = files.get_icon("battery"),
-    },
+    { id = "icon", widget = icon, icon = files.get_icon("battery") },
     { id = "text", widget = wibox.widget.textbox, text = "100%" },
     layout = wibox.layout.fixed.horizontal,
   },
