@@ -18,6 +18,18 @@ local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
+local function margin(w, m)
+  m = m or 1
+  return wibox.widget({
+    w,
+    left = dpi(m * 2),
+    right = dpi(m * 2),
+    top = dpi(4),
+    bottom = dpi(4),
+    layout = wibox.layout.margin,
+  })
+end
+
 local TopPanel = function(s)
   local panel = wibox({
     ontop = true,
@@ -50,12 +62,12 @@ local TopPanel = function(s)
 
   -- Empty widget to replace with the battery when it's ready
   local battery_widget = Battery({ timeout = 15 })
-  local cpu_widget = CPU({
+  local cpu_widget = margin(CPU({
     timeout = 15,
     precision = 1,
     prefix = "",
     suffix = "%",
-  })
+  }))
   panel:setup({
     layout = wibox.layout.align.horizontal,
     {
