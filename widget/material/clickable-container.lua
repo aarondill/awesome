@@ -1,7 +1,7 @@
 local wibox = require("wibox")
 
 ---@class clickable_container
----@field buttons fun(b: table)
+---@field buttons fun(s: clickable_container, b?: table)
 
 local set_alpha_cb
 do
