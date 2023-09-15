@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome, client = client }
 local require = require("util.rel_require")
 
 local apps = require("configuration.apps")
@@ -10,7 +12,6 @@ local spawn = require("util.spawn")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey, altkey = mod.modKey, mod.altKey
-local capi = { awesome = awesome }
 
 local function open_main_menu()
   local pid_or_err = spawn.noninteractive(apps.default.rofi)
@@ -68,12 +69,12 @@ local globalKeys = gtable.join(
   awful.key({ altkey }, "Tab", function()
     --awful.client.focus.history.previous()
     awful.client.focus.byidx(1)
-    if client.focus then client.focus:raise() end
+    if capi.client.focus then capi.client.focus:raise() end
   end, { description = "Switch to next window", group = "client" }),
   awful.key({ altkey, "Shift" }, "Tab", function()
     --awful.client.focus.history.previous()
     awful.client.focus.byidx(-1)
-    if client.focus then client.focus:raise() end
+    if capi.client.focus then capi.client.focus:raise() end
   end, { description = "Switch to previous window", group = "client" }),
 
   -- Programs
@@ -217,16 +218,16 @@ for i = 1, 9 do
     end, descr_toggle),
     -- Move client to tag.
     awful.key({ modkey, "Shift" }, "#" .. i + 9, function()
-      if client.focus then
-        local tag = client.focus.screen.tags[i]
-        if tag then client.focus:move_to_tag(tag) end
+      if capi.client.focus then
+        local tag = capi.client.focus.screen.tags[i]
+        if tag then capi.client.focus:move_to_tag(tag) end
       end
     end, descr_move),
     -- Toggle tag on focused client.
     awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
-      if client.focus then
-        local tag = client.focus.screen.tags[i]
-        if tag then client.focus:toggle_tag(tag) end
+      if capi.client.focus then
+        local tag = capi.client.focus.screen.tags[i]
+        if tag then capi.client.focus:toggle_tag(tag) end
       end
     end, descr_toggle_focus)
   )

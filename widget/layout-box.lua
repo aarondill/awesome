@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { mouse = mouse }
 local awful = require("awful")
 local clickable_container = require("widget.material.clickable-container")
 local gtable = require("gears.table")
@@ -5,7 +7,6 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local bind = require("util.bind")
 local compat = require("util.compat")
-local capi = { mouse = mouse }
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.

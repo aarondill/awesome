@@ -1,10 +1,11 @@
 --- Source: modified from `lain.util.quake`
 
+---@diagnostic disable-next-line :undefined-global
+local capi = { client = client }
 local awful = require("awful")
 local bind = require("util.bind")
 local compat = require("util.compat")
 local gtable = require("gears.table")
-local capi = { client = client }
 
 -- Quake-like Dropdown application spawn
 local quake = {}

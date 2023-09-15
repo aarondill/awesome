@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { client = client }
 local compat = require("util.compat")
 local require = require("util.rel_require")
 
@@ -27,12 +29,12 @@ end
 awful.tag.attached_connect_signal(nil, "property::selected", updateBarsVisibility)
 awful.tag.attached_connect_signal(nil, "property::layout", updateBarsVisibility)
 
-client.connect_signal("property::fullscreen", function(c)
+capi.client.connect_signal("property::fullscreen", function(c)
   c.screen.selected_tag.fullscreenMode = c.fullscreen
   updateBarsVisibility()
 end)
 
-client.connect_signal(compat.signal.unmanage, function(c)
+capi.client.connect_signal(compat.signal.unmanage, function(c)
   if c.fullscreen then
     c.screen.selected_tag.fullscreenMode = false
     updateBarsVisibility()
