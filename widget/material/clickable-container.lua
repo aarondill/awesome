@@ -23,7 +23,7 @@ end
 ---Create a clickable containter
 ---Call :buttons to set up the widget
 ---@param widget table
----@param buttons unknown[]
+---@param buttons unknown[]?
 ---@return clickable_container
 local function build(widget, buttons)
   local container = wibox.widget({
