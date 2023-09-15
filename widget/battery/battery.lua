@@ -1,9 +1,9 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
-local icon = require("widget.material.icon")
 local require = require("util.rel_require")
 
+local Icon = require("widget.material.icon")
 local awful = require("awful")
 local calculate_time_remaining = require(..., "time") ---@module "widget.battery.time"
 local files = require(..., "files") ---@module "widget.battery.files"
@@ -12,6 +12,7 @@ local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local strings = require("util.strings")
 
 -- To use colors from beautiful theme put
 -- following lines in rc.lua before require("battery"):
@@ -34,7 +35,7 @@ local function show_battery_warning(charge)
 end
 local widget_template = {
   {
-    { id = "icon", widget = icon, icon = files.get_icon("battery") },
+    { id = "icon", widget = Icon, icon = files.get_icon("battery") },
     { id = "text", widget = wibox.widget.textbox, text = "100%" },
     layout = wibox.layout.fixed.horizontal,
   },
@@ -50,9 +51,6 @@ local function should_warn_battery(last_warning_time, status, charge, low_power,
   if charge < 0 or charge > low_power then return end
   local time_since_last = os.difftime(os.time(), last_warning_time)
   if time_since_last < low_power_frequency then return end
-end
-local function str_first_upper(str)
-  return (str:sub(1, 1):upper()) .. (str:sub(2):lower())
 end
 
 ---Handler for files.get_battery_info
@@ -80,7 +78,7 @@ local function handle_battery_info(info)
   return {
     icon = files.get_icon(batteryIconName),
     charge = non_nan_charge,
-    status = (status or "") .. (remaining and (", " .. remaining) or ""),
+    status = string.format("%s%s", strings.first_upper(status or ""), remaining and ", " .. remaining or ""),
   }
 end
 
@@ -120,7 +118,7 @@ function Battery(args)
 
     icon:set_image(res.icon)
     text:set_text(tostring(res.charge) .. "%")
-    battery_popup.text = str_first_upper(res.status)
+    battery_popup.text = strings.first_upper(res.status)
     -- if X minutes have elapsed since the last warning
     if should_warn_battery(last_warning_time, res.status, res.charge, low_power, low_power_frequency) then
       last_warning_time = os.time()
