@@ -1,7 +1,16 @@
 local awful = require("awful")
+local capi = require("capi")
 local gtable = require("gears.table")
+local layouts = require("configuration.layouts")
 local tags = require("configuration.tags")
-local layouts = require("configuration").layouts
+
+if awful.layout.append_default_layouts then -- Added in v5
+  capi.tag.connect_signal("request::default_layouts", function()
+    awful.layout.append_default_layouts(require("configuration.layouts"))
+  end)
+else -- v4. Breaks in v5
+  awful.layout.layouts = require("configuration.layouts")
+end
 
 awful.screen.connect_for_each_screen(function(s)
   for i, tag in pairs(tags) do

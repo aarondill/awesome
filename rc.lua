@@ -1,6 +1,6 @@
 -- awesome_mode: api-level=9999:screen=on
 ---@diagnostic disable-next-line  :undefined-global
-local capi = { client = client, root = root, awesome = awesome }
+local capi = { client = client, root = root, awesome = awesome, tag = tag }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local compat = require("util.compat")
@@ -15,7 +15,7 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
-if not pcall(require("awful.permissions")) then -- Added to replace awful.autofocus
+if not pcall(require, "awful.permissions") then -- Added to replace awful.autofocus
   pcall(require, "awful.autofocus") -- Depreciated in V5
 end
 
@@ -56,7 +56,6 @@ require("module.client")
 -- Setup all configurations
 require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
-awful.layout.layouts = require("configuration").layouts
 capi.root.keys(require("configuration.keys.global"))
 
 -- Different tags for each wallpaper
