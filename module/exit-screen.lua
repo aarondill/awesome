@@ -1,5 +1,5 @@
 ---@diagnostic disable-next-line :undefined-global
-local capi = { screen = screen }
+local capi = { screen = screen, awesome = awesome }
 local apps = require("configuration.apps")
 local awful = require("awful")
 local beautiful = require("beautiful")
@@ -90,7 +90,7 @@ end
 
 local function exit_command()
   exit_screen_hide()
-  awesome.quit(0)
+  capi.awesome.quit(0)
 end
 local function lock_command()
   exit_screen_hide()

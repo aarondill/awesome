@@ -3,7 +3,7 @@ local capi = { screen = screen }
 local awful = require("awful")
 local gtable = require("gears.table")
 local filepath = "/tmp/awesomewm-last-selected-tags"
-awesome.connect_signal("exit", function(reason_restart)
+capi.awesome.connect_signal("exit", function(reason_restart)
   if not reason_restart then return end
   local str = ""
   for s in capi.screen do
@@ -18,7 +18,7 @@ awesome.connect_signal("exit", function(reason_restart)
   end
 end)
 
-awesome.connect_signal("startup", function()
+capi.awesome.connect_signal("startup", function()
   -- This is intentionally synchronous to ensure it's done *before* user control.
   local f = io.open(filepath, "r")
   if not f then return end -- file doesn't exist

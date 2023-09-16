@@ -93,7 +93,7 @@ local globalKeys = gtable.join(
   awful.key(
     { modkey },
     "F12",
-    bind(awesome.emit_signal, "quake::toggle"),
+    bind(capi.awesome.emit_signal, "quake::toggle"),
     { description = "Open a quake terminal", group = "launcher" }
   ),
   awful.key({ modkey }, "l", function()

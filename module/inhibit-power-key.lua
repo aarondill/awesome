@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
 local GLib = lgi.require("GLib")
@@ -49,7 +51,7 @@ local main = Gio.Async.call(function()
     return --something went wrong
   end
 
-  awesome.connect_signal("exit", function(_)
+  capi.awesome.connect_signal("exit", function(_)
     -- Stops the block
     fd:close()
     -- Speed up deletion of the GDBusMessage that still references the FD

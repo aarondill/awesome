@@ -1,5 +1,5 @@
 ---@diagnostic disable-next-line :undefined-global
-local capi = { client = client }
+local capi = { client = client, awesome = awesome }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
@@ -84,7 +84,7 @@ local function tagCallback(tag)
 end
 
 capi.client.connect_signal(compat.signal.manage, function(c)
-  if not awesome.startup then c.is_new = true end
+  if not capi.awesome.startup then c.is_new = true end
   clientCallback(c)
 end)
 capi.client.connect_signal(compat.signal.unmanage, clientCallback)

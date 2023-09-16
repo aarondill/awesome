@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 -- MODULE AUTO-START
 -- Run all the apps listed in configuration/apps.lua as run_on_startup only once when awesome start
 local DEBUG = require("configuration").DEBUG
@@ -51,7 +53,7 @@ local function run_once(cmd)
       --- Files to write to. These may be nil.
       local log_file_stdout, log_file_stderr
       -- Exclude sigterm, as it was likely user input anyways.
-      if pid and not (exitreason == "signal" and exitcode == awesome.unix_signal.SIGTERM) then
+      if pid and not (exitreason == "signal" and exitcode == capi.awesome.unix_signal.SIGTERM) then
         log_file_stdout = log_dir .. pid .. "-stdout.log"
         log_file_stderr = log_dir .. pid .. "-stderr.log"
       end
@@ -71,10 +73,10 @@ Date: %s
 
       local text = ""
       if exitreason == "signal" then
-        if exitcode == awesome.unix_signal.SIGSEGV then -- Segfault
+        if exitcode == capi.awesome.unix_signal.SIGSEGV then -- Segfault
           text = "Segfaulted!"
         else
-          local signame = tostring(awesome.unix_signal[exitcode])
+          local signame = tostring(capi.awesome.unix_signal[exitcode])
           text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
         end
       else
@@ -100,10 +102,10 @@ for _, app in ipairs(apps.run_on_startup) do
   if pid then processes[app] = pid end
 end
 -- Kill them all on exit
-awesome.connect_signal("exit", function(_)
+capi.awesome.connect_signal("exit", function(_)
   for _, pid in pairs(processes) do
     -- killing -p means sending a signal to every process in the process group p. Awesome makes sure to spawn processes in a new session, so this works.
-    local suc = awesome.kill(-pid, 15) -- SIGTERM
+    local suc = capi.awesome.kill(-pid, 15) -- SIGTERM
     if not suc then
       -- Can't notify because shutting down
       io.stderr:write("Failed to kill pid " .. pid)

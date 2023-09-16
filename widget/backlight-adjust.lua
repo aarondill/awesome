@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 -- BACKLIGHT
 
 -- ===================================================================
@@ -65,7 +67,7 @@ local hide_backlight_adjust = gtimer({
 --HACK:
 local EXPONENTIAL_SCALE_FACTOR = 4
 -- show backlight-adjust when "backlight_change" signal is emitted
-awesome.connect_signal("widget::backlight_changed", function()
+capi.awesome.connect_signal("widget::backlight_changed", function()
   -- set new brightness value
   read_async("/sys/class/backlight/intel_backlight/actual_brightness", function(brightness_str, _)
     if not brightness_str then return end

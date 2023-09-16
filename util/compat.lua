@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 ---Creates a function which returns val
 ---@generic R
 ---@param val R
@@ -34,7 +36,7 @@ end
 ---@param v string?
 local function vers_cmp(v)
   if not v then return false end
-  return awesome.version <= v -- awesome.version is a string
+  return capi.awesome.version <= v -- awesome.version is a string
 end
 ---@generic A,B
 ---return a if v or b

@@ -1,5 +1,5 @@
 ---@diagnostic disable-next-line :undefined-global
-local capi = { screen = screen }
+local capi = { screen = screen, awesome = awesome }
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
@@ -47,7 +47,7 @@ capi.screen.connect_signal("property::geometry", function(s)
   s:emit_signal("request::wallpaper")
 end)
 
-if awesome.version <= "v4.3" and ascreen.focused() then
+if capi.awesome.version <= "v4.3" and ascreen.focused() then
   -- This is not signaled for the first wallpaper in older versions
   ascreen.focused():emit_signal("request::wallpaper")
 end

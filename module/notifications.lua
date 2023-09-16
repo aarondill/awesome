@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 local gtable = require("gears.table")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
@@ -22,15 +24,15 @@ naughty.config.defaults.ontop = true
 naughty.config.defaults.hover_timeout = nil
 
 -- Error handling
-if awesome.startup_errors then
-  notifs.critical(tostring(awesome.startup_errors), {
+if capi.awesome.startup_errors then
+  notifs.critical(tostring(capi.awesome.startup_errors), {
     title = "Oops, there were errors during startup!",
   })
 end
 
 do
   local in_error = false
-  awesome.connect_signal("debug::error", function(err)
+  capi.awesome.connect_signal("debug::error", function(err)
     if in_error then return end
     in_error = true
 
@@ -44,7 +46,7 @@ end
 ---@param hint string String with a hint on what to use instead of the deprecated functionality.
 ---@param see string? The name of the newer API (default nil)
 ---@param args table? The args to gears.depreciate? I think?
-awesome.connect_signal("debug::deprecate", function(hint, see, args)
+capi.awesome.connect_signal("debug::deprecate", function(hint, see, args)
   local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
   notifs.warn(msg)
 end)

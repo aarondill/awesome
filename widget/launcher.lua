@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 local IconButton = require("widget.material.icon-button")
 local apps = require("configuration.apps")
 local awful = require("awful")
@@ -56,9 +58,9 @@ function Launcher(args)
     {
       { "hotkeys", bind.with_args(hotkeys_popup.show_help) },
       { "manual", bind.with_args(apps.open.terminal, { "man", "awesome" }) },
-      { "edit config", bind.with_args(apps.open.editor, awesome.conffile) },
-      { "restart", awesome.restart }, -- doesn't take arguuments anyways
-      { "quit", bind.with_args(awesome.quit) },
+      { "edit config", bind.with_args(apps.open.editor, capi.awesome.conffile) },
+      { "restart", capi.awesome.restart }, -- doesn't take arguuments anyways
+      { "quit", bind.with_args(capi.awesome.quit) },
     },
   }
   local menu_terminal = { "Open Terminal", bind.with_args(apps.open.terminal) }

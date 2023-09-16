@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { awesome = awesome }
 local apps = require("configuration.apps")
 local bind = require("util.bind")
 local quake_widget = require("widget.quake")
@@ -5,7 +7,7 @@ local quake_widget = require("widget.quake")
 local quake_class = "QuakeDD"
 --- Create a quake terminal
 local quake_instance = quake_widget({ spawn = apps.open.quake_terminal, class = quake_class })
-awesome.connect_signal("quake::toggle", bind(quake_instance.toggle, quake_instance))
+capi.awesome.connect_signal("quake::toggle", bind(quake_instance.toggle, quake_instance))
 
 local quake = {}
 function quake:client_is_quake(c)
