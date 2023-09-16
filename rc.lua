@@ -1,6 +1,6 @@
 -- awesome_mode: api-level=9999:screen=on
 ---@diagnostic disable-next-line  :undefined-global
-local capi = { client = client }
+local capi = { client = client, root = root }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local compat = require("util.compat")
@@ -55,7 +55,7 @@ require("module.client")
 require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
 awful.layout.layouts = require("configuration").layouts
-root.keys(require("configuration.keys.global"))
+capi.root.keys(require("configuration.keys.global"))
 
 -- Different tags for each wallpaper
 require("module.wallpaper")
