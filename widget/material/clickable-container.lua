@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { mouse = mouse }
 local wibox = require("wibox")
 
 ---@class clickable_container
@@ -35,7 +37,7 @@ local function build(widget, buttons)
   local saved_cursor, containing_wibox
   container:connect_signal("mouse::enter", function()
     -- Hm, no idea how to get the wibox from this signal's arguments...
-    local w = mouse.current_wibox
+    local w = capi.mouse.current_wibox
     if w and not w.is_moused_over then
       saved_cursor, containing_wibox = w.cursor, w
       -- Save the state to avoid race conditions between

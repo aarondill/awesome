@@ -1,6 +1,6 @@
 {
   "diagnostics": {
-    "globals": ["awesome", "screen", "button", "root", "mouse"]
+    "globals": ["awesome", "screen", "button", "root"]
   },
   "workspace": {
     "library": ["/usr/share/awesome/lib/"]
