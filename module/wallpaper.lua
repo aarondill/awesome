@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { screen = screen }
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
@@ -19,7 +21,7 @@ local function get_wp_path(num)
   end
 end
 
-screen.connect_signal("request::wallpaper", function(s)
+capi.screen.connect_signal("request::wallpaper", function(s)
   --stylua: ignore
 	if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
@@ -41,7 +43,7 @@ end)
 atag.attached_connect_signal(nil, "property::selected", function(tag)
   if tag.screen then tag.screen:emit_signal("request::wallpaper") end
 end)
-screen.connect_signal("property::geometry", function(s)
+capi.screen.connect_signal("property::geometry", function(s)
   s:emit_signal("request::wallpaper")
 end)
 

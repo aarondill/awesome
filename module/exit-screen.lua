@@ -1,3 +1,5 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { screen = screen }
 local apps = require("configuration.apps")
 local awful = require("awful")
 local beautiful = require("beautiful")
@@ -68,8 +70,8 @@ local exit_screen = wibox({
   height = screen_geometry.height,
   width = screen_geometry.width,
 })
-screen.connect_signal("property::geometry", function()
-  local s = screen[1]
+capi.screen.connect_signal("property::geometry", function()
+  local s = capi.screen[1]
   exit_screen.width = s.geometry.width
   exit_screen.x = s.geometry.x
   exit_screen.y = s.geometry.y

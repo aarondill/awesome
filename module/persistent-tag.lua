@@ -1,10 +1,12 @@
+---@diagnostic disable-next-line :undefined-global
+local capi = { screen = screen }
 local awful = require("awful")
 local gtable = require("gears.table")
 local filepath = "/tmp/awesomewm-last-selected-tags"
 awesome.connect_signal("exit", function(reason_restart)
   if not reason_restart then return end
   local str = ""
-  for s in screen do
+  for s in capi.screen do
     local indicies = gtable.map(function(tag)
       return tag and tag.index
     end, s.selected_tags)
@@ -33,7 +35,7 @@ awesome.connect_signal("startup", function()
     table.insert(screen_tags, selected_tags)
   end
 
-  for s in screen do
+  for s in capi.screen do
     local sel_tags = screen_tags[s.index]
     if #sel_tags > 0 then awful.tag.viewnone(s) end
     for _, i in ipairs(sel_tags) do

@@ -1,7 +1,7 @@
 --- Source: modified from `lain.util.quake`
 
 ---@diagnostic disable-next-line :undefined-global
-local capi = { client = client }
+local capi = { client = client, screen = screen }
 local awful = require("awful")
 local bind = require("util.bind")
 local compat = require("util.compat")
@@ -88,7 +88,7 @@ end
 function quake:_compute_size()
   -- skip if we already have a geometry for this screen
   if self.geometry[self.screen.index] then return self.geometry[self.screen.index] end
-  local s = screen[self.screen.index]
+  local s = capi.screen[self.screen.index]
   local geom = self.overlap and s.geometry or s.workarea
   local width, height = self.width, self.height
   if width <= 1 then width = math.floor(geom.width * width) - 2 * self.border end
