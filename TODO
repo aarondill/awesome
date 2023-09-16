@@ -2,8 +2,6 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
 
----TODO: Remove hard coded colors from theme. use mat-colors
-
 ---TODO: use iconButton for titlebar
 
 -- TODO: implement notification center (only in awesome-git)
