@@ -27,7 +27,7 @@ local clientkeys = gtable.join(
     awful.client.floating.toggle,
     { description = "toggle floating", group = "client" }
   ),
-  awful.key({ modkey, "Control" }, "Return", function(c)
+  awful.key({ modkey, "Shift" }, "Return", function(c)
     c:swap(awful.client.getmaster())
   end, { description = "move to master", group = "client" }),
 
