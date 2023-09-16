@@ -15,7 +15,9 @@ require("awful.hotkeys_popup.keys")
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
-pcall(require, "awful.autofocus") -- Depreciated in V5
+if not pcall(require("awful.permissions")) then -- Added to replace awful.autofocus
+  pcall(require, "awful.autofocus") -- Depreciated in V5
+end
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
 local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
