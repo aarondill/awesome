@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
+local capi = require("capi")
 local gtable = require("gears.table")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")

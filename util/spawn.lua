@@ -1,5 +1,5 @@
-local capi = { awesome = awesome }
 local awful_spawn = require("awful.spawn")
+local capi = require("capi")
 
 ---@class SpawnModule
 local spawn = {}

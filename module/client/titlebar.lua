@@ -1,6 +1,5 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { client = client, tag = tag }
 local awful = require("awful")
+local capi = require("capi")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi

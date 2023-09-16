@@ -1,9 +1,8 @@
 --- Source: modified from `lain.util.quake`
 
----@diagnostic disable-next-line :undefined-global
-local capi = { client = client, screen = screen }
 local awful = require("awful")
 local bind = require("util.bind")
+local capi = require("capi")
 local compat = require("util.compat")
 local gtable = require("gears.table")
 

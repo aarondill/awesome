@@ -1,7 +1,6 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
 local apps = require("configuration.apps")
 local bind = require("util.bind")
+local capi = require("capi")
 local quake_widget = require("widget.quake")
 
 local quake_class = "QuakeDD"

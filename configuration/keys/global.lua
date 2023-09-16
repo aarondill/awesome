@@ -1,10 +1,9 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome, client = client }
 local require = require("util.rel_require")
 
 local apps = require("configuration.apps")
 local awful = require("awful")
 local bind = require("util.bind")
+local capi = require("capi")
 local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")

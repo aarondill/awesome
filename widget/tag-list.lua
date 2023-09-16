@@ -1,6 +1,5 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { client = client }
 local awful = require("awful")
+local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
 local gtable = require("gears.table")
 local wibox = require("wibox")

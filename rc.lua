@@ -1,8 +1,7 @@
 -- awesome_mode: api-level=9999:screen=on
----@diagnostic disable-next-line  :undefined-global
-local capi = { client = client, root = root, awesome = awesome, tag = tag }
 local awful = require("awful")
 local beautiful = require("beautiful")
+local capi = require("capi")
 local compat = require("util.compat")
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps

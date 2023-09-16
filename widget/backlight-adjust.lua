@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
+local capi = require("capi")
 -- BACKLIGHT
 
 -- ===================================================================

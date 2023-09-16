@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { screen = screen, awesome = awesome }
+local capi = require("capi")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")

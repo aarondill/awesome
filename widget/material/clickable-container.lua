@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { mouse = mouse }
+local capi = require("capi")
 local wibox = require("wibox")
 
 ---@class clickable_container

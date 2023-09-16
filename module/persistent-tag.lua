@@ -1,6 +1,5 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { screen = screen, awesome = awesome }
 local awful = require("awful")
+local capi = require("capi")
 local gtable = require("gears.table")
 local filepath = "/tmp/awesomewm-last-selected-tags"
 capi.awesome.connect_signal("exit", function(reason_restart)

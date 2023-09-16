@@ -1,8 +1,7 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { client = client, awesome = awesome }
 local awful = require("awful")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
+local capi = require("capi")
 local compat = require("util.compat")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")

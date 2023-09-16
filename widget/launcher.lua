@@ -1,9 +1,8 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
 local IconButton = require("widget.material.icon-button")
 local apps = require("configuration.apps")
 local awful = require("awful")
 local bind = require("util.bind")
+local capi = require("capi")
 local concat_command = require("util.concat_command")
 local gtable = require("gears.table")
 local hotkeys_popup = require("awful.hotkeys_popup")

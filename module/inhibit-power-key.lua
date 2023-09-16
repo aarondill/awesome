@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
+local capi = require("capi")
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
 local GLib = lgi.require("GLib")

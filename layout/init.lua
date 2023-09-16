@@ -1,5 +1,4 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { client = client }
+local capi = require("capi")
 local compat = require("util.compat")
 local require = require("util.rel_require")
 
@@ -16,7 +15,7 @@ end)
 --- Don't use the parameter without extensive checking
 ---@param _ table? tag or client
 local function updateBarsVisibility(_)
-  for s in screen do
+  for s in capi.screen do
     if s.selected_tag then
       local fullscreen = s.selected_tag.fullscreenMode or (awful.layout.get(s) == awful.layout.suit.max.fullscreen)
 

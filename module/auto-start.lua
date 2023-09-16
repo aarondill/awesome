@@ -1,11 +1,10 @@
----@diagnostic disable-next-line :undefined-global
-local capi = { awesome = awesome }
 -- MODULE AUTO-START
 -- Run all the apps listed in configuration/apps.lua as run_on_startup only once when awesome start
 local DEBUG = require("configuration").DEBUG
 
 local apps = require("configuration.apps")
 local awful = require("awful")
+local capi = require("capi")
 local file_write = require("util.file.write_async")
 local gfilesystem = require("gears.filesystem")
 local notifs = require("util.notifs")
