@@ -4,6 +4,7 @@ local source_path = require("util.source_path")
 ---Use in place of require to require relative to the current path
 ---This will likely need a '@module "MODULE"'
 ---If called with just one argument, it will immediately call require and return the result
+---Note: This is broken when immediately returning it! Something weird about lua's usage of ... in returned values.
 ---@param this_path string? pass ...
 ---@param path string the path to require
 ---@param assert boolean? Whether to error on failure. Default: true
