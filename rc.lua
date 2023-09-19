@@ -51,6 +51,7 @@ require("module.inhibit-power-key")
 require("module.decorate-client")
 require("module.exit-screen")
 require("module.client")
+require("module.titlebar")
 
 -- Setup all configurations
 require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
