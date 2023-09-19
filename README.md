@@ -86,7 +86,7 @@ The first variable fixes most indicators (especially electron based ones!), the 
 
 The documentation lives within the source code.
 
-The project is split in functional directories and in each of them there is a readme where you can get additional information about the them.
+The project is split in functional directories:
 
 - [Configuration](./configuration) is about all the **settings** available
 - [Layout](./layout) hold the **disposition** of all the widgets
