@@ -26,7 +26,8 @@ local function opt(V) end ---@return V | nil
 local boolean = false ---@type boolean
 local string = "" ---@type string
 ---@alias screen table|integer
----@alias gears.surface unknown
+---@alias gears.surface userdata
+---@alias CairoPattern userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
 ---@alias xprop_type string|number|boolean
@@ -165,19 +166,30 @@ function types.Awesome:__newindex(k, v) end
 
 ---@class AwesomeRoot
 types.AwesomeRoot = {
-  cursor = function() end,
-  fake_input = function() end,
-  drawins = function() end,
+  cursor = function(cursor_name) end, ---@param cursor_name string  A X cursor name.
+  ---@param event_type "key_press"| "key_release"| "button_press"| "button_release"| "motion_notify"
+  ---@param detail string|integer|boolean depends on event_type
+  ---@param x number? Only used for motion_notify
+  ---@param y number? Only used for motion_notify
+  fake_input = function(event_type, detail, x, y) end,
+  drawins = function() end, ---@return AwesomeDrawin[]
   content = function() end,
+  ---@return number x
+  ---@return number y
   size = function() end,
+  ---@return number x
+  ---@return number y
   size_mm = function() end,
-  tags = function() end,
-  set_index_miss_handler = function() end,
-  set_call_handler = function() end,
-  set_newindex_miss_handler = function() end,
-  _buttons = function() end,
-  _keys = function() end,
-  _wallpaper = function() end,
+  tags = function() end, ---@return AwesomeTag[]
+  set_index_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any)
+  set_call_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, ...: unknown)
+  set_newindex_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
+  ---@param button_table AwesomeButton[]? An array of mouse button bindings objects, or nothing
+  buttons = function(button_table) end, ---@return AwesomeButton[]?
+  ---@param keys_array AwesomeKey[]? An array of key binding objects, or nothing
+  keys = function(keys_array) end, ---@return AwesomeKey[]?
+  ---@param pattern CairoPattern
+  wallpaper = function(pattern) end, ---@return CairoPattern?
 }
 function types.AwesomeRoot:__index(k) end
 function types.AwesomeRoot:__newindex(k, v) end
