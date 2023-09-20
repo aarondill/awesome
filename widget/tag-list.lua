@@ -37,10 +37,8 @@ local TagList = function(s)
         t:view_only()
       end),
       awful.button({ modkey }, 1, function(t)
-        if capi.client.focus then
-          capi.client.focus:move_to_tag(t)
-          t:view_only()
-        end
+        if capi.client.focus then capi.client.focus:move_to_tag(t) end
+        t:view_only()
       end),
       awful.button({}, 3, awful.tag.viewtoggle),
       awful.button({ modkey }, 3, function(t)
