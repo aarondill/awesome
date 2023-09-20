@@ -20,7 +20,14 @@ local capi = { ---@diagnostic disable :undefined-global These are injected by Aw
 } ---@diagnostic enable :undefined-global
 
 local types = {}
+---@generic V
+---@param V V
+---@return V | nil
+local function opt(V)
+  return V
+end
 
+---@alias screen table|integer
 ---@alias gears.surface unknown
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
@@ -168,7 +175,9 @@ types.AwesomeMousegrabber = {}
 ---@class AwesomeMouse
 types.AwesomeMouse = {}
 ---@class AwesomeScreen :AwesomeSignalClass
-types.AwesomeScreen = {}
+types.AwesomeScreen = {
+  tags = {}, ---@type AwesomeTag[]
+}
 ---@class AwesomeButton :AwesomeSignalClass
 types.AwesomeButton = {}
 ---@class AwesomeTag :AwesomeSignalClass
@@ -179,8 +188,23 @@ types.AwesomeWindow = {}
 types.AwesomeDrawable = {}
 ---@class AwesomeDrawin :AwesomeSignalClass
 types.AwesomeDrawin = {}
+---@class AwesomeClientInstance :AwesomeSignalClass
+types.AwesomeClientInstance = {
+  ---@param self AwesomeClient
+  ---@param tag AwesomeTag
+  move_to_tag = function(self, tag) end,
+  ---@param self AwesomeClient
+  ---@param tag AwesomeTag
+  toggle_tag = function(self, tag) end,
+  screen = {}, ---@type AwesomeScreen
+}
 ---@class AwesomeClient :AwesomeSignalClass
-types.AwesomeClient = {}
+types.AwesomeClient = {
+  focus = opt(types.AwesomeClientInstance),
+  ---@param screen screen?
+  ---@param stacked boolean?
+  get = function(screen, stacked) end,
+}
 ---@class AwesomeKey :AwesomeSignalClass
 types.AwesomeKey = {}
 
