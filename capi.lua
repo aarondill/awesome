@@ -22,29 +22,46 @@ local capi = { ---@diagnostic disable :undefined-global These are injected by Aw
 local types = {}
 ---@generic V
 ---@param V V
----@return V | nil
-local function opt(V)
-  return V
-end
-
+local function opt(V) end ---@return V | nil
+local boolean = false ---@type boolean
+local string = "" ---@type string
 ---@alias screen table|integer
 ---@alias gears.surface unknown
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
 ---@alias xprop_type string|number|boolean
 ---@alias xprop_type_str "string"|"number"|"boolean"
+---@alias SignalName --- A list of signals. Likely incomplete. Meant to enable autocompletion
+--- | string
+--- | "debug::error"
+--- | "debug::deprecation"
+--- | "debug::index::miss"
+--- | "debug::newindex::miss"
+--- | "systray::update"
+--- | "wallpaper_changed"
+--- | "xkb::map_changed"
+--- | "xkb::group_changed."
+--- | "refresh"
+--- | "startup"
+--- | "exit"
+--- | "screen::change"
+--- | "spawn::canceled"
+--- | "spawn::change"
+--- | "spawn::completed"
+--- | "spawn::initiated"
+--- | "spawn::timeout"
 
 ---@class AwesomeSignalClass
 types.AwesomeSignalClass = {
-  ---@param signal string
+  ---@param signal SignalName
   add_signal = function(signal) end, ---@deprecated Use connect_signal without calling add_signal
-  ---@param signal string
+  ---@param signal SignalName
   ---@param callback function
   connect_signal = function(signal, callback) end,
-  ---@param signal string
+  ---@param signal SignalName
   ---@param callback function
   disconnect_signal = function(signal, callback) end,
-  ---@param signal string
+  ---@param signal SignalName
   ---@param ... unknown
   emit_signal = function(signal, ...) end,
   instances = function() end, ---@return integer
@@ -53,6 +70,7 @@ types.AwesomeSignalClass = {
   ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
   set_newindex_miss_handler = function(handler) end, --- Typically this shouldn't be used
 }
+
 ---@class Awesome
 ---@field unix_signal { [string]: integer?, [integer]: string? }
 types.Awesome = {
@@ -73,15 +91,15 @@ types.Awesome = {
   spawn = function(cmd, use_sn, stdin, stdout, stderr, exit_callback, env) end,
   restart = function() end,
   ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal string
+  ---@param signal SignalName
   ---@param callback function
   connect_signal = function(signal, callback) end,
   ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal string
+  ---@param signal SignalName
   ---@param callback function
   disconnect_signal = function(signal, callback) end,
   ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal string
+  ---@param signal SignalName
   ---@param ... unknown?
   emit_signal = function(signal, ...) end,
   ---@param drawin userdata
@@ -132,6 +150,15 @@ types.Awesome = {
   ---@return string? keysym
   ---@return string? printsymbol
   _get_key_name = function(input) end,
+  startup = boolean,
+  version = string,
+  release = string,
+  conffile = string,
+  startup_errors = opt(string),
+  composite_manager_running = boolean,
+  hostname = string,
+  themes_path = string,
+  icon_path = string,
 }
 function types.Awesome:__index(k) end
 function types.Awesome:__newindex(k, v) end
@@ -197,6 +224,7 @@ types.AwesomeClientInstance = {
   ---@param tag AwesomeTag
   toggle_tag = function(self, tag) end,
   screen = {}, ---@type AwesomeScreen
+  fullscreen = boolean,
 }
 ---@class AwesomeClient :AwesomeSignalClass
 types.AwesomeClient = {
