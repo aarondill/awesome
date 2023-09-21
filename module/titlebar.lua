@@ -3,6 +3,7 @@ local capi = require("capi")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local compat = require("util.compat")
 local quake = require("module.quake")
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -22,21 +23,20 @@ local function render_titlebars(c)
   awful.titlebar(c):setup({
     {
       { -- Left
-        widget = wibox.container.place,
-        awful.titlebar.widget.iconwidget(c),
+        widget = awful.titlebar.widget.iconwidget(c),
         buttons = buttons,
       },
       { -- Title
-        widget = wibox.container.place,
-        awful.titlebar.widget.titlewidget(c),
+        widget = awful.titlebar.widget.titlewidget(c),
         buttons = buttons,
+        [compat.widget.halign] = "center",
       },
       { -- Right
         awful.titlebar.widget.minimizebutton(c),
         awful.titlebar.widget.maximizedbutton(c),
         awful.titlebar.widget.closebutton(c),
         spacing = dpi(6),
-        layout = wibox.layout.fixed.horizontal(),
+        layout = wibox.layout.fixed.horizontal,
       },
       layout = wibox.layout.align.horizontal,
     },
