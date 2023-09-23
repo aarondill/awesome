@@ -194,24 +194,25 @@ local globalKeys = gtable.join(
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
   -- Hack to only show tags 1 and 9 in the shortcut window (mod+s)
-  local descr_view, descr_toggle, descr_move, descr_toggle_focus
+  local descr_view, descr_toggle, descr_move, descr_move_view, descr_toggle_focus
   if i == 1 or i == 9 then
     descr_view = { description = "View tag #", group = "tag" }
     descr_toggle = { description = "Toggle tag #", group = "tag" }
     descr_move = { description = "Move focused client to tag #", group = "tag" }
+    descr_move_view = { description = "Move focused client to tag # and view it", group = "tag" }
     descr_toggle_focus = { description = "Toggle focused client on tag #", group = "tag" }
   end
   globalKeys = gtable.join(
     globalKeys,
     -- View tag only.
     awful.key({ modkey }, "#" .. i + 9, function()
-      local screen = awful.screen.focused()
+      local screen = awful.screen.focused() ---@type AwesomeScreenInstance
       local tag = screen.tags[i]
       if tag then tag:view_only() end
     end, descr_view),
     -- Toggle tag display.
     awful.key({ modkey, "Control" }, "#" .. i + 9, function()
-      local screen = awful.screen.focused()
+      local screen = awful.screen.focused() ---@type AwesomeScreenInstance
       local tag = screen.tags[i]
       if tag then awful.tag.viewtoggle(tag) end
     end, descr_toggle),
@@ -222,8 +223,18 @@ for i = 1, 9 do
         if tag then capi.client.focus:move_to_tag(tag) end
       end
     end, descr_move),
-    -- Toggle tag on focused client.
+    -- Move client to tag and focus
     awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
+      if capi.client.focus then
+        local tag = capi.client.focus.screen.tags[i]
+        if tag then
+          capi.client.focus:move_to_tag(tag)
+          tag:view_only()
+        end
+      end
+    end, descr_move_view),
+    -- Toggle tag on focused client.
+    awful.key({ modkey, "Shift", altkey }, "#" .. i + 9, function()
       if capi.client.focus then
         local tag = capi.client.focus.screen.tags[i]
         if tag then capi.client.focus:toggle_tag(tag) end
