@@ -180,7 +180,7 @@ types.AwesomeRoot = {
   ---@return number x
   ---@return number y
   size_mm = function() end,
-  tags = function() end, ---@return AwesomeTag[]
+  tags = function() end, ---@return AwesomeTagInstance[]
   set_index_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any)
   set_call_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, ...: unknown)
   set_newindex_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
@@ -214,13 +214,19 @@ types.AwesomeMousegrabber = {}
 ---@class AwesomeMouse
 types.AwesomeMouse = {}
 ---@class AwesomeScreen :AwesomeSignalClass
-types.AwesomeScreen = {
-  tags = {}, ---@type AwesomeTag[]
+types.AwesomeScreen = {}
+---@class AwesomeScreenInstance :AwesomeSignalClass
+types.AwesomeScreenInstance = {
+  tags = {}, ---@type AwesomeTagInstance[]
 }
 ---@class AwesomeButton :AwesomeSignalClass
 types.AwesomeButton = {}
 ---@class AwesomeTag :AwesomeSignalClass
 types.AwesomeTag = {}
+---@class AwesomeTagInstance :AwesomeSignalClass
+types.AwesomeTagInstance = {
+  view_only = function(self) end, ---@param self AwesomeTagInstance
+}
 ---@class AwesomeWindow
 types.AwesomeWindow = {}
 ---@class AwesomeDrawable :AwesomeSignalClass
@@ -229,13 +235,13 @@ types.AwesomeDrawable = {}
 types.AwesomeDrawin = {}
 ---@class AwesomeClientInstance :AwesomeSignalClass
 types.AwesomeClientInstance = {
-  ---@param self AwesomeClient
-  ---@param tag AwesomeTag
+  ---@param self AwesomeClientInstance
+  ---@param tag AwesomeTagInstance
   move_to_tag = function(self, tag) end,
-  ---@param self AwesomeClient
-  ---@param tag AwesomeTag
+  ---@param self AwesomeClientInstance
+  ---@param tag AwesomeTagInstance
   toggle_tag = function(self, tag) end,
-  screen = {}, ---@type AwesomeScreen
+  screen = {}, ---@type AwesomeScreenInstance
   fullscreen = boolean,
 }
 ---@class AwesomeClient :AwesomeSignalClass
