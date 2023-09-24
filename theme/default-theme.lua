@@ -5,23 +5,12 @@ local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.compat")
 local icons = require("theme.icons")
 
-local font
-do
-  local f = "Roboto medium" -- The font/style to use. This is what will be returned
-  local ff = "Roboto" -- Font family. Used to check if installed. This should return results when passed to fc-list
-  local has_checked = false
-  ---Return a valid font of size given
-  ---@param size integer?
-  ---@return string
-  function font(size)
-    if not has_checked then
-      local _, reason, code = os.execute("fc-list -q -- '" .. ff .. "'")
-      if reason == "exit" and code == 1 then f = "serif" end
-      has_checked = true
-    end
-
-    return f .. " " .. tostring(size or 10)
-  end
+---Return a valid font of size given
+---@param size integer?
+---@return string
+local function font(size)
+  local f = "Roboto medium"
+  return string.format("%s %d", f, size or 10)
 end
 
 local function do_theme(theme, theme_dir)
