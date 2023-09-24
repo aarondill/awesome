@@ -28,7 +28,7 @@ sudo apt install awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins 
 #### Arch-Based
 
 ```shell
-yay -S --needed awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl libinput-gestures
+yay -S --needed awesome ttf-roboto rofi picom i3lock xclip qt5-styleplugins lxappearance brightnessctl flameshot pasystray network-manager-applet polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils playerctl libinput-gestures awesome-freedesktop-git
 ```
 
 #### Program list
