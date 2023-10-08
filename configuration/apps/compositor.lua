@@ -18,7 +18,7 @@ end)
 ---@return boolean success
 ---@return string? error error message if failed
 function compositor._spawn()
-  local pid_or_err = spawn.noninteractive(compositor.cmd)
+  local pid_or_err = spawn.nosn(compositor.cmd)
   if type(pid_or_err) == "string" then return false, pid_or_err end
   return true
 end
