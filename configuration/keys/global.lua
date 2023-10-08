@@ -111,12 +111,11 @@ local globalKeys = gtable.join(
 
   awful.key({ modkey, "Control" }, "r", capi.awesome.restart, { description = "Reload awesome", group = "awesome" }),
   awful.key({ modkey, "Shift" }, "q", capi.awesome.quit, { description = "Quit awesome", group = "awesome" }),
-  awful.key(
-    { modkey, "Shift" },
-    "c",
-    apps.compositor.toggle,
-    { description = "Start/Stop Compositor", group = "awesome" }
-  ),
+  awful.key({ modkey, "Shift" }, "c", function()
+    -- This is dynamic so it doesn't require compositor before needed (thusly creating a tempfile)
+    -- The file will be cleaned up, but it's better to avoid creating it if not needed.
+    require("configuration.apps.compositor").toggle()
+  end, { description = "Start/Stop Compositor", group = "awesome" }),
 
   awful.key({}, "Print", function()
     spawn(apps.default.region_screenshot)
