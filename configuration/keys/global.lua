@@ -35,6 +35,7 @@ do
     end
     -- Move the client to the indicated tag
     c:move_to_tag(next_spawned_tag)
+    c:jump_to() -- Follow/Focus the client.
     next_spawned_tag = nil -- Ensure we can ID bugs if they occur
     return nil
   end

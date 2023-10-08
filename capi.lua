@@ -241,6 +241,8 @@ types.AwesomeClientInstance = {
   ---@param self AwesomeClientInstance
   ---@param tag AwesomeTagInstance
   toggle_tag = function(self, tag) end,
+  raise = function(self) end, ---@param self AwesomeClientInstance
+  jump_to = function(self) end, ---@param self AwesomeClientInstance
   screen = {}, ---@type AwesomeScreenInstance
   fullscreen = boolean,
 }
