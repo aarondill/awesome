@@ -54,7 +54,7 @@ local spawn = {}
 ---```lua
 ---awful.spawn.read_lines(Gio.UnixInputStream.new(stderr_fd, true), stderr_callback, stderr_done_callback, true)
 ---```
----@return string? stderr_fd
+---@return integer? stderr_fd
 ---
 ---Note: start_callback only works when opts.sn_rules is given
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
@@ -69,7 +69,7 @@ function spawn.spawn(cmd, opts)
   local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
   local return_stdout = not opts.inherit_stdout
   local return_stderr = not opts.inherit_stderr
-  local env_table = opts.env == false and {} or opts.env
+  local env_table = opts.env == false and {} or opts.env ---@cast env_table table
   local pid_or_error, snid, stdin, stdout, stderr =
     capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
   if snid then -- The snid will be nil in case of failure
@@ -89,7 +89,7 @@ end
 ---@return string? snid
 ---@return integer? stdin_fd
 ---@return integer? stdout_fd
----@return string? stderr_fd
+---@return integer? stderr_fd
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.noninteractive(cmd, opts)
   opts = opts or {}
