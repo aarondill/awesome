@@ -1,3 +1,4 @@
+---@meta -- This file is a meta file. It's definitions/uses aren't real definitions/uses
 ---@diagnostic disable :unused-local The variables in this file are placeholders for the types. They are not used, nor are they intended to be used
 ---@diagnostic disable :missing-return The variables in this file are placeholders for the types. They are not used, nor are they intended to be used
 
