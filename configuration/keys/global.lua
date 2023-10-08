@@ -111,6 +111,12 @@ local globalKeys = gtable.join(
 
   awful.key({ modkey, "Control" }, "r", capi.awesome.restart, { description = "Reload awesome", group = "awesome" }),
   awful.key({ modkey, "Shift" }, "q", capi.awesome.quit, { description = "Quit awesome", group = "awesome" }),
+  awful.key(
+    { modkey, "Shift" },
+    "c",
+    apps.compositor.toggle,
+    { description = "Start/Stop Compositor", group = "awesome" }
+  ),
 
   awful.key({}, "Print", function()
     spawn(apps.default.region_screenshot)
