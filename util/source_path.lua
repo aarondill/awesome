@@ -4,10 +4,23 @@
 --- @return string
 local function getpath(level)
   level = level or 1 -- caller of M.path()
+  local is_tail_call = debug.getinfo(level + 1, "t").istailcall -- info of M.{path,filename,...}()
+  if is_tail_call then -- Fail quick! This is a bug and should be fixed!
+    error( -- Long, but descriptive error message. This will save me in the future :)
+      "source_path module functions can not be called from a tail call! This will break your code's expectations. "
+        .. "If this the result of TCO is what you expect, then remove the TCO and subtract one from level instead! "
+        .. "If you are not calling a function from the source_path module, check the stack trace to find the erroneous line.",
+      2
+    )
+  end
   -- level + 2 because 1 == path() and 2 == M.{path,filename,...}()
-  return debug.getinfo(level + 2, "S").source:sub(2)
+  local path = debug.getinfo(level + 2, "S").source:sub(2)
+  return path -- Avoid TCO! (incase this line changes/typo)
 end
 
+--- Note: All functions included in this module will return unexpected results if used with tail-call-optimization (TCO)
+--- This includes `return source_path.filename()`, as well as `return function_that_uses_source_path`.
+--- To fix this. Create a variable with the result and return it. `local fn = source_path.filename() return fn`
 local M = {}
 ---Gets the file path of the file that contains the function at level 'level'
 ---@param level integer? pass the same number as you would to debug.getinfo(level).
