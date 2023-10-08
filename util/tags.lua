@@ -1,12 +1,17 @@
 local awful = require("awful")
 local M = {}
 
+---@param o AwesomeClientInstance | AwesomeScreenInstance | nil The objec to find screen on. Default is focused screen.
+function M.get_screen(o)
+  if not o then return awful.screen.focused() end
+  return o.screen or o
+end
 ---Get a tag by index
 ---@param i integer index
----@param c AwesomeClientInstance? the client whose screen the tag belongs to default focused.
+---@param c AwesomeClientInstance | AwesomeScreenInstance | nil the client (or screen) whose screen the tag belongs to default focused.
 ---@return AwesomeTagInstance?
 function M.get_tag(i, c)
-  local screen = c and c.screen or awful.screen.focused() ---@type AwesomeScreenInstance
+  local screen = M.get_screen(c)
   if not screen then return nil end
   local tag = screen.tags[i]
   return tag
