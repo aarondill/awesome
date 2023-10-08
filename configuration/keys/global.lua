@@ -1,3 +1,4 @@
+local compat = require("util.compat")
 local require = require("util.rel_require")
 
 local apps = require("configuration.apps")
@@ -18,6 +19,32 @@ local function open_main_menu()
   if type(pid_or_err) == "string" then
     local s = awful.screen.focused()
     if s and s.run_promptbox then s.run_promptbox:run() end
+  end
+end
+local setup_next_spawned_handler
+-- A scope block to ensure that these values can only be referenced by setup_next_spawned_handler
+do
+  --- The tag to move the next spawned window to.
+  local next_spawned_tag = nil ---@type AwesomeTagInstance?
+  ---@param c AwesomeClientInstance
+  local function next_spawned_handler(c) ---@return nil
+    -- Don't do it again! Only the first one!
+    capi.client.disconnect_signal(compat.signal.manage, next_spawned_handler)
+    if not next_spawned_tag then
+      return notifs.warn("next_spawned_handler was called with a nil tag. This is probably a bug!") and nil
+    end
+    -- Move the client to the indicated tag
+    c:move_to_tag(next_spawned_tag)
+    next_spawned_tag = nil -- Ensure we can ID bugs if they occur
+    return nil
+  end
+  ---A function to be used in a keymapping that will ensure the next window spawned is moved to tag i (on focused screen)
+  ---@param i integer
+  function setup_next_spawned_handler(i)
+    local screen = awful.screen.focused() ---@type AwesomeScreenInstance
+    local tag = screen.tags[i]
+    next_spawned_tag = tag
+    capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
   end
 end
 -- Key bindings
@@ -194,13 +221,14 @@ local globalKeys = gtable.join(
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
   -- Hack to only show tags 1 and 9 in the shortcut window (mod+s)
-  local descr_view, descr_toggle, descr_move, descr_move_view, descr_toggle_focus
+  local descr_view, descr_toggle, descr_move, descr_move_view, descr_toggle_focus, descr_next_spawned
   if i == 1 or i == 9 then
     descr_view = { description = "View tag #", group = "tag" }
     descr_toggle = { description = "Toggle tag #", group = "tag" }
     descr_move = { description = "Move focused client to tag #", group = "tag" }
     descr_move_view = { description = "Move focused client to tag # and view it", group = "tag" }
     descr_toggle_focus = { description = "Toggle focused client on tag #", group = "tag" }
+    descr_next_spawned = { description = "Move the next spawned client to tag #", group = "tag" }
   end
   globalKeys = gtable.join(
     globalKeys,
@@ -239,7 +267,9 @@ for i = 1, 9 do
         local tag = capi.client.focus.screen.tags[i]
         if tag then capi.client.focus:toggle_tag(tag) end
       end
-    end, descr_toggle_focus)
+    end, descr_toggle_focus),
+    -- Move next spawned window to tag.
+    awful.key({ modkey, altkey }, "#" .. i + 9, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned)
   )
 end
 
