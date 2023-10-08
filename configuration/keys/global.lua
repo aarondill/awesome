@@ -1,5 +1,6 @@
 local compat = require("util.compat")
 local require = require("util.rel_require")
+local tags = require("util.tags")
 
 local apps = require("configuration.apps")
 local awful = require("awful")
@@ -26,6 +27,7 @@ local setup_next_spawned_handler
 do
   --- The tag to move the next spawned window to.
   local next_spawned_tag = nil ---@type AwesomeTagInstance?
+  local next_should_jump = true ---@type boolean?
   ---@param c AwesomeClientInstance
   local function next_spawned_handler(c) ---@return nil
     -- Don't do it again! Only the first one!
@@ -35,16 +37,16 @@ do
     end
     -- Move the client to the indicated tag
     c:move_to_tag(next_spawned_tag)
-    c:jump_to() -- Follow/Focus the client.
+    if next_should_jump then c:jump_to() end -- Follow/Focus the client.
     next_spawned_tag = nil -- Ensure we can ID bugs if they occur
     return nil
   end
   ---A function to be used in a keymapping that will ensure the next window spawned is moved to tag i (on focused screen)
   ---@param i integer
-  function setup_next_spawned_handler(i)
-    local screen = awful.screen.focused() ---@type AwesomeScreenInstance
-    local tag = screen.tags[i]
-    next_spawned_tag = tag
+  ---@param should_jump boolean? default true
+  function setup_next_spawned_handler(i, should_jump)
+    next_spawned_tag = tags.get_tag(i)
+    next_should_jump = should_jump == nil and true or should_jump
     capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
   end
 end
@@ -222,7 +224,7 @@ local globalKeys = gtable.join(
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
   -- Hack to only show tags 1 and 9 in the shortcut window (mod+s)
-  local descr_view, descr_toggle, descr_move, descr_move_view, descr_toggle_focus, descr_next_spawned
+  local descr_view, descr_toggle, descr_move, descr_move_view, descr_toggle_focus, descr_next_spawned, descr_next_spawned_no_jump
   if i == 1 or i == 9 then
     descr_view = { description = "View tag #", group = "tag" }
     descr_toggle = { description = "Toggle tag #", group = "tag" }
@@ -230,47 +232,45 @@ for i = 1, 9 do
     descr_move_view = { description = "Move focused client to tag # and view it", group = "tag" }
     descr_toggle_focus = { description = "Toggle focused client on tag #", group = "tag" }
     descr_next_spawned = { description = "Move the next spawned client to tag #", group = "tag" }
+    descr_next_spawned_no_jump = { description = "Move the next spawned client to tag #;don't focus", group = "tag" }
   end
   globalKeys = gtable.join(
     globalKeys,
     -- View tag only.
-    awful.key({ modkey }, "#" .. i + 9, function()
-      local screen = awful.screen.focused() ---@type AwesomeScreenInstance
-      local tag = screen.tags[i]
-      if tag then tag:view_only() end
-    end, descr_view),
+    awful.key({ modkey }, "#" .. i + 9, bind.with_args(tags.show_tag, i), descr_view),
     -- Toggle tag display.
-    awful.key({ modkey, "Control" }, "#" .. i + 9, function()
-      local screen = awful.screen.focused() ---@type AwesomeScreenInstance
-      local tag = screen.tags[i]
-      if tag then awful.tag.viewtoggle(tag) end
-    end, descr_toggle),
+    awful.key({ modkey, "Control" }, "#" .. i + 9, bind.with_args(tags.show_tag, i, true), descr_toggle),
     -- Move client to tag.
     awful.key({ modkey, "Shift" }, "#" .. i + 9, function()
-      if capi.client.focus then
-        local tag = capi.client.focus.screen.tags[i]
-        if tag then capi.client.focus:move_to_tag(tag) end
-      end
+      local c = capi.client.focus
+      local tag = c and tags.get_tag(i, c)
+      if not c or not tag then return end
+      if tag then c:move_to_tag(tag) end
     end, descr_move),
     -- Move client to tag and focus
     awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
-      if capi.client.focus then
-        local tag = capi.client.focus.screen.tags[i]
-        if tag then
-          capi.client.focus:move_to_tag(tag)
-          tag:view_only()
-        end
-      end
+      local c = capi.client.focus
+      local tag = c and tags.get_tag(i, c)
+      if not c or not tag then return end
+      c:move_to_tag(tag)
+      c:jump_to()
     end, descr_move_view),
     -- Toggle tag on focused client.
-    awful.key({ modkey, "Shift", altkey }, "#" .. i + 9, function()
-      if capi.client.focus then
-        local tag = capi.client.focus.screen.tags[i]
-        if tag then capi.client.focus:toggle_tag(tag) end
-      end
+    awful.key({ modkey, "Control", altkey }, "#" .. i + 9, function()
+      local c = capi.client.focus
+      local tag = c and tags.get_tag(i, c)
+      if not c or not tag then return end
+      c:toggle_tag(tag)
     end, descr_toggle_focus),
     -- Move next spawned window to tag.
-    awful.key({ modkey, altkey }, "#" .. i + 9, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned)
+    awful.key({ modkey, altkey }, "#" .. i + 9, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned),
+    -- Move next spawned window to tag. Don't focus.
+    awful.key(
+      { modkey, "Shift", altkey },
+      "#" .. i + 9,
+      bind.with_args(setup_next_spawned_handler, i, false),
+      descr_next_spawned_no_jump
+    )
   )
 end
 
