@@ -18,12 +18,9 @@ end)
 ---@return boolean success
 ---@return string? error error message if failed
 function compositor._spawn()
-  if type(pid_or_err) == "string" then
-    return false, pid_or_err
-  else
-    return true
-  end
   local pid_or_err = spawn.noninteractive(compositor.cmd)
+  if type(pid_or_err) == "string" then return false, pid_or_err end
+  return true
 end
 ---This is a private function. Do not call it directly.
 ---@param force boolean? kill with SIGKILL. Not recommended. Default false (SIGTERM).
@@ -36,8 +33,8 @@ function compositor._stop(force)
     or capi.awesome.unix_signal["SIGTERM"] -- SIGTERM. Ask Nicely to Stop.
     or 15 -- Default value for SIGTERM incase something went wrong.
   local suc = capi.awesome.kill(pid, sig)
-  if suc then return true end
-  return false, "Could not stop compositor."
+  if not suc then return false, "Could not stop compositor." end
+  return true
 end
 
 ---@return integer? pid pid of the compositor. Nil if not found.
@@ -58,8 +55,8 @@ function compositor.is_running()
   local pid = compositor.get_pid()
   if not pid then return false end
   local suc = capi.awesome.kill(pid, 0) -- zero means just check if it exists!
-  if suc then return true, pid end
-  return false
+  if not suc then return false end
+  return true, pid
 end
 ---Toggle the compositor
 ---@return boolean success true if the compositor was toggled successfully, false otherwise
