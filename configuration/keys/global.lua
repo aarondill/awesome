@@ -2,6 +2,7 @@ local compat = require("util.compat")
 local require = require("util.rel_require")
 local tags = require("util.tags")
 
+local aclient = require("awful.client")
 local apps = require("configuration.apps")
 local awful = require("awful")
 local bind = require("util.bind")
@@ -58,10 +59,10 @@ local globalKeys = gtable.join(
 
   -- Client management
   awful.key({ modkey }, "j", function()
-    awful.client.focus.byidx(1)
+    aclient.focus.byidx(1)
   end, { description = "Focus next by index", group = "client" }),
   awful.key({ modkey }, "k", function()
-    awful.client.focus.byidx(-1)
+    aclient.focus.byidx(-1)
   end, { description = "Focus previous by index", group = "client" }),
 
   awful.key({ modkey }, "r", open_main_menu, { description = "Main Menu", group = "awesome" }),
@@ -82,10 +83,10 @@ local globalKeys = gtable.join(
   -- Layout management
 
   awful.key({ modkey, "Shift" }, "j", function()
-    awful.client.swap.byidx(1)
+    aclient.swap.byidx(1)
   end, { description = "Swap with next client by index", group = "client" }),
   awful.key({ modkey, "Shift" }, "k", function()
-    awful.client.swap.byidx(-1)
+    aclient.swap.byidx(-1)
   end, { description = "Swap with previous client by index", group = "client" }),
   awful.key({ modkey, "Control" }, "j", function()
     awful.screen.focus_relative(1)
@@ -93,16 +94,16 @@ local globalKeys = gtable.join(
   awful.key({ modkey, "Control" }, "k", function()
     awful.screen.focus_relative(-1)
   end, { description = "Focus the previous screen", group = "screen" }),
-  awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "Jump to urgent client", group = "client" }),
+  awful.key({ modkey }, "u", aclient.urgent.jumpto, { description = "Jump to urgent client", group = "client" }),
 
   awful.key({ altkey }, "Tab", function()
-    --awful.client.focus.history.previous()
-    awful.client.focus.byidx(1)
+    --aclient.focus.history.previous()
+    aclient.focus.byidx(1)
     if capi.client.focus then capi.client.focus:raise() end
   end, { description = "Switch to next window", group = "client" }),
   awful.key({ altkey, "Shift" }, "Tab", function()
-    --awful.client.focus.history.previous()
-    awful.client.focus.byidx(-1)
+    --aclient.focus.history.previous()
+    aclient.focus.byidx(-1)
     if capi.client.focus then capi.client.focus:raise() end
   end, { description = "Switch to previous window", group = "client" }),
 
@@ -173,7 +174,7 @@ local globalKeys = gtable.join(
   end, { description = "Select previous", group = "layout" }),
 
   awful.key({ modkey, "Control" }, "n", function()
-    local c = awful.client.restore()
+    local c = aclient.restore()
     -- Focus restored client
     if c then c:emit_signal("request::activate", "key.unminimize", { raise = true }) end
   end, { description = "Restore minimized", group = "client" }),
