@@ -12,7 +12,7 @@ local slider = wibox.widget({
 })
 
 slider:connect_signal("property::value", function()
-  spawn.noninteractive({ "amixer", "-D", "pulse", "sset", "Master", slider.value .. "%" }, { sn_rules = false })
+  spawn.noninteractive_nosn({ "amixer", "-D", "pulse", "sset", "Master", slider.value .. "%" })
 end)
 
 watch("amixer -D pulse sget Master", 1, function(_, stdout)

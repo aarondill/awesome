@@ -25,9 +25,9 @@ local widget = wibox.widget({
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
 widget_button:buttons(gtable.join(awful.button({}, 1, nil, function()
   if updateAvailable then
-    spawn("pamac-manager --updates", { sn_rules = false })
+    spawn.nosn("pamac-manager --updates")
   else
-    spawn("pamac-manager", { sn_rules = false })
+    spawn.nosn("pamac-manager")
   end
 end)))
 

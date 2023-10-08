@@ -181,34 +181,34 @@ local globalKeys = gtable.join(
   -- Brightness
   awful.key({}, "XF86MonBrightnessUp", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive(apps.default.brightness.up, { sn_rules = false })
+    spawn.noninteractive_nosn(apps.default.brightness.up)
   end, { description = "Brightness up", group = "hotkeys" }),
   awful.key({}, "XF86MonBrightnessDown", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive(apps.default.brightness.down, { sn_rules = false })
+    spawn.noninteractive_nosn(apps.default.brightness.down)
   end, { description = "Brightness down", group = "hotkeys" }),
   -- volume control
   awful.key({}, "XF86AudioRaiseVolume", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive(apps.default.volume.up, { sn_rules = false })
+    spawn.noninteractive_nosn(apps.default.volume.up)
   end, { description = "Volume up", group = "hotkeys" }),
   awful.key({}, "XF86AudioLowerVolume", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive(apps.default.volume.down, { sn_rules = false })
+    spawn.noninteractive_nosn(apps.default.volume.down)
   end, { description = "Volume down", group = "hotkeys" }),
   awful.key({}, "XF86AudioMute", function()
     -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive(apps.default.volume.toggle_mute, { sn_rules = false })
+    spawn.noninteractive_nosn(apps.default.volume.toggle_mute)
   end, { description = "Toggle mute", group = "hotkeys" }),
 
   awful.key({}, "XF86AudioPlay", function()
-    spawn.noninteractive({ "playerctl", "play-pause" }, { sn_rules = false })
+    spawn.noninteractive_nosn({ "playerctl", "play-pause" })
   end, { description = "Play/Pause Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioNext", function()
-    spawn.noninteractive({ "playerctl", "next" }, { sn_rules = false })
+    spawn.noninteractive_nosn({ "playerctl", "next" })
   end, { description = "Next Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioPrev", function()
-    spawn.noninteractive({ "playerctl", "previous" }, { sn_rules = false })
+    spawn.noninteractive_nosn({ "playerctl", "previous" })
   end, { description = "Previous Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86PowerDown", function()
     require("module.exit-screen").show()
