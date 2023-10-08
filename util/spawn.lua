@@ -99,6 +99,24 @@ function spawn.noninteractive(cmd, opts)
   return spawn.spawn(cmd, opts)
 end
 
+---See spawn.spawn and spawn.noninteractive for more information
+---Stops Awesome from waiting for the process to startup.
+---Also calls spawn.noninteractive.
+---If this is not desired, call spawn.spawn with {sn_rules=false} or pass {inherit_std*=true}.
+---@param cmd string|string[]
+---@param opts SpawnOptions?
+---@return integer|string pid_or_error
+---@return string? snid
+---@return integer? stdin_fd
+---@return integer? stdout_fd
+---@return integer? stderr_fd
+---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
+function spawn.nosn(cmd, opts)
+  opts = opts or {}
+  opts.sn_rules = opts.sn_rules or false
+  return spawn.noninteractive(cmd, opts)
+end
+
 setmetatable(spawn, {
   __call = function(_, ...)
     return spawn.spawn(...)
