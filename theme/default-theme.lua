@@ -36,7 +36,7 @@ local function do_theme(theme, theme_dir)
   theme.hotkeys_bg = theme.bg_normal:match("^#......") .. "DD" -- Add transparency
 
   -- Borders
-  theme.useless_gap = dpi(0)
+  theme.useless_gap = dpi(4)
   theme.border_width = dpi(2)
   compat.beautiful.set_border_normal(theme, theme.bg_normal)
   compat.beautiful.set_border_focus(theme, theme.fg.hue_900)
