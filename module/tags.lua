@@ -30,7 +30,6 @@ awful.screen.connect_for_each_screen(function(s)
       name = i,
       layout = layouts[1] or awful.layout.suit.tile,
       gap_single_client = true,
-      gap = 4,
       screen = s,
       selected = i == 1,
     }, tag or {})
