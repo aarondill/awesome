@@ -1,6 +1,6 @@
 local require = require("util.rel_require")
 
--- local compositor = require(..., "compositor") ---@module "configuration.apps.compositor"
+local compositor = require(..., "compositor") ---@module "configuration.apps.compositor"
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
@@ -18,7 +18,7 @@ local run_on_startup = {
   "dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
   { "xsettingsd", "-c", config_file_dir .. "/xsettingsd.conf" },
   { polkit }, -- Authentication popup
-  -- compositor.cmd, -- A Xorg Compositor (Picom)
+  compositor.cmd, -- A Xorg Compositor (Picom)
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
