@@ -53,6 +53,8 @@ require("module.exit-screen")
 require("module.client")
 require("module.titlebar")
 
+require("configuration.apps.compositor").start() -- Start the compositor on startup
+
 -- Setup all configurations
 require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
