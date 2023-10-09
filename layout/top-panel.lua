@@ -19,10 +19,11 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
 local TopPanel = function(s)
+  local top_panel_height = beautiful.top_panel_height or dpi(32)
   local panel = wibox({
     ontop = true,
     screen = s,
-    height = dpi(32),
+    height = top_panel_height,
     width = s.geometry.width,
     x = s.geometry.x,
     y = s.geometry.y,
@@ -30,7 +31,7 @@ local TopPanel = function(s)
     bg = beautiful.bg_normal,
     fg = beautiful.fg_normal,
   })
-  panel:struts({ top = dpi(32) })
+  panel:struts({ top = top_panel_height })
   local clock_widget = wibox.widget({
     {
       -- 24h format: %H:%M
