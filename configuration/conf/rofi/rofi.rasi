@@ -3,6 +3,7 @@
   fg-var: #d3d7cf; // Text color
   active-background-var: #37474F; // The background color for selected
   font-var: "Roboto medium 10"; // the font to use
+  panel-height: 100%; // height of the panel. Anchored to bottom.
 
   // Actual properties
   background-color: var(bg-var);
@@ -10,10 +11,10 @@
 }
 
 window {
-  location: west;
-  anchor: west;
+  location: southwest;
+  anchor: southwest;
   x-offset: 0px;
-  height: 100%;
+  height: var(panel-height);
   margin-right: 60px;
   orientation: horizontal;
   line-margin: 2;
