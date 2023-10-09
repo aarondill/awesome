@@ -23,6 +23,7 @@ local conf = strings.line2str({
   prop("fg-var", beautiful.rofi_fg),
   prop("active-background-var", beautiful.rofi_active_background),
   prop("font-var", beautiful.font, true),
+  prop("top-height", beautiful.top_panel_height),
   "}",
   "// vim" .. ":ft=css commentstring=//%s:", -- hack to stop vim from processing this modeline here
 })

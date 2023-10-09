@@ -43,6 +43,8 @@ local function do_theme(theme, theme_dir)
   theme.border_width = dpi(2)
   theme.border_marked = theme.fg_urgent
 
+  theme.top_panel_height = dpi(32)
+
   -- Menu
   theme.menu_height = dpi(16)
   theme.menu_width = dpi(160)
