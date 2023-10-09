@@ -1,4 +1,5 @@
 local capi = require("capi")
+local notifs = require("util.notifs")
 local require = require("util.rel_require")
 local spawn = require("util.spawn")
 
@@ -13,12 +14,33 @@ capi.awesome.connect_signal("exit", function()
   os.remove(compositor.pid_file) -- cleanup the file on exit
 end)
 
+---@param reason "exit"|"signal"
+---@param code integer
+---@param output_signals boolean? Whether to output on a signal. Defaults to true.
+---@return string? msg a human readable error message.
+local function exit_msg(reason, code, output_signals)
+  if reason == "exit" then
+    if code == 0 then return end -- Exited successfully.
+    return ("exited with a code of %d!"):format(code)
+  end -- After this, reason must be "signal"
+  if code == capi.awesome.unix_signal["SIGSEGV"] then return "segfaulted!" end --- Segfault should be treated specially!
+  if not output_signals then return end -- No output for signals other than SIGSEGV.
+
+  local signame = capi.awesome.unix_signal[code] -- Get the name of the signal
+  return ("exited with signal %s"):format(signame or code) --- Name if available, else signal number.
+end
 ---This is a private function. Do not call it directly.
 ---Note: This expects you to check if the compositor is running before calling!
 ---@return boolean success
 ---@return string? error error message if failed
 function compositor._spawn()
-  local pid_or_err = spawn.noninteractive_nosn(compositor.cmd)
+  local pid_or_err = spawn.noninteractive_nosn(compositor.cmd, {
+    exit_callback = function(reason, code)
+      local msg = exit_msg(reason, code, false)
+      if not msg then return end
+      notifs.warn(msg, { title = "Compositor Crash!", timeout = 45 })
+    end,
+  })
   if type(pid_or_err) == "string" then return false, pid_or_err end
   return true
 end
