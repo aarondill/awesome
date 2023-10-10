@@ -1,7 +1,8 @@
 local awful = require("awful")
-local gtable = require("gears.table")
-local installed = require("util.installed")
+local bind = require("util.bind")
+local clickable_container = require("widget.material.clickable-container")
 local replace_in_widget = require("util.replace_in_widget")
+local which = require("util.which")
 -- replace_if_present(cmd, replace_widget, replace_in, function(path, replace_widget, replace_in)
 -- Do something with path (guarenteed to be non-nil)
 -- end)
@@ -12,19 +13,11 @@ local replace_in_widget = require("util.replace_in_widget")
 local function make_clickable_if_prog(cmd, replace_widget, replace_in, cb)
   if not cmd or not replace_widget or not replace_in or not cb then error("Replace_if_present requires 4 arguments") end
   if type(cmd) == "table" then cmd = cmd[1] end
-  --stylua: ignore
   if not cmd then return end
-  installed(cmd, function(path_or_nil)
-    if path_or_nil then
-      local clickable = require("widget.material.clickable-container")(replace_widget)
-      clickable:buttons(gtable.join(
-        -- Call callback on click
-        awful.button({}, 1, nil, function()
-          return cb(path_or_nil, replace_widget, replace_in)
-        end)
-      ))
-      replace_in_widget(replace_in, replace_widget, clickable)
-    end
-  end)
+  local path_or_nil = which(cmd)
+  if not path_or_nil then return end
+  local buttons = awful.button({}, 1, nil, bind.with_args(cb, path_or_nil, replace_widget, replace_in)) -- Call callback on click
+  local clickable = clickable_container(replace_widget, buttons)
+  return replace_in_widget(replace_in, replace_widget, clickable)
 end
 return make_clickable_if_prog
