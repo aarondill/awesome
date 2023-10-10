@@ -1,3 +1,4 @@
+local bind = require("util.bind")
 local require = require("util.rel_require")
 
 local rofi_command = require(..., "rofi_command") ---@module "configuration.apps.rofi_command"
@@ -5,15 +6,15 @@ local xdg_user_dir = require("util.xdg_user_dir")
 local terminal = "wezterm"
 
 -- List of apps to start by default on some actions - Don't use shell features.
----@type (string|string[])[]
+---@type (CommandProvider)[]
 local default = {
   battery_manager = { "gnome-power-statistics" },
   system_manager = { "gnome-system-monitor" },
   calendar = { "gnome-calendar" },
   -- Above are only used *if* installed
   terminal = { terminal },
-  rofi = rofi_command(),
-  rofi_window = rofi_command("window"),
+  rofi = bind.with_args(rofi_command),
+  rofi_window = bind.with_args(rofi_command, "window"),
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
   region_screenshot = { "flameshot", "gui", "-p", xdg_user_dir("PICTURES") .. "/Screenshots", "-c" },
   browser = { "vivaldi-stable" },
