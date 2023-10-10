@@ -17,6 +17,16 @@ function M.str2line(str)
   if type(str) ~= "string" then error("Expected string. Found: " .. type(str) .. " instead.") end
   return gstring.split(str, "\n")
 end
+---@nodiscard
+---@param str string
+---@param split string
+function M.split(str, split)
+  if not str then return str end
+  if not split or split == "" then return { str } end
+  if type(str) ~= "string" then error("Expected string. Found: " .. type(str) .. " instead.") end
+  if type(split) ~= "string" then error("Expected string. Found: " .. type(split) .. " instead.") end
+  return gstring.split(str, split)
+end
 ---Make the first letter uppercase
 ---@nodiscard
 ---@param str string
