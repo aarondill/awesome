@@ -219,6 +219,7 @@ types.AwesomeScreen = {}
 ---@class AwesomeScreenInstance :AwesomeSignalClass
 types.AwesomeScreenInstance = {
   tags = {}, ---@type AwesomeTagInstance[]
+  geometry = { height = 0, width = 0, x = 0, y = 0 },
 }
 ---@class AwesomeButton :AwesomeSignalClass
 types.AwesomeButton = {}
