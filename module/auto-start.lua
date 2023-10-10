@@ -3,12 +3,12 @@
 local DEBUG = require("configuration").DEBUG
 
 local apps = require("configuration.apps")
-local awful = require("awful")
 local capi = require("capi")
 local file_write = require("util.file.write_async")
 local gfilesystem = require("gears.filesystem")
 local notifs = require("util.notifs")
 local serialize_table = require("util.serialize_table")
+local spawn = require("util.spawn")
 
 --- Directory for logging failed(?) application's output
 --- This *MUST* end in a slash
@@ -32,61 +32,50 @@ local function run_once(cmd)
 
   --- Used in log to ensure that the date matches the *start* date, not the *end* date
   local CMD_DATE = os.date() ---@cast CMD_DATE string
-  local pid = awful.spawn.easy_async(
-    cmd,
-    ---@param stdout string
-    ---@param stderr string
-    ---@param exitreason "exit"|"signal"
-    ---@param exitcode integer
-    function(stdout, stderr, exitreason, exitcode)
-      if exitreason == "exit" and exitcode == 0 then return end
-      if exitreason == "exit" and exitcode == 127 and not DEBUG then
-        -- Command not found.
-        -- I don't want a warning.
-        -- Remove this to send notifications for missing commands.
-        return nil
-      end
+  local pid = spawn.async(cmd, function(stdout, stderr, exitreason, exitcode)
+    if exitreason == "exit" and exitcode == 0 then return end
+    -- Command not found. I don't want a warning.
+    -- Remove this to send notifications for missing commands.
+    if exitreason == "exit" and exitcode == 127 and not DEBUG then return end
 
-      --- The pid of the process. Don't assume this exists. Race Conditions.
-      local pid = processes[cmd]
-      --- Files to write to. These may be nil.
-      local log_file_stdout, log_file_stderr
-      -- Exclude sigterm, as it was likely user input anyways.
-      if pid and not (exitreason == "signal" and exitcode == capi.awesome.unix_signal.SIGTERM) then
-        log_file_stdout = log_dir .. pid .. "-stdout.log"
-        log_file_stderr = log_dir .. pid .. "-stderr.log"
-      end
-      if log_file_stdout and log_file_stderr then
-        --- Header for the log file
-        local header = ([[Command: %s
-Date: %s
-----------------------------------------
-]]):format(type(cmd) == "table" and serialize_table(cmd) or cmd, CMD_DATE)
-        -- Ensure it exists!
-        gfilesystem.make_parent_directories(log_file_stdout)
-        gfilesystem.make_parent_directories(log_file_stderr)
-        -- *Async* write.
-        file_write(log_file_stdout, header .. stdout)
-        file_write(log_file_stderr, header .. stderr)
-      end
-
-      local text = ""
-      if exitreason == "signal" then
-        if exitcode == capi.awesome.unix_signal.SIGSEGV then -- Segfault
-          text = "Segfaulted!"
-        else
-          local signame = tostring(capi.awesome.unix_signal[exitcode])
-          text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
-        end
-      else
-        text = string.format("exit code: %d", exitcode)
-      end
-      if log_file_stdout and log_file_stderr then
-        text = text .. ("\nLogs are available at:\n%s\n%s"):format(log_file_stdout, log_file_stderr)
-      end
-      err(cmd, text)
+    --- The pid of the process. Don't assume this exists. Race Conditions.
+    local pid = processes[cmd]
+    --- Files to write to. These may be nil.
+    local log_file_stdout, log_file_stderr
+    -- Exclude sigterm, as it was likely user input anyways.
+    if pid and not (exitreason == "signal" and exitcode == capi.awesome.unix_signal.SIGTERM) then
+      log_file_stdout = log_dir .. pid .. "-stdout.log"
+      log_file_stderr = log_dir .. pid .. "-stderr.log"
     end
-  )
+    if log_file_stdout and log_file_stderr then
+      --- Header for the log file
+      local header = table
+        .concat({ "Command: %s", "Date: %s", "----------------------------------------", "" }, "\n")
+        :format(type(cmd) == "table" and serialize_table(cmd) or cmd, CMD_DATE)
+      -- Ensure it exists!
+      gfilesystem.make_parent_directories(log_file_stdout)
+      gfilesystem.make_parent_directories(log_file_stderr)
+      -- *Async* write.
+      file_write(log_file_stdout, header .. stdout)
+      file_write(log_file_stderr, header .. stderr)
+    end
+
+    local text = ""
+    if exitreason == "signal" then
+      if exitcode == capi.awesome.unix_signal.SIGSEGV then -- Segfault
+        text = "Segfaulted!"
+      else
+        local signame = tostring(capi.awesome.unix_signal[exitcode])
+        text = string.format("killed with signal: %d (%s)", tostring(exitcode), signame)
+      end
+    else
+      text = string.format("exit code: %d", exitcode)
+    end
+    if log_file_stdout and log_file_stderr then
+      text = text .. ("\nLogs are available at:\n%s\n%s"):format(log_file_stdout, log_file_stderr)
+    end
+    err(cmd, text)
+  end)
   if type(pid) == "number" then
     return pid
   elseif DEBUG then
