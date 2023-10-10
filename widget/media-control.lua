@@ -188,7 +188,7 @@ function MediaControl:info(cb)
       table.concat(format_stats, "\n"),
     })
   end
-  awful.spawn.easy_async(cmd, function(stdout, _, exit_reason, exit_code)
+  spawn.async(cmd, function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
     ---@class MediaControl.info
     local info = {
