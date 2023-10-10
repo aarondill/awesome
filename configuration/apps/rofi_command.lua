@@ -1,15 +1,16 @@
 local require = require("util.rel_require")
+local rofi_dynamic = require("configuration.rofi_dynamic")
 
 require("configuration.rofi_dynamic", nil, false) -- just in case the rc doesn't import this
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 
----create a rofi command
----@param ... string
+---Create a rofi command
+---@param mode string?
 ---@return string[]
-local function rofi_command(...)
+local function rofi_command(mode)
+  rofi_dynamic() -- Write config
   -- Thanks to jo148 on github for making rofi dpi aware!
   local xres = require("beautiful").xresources
-  local args = { ... }
   -- Ends in -show to pick default, but can be overridden by appending a mode
   local cmd = {
     "rofi",
@@ -20,11 +21,8 @@ local function rofi_command(...)
     "-theme",
     config_file_dir .. "/rofi/config.rasi",
     "-show",
+    mode,
   }
-  for i, v in ipairs(args) do
-    if type(v) ~= "string" then error(string.format("Invalid argument #%d. Expected string, got %s", i, type(v)), 2) end
-    table.insert(cmd, v)
-  end
   return cmd
 end
 return rofi_command
