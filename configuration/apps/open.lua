@@ -5,45 +5,47 @@ local default = require(..., "default") ---@module 'configuration.apps.default'
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 
+local open = {}
+
 ---Open a terminal with the given command
 ---@param cmd? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
-local function open_terminal(cmd, spawn_options)
+function open.terminal(cmd, spawn_options)
   local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
-  spawn(do_cmd, spawn_options)
+  return spawn(do_cmd, spawn_options)
 end
 ---Open a quake terminal
 ---@param class string
-local function open_quake_terminal(class)
+function open.quake_terminal(class)
   --HACK: This only works with wezterm!
   local do_cmd = concat_command(default.terminal, { "start", "--class", class })
-  spawn(do_cmd)
+  return spawn(do_cmd)
 end
 
 ---Open a editor with the given file
 ---@param file? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
-local function open_editor(file, spawn_options)
+function open.editor(file, spawn_options)
   local do_cmd = file and concat_command(concat_command(default.editor, { "-e" }), file) or default.editor
-  spawn(do_cmd, spawn_options)
+  return spawn(do_cmd, spawn_options)
 end
 ---Open a browser with the given url
 ---@param url? string|string[]
 ---@param new_window? boolean whether to create a new window - default false
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
-local function open_browser(url, new_window, spawn_options)
+function open.browser(url, new_window, spawn_options)
   local new_window_arg = { "--new-window" }
   local do_cmd = default.browser ---@type string|string[]
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
   -- Use the user specified if present
-  spawn.noninteractive(do_cmd, spawn_options)
+  return spawn.noninteractive(do_cmd, spawn_options)
 end
 ---Open the lock screen
 ---Note, this doesn't block.
 ---Don't notify due to failure. This function will handle that.
 ---@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
-local function open_lock(exit_cb)
+function open.lock(exit_cb)
   local pid = spawn.noninteractive(default.lock, {
     sn_rules = false,
     exit_callback = function(reason, code)
@@ -59,10 +61,4 @@ local function open_lock(exit_cb)
   if exit_cb and type(pid) == "string" then exit_cb(false) end
 end
 
-return {
-  browser = open_browser,
-  editor = open_editor,
-  lock = open_lock,
-  quake_terminal = open_quake_terminal,
-  terminal = open_terminal,
-}
+return open
