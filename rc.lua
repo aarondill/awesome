@@ -56,7 +56,7 @@ require("module.titlebar")
 require("configuration.apps.compositor").start() -- Start the compositor on startup
 
 -- Setup all configurations
-require("configuration.rofi_dynamic") -- Async setup of rofi for current theme
+require("configuration.rofi_dynamic")() -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
 capi.root.keys(require("configuration.keys.global"))
 
