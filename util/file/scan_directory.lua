@@ -22,7 +22,7 @@ local function enumerate_handler(content, args, cb, ret)
     -- max files have been hit -- or invalid input
     return enumerate_handler_finish(content, cb, ret)
   end
-  content:next_files_async(block_size, 0, nil, function(file_enum, task2)
+  return content:next_files_async(block_size, 0, nil, function(file_enum, task2)
     local file_list = file_enum:next_files_finish(task2)
     for _, file in ipairs(file_list) do
       local ret_attr, has_attr = {}, false
