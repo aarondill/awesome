@@ -1,12 +1,19 @@
+---Much of this came from awful.spawn!
 local awful_spawn = require("awful.spawn")
 local capi = require("capi")
+local gtable = require("gears.table")
 local iscallable = require("util.iscallable")
+local lgi = require("lgi")
+local Gio = lgi.Gio
+local GLib = lgi.GLib
 
 ---@alias Command string|string[]
 ---@alias CommandProvider Command | fun(opts: SpawnOptions): Command
 
 ---@class SpawnModule
 local spawn = {}
+
+---- Spawn Functions
 
 ---@class SpawnOptions
 ---The callback to call when the application starts.
@@ -85,7 +92,6 @@ function spawn.spawn(cmd, opts)
   end
   return pid_or_error, snid, stdin, stdout, stderr
 end
-
 ---See spawn.spawn for more information
 ---Stops the process from inheriting the process io
 ---@param cmd CommandProvider
@@ -137,6 +143,174 @@ function spawn.noninteractive_nosn(cmd, opts)
   opts.sn_rules = opts.sn_rules or false
   return spawn.noninteractive(cmd, opts)
 end
+--- Spawn a program using the shell.
+---This calls `cmd` with `$SHELL -c` (via `awful.util.shell`).
+---@param cmd string The command.
+function spawn.with_shell(cmd, opts)
+  if not cmd or cmd == "" then error("No command specified.", 2) end
+  return spawn.nosn({ require("awful.util").shell, "-c", cmd }, opts)
+end
+
+----- Asynchronous Functions:
+local function get_end_of_file_func()
+  -- API changes, bug fixes and lots of fun. Figure out how a EOF is signalled.
+  -- No idea when this API changed, but some versions expect a string,
+  -- others a table with some special(?) entries
+  local suc, d = pcall(Gio.MemoryInputStream.new_from_data, "")
+  if not suc then d = Gio.MemoryInputStream.new_from_data({}) end
+  local input = Gio.DataInputStream.new(d)
+  local line, length = input:read_line()
+  if not line then
+    return function(arg)
+      return not arg -- Fixed in 2016: NULL on the C side is transformed to nil in Lua
+    end
+  end
+
+  assert(tostring(line) == "", "Cannot determine how to detect EOF")
+
+  if #line ~= length then
+    -- "Historic" behaviour for end-of-file:
+    -- - NULL is turned into an empty string
+    -- - The length variable is not initialized
+    -- It's highly unlikely that the uninitialized variable has value zero.
+    return function(arg1, arg2) -- Use this hack to detect EOF.
+      return #arg1 ~= arg2
+    end
+  end
+
+  -- The above uninitialized variable was fixed and thus length is always 0 when line is NULL in C.
+  -- We cannot tell apart an empty line and EOF in this case.
+  require("gears.debug").print_warning("Cannot reliably detect EOF on an GIOInputStream with this LGI version")
+  return function(arg)
+    return tostring(arg) == ""
+  end
+end
+local end_of_file = get_end_of_file_func()
+
+---@class Gio.InputStream
+
+---@param cb fun(line: string) called with each line read
+---@param done fun(error: userdata?) called when done
+local function read_lines_handler(stream, cb, done)
+  if not stream then error("stream is nil") end
+  if not cb and not done then error("no callback specified!") end
+  return stream:read_line_async(GLib.PRIORITY_DEFAULT, nil, function(obj, res)
+    local line, length = obj:read_line_finish(res)
+    -- Error
+    if type(length) ~= "number" then
+      print("Error in read_lines:", tostring(length))
+      if not done then return end
+      return done(length)
+    end
+    if end_of_file(line, length) then
+      if not done then return end
+      return done()
+    end
+    -- This needs tostring() for older lgi versions which returned "GLib.Bytes" instead of Lua strings (I guess)
+    if cb then cb(tostring(line) or "") end
+
+    -- Read the next line
+    return read_lines_handler(stream, cb, done)
+  end)
+end
+--- Read lines from a Gio input stream
+---@param input_stream Gio.InputStream The input stream to read from.
+---@param line_callback fun(line: string) Function that is called with each line read, e.g. `line_callback(line_from_stream)`.
+---@param done_callback? fun(error: userdata?) Function that is called when the operation finishes (e.g. due to end of file).
+---@param close boolean? Should the stream be closed after end-of-file? default true
+---@return nil
+function spawn.read_lines(input_stream, line_callback, done_callback, close)
+  if done_callback and not iscallable(done_callback) then error("done_callback must be callable") end
+  if line_callback and not iscallable(line_callback) then error("line_callback must be callable") end
+  close = close == nil and true or close ---@cast close boolean
+  local stream = Gio.DataInputStream.new(input_stream)
+  local function done()
+    if close then stream:close() end
+    stream:set_buffer_size(0)
+    if done_callback then done_callback() end
+  end
+  return read_lines_handler(stream, line_callback, done)
+end
+---@class LineCallbacks
+---@field stdout? fun(line: string) called with each line read from stdout
+---@field stderr? fun(line: string) called with each line read from stderr
+---@field done? fun(error: userdata?) called when done
+---@field output_done? fun(error: userdata?) called when done. Note: this is deprecated and is only for compatibility with awful.spawn.with_line_callback
+---@field exit? fun(reason: "exit"|"signal", code: integer) called when exited. Note: this is deprecated and is only for compatibility with awful.spawn.with_line_callback
+
+---@param cmd CommandProvider
+---@param callbacks LineCallbacks?
+---@param opts SpawnOptions?
+---@return integer? pid
+---@return string? error
+function spawn.with_lines(cmd, callbacks, opts)
+  callbacks = callbacks or {}
+  opts = opts or {}
+  local stdout_callback, stderr_callback = callbacks.stdout, callbacks.stderr
+  local done_callback = callbacks.done or callbacks.output_done
+
+  local new_opts = gtable.join(opts, {
+    sn_rules = false,
+    inherit_stdin = false,
+    inherit_stdout = not stdout_callback,
+    inherit_stderr = not stderr_callback,
+  })
+  new_opts.exit_callback = opts.exit_callback or callbacks.exit ---For reverse compatibility with awful.spawn.with_line_callback
+
+  local pid, _, _, stdout, stderr = spawn.spawn(cmd, new_opts)
+  if type(pid) == "string" then return nil, pid end -- Error
+
+  local streams_left = 0
+  streams_left = streams_left + (stdout_callback and 1 or 0)
+  streams_left = streams_left + (stderr_callback and 1 or 0)
+
+  local function step_done()
+    streams_left = streams_left - 1
+    if streams_left > 0 then return end
+    if done_callback then return done_callback() end
+  end
+
+  if stdout_callback then spawn.read_lines(Gio.UnixInputStream.new(stdout, true), stdout_callback, step_done, true) end
+  if stderr_callback then spawn.read_lines(Gio.UnixInputStream.new(stderr, true), stderr_callback, step_done, true) end
+  return pid, nil
+end
+spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awful.spawn.with_line_callback
+--- Asynchronously spawn a program and capture its output. (wraps `spawn.with_line_callback`).
+---@param cmd CommandProvider what to run.
+---@param callback fun(stdout: string, stderr: string, reason: "exit"|"signal", code: integer)
+---@param opts SpawnOptions?
+---@return integer? pid
+---@return string? error
+function spawn.async(cmd, callback, opts)
+  opts = opts or {}
+  local stdout, stderr = "", ""
+  local exitcode, exitreason
+  local function done_callback()
+    return callback(stdout, stderr, exitreason, exitcode)
+  end
+
+  local exit_callback_fired = false
+  local output_done_callback_fired = false
+  function opts.exit_callback(reason, code)
+    exitcode = code
+    exitreason = reason
+    exit_callback_fired = true
+    if output_done_callback_fired then return done_callback() end
+  end
+  return spawn.with_line_callback(cmd, {
+    stdout = function(str)
+      stdout = stdout .. str .. "\n"
+    end,
+    stderr = function(str)
+      stderr = stderr .. str .. "\n"
+    end,
+    done = function()
+      output_done_callback_fired = true
+      if exit_callback_fired then return done_callback() end
+    end,
+  }, opts)
+end
+spawn.easy_async = spawn.async -- Backwards compatability with awful.spawn.easy_async
 
 setmetatable(spawn, {
   __call = function(_, ...)
