@@ -1,5 +1,9 @@
 local awful_spawn = require("awful.spawn")
 local capi = require("capi")
+local iscallable = require("util.iscallable")
+
+---@alias Command string|string[]
+---@alias CommandProvider Command | fun(opts: SpawnOptions): Command
 
 ---@class SpawnModule
 local spawn = {}
@@ -38,7 +42,7 @@ local spawn = {}
 ---````
 ---If there was an error spawning the command, the first returned value will be the error message (a string) and all other values will be nil
 ---
----@param cmd string|string[]
+---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@return integer|string pid_or_error the pid of the process if the process was started successfully, else a string error message
 ---@return string? snid
@@ -59,11 +63,12 @@ local spawn = {}
 ---Note: start_callback only works when opts.sn_rules is given
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.spawn(cmd, opts)
+  opts = opts or {}
+  if cmd and iscallable(cmd) then cmd = cmd(opts) end ---@cast cmd Command
   if not cmd or #cmd == 0 then
     error("No command specified.", 2)
     return -1 -- Should never happen
   end
-  opts = opts or {}
   local start_callback, exit_callback = opts.start_callback, opts.exit_callback
   local use_sn = opts.sn_rules ~= false
   local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
@@ -83,7 +88,7 @@ end
 
 ---See spawn.spawn for more information
 ---Stops the process from inheriting the process io
----@param cmd string|string[]
+---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@return integer|string pid_or_error
 ---@return string? snid
@@ -101,7 +106,7 @@ end
 
 ---See spawn.spawn and spawn.noninteractive for more information
 ---Stops Awesome from waiting for the process to startup.
----@param cmd string|string[]
+---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@return integer|string pid_or_error
 ---@return string? snid
@@ -119,7 +124,7 @@ end
 ---Stops Awesome from waiting for the process to startup.
 ---Also calls spawn.noninteractive.
 ---If this is not desired, call spawn.spawn with {sn_rules=false} or pass {inherit_std*=true}.
----@param cmd string|string[]
+---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@return integer|string pid_or_error
 ---@return string? snid
