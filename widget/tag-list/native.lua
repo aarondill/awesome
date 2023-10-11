@@ -5,6 +5,7 @@ local clickable_container = require("widget.material.clickable-container")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.compat")
+local gtable = require("gears.table")
 
 local M = { mt = {} }
 
@@ -32,9 +33,9 @@ local text_template = {
 
 local this_path = ...
 function M.new(opts)
-  local s = opts.screen or awful.screen.focused()
-  return awful.widget.taglist({
-    screen = s,
+  opts = opts or {}
+  opts.screen = opts.screen or awful.screen.focused() -- If no screen is passed, use the focused screen
+  local overrides = {
     filter = awful.widget.taglist.filter.all,
     buttons = require(this_path, "buttons"),
     widget_template = {
@@ -49,7 +50,8 @@ function M.new(opts)
       id = "background_role",
       widget = wibox.container.background,
     },
-  })
+  }
+  return awful.widget.taglist(gtable.join(opts, overrides))
 end
 function M.mt:__call(...)
   return M.new(...)
