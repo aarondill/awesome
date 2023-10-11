@@ -1,26 +1,10 @@
+local tableutils = require("util.table")
 ---Stringifies a table of commands/args. Quoting each one and seperating by a space
 ---Note: arguments that contain the `'` charector are unsafe!
 ---@param command string[]
 ---@return string
 local function stringify_command(command)
-  local new_command, format = "", "%s '%s'"
-  for _, arg in ipairs(command) do
-    new_command = string.format(format, new_command, arg)
-  end
-  new_command = new_command:match("^%s*(.-)%s*$") -- Remove leading/trailing whitespace
-  return new_command
-end
-
----Modifies a_table!
----Merge a_table into a_table
----@param a_table table
----@param b_table table
----@return table
-local function table_merge_append(a_table, b_table)
-  for _, i in ipairs(b_table) do
-    table.insert(a_table, i)
-  end
-  return a_table
+  return tableutils.concat(command, "'%s'", " ")
 end
 
 ---concat_command when command is a table
@@ -33,7 +17,7 @@ local function __concat_command_tbl(command, args)
   -- This shouldn't be an issue since strings are stateless
   ---@type string[]
   local new_command = table.move(command, 1, #command, 1, {})
-  return table_merge_append(new_command, args)
+  return tableutils.table_append(new_command, args)
 end
 
 ---concat_command when command is a string
