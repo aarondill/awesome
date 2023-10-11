@@ -5,7 +5,7 @@ local LayoutBox = require("widget.layout-box")
 local MediaControl = require("widget.media-control")
 local QuakeButton = require("widget.quake-button")
 local Run_prompt = require("widget.run-prompt")
-local TagList = require("widget.tag-list")
+local TagList = require("widget.tag-list.fancy")
 local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
 local beautiful = require("beautiful")
@@ -61,12 +61,13 @@ local TopPanel = function(s)
     dpi(4),
     dpi(4)
   )
+
   panel:setup({
     layout = wibox.layout.align.horizontal,
     {
       layout = wibox.layout.fixed.horizontal,
       { widget = launcher },
-      TagList(s),
+      TagList.new({ screen = s }),
       Run_prompt(s),
     },
     TaskList({ screen = s, max_width = dpi(150) }),
