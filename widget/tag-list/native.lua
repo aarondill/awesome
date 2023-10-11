@@ -1,11 +1,13 @@
+local require = require("util.rel_require")
+
 local awful = require("awful")
-local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local modkey = require("configuration.keys.mod").modKey
 local compat = require("util.compat")
+
+local M = { mt = {} }
+
 local icon_template = {
   {
     id = "icon_role",
@@ -28,29 +30,13 @@ local text_template = {
   right = dpi(6),
 }
 
-local TagList = function(s)
+local this_path = ...
+function M.new(opts)
+  local s = opts.screen or awful.screen.focused()
   return awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
-    buttons = gtable.join(
-      awful.button({}, 1, function(t)
-        t:view_only()
-      end),
-      awful.button({ modkey }, 1, function(t)
-        if capi.client.focus then capi.client.focus:move_to_tag(t) end
-        t:view_only()
-      end),
-      awful.button({}, 3, awful.tag.viewtoggle),
-      awful.button({ modkey }, 3, function(t)
-        if capi.client.focus then capi.client.focus:toggle_tag(t) end
-      end),
-      awful.button({}, 4, function(t)
-        awful.tag.viewprev(t.screen)
-      end),
-      awful.button({}, 5, function(t)
-        awful.tag.viewnext(t.screen)
-      end)
-    ),
+    buttons = require(this_path, "buttons"),
     widget_template = {
       {
         {
@@ -65,4 +51,7 @@ local TagList = function(s)
     },
   })
 end
-return TagList
+function M.mt:__call(...)
+  return M.new(...)
+end
+return setmetatable(M, M.mt)
