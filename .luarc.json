@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-  "diagnostics.unusedLocalExclude": ["^_*"],
+  "diagnostics.unusedLocalExclude": ["_*"],
   "workspace.ignoreDir": [".vscode"],
   "workspace": {
     "library": ["/usr/share/awesome/lib/"]
