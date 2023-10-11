@@ -17,11 +17,12 @@
 -- theme.taglist_shape = function(cr, w, h)
 --     return gears.shape.rounded_rect(cr, w, h, theme.border_radius)
 -- end
+local notifs = require("util.notifs")
 local require = require("util.rel_require")
 
 local awful = require("awful")
 local beautiful = require("beautiful")
-local gears = require("gears")
+local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
@@ -59,14 +60,10 @@ local function constrain_icon(widget)
 end
 
 local function fancy_tasklist(cfg, tag)
-  local function only_this_tag(c, _)
-    for _, t in ipairs(c:tags()) do
-      if t == tag then return true end
-    end
-    return false
+  local function only_this_tag(c) ---@param c AwesomeClientInstance
+    return gtable.hasitem(c:tags(), tag)
   end
-
-  local overrides = {
+  local c = gtable.join(cfg, {
     filter = only_this_tag,
     layout = {
       spacing = beautiful.taglist_spacing,
@@ -79,8 +76,8 @@ local function fancy_tasklist(cfg, tag)
         self:get_children_by_id("clienticon")[1].client = c
       end,
     },
-  }
-  return awful.widget.tasklist(gears.table.join(cfg, overrides))
+  })
+  return awful.widget.tasklist(c)
 end
 
 local module = {}
@@ -98,17 +95,13 @@ end
 ---@param cfg FancyTaglistOptions?
 function module.new(cfg)
   cfg = cfg or {}
-  local taglist_cfg = cfg.taglist or { buttons = require(this_path, "buttons") }
+  local taglist_cfg = cfg.taglist or {}
   local tasklist_cfg = cfg.tasklist or {}
+  --- Set default buttons
+  taglist_cfg.buttons = taglist_cfg.buttons or require(this_path, "buttons")
 
   local screen = cfg.screen or awful.screen.focused()
   taglist_cfg.screen, tasklist_cfg.screen = screen, screen
-
-  local function create_callback(self, tag, _index, _tags)
-    local tasklist = fancy_tasklist(tasklist_cfg, tag)
-    self:get_children_by_id("tasklist_placeholder")[1]:add(tasklist)
-    return update_callback(self, tag, _index, _tags)
-  end
 
   local overrides = {
     filter = awful.widget.taglist.filter.all,
@@ -132,11 +125,15 @@ function module.new(cfg)
       },
       id = "background_role",
       widget = wibox.container.background,
-      create_callback = create_callback,
+      create_callback = function(self, tag, _index, _tags)
+        local tasklist = fancy_tasklist(tasklist_cfg, tag)
+        self:get_children_by_id("tasklist_placeholder")[1]:add(tasklist)
+        return update_callback(self, tag, _index, _tags)
+      end,
       update_callback = update_callback,
     },
   }
-  return awful.widget.taglist(gears.table.join(taglist_cfg, overrides))
+  return awful.widget.taglist(gtable.join(taglist_cfg, overrides))
 end
 
 return module
