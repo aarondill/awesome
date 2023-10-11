@@ -247,6 +247,9 @@ types.AwesomeClientInstance = {
   jump_to = function(self) end, ---@param self AwesomeClientInstance
   screen = {}, ---@type AwesomeScreenInstance
   fullscreen = boolean,
+  ---@param self AwesomeClientInstance
+  ---@return AwesomeTagInstance[]
+  tags = function(self) end,
 }
 ---@class AwesomeClient :AwesomeSignalClass
 types.AwesomeClient = {
