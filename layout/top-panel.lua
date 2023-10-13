@@ -67,7 +67,10 @@ local TopPanel = function(s)
     {
       layout = wibox.layout.fixed.horizontal,
       { widget = launcher },
-      TagList.new({ screen = s }),
+      {
+        widget = TagList.new({ screen = s }),
+        id = "taglist",
+      },
       Run_prompt(s),
     },
     TaskList({ screen = s, max_width = dpi(150) }),
