@@ -93,11 +93,7 @@ end
 capi.awesome.connect_signal("exit", function(_)
   for _, pid in pairs(processes) do
     -- killing -p means sending a signal to every process in the process group p. Awesome makes sure to spawn processes in a new session, so this works.
-    local suc = capi.awesome.kill(-pid, 15) -- SIGTERM
-    if not suc then
-      -- Can't notify because shutting down
-      io.stderr:write("Failed to kill pid " .. pid)
-    end
+    capi.awesome.kill(-pid, 15) -- SIGTERM
   end
   processes = {} -- They're all dead. Doesn't matter because the table is lost anyways, but yk.
 end)
