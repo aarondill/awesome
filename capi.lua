@@ -2,6 +2,8 @@
 ---@diagnostic disable :unused-local The variables in this file are placeholders for the types. They are not used, nor are they intended to be used
 ---@diagnostic disable :missing-return The variables in this file are placeholders for the types. They are not used, nor are they intended to be used
 
+---A table containing globals provided by AwesomeWM.
+---This can/should be used to allow typing and intelisense.
 local capi = { ---@diagnostic disable :undefined-global These are injected by AwesomeWM
   awesome = awesome, ---@type Awesome
   root = root, ---@type AwesomeRoot
@@ -19,6 +21,11 @@ local capi = { ---@diagnostic disable :undefined-global These are injected by Aw
   selection = selection, ---@type AwesomeSelection
   key = key, ---@type AwesomeKey
 } ---@diagnostic enable :undefined-global
+
+--- Don't continue past this!
+--- The rest of this file is here only for typing and intelisense!
+--- if true to avoid the error from code after return.
+if true then return capi end
 
 local types = {}
 ---@generic V
@@ -119,10 +126,10 @@ types.Awesome = {
   ---@param name string
   ---@return gears.surface
   ---@return string error
-  load_image = function(name) end,
+  load_image = function(name) end, ---@nodiscard
   ---@param pixbuf userdata
   ---@return gears.surface
-  pixbuf_to_surface = function(pixbuf) end,
+  pixbuf_to_surface = function(pixbuf) end, ---@nodiscard
   ---@param size integer
   set_preferred_icon_size = function(size) end,
   ---@param name string
@@ -133,15 +140,19 @@ types.Awesome = {
   set_xproperty = function(name, value) end,
   ---@param name string
   ---@return xprop_type?
+  ---@nodiscard
   get_xproperty = function(name) end, ---Errors if not found
-  ---@param num xkb_group|integer
-  --- Note: the signature allows integer, but this is just for convenience.
+  ---@param num xkb_group
   xkb_set_layout_group = function(num) end,
+  ---@nodiscard
   xkb_get_layout_group = function() end, ---@return xkb_group num
+  ---@nodiscard
   xkb_get_group_names = function() end, ---@return string
   ---@param class string
   ---@param name string
   ---@return string?
+  ---@return xprop_type?
+  ---@nodiscard
   xrdb_get_value = function(class, name) end,
   ---@param pid integer
   ---@param sig string|integer
@@ -151,6 +162,7 @@ types.Awesome = {
   ---@param input string?
   ---@return string? keysym
   ---@return string? printsymbol
+  ---@nodiscard
   _get_key_name = function(input) end,
   startup = boolean,
   version = string,
@@ -177,19 +189,25 @@ types.AwesomeRoot = {
   content = function() end,
   ---@return number x
   ---@return number y
+  ---@nodiscard
   size = function() end,
   ---@return number x
   ---@return number y
+  ---@nodiscard
   size_mm = function() end,
+  ---@nodiscard
   tags = function() end, ---@return AwesomeTagInstance[]
   set_index_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any)
   set_call_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, ...: unknown)
   set_newindex_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
   ---@param button_table AwesomeButton[]? An array of mouse button bindings objects, or nothing
+  ---@nodiscard
   buttons = function(button_table) end, ---@return AwesomeButton[]?
   ---@param keys_array AwesomeKey[]? An array of key binding objects, or nothing
+  ---@nodiscard
   keys = function(keys_array) end, ---@return AwesomeKey[]?
   ---@param pattern CairoPattern
+  ---@nodiscard
   wallpaper = function(pattern) end, ---@return CairoPattern?
 }
 function types.AwesomeRoot:__index(k) end
@@ -249,6 +267,7 @@ types.AwesomeClientInstance = {
   fullscreen = boolean,
   ---@param self AwesomeClientInstance
   ---@return AwesomeTagInstance[]
+  ---@nodiscard
   tags = function(self) end,
 }
 ---@class AwesomeClient :AwesomeSignalClass
