@@ -97,5 +97,5 @@ end)
 require("gears.timer")({
   timeout = 30,
   autostart = true,
-  callback = require("util.bind").with_start_args(collectgarbage, "collect"),
+  callback = require("util.bind").with_args(collectgarbage, "collect"),
 })
