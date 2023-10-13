@@ -276,7 +276,12 @@ for i = 1, 9 do
       "#" .. i + 9,
       bind.with_args(setup_next_spawned_handler, i, false),
       descr_next_spawned_no_jump
-    )
+    ),
+    awful.key({ modkey, "Shift" }, "`", function()
+      local s = awful.screen.focused() ---@type AwesomeScreenInstance
+      local tl = s.top_panel:get_children_by_id("taglist")[1] ---@diagnostic disable-line :undefined-field This field is injected!
+      if tl then tl.visible = not tl.visible end
+    end)
   )
 end
 
