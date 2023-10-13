@@ -81,6 +81,10 @@ local function _notify(text, opts)
   end
 end
 
+---@param opts? NotifyOpts|string
+local function has_msg(opts)
+  return type(opts) == "table" and (opts.message or opts.text)
+end
 ---@alias loglevel "low"| "normal"| "critical"| "ok"| "info"| "warn"
 ---Create a notification.
 ---@param text? string The text to display
@@ -95,10 +99,10 @@ end
 ---@overload fun(opts: NotifyOpts): notification?
 ---@overload fun(loglevel: loglevel, opts?: NotifyOpts): notification?
 function M.notify(loglevel, text, opts, extra_opts)
-  if type(text) == "table" and opts == nil then -- notify("warn", { opts }) || notify("warn", { opts }, nil, { extra_opts })
+  if type(text) == "table" and has_msg(text) and opts == nil then -- notify("warn", { opts }) || notify("warn", { opts }, nil, { extra_opts })
     opts = text
     text = nil
-  elseif type(loglevel) == "table" and text == nil and opts == nil then -- notify({ opts }) || notify({ opts }, nil, nil, { extra_opts })
+  elseif type(loglevel) == "table" and has_msg(loglevel) and text == nil and opts == nil then -- notify({ opts }) || notify({ opts }, nil, nil, { extra_opts })
     opts = loglevel
     loglevel = nil
   end
