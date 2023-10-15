@@ -39,7 +39,7 @@ end
 ---@param cb fun(path: string?)
 local function find_battery_path(cb)
   local power_supply_dir = "/sys/class/power_supply/"
-  list_directory(power_supply_dir, { match = "BAT.+" }, function(files)
+  list_directory(power_supply_dir, { match = "BAT.+", max = 1 }, function(files)
     if files[1] then cb(("%s%s"):format(power_supply_dir, files[1])) end
   end)
 end
