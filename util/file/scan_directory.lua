@@ -1,15 +1,25 @@
 local gio = require("lgi").require("Gio")
 local gtable = require("gears.table")
+---@alias filter_func  fun(file: table): boolean?, boolean?
 ---@class scan_directory_args
----@field attributes string[]? see: https://docs.gtk.org/gio/method.File.enumerate_children.html
----@field max integer? the maximum number of results to return. Note: when operating on local files, returned files will be sorted by inode number
----@field block_size integer? the number of results to get on each call. Usually not needed. (default: 128)
+---@field attributes? string[] see: https://docs.gtk.org/gio/method.File.enumerate_children.html
+---The maximum number of results to return.
+---Note: when operating on local files, returned files will be sorted by inode number.
+---Use caution when using this, as you likely will *not* get the results you expect.
+---@field max? integer
+---@field block_size? integer the number of results to get on each call. Usually not needed. (default: 128)
+---Return true to include the result, false or nil to exclude it. Return false as the second argument to stop iterating.
+---Note: this will *only* be called on files that have at least one (given) attribute set.
+---@field filter? filter_func
 
 local function enumerate_handler_finish(content, cb, ret)
   content:close_async(0, nil, function(gfile_close, task_close)
-    local _ = gfile_close:close_finish(task_close)
+    return gfile_close:close_finish(task_close)
   end)
   return cb(ret, nil)
+end
+local function default_filter() ---@type filter_func
+  return true, true
 end
 ---@param cb fun(info?: table, error?: userdata) The function to call when done. If failed, it will be called with nil
 ---@param args scan_directory_args
@@ -18,12 +28,17 @@ local function enumerate_handler(content, args, cb, ret)
   ret = ret or {} -- create if not passed
   -- if max is specified, block size should not be greater than max
   local block_size = args.max and math.min(args.block_size or 128, args.max) or args.block_size
+  local filter = args.filter or default_filter -- User defined filter or else default true filter
   if block_size <= 0 then -- next request would not return anything
     -- max files have been hit -- or invalid input
     return enumerate_handler_finish(content, cb, ret)
   end
   return content:next_files_async(block_size, 0, nil, function(file_enum, task2)
     local file_list = file_enum:next_files_finish(task2)
+    --- Number of files included in this iteration.
+    --- Used to calculate when we hit the max number of files desired.
+    --- This should not be incremeneted if the filter returns false.
+    local included_files = 0
     for _, file in ipairs(file_list) do
       local ret_attr, has_attr = {}, false
       for _, v in ipairs(args.attributes) do
@@ -39,16 +54,26 @@ local function enumerate_handler(content, args, cb, ret)
           ret_attr[v] = val
         end
       end
-      if has_attr then ret[#ret + 1] = ret_attr end
+      if has_attr then
+        local include, continue = filter(ret_attr)
+        if include then -- Should include this in the return!
+          ret[#ret + 1] = ret_attr
+          included_files = included_files + 1
+        end
+        if continue == false then -- Stop *now*. Don't finish looping files (even the ones we already collected!)
+          return enumerate_handler_finish(content, cb, ret)
+        end
+      end
     end
 
     if #file_list < block_size then -- no more files left (or error)
       return enumerate_handler_finish(content, cb, ret)
     end
 
-    if args.max then
+    assert(included_files >= 0, "Negative number of included files. WTF?")
+    if args.max and included_files > 0 then -- Skip assignment if num-0
       -- remove files already found, this will be evaluated next time
-      args.max = args.max - #file_list
+      args.max = args.max - included_files
     end
     return enumerate_handler(content, args, cb, ret)
   end)
@@ -74,10 +99,14 @@ local function scan_directory(path, args, cb)
   if type(args) == "function" and cb == nil then
     cb, args = args, nil
   end
-  args = args and gtable.clone(args, false) or {}
+  args = args and gtable.clone(args, false) or {} ---@type scan_directory_args
   assert(type(path) == "string", "path must be a string")
   assert(type(args) == "table", "args must be a table")
   assert(type(cb) == "function", "callback must be a function")
+  assert(type(args.attributes or {}) == "table", "attributes must be a table")
+  assert(args.max or 1 > 0, "max must be greater than 0")
+  assert(args.block_size or 1 > 0, "block size must be greater than 0")
+  assert(type(args.filter or function() end) == "function", "filter must be a function")
   args.attributes = args.attributes or { "FILE_ATTRIBUTE_STANDARD_NAME" }
   args.block_size = args.block_size or 128
   -- if max is specified, block size should not be greater than max
@@ -85,7 +114,8 @@ local function scan_directory(path, args, cb)
 
   local attr_str = ""
   for _, v in ipairs(args.attributes) do
-    attr_str = attr_str .. gio[v] .. ","
+    local gio_attr = assert(gio[v], ("invalid attribute: %s"):format(v))
+    if gio_attr then attr_str = attr_str .. gio_attr .. "," end
   end
 
   gio.File.new_for_path(path):enumerate_children_async(attr_str, 0, 0, nil, function(gfile, gtask)
