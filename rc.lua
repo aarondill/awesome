@@ -94,8 +94,10 @@ capi.client.connect_signal("unfocus", function(c)
 end)
 
 -- Run garbage collector regularly to prevent memory leaks
-require("gears.timer")({
+_G.collectgarbagetimer = require("gears.timer").new({
   timeout = 30,
   autostart = true,
-  callback = require("util.bind").with_args(collectgarbage, "collect"),
+  callback = function()
+    collectgarbage("collect")
+  end,
 })
