@@ -3,9 +3,9 @@ local gtable = require("gears.table")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
 ---@class scan_directory_args
 ---@field attributes? string[] see: https://docs.gtk.org/gio/method.File.enumerate_children.html
----The maximum number of results to return.
+---The maximum number of results to return. Applied after filtering.
 ---Note: when operating on local files, returned files will be sorted by inode number.
----Use caution when using this, as you likely will *not* get the results you expect.
+---Use caution when using this, as you likely will *not* get the results you expect, unless coupled with a filter.
 ---@field max? integer
 ---@field block_size? integer the number of results to get on each call. Usually not needed. (default: 128)
 ---Return true to include the result, false or nil to exclude it. Return false as the second argument to stop iterating.
