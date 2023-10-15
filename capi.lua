@@ -204,10 +204,8 @@ types.AwesomeRoot = {
   ---@nodiscard
   buttons = function(button_table) end, ---@return AwesomeButton[]?
   ---@param keys_array AwesomeKey[]? An array of key binding objects, or nothing
-  ---@nodiscard
   keys = function(keys_array) end, ---@return AwesomeKey[]?
   ---@param pattern CairoPattern
-  ---@nodiscard
   wallpaper = function(pattern) end, ---@return CairoPattern?
 }
 function types.AwesomeRoot:__index(k) end
