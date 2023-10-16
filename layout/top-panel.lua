@@ -18,6 +18,7 @@ local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local get_child_by_id = require("util.get_child_by_id")
+local suspend_listener = require("module.suspend-listener")
 
 local TopPanel = function(s)
   local top_panel_height = beautiful.top_panel_height or dpi(32)
@@ -129,6 +130,12 @@ local TopPanel = function(s)
   local cpu_widget = assert(get_child_by_id(panel, "cpu_widget"), "cpu_widget is missing!")
 
   local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
+
+  suspend_listener.register_listener(function()
+    local textclock = get_child_by_id(panel, "textclock")
+    if not textclock then return end
+    return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
+  end)
 
   -- Setup click click handler if calendar is installed
   make_clickable_if_prog(apps.default.calendar, clock_widget, panel.widget, function(_)
