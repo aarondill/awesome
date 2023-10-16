@@ -1,5 +1,6 @@
 local lgi = require("lgi")
-local GLib, Gio = lgi.GLib, lgi.Gio
+local Gio = lgi.require("Gio")
+local GLib = lgi.require("GLib")
 ---@alias GLibVariant unknown pain and suffering.
 
 ---Asynchronously gets a dbus property.
