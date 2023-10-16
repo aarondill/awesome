@@ -47,7 +47,7 @@ require("module.persistent-tag") -- Keep selected tag on restart
 -- Init all modules
 require("module.quake") -- Should prob be before decorate-client, and keys.global, as they both require it.
 require("module.auto-start")
-require("module.inhibit-power-key")
+require("module.systemd-inhibit")
 require("module.decorate-client")
 require("module.exit-screen")
 require("module.client")
