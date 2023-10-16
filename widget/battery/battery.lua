@@ -34,18 +34,11 @@ local function show_battery_warning(charge)
   })
 end
 local widget_template = {
-  {
-    { id = "icon", widget = Icon, icon = files.get_icon("battery") },
-    { id = "text", widget = wibox.widget.textbox, text = "100%" },
-    layout = wibox.layout.fixed.horizontal,
-  },
-  left = dpi(4),
-  right = dpi(4),
-  top = dpi(4),
-  bottom = dpi(4),
-
-  widget = wibox.container.margin,
+  { id = "icon", widget = Icon, icon = files.get_icon("battery") },
+  { id = "text", widget = wibox.widget.textbox, text = "100%" },
+  layout = wibox.layout.fixed.horizontal,
 }
+
 local function should_warn_battery(last_warning_time, status, charge, low_power, low_power_frequency)
   if status == "Charging" then return end
   if charge < 0 or charge > low_power then return end
