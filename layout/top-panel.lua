@@ -131,7 +131,8 @@ local TopPanel = function(s)
 
   local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
 
-  suspend_listener.register_listener(function()
+  suspend_listener.register_listener(function(is_before)
+    if is_before then return end
     local textclock = get_child_by_id(panel, "textclock")
     if not textclock then return end
     return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
