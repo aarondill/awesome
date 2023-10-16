@@ -1,6 +1,5 @@
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
-local capi = require("capi")
 
 local M = {}
 M.callbacks_before = {
@@ -41,7 +40,7 @@ end
 ---@param cb fun(when: 'before'|'after')
 ---@param before boolean? register for before sleep? false means after wake. default: false
 ---@param weak boolean? weakly register callback?
----@return boolean
+---@return boolean success whether something changed.
 M.register_listener = function(cb, before, weak)
   local type = before and "before" or "after"
   local t = M["callbacks_" .. type][weak and "weak" or "strong"]
@@ -50,6 +49,11 @@ M.register_listener = function(cb, before, weak)
   listen_to_signals() -- Ensure we are connected to dbus!
   return true
 end
+---Remove a previously registered callback
+---@param cb fun(when: 'before'|'after')
+---@param before boolean? register for before sleep? false means after wake. default: false
+---@param weak boolean? weakly register callback?
+---@return boolean success whether something changed.
 M.unregister_listener = function(cb, before, weak)
   local type = before and "before" or "after"
   local t = M["callbacks_" .. type][weak and "weak" or "strong"]
