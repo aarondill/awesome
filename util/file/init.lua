@@ -1,20 +1,24 @@
 local require = require("util.rel_require")
+---@diagnostic disable: assign-type-mismatch -- To allow nil values
 local M = {
-  append_async = require(..., "append_async"), ---@module "util.file.append_async"
-  basename = require(..., "basename"), ---@module "util.file.basename"
-  exists = require(..., "exists"), ---@module "util.file.exists"
-  list_directory = require(..., "list_directory"), ---@module "util.file.list_directory"
-  read_async = require(..., "read_async"), ---@module "util.file.read_async"
-  scan_directory = require(..., "scan_directory"), ---@module "util.file.scan_directory"
-  watch = require(..., "watch"), ---@module "util.file.watch"
-  watch_directory = require(..., "watch_directory"), ---@module "util.file.watch_directory"
-  watch_file = require(..., "watch_file"), ---@module "util.file.watch_file"
-  write_async = require(..., "write_async"), ---@module "util.file.write_async"
+  append_async = nil, ---@module "util.file.append_async"
+  basename = nil, ---@module "util.file.basename"
+  exists = nil, ---@module "util.file.exists"
+  list_directory = nil, ---@module "util.file.list_directory"
+  read_async = nil, ---@module "util.file.read_async"
+  scan_directory = nil, ---@module "util.file.scan_directory"
+  watch = nil, ---@module "util.file.watch"
+  watch_directory = nil, ---@module "util.file.watch_directory"
+  watch_file = nil, ---@module "util.file.watch_file"
+  write_async = nil, ---@module "util.file.write_async"
 }
-local import_path = ({ ... })[1]
-return setmetatable(M, { -- Just incase I forget to update the init table
+---@diagnostic enable: assign-type-mismatch
+assert(#M == 0, "Tag list module has keys set. This is a bug! Use the metatable!")
+
+local this_path = ...
+return setmetatable(M, {
   __index = function(_, key)
-    local mod = require(import_path, key, false) -- mod is nil if not found
-    return mod
+    local m = require(this_path, key, false) -- No TCO!
+    return m
   end,
 })
