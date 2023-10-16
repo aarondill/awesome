@@ -1,7 +1,7 @@
 #!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
----TODO: Add keymap to disable the taglist. (Hide full taglist)
+---TODO: more dbus modules. Seperate the send message. Create subscribe util.
 
 -- TODO: implement notification center (only in awesome-git)
 -- awesome-shell@widgets/noti-center.lua is a good place to start
