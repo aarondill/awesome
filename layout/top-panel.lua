@@ -17,6 +17,7 @@ local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local get_child_by_id = require("util.get_child_by_id")
 
 local TopPanel = function(s)
   local top_panel_height = beautiful.top_panel_height or dpi(32)
@@ -32,36 +33,6 @@ local TopPanel = function(s)
     fg = beautiful.fg_normal,
   })
   panel:struts({ top = top_panel_height })
-  local clock_widget = wibox.widget({
-    {
-      -- 24h format: %H:%M
-      -- 12h fornat: %I:%M %p
-      -- dd/mm/yyyy: %d/%m/%Y
-      format = '<span font="' .. beautiful.font .. '">%I:%M %p</span>',
-      refresh = 30, -- TRY to fix issues with refresh after suspend
-      widget = wibox.widget.textclock,
-    },
-    left = dpi(3),
-    right = dpi(3),
-    widget = wibox.container.margin,
-  })
-  local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
-
-  -- Empty widget to replace with the battery when it's ready
-  local battery_widget = Battery({ timeout = 15 })
-  local cpu_widget = wibox.container.margin(
-    CPU({
-      timeout = 15,
-      precision = 1,
-      prefix = "",
-      suffix = "%",
-    }),
-    dpi(2),
-    dpi(2),
-    dpi(4),
-    dpi(4)
-  )
-
   panel:setup({
     layout = wibox.layout.align.horizontal,
     {
@@ -98,9 +69,45 @@ local TopPanel = function(s)
       LayoutBox(s),
       { widget = QuakeButton },
       -- Clock
-      clock_widget,
-      battery_widget,
-      cpu_widget,
+      {
+        {
+          -- 24h format: %H:%M
+          -- 12h fornat: %I:%M %p
+          -- dd/mm/yyyy: %d/%m/%Y
+          format = '<span font="' .. beautiful.font .. '">%I:%M %p</span>',
+          refresh = 30, -- TRY to fix issues with refresh after suspend
+          widget = wibox.widget.textclock,
+          id = "textclock",
+        },
+        left = dpi(3),
+        right = dpi(3),
+        widget = wibox.container.margin,
+        id = "clock_margin",
+      },
+      {
+        Battery({ timeout = 15 }),
+        left = dpi(4),
+        right = dpi(4),
+        top = dpi(4),
+        bottom = dpi(4),
+
+        widget = wibox.container.margin,
+        id = "battery_widget",
+      },
+      {
+        CPU({
+          timeout = 15,
+          precision = 1,
+          prefix = "",
+          suffix = "%",
+        }),
+        widget = wibox.container.margin,
+        left = dpi(2),
+        right = dpi(2),
+        top = dpi(4),
+        bottom = dpi(4),
+        id = "cpu_widget",
+      },
       {
         Brightness({
           step = 5,
@@ -116,6 +123,12 @@ local TopPanel = function(s)
     panel.x = s.geometry.x
     panel.y = s.geometry.y
   end)
+
+  local clock_widget = assert(get_child_by_id(panel, "clock_margin"), "clock_margin is missing!")
+  local battery_widget = assert(get_child_by_id(panel, "battery_widget"), "battery_widget is missing!")
+  local cpu_widget = assert(get_child_by_id(panel, "cpu_widget"), "cpu_widget is missing!")
+
+  local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
 
   -- Setup click click handler if calendar is installed
   make_clickable_if_prog(apps.default.calendar, clock_widget, panel.widget, function(_)
