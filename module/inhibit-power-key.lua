@@ -1,4 +1,5 @@
 local capi = require("capi")
+local get_dbus_property = require("util.dbus.get_prop")
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
 local GLib = lgi.require("GLib")
@@ -42,13 +43,14 @@ local function inhibit(bus, what, who, why, mode)
   return Gio.UnixInputStream.new(fd, true)
 end
 
-local main = Gio.Async.call(function()
+---@param what string
+---@param why string
+---@param mode string?
+local function create_inhibitor(what, why, mode, cb)
   local bus = bus_get_async(Gio.BusType.SYSTEM)
   -- The block is lost when this is garbage collected! It is scope leaked into the awesome.connect_signal to avoid this.
-  local fd = inhibit(bus, "handle-power-key", "AwesomeWM", "To manually handle power key", "block")
-  if not fd then
-    return --something went wrong
-  end
+  local fd = inhibit(bus, what, "AwesomeWM", why, mode or "block")
+  if not fd then return end -- something went wrong
 
   capi.awesome.connect_signal("exit", function(_)
     -- Stops the block
@@ -57,6 +59,22 @@ local main = Gio.Async.call(function()
     collectgarbage("collect")
     collectgarbage("collect")
   end)
-end)
+  if cb then return cb() end
+end
 
-main()
+Gio.Async.call(create_inhibitor)("handle-power-key", "To manually handle power key", "block")
+
+--This is fixed in the next release of Xorg, but until then, we've got this to inhibit idle timeouts
+local XDG_SESSION_ID = os.getenv("XDG_SESSION_ID") -- If this is not available, we can't reliably determine this (easily) anyways.
+if XDG_SESSION_ID then
+  local object_path = ("/org/freedesktop/login1/session/%s"):format(XDG_SESSION_ID)
+  -- Get session type
+  get_dbus_property("org.freedesktop.login1", object_path, "org.freedesktop.login1.Session", "Type", function(res, err)
+    if err then return end
+    assert(res.type == "(v)")
+    assert(res.value[1].type == "s")
+    local Type = res.value[1].value
+    if Type ~= "tty" then return end -- the bug is fixed.
+    Gio.Async.call(create_inhibitor)("idle", "Because idle timeout is broken with startx", "block")
+  end)
+end
