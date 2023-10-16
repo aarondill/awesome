@@ -28,7 +28,7 @@ end
 local bus = nil
 local function listen_to_signals()
   if bus then return end
-  bus = lgi.Gio.bus_get_sync(Gio.BusType.SYSTEM) -- This *needs* to be scope leaked above! The subscription will be lost if the bus is GCed
+  bus = Gio.bus_get_sync(Gio.BusType.SYSTEM) -- This *needs* to be scope leaked above! The subscription will be lost if the bus is GCed
   local sender = "org.freedesktop.login1"
   local interface = "org.freedesktop.login1.Manager"
   local object = "/org/freedesktop/login1"
