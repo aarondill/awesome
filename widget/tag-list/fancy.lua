@@ -17,7 +17,7 @@
 -- theme.taglist_shape = function(cr, w, h)
 --     return gears.shape.rounded_rect(cr, w, h, theme.border_radius)
 -- end
-local notifs = require("util.notifs")
+local capi = require("capi")
 local require = require("util.rel_require")
 
 local awful = require("awful")
@@ -60,11 +60,24 @@ local function constrain_icon(widget)
 end
 
 local function fancy_tasklist(cfg, tag)
+  local MAX_ICONS = 5
   local function only_this_tag(c) ---@param c AwesomeClientInstance
     return gtable.hasitem(c:tags(), tag)
   end
   local c = gtable.join(cfg, {
-    filter = only_this_tag,
+    filter = function()
+      return true -- Truth filter. The filter is called in source (to ensure that we don't get too many clients)
+    end,
+    source = function()
+      local clients = capi.client.get()
+      local t = {}
+      for _, c in ipairs(clients) do
+        if #t < MAX_ICONS and only_this_tag(c) then -- MAX_ICONS and check filter
+          table.insert(t, c)
+        end
+      end
+      return t
+    end,
     layout = {
       spacing = beautiful.taglist_spacing,
       layout = wibox.layout.fixed.horizontal,
