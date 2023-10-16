@@ -273,6 +273,7 @@ types.AwesomeClient = {
   focus = opt(types.AwesomeClientInstance),
   ---@param screen screen?
   ---@param stacked boolean?
+  ---@return AwesomeClientInstance[]
   get = function(screen, stacked) end,
 }
 ---@class AwesomeKey :AwesomeSignalClass
