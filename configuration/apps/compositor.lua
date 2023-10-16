@@ -63,7 +63,7 @@ end
 ---Note that this is the pid of the last running compositor. If the compositor is stopped, this will return an invalid pid.
 ---Use compositor.is_running to get the status of the compositor (Also returns the pid if running).
 function compositor.get_pid()
-  local f = io.open(compositor.pid_file) --- SYNCHRONOUS! This can freeze the GUI. Then again, so will starting/stopping the compositor
+  local f = io.open(compositor.pid_file, "r") --- SYNCHRONOUS! This can freeze the GUI. Then again, so will starting/stopping the compositor
   if not f then return nil end
   local pid = f:read("l") -- read only one line.
   f:close()
