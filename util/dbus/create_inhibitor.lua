@@ -35,13 +35,13 @@ end
 
 ---See `man systemd-inhibit` for more information
 ---@param what WhatInhibit|WhatInhibit[] What are you inhibiting?
----@param who string? Who is taking this lock? defaults to 'AwesomeWM'
 ---@param why string Why is this inhibit needed?
+---@param who string? Who is taking this lock? defaults to 'AwesomeWM'
 ---@param mode? 'block'|'delay' defaults to 'block' (for convenience)
+---@param cb? fun(fd?: GioUnixInputStream, err?: userdata)
 ---You can call fd:close() to release the lock early.
 ---NOTE: when fd is garbage-collected, the lock will be released.
----@param cb fun(fd?: GioUnixInputStream, err?: userdata)
-local function create_inhibitor(what, who, why, mode, cb)
+local function create_inhibitor(what, why, mode, who, cb)
   if type(what) == "table" then what = table.concat(what, ":") end ---Colon seperated
   cb = cb or function() end -- Handle nil cb
   who = who or "AwesomeWM"
