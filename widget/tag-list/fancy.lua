@@ -69,14 +69,13 @@ local function fancy_tasklist(cfg, tag)
       return true -- Truth filter. The filter is called in source (to ensure that we don't get too many clients)
     end,
     source = function()
-      local clients = capi.client.get()
-      local t = {}
-      for _, c in ipairs(clients) do
-        if #t < MAX_ICONS and only_this_tag(c) then -- MAX_ICONS and check filter
-          table.insert(t, c)
+      local clients = {}
+      for _, c in ipairs(capi.client.get()) do
+        if #clients < MAX_ICONS and only_this_tag(c) then -- MAX_ICONS and check filter
+          table.insert(clients, c)
         end
       end
-      return t
+      return clients
     end,
     layout = {
       spacing = beautiful.taglist_spacing,
