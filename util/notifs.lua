@@ -42,19 +42,6 @@ local naughty = require("naughty")
 
 ---@alias logFunc fun(text?: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
 
----@class NotifsClass
----@field low logFunc
----@field normal logFunc
----@field critical logFunc
----@field ok logFunc
----@field info logFunc
----@field warn logFunc
----@field low_once logFunc
----@field normal_once logFunc
----@field critical_once logFunc
----@field ok_once logFunc
----@field info_once logFunc
----@field warn_once logFunc
 local M = {}
 
 ---A table for use in notify_once
@@ -117,18 +104,20 @@ function M.notify_once(loglevel, text, opts)
   return M.notify(loglevel, text, opts, { once = true })
 end
 
-M.low = bind(M.notify, "low")
-M.normal = bind(M.notify, "normal")
-M.critical = bind(M.notify, "critical")
-M.ok = bind(M.notify, "ok")
-M.info = bind(M.notify, "info")
-M.warn = bind(M.notify, "warn")
+M.low = bind(M.notify, "low") ---@type logFunc
+M.normal = bind(M.notify, "normal") ---@type logFunc
+M.critical = bind(M.notify, "critical") ---@type logFunc
+M.ok = bind(M.notify, "ok") ---@type logFunc
+M.info = bind(M.notify, "info") ---@type logFunc
+M.warn = bind(M.notify, "warn") ---@type logFunc
+M.error = bind(M.notify, "critical") ---@type logFunc -- error as synonym for critical
 -- Once
-M.low_once = bind(M.notify_once, "low")
-M.normal_once = bind(M.notify_once, "normal")
-M.critical_once = bind(M.notify_once, "critical")
-M.ok_once = bind(M.notify_once, "ok")
-M.info_once = bind(M.notify_once, "info")
-M.warn_once = bind(M.notify_once, "warn")
+M.low_once = bind(M.notify_once, "low") ---@type logFunc
+M.normal_once = bind(M.notify_once, "normal") ---@type logFunc
+M.critical_once = bind(M.notify_once, "critical") ---@type logFunc
+M.ok_once = bind(M.notify_once, "ok") ---@type logFunc
+M.info_once = bind(M.notify_once, "info") ---@type logFunc
+M.warn_once = bind(M.notify_once, "warn") ---@type logFunc
+M.error_once = bind(M.notify_once, "critical") ---@type logFunc -- error as synonym for critical
 
 return M
