@@ -34,15 +34,15 @@ end
 ---@return boolean success
 ---@return string? error error message if failed
 function compositor._spawn()
-  local pid_or_err = spawn.noninteractive_nosn(compositor.cmd, {
+  local info, err = spawn.noninteractive_nosn(compositor.cmd, {
     exit_callback = function(reason, code)
       local msg = exit_msg(reason, code, false)
       if not msg then return end
       notifs.warn(msg, { title = "Compositor Crash!", timeout = 45 })
     end,
   })
-  if type(pid_or_err) == "string" then return false, pid_or_err end
-  return true
+  if not info then return false, err end
+  return true, nil
 end
 ---This is a private function. Do not call it directly.
 ---@param force boolean? kill with SIGKILL. Not recommended. Default false (SIGTERM).

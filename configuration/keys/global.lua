@@ -16,12 +16,12 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local modkey, altkey = mod.modKey, mod.altKey
 
 local function open_main_menu()
-  local pid_or_err = spawn.noninteractive(apps.default.rofi)
-  -- The return value will be a string in case of failure
-  if type(pid_or_err) == "string" then
-    local s = awful.screen.focused()
-    if s and s.run_promptbox then s.run_promptbox:run() end
-  end
+  return spawn.noninteractive(apps.default.rofi, {
+    on_failure_callback = function()
+      local s = awful.screen.focused()
+      if s and s.run_promptbox then return s.run_promptbox:run() end
+    end,
+  })
 end
 local setup_next_spawned_handler
 -- A scope block to ensure that these values can only be referenced by setup_next_spawned_handler
@@ -48,7 +48,7 @@ do
   function setup_next_spawned_handler(i, should_jump)
     next_spawned_tag = tags.get_tag(i)
     next_should_jump = should_jump == nil and true or should_jump
-    capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
+    return capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
   end
 end
 -- Key bindings
@@ -69,8 +69,9 @@ local globalKeys = gtable.join(
   awful.key({ altkey }, "space", open_main_menu, { description = "Main Menu", group = "awesome" }),
   awful.key({ modkey }, "p", open_main_menu, { description = "Main Menu", group = "awesome" }),
   awful.key({ modkey }, "w", function()
-    local pid_or_err = spawn(apps.default.rofi_window)
-    if type(pid_or_err) == "string" then notifs.critical("Rofi is required to open the window picker.") end
+    if not spawn.spawn(apps.default.rofi_window) then -- spawn rofi, if it fails, notify
+      notifs.critical("Rofi is required to open the window picker.")
+    end
   end, { description = "Window Picker", group = "awesome" }),
 
   -- Tag management
@@ -119,7 +120,7 @@ local globalKeys = gtable.join(
   end, { description = "Start/Stop Compositor", group = "awesome" }),
 
   awful.key({}, "Print", function()
-    spawn(apps.default.region_screenshot)
+    return spawn.spawn(apps.default.region_screenshot)
   end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
   awful.key({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   awful.key({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
@@ -132,29 +133,29 @@ local globalKeys = gtable.join(
     { description = "Open a quake terminal", group = "launcher" }
   ),
   awful.key({ modkey }, "l", function()
-    awful.tag.incmwfact(0.05)
+    return awful.tag.incmwfact(0.05)
   end, { description = "Increase master width factor", group = "layout" }),
   awful.key({ modkey }, "h", function()
-    awful.tag.incmwfact(-0.05)
+    return awful.tag.incmwfact(-0.05)
   end, { description = "Decrease master width factor", group = "layout" }),
   awful.key({ modkey, "Shift" }, "h", function()
-    awful.tag.incnmaster(1, nil, true)
+    return awful.tag.incnmaster(1, nil, true)
   end, { description = "Increase the number of master clients", group = "layout" }),
   awful.key({ modkey, "Shift" }, "l", function()
-    awful.tag.incnmaster(-1, nil, true)
+    return awful.tag.incnmaster(-1, nil, true)
   end, { description = "Decrease the number of master clients", group = "layout" }),
   awful.key({ modkey, "Control" }, "h", function()
-    awful.tag.incncol(1, nil, true)
+    return awful.tag.incncol(1, nil, true)
   end, { description = "Increase the number of columns", group = "layout" }),
   awful.key({ modkey, "Control" }, "l", function()
-    awful.tag.incncol(-1, nil, true)
+    return awful.tag.incncol(-1, nil, true)
   end, { description = "Decrease the number of columns", group = "layout" }),
 
   awful.key({ modkey }, "=", function()
-    awful.tag.incgap(5)
+    return awful.tag.incgap(5)
   end, { description = "Increase the gaps between windows", group = "layout" }),
   awful.key({ modkey, "Shift" }, "=", function()
-    awful.tag.incgap(1)
+    return awful.tag.incgap(1)
   end, { description = "Increase the gaps between windows by 1", group = "layout" }),
 
   awful.key({ modkey }, "-", function()
@@ -163,65 +164,60 @@ local globalKeys = gtable.join(
 		for _ = 1, 5 do awful.tag.incgap(-1) end
   end, { description = "Decrease the gaps between windows", group = "layout" }),
   awful.key({ modkey, "Shift" }, "-", function()
-    awful.tag.incgap(-1)
+    return awful.tag.incgap(-1)
   end, { description = "Decrease the gaps between windows by 1", group = "layout" }),
 
   awful.key({ modkey }, "space", function()
-    awful.layout.inc(1)
+    return awful.layout.inc(1)
   end, { description = "Select next", group = "layout" }),
   awful.key({ modkey, "Shift" }, "space", function()
-    awful.layout.inc(-1)
+    return awful.layout.inc(-1)
   end, { description = "Select previous", group = "layout" }),
 
   awful.key({ modkey, "Control" }, "n", function()
     local c = aclient.restore()
     -- Focus restored client
-    if c then c:emit_signal("request::activate", "key.unminimize", { raise = true }) end
+    if c then return c:emit_signal("request::activate", "key.unminimize", { raise = true }) end
   end, { description = "Restore minimized", group = "client" }),
 
   -- Brightness
   awful.key({}, "XF86MonBrightnessUp", function()
-    -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive_nosn(apps.default.brightness.up)
+    return spawn.noninteractive_nosn(apps.default.brightness.up)
   end, { description = "Brightness up", group = "hotkeys" }),
   awful.key({}, "XF86MonBrightnessDown", function()
-    -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive_nosn(apps.default.brightness.down)
+    return spawn.noninteractive_nosn(apps.default.brightness.down)
   end, { description = "Brightness down", group = "hotkeys" }),
   -- volume control
   awful.key({}, "XF86AudioRaiseVolume", function()
-    -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive_nosn(apps.default.volume.up)
+    return spawn.noninteractive_nosn(apps.default.volume.up)
   end, { description = "Volume up", group = "hotkeys" }),
   awful.key({}, "XF86AudioLowerVolume", function()
-    -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive_nosn(apps.default.volume.down)
+    return spawn.noninteractive_nosn(apps.default.volume.down)
   end, { description = "Volume down", group = "hotkeys" }),
   awful.key({}, "XF86AudioMute", function()
-    -- local pid, _, stdin, stdout, stderr =
-    spawn.noninteractive_nosn(apps.default.volume.toggle_mute)
+    return spawn.noninteractive_nosn(apps.default.volume.toggle_mute)
   end, { description = "Toggle mute", group = "hotkeys" }),
 
   awful.key({}, "XF86AudioPlay", function()
-    spawn.noninteractive_nosn({ "playerctl", "play-pause" })
+    return spawn.noninteractive_nosn({ "playerctl", "play-pause" })
   end, { description = "Play/Pause Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioNext", function()
-    spawn.noninteractive_nosn({ "playerctl", "next" })
+    return spawn.noninteractive_nosn({ "playerctl", "next" })
   end, { description = "Next Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86AudioPrev", function()
-    spawn.noninteractive_nosn({ "playerctl", "previous" })
+    return spawn.noninteractive_nosn({ "playerctl", "previous" })
   end, { description = "Previous Audio Track", group = "hotkeys" }),
   awful.key({}, "XF86PowerDown", function()
-    require("module.exit-screen").show()
+    return require("module.exit-screen").show()
   end, { description = "Open Poweroff Menu", group = "hotkeys" }),
   awful.key({}, "XF86PowerOff", function()
-    require("module.exit-screen").show()
+    return require("module.exit-screen").show()
   end, { description = "Open Poweroff Menu", group = "hotkeys" }),
 
   -- Custom hotkeys
   -- Emoji Picker
   awful.key({ modkey }, "a", function()
-    spawn({ "ibus", "emoji" })
+    return spawn({ "ibus", "emoji" })
   end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
   awful.key({ modkey, "Shift" }, "`", function()
     local s = awful.screen.focused() ---@type AwesomeScreenInstance
@@ -256,7 +252,7 @@ for i = 1, 9 do
       local c = capi.client.focus
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
-      if tag then c:move_to_tag(tag) end
+      if tag then return c:move_to_tag(tag) end
     end, descr_move),
     -- Move client to tag and focus
     awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
@@ -264,14 +260,14 @@ for i = 1, 9 do
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
       c:move_to_tag(tag)
-      c:jump_to()
+      return c:jump_to()
     end, descr_move_view),
     -- Toggle tag on focused client.
     awful.key({ modkey, "Control", altkey }, "#" .. i + 9, function()
       local c = capi.client.focus
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
-      c:toggle_tag(tag)
+      return c:toggle_tag(tag)
     end, descr_toggle_focus),
     -- Move next spawned window to tag.
     awful.key({ modkey, altkey }, "#" .. i + 9, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned),

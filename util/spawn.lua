@@ -10,8 +10,25 @@ local GLib = lgi.GLib
 ---@alias Command string|string[]
 ---@alias CommandProvider Command | fun(opts: SpawnOptions): Command
 
----@class SpawnModule
 local spawn = {}
+
+---@class (exact) SpawnInfo
+---@field pid integer the pid of the process if the process was started successfully, else a string error message
+---@field snid string? startup notification ID
+---@field stdin_fd integer? the file descriptor of the stdin of the command. This is only returned if the inherit_stdin is false (note: inherit_stdin defaults to false)
+---the file descriptor of the stdout of the command. This is only returned if inherit_stdout is false
+---This can be read using awful.spawn.read_lines, example from spawn.lua:
+---```lua
+---awful.spawn.read_lines(Gio.UnixInputStream.new(stdout_fd, true), stdout_callback, stdout_done_callback, true)
+---```
+---@field stdout_fd integer?
+---the file descriptor of the stderr of the command. This is only returned if inherit_stderr is false
+---This can be read using awful.spawn.read_lines, example from spawn.lua:
+---```lua
+---awful.spawn.read_lines(Gio.UnixInputStream.new(stderr_fd, true), stderr_callback, stderr_done_callback, true)
+---```
+---@field stderr_fd integer?
+---@field cmd Command? the command passed into the function. Note: this is expanded if a function was provided.
 
 ---- Spawn Functions
 
@@ -23,6 +40,8 @@ local spawn = {}
 ---The callback to call when the application exits.
 ---code is the exit status or the signal that killed the application depending on reason
 ---@field exit_callback? fun(reason: "exit"|"signal", code: integer)
+---Called on spawning failure. Permits one to avoid checking the return value.
+---@field on_failure_callback? fun(error: string, command: Command)
 ---The rules to apply to the window when the application starts.
 ---These are enabled by default. Pass false to disable startup notification detection.
 ---Note: this only works if the application implements startup notifications
@@ -47,25 +66,14 @@ local spawn = {}
 ---```lua
 ---awful.spawn(command, sn_rules, callback) == spawn(command, { sn_rules = sn_rules, start_callback = callback })
 ---````
----If there was an error spawning the command, the first returned value will be the error message (a string) and all other values will be nil
+---NOTE: The return types of the above functions are different!
+---
+---If there was an error spawning the command, the first returned value will be nil and the second the error message (a string)
 ---
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
----@return integer|string pid_or_error the pid of the process if the process was started successfully, else a string error message
----@return string? snid
----@return integer? stdin_fd the file descriptor of the stdin of the command. This is only returned if the inherit_stdin is false (note: inherit_stdin defaults to false)
----the file descriptor of the stdout of the command. This is only returned if inherit_stdout is false
----This can be read using awful.spawn.read_lines, example from spawn.lua:
----```lua
----awful.spawn.read_lines(Gio.UnixInputStream.new(stdout_fd, true), stdout_callback, stdout_done_callback, true)
----```
----@return integer? stdout_fd
----the file descriptor of the stderr of the command. This is only returned if inherit_stderr is false
----This can be read using awful.spawn.read_lines, example from spawn.lua:
----```lua
----awful.spawn.read_lines(Gio.UnixInputStream.new(stderr_fd, true), stderr_callback, stderr_done_callback, true)
----```
----@return integer? stderr_fd
+---@return SpawnInfo? info_or_error the info about the process if the process was started successfully
+---@return string? error_message An error message if something went wrong
 ---
 ---Note: start_callback only works when opts.sn_rules is given
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
@@ -74,7 +82,7 @@ function spawn.spawn(cmd, opts)
   if cmd and iscallable(cmd) then cmd = cmd(opts) end ---@cast cmd Command
   if not cmd or #cmd == 0 then
     error("No command specified.", 2)
-    return -1 -- Should never happen
+    return nil, "No command specified" -- Should never happen
   end
   local start_callback, exit_callback = opts.start_callback, opts.exit_callback
   local use_sn = opts.sn_rules ~= false
@@ -84,23 +92,34 @@ function spawn.spawn(cmd, opts)
   local env_table = opts.env == false and {} or opts.env ---@cast env_table table
   local pid_or_error, snid, stdin, stdout, stderr =
     capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
+  if type(pid_or_error) == "string" then
+    if opts.on_failure_callback then -- Call the user's callback if one exists
+      opts.on_failure_callback(pid_or_error, cmd)
+    end
+    return nil, pid_or_error
+  end
+
   if snid then -- The snid will be nil in case of failure
     local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
     if awful_spawn.snid_buffer then -- else fail silently
       awful_spawn.snid_buffer[snid] = { sn_rules, { start_callback } }
     end
   end
-  return pid_or_error, snid, stdin, stdout, stderr
+  local info = { ---@type SpawnInfo
+    pid = pid_or_error,
+    snid = snid,
+    stdin_fd = stdin,
+    stdout_fd = stdout,
+    stderr_fd = stderr,
+    cmd = cmd,
+  }
+  return info, nil
 end
+
 ---See spawn.spawn for more information
 ---Stops the process from inheriting the process io
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
----@return integer|string pid_or_error
----@return string? snid
----@return integer? stdin_fd
----@return integer? stdout_fd
----@return integer? stderr_fd
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.noninteractive(cmd, opts)
   opts = opts or {}
@@ -114,11 +133,6 @@ end
 ---Stops Awesome from waiting for the process to startup.
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
----@return integer|string pid_or_error
----@return string? snid
----@return integer? stdin_fd
----@return integer? stdout_fd
----@return integer? stderr_fd
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.nosn(cmd, opts)
   opts = opts or {}
@@ -132,11 +146,6 @@ end
 ---If this is not desired, call spawn.spawn with {sn_rules=false} or pass {inherit_std*=true}.
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
----@return integer|string pid_or_error
----@return string? snid
----@return integer? stdin_fd
----@return integer? stdout_fd
----@return integer? stderr_fd
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.noninteractive_nosn(cmd, opts)
   opts = opts or {}
@@ -257,8 +266,9 @@ function spawn.with_lines(cmd, callbacks, opts)
   })
   new_opts.exit_callback = opts.exit_callback or callbacks.exit ---For reverse compatibility with awful.spawn.with_line_callback
 
-  local pid, _, _, stdout, stderr = spawn.spawn(cmd, new_opts)
-  if type(pid) == "string" then return nil, pid end -- Error
+  local info, err = spawn.spawn(cmd, new_opts)
+  if not info then return nil, err end -- Error
+  local stdout, stderr = info.stdout_fd, info.stderr_fd
 
   local streams_left = 0
   streams_left = streams_left + (stdout_callback and 1 or 0)
@@ -272,7 +282,7 @@ function spawn.with_lines(cmd, callbacks, opts)
 
   if stdout_callback then spawn.read_lines(Gio.UnixInputStream.new(stdout, true), stdout_callback, step_done, true) end
   if stderr_callback then spawn.read_lines(Gio.UnixInputStream.new(stderr, true), stderr_callback, step_done, true) end
-  return pid, nil
+  return info.pid, nil
 end
 spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awful.spawn.with_line_callback
 --- Asynchronously spawn a program and capture its output. (wraps `spawn.with_line_callback`).
@@ -311,6 +321,18 @@ function spawn.async(cmd, callback, opts)
   }, opts)
 end
 spawn.easy_async = spawn.async -- Backwards compatability with awful.spawn.easy_async
+
+--- Utils for parsing
+---@param reason "exit"|"signal"|string Used in exit_callback or on_failure_callback. Note: in on_failure_callback this will always return false.
+---@param code integer? The exit code in exit_callback
+spawn.is_normal_exit = function(reason, code)
+  if not reason or not code then return false end
+  if reason ~= "exit" and reason ~= "signal" then return false end
+  local sigterm = capi.awesome.unix_signal["SIGTERM"] or 15
+  if reason == "signal" and code == sigterm then return true end
+  if reason == "exit" then return code ~= 0 end
+  return false
+end
 
 setmetatable(spawn, {
   __call = function(_, ...)
