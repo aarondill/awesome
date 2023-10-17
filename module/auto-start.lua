@@ -75,14 +75,13 @@ local function run_once(cmd)
       text = text .. ("\nLogs are available at:\n%s\n%s"):format(log_file_stdout, log_file_stderr)
     end
     err(cmd, text)
-  end)
-  if type(pid) == "number" then
-    return pid
-  elseif DEBUG then
-    -- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
-    err(cmd, pid)
-  end
-  return nil
+  end, {
+    on_failure_callback = function(e)
+      -- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
+      if DEBUG then return err(cmd, e) end
+    end,
+  })
+  return pid
 end
 
 for _, app in ipairs(apps.run_on_startup) do

@@ -11,12 +11,12 @@ local menubar = require("menubar")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local function open_main_menu()
-  local pid_or_err = spawn.noninteractive(apps.default.rofi)
-  -- The return value will be a string in case of failure
-  if type(pid_or_err) == "string" then
-    local s = awful.screen.focused()
-    if s and s.run_promptbox then s.run_promptbox:run() end
-  end
+  return spawn.noninteractive(apps.default.rofi, {
+    on_failure_callback = function()
+      local s = awful.screen.focused()
+      if s and s.run_promptbox then s.run_promptbox:run() end
+    end,
+  })
 end
 
 ---Create a button widget which will launch a command.
