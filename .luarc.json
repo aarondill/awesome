@@ -4,5 +4,21 @@
   "workspace.ignoreDir": [".vscode"],
   "workspace": {
     "library": ["/usr/share/awesome/lib/"]
-  }
+  },
+  "runtime.path": [
+    "/usr/local/share/lua/5.3/?.lua",
+    "/usr/local/share/lua/5.3/?/init.lua",
+    "/usr/local/lib/lua/5.3/?.lua",
+    "/usr/local/lib/lua/5.3/?/init.lua",
+    "/usr/share/lua/5.3/?.lua",
+    "/usr/share/lua/5.3/?/init.lua",
+    "./?.lua",
+    "./?/init.lua",
+    "/home/aaron/.config/awesome/?.lua",
+    "/home/aaron/.config/awesome/?/init.lua",
+    "/etc/xdg/awesome/?.lua",
+    "/etc/xdg/awesome/?/init.lua",
+    "/usr/share/awesome/lib/?.lua",
+    "/usr/share/awesome/lib/?/init.lua"
+  ]
 }
