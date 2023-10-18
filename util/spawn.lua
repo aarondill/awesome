@@ -71,15 +71,14 @@ end
 ---Note: this only works if the application implements startup notifications
 ---@field sn_rules? table|boolean
 ---Whether the command should inherit the stdin of awesome.
----If true, stdin_fd will be returned, else stdin_fd will be nil
----This defaults to false to prevent it from taking control of the underlying terminal
----@field inherit_stdin? boolean
+---If false, stdin_fd will be returned, else stdin_fd will be nil
+---@field inherit_stdin? boolean default true
 ---Whether the command should inherit the stdout of awesome.
----If true, stdout_fd will be returned, else stdout_fd will be nil
----@field inherit_stdout? boolean
+---If false, stdout_fd will be returned, else stdout_fd will be nil
+---@field inherit_stdout? boolean default true
 ---Whether the command should inherit the stderr of awesome.
----If true, stderr_fd will be returned, else stderr_fd will be nil
----@field inherit_stderr? boolean
+---If false, stderr_fd will be returned, else stderr_fd will be nil
+---@field inherit_stderr? boolean default true
 ---A table of environment variables to apply to the command.
 ---If false, the command will be started with an empty environment
 ---If nil, the command will inherit awesome's environment
@@ -103,6 +102,9 @@ end
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.spawn(cmd, opts)
   opts = opts or {}
+  local function handle_inherit_default(v) ---@param v boolean?
+    return (v ~= nil or false) and not v -- nil->false, else->not v
+  end
   if cmd and iscallable(cmd) then cmd = cmd(opts) end ---@cast cmd Command
   if not cmd or #cmd == 0 then
     error("No command specified.", 2)
@@ -111,9 +113,9 @@ function spawn.spawn(cmd, opts)
   local start_callback = opts.start_callback
   local exit_callback = gen_exit_cb(opts.exit_callback, opts.exit_callback_err, opts.exit_callback_suc)
   local use_sn = opts.sn_rules ~= false
-  local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
-  local return_stdout = not opts.inherit_stdout
-  local return_stderr = not opts.inherit_stderr
+  local return_stdin = handle_inherit_default(opts.inherit_stdin)
+  local return_stdout = handle_inherit_default(opts.inherit_stdout)
+  local return_stderr = handle_inherit_default(opts.inherit_stderr)
   local env_table = opts.env == false and {} or opts.env ---@cast env_table table
   local pid_or_error, snid, stdin, stdout, stderr =
     capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
@@ -170,10 +172,11 @@ end
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
+---@deprecated Use spawn.nosn instead see noninteractive
 function spawn.noninteractive_nosn(cmd, opts)
   opts = opts or {}
   opts.sn_rules = opts.sn_rules or false
-  return spawn.noninteractive(cmd, opts)
+  return spawn.spawn(cmd, opts)
 end
 --- Spawn a program using the shell.
 ---This calls `cmd` with `$SHELL -c` (via `awful.util.shell`).
@@ -283,7 +286,7 @@ function spawn.with_lines(cmd, callbacks, opts)
 
   local new_opts = gtable.join(opts, {
     sn_rules = false,
-    inherit_stdin = false,
+    inherit_stdin = true,
     inherit_stdout = not stdout_callback,
     inherit_stderr = not stderr_callback,
   })
