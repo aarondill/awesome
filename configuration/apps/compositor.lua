@@ -10,10 +10,6 @@ local config_file_dir = require(..., "conffile_dir") ---@module "configuration.a
 local compositor = {}
 compositor.pid_file = os.tmpname() -- A unique filename to use for the pid of *this* AwesomeWM process. Note that this *should* support multiple Xorg/AwesomeWM processes.
 compositor.cmd = { "picom", "--config", config_file_dir .. "/picom.conf", "--write-pid-path", compositor.pid_file }
-capi.awesome.connect_signal("exit", function()
-  os.remove(compositor.pid_file) -- cleanup the file on exit
-end)
-
 ---@param reason "exit"|"signal"
 ---@param code integer
 ---@param output_signals boolean? Whether to output on a signal. Defaults to true.
@@ -105,5 +101,10 @@ function compositor.stop(force)
   return compositor._stop(force)
 end
 compositor.kill = compositor.stop --- Alias kill to stop for symetry with compositor.spawn
+
+capi.awesome.connect_signal("exit", function()
+  compositor.stop() -- Stop the compositor on exit - should happen anyways, but lets clean up
+  os.remove(compositor.pid_file) -- cleanup the file on exit
+end)
 
 return compositor
