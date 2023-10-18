@@ -1,3 +1,4 @@
+--Modified from: https://github.com/deficient/brightness
 local awful = require("awful")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
@@ -9,9 +10,6 @@ local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local write_async = require("util.file.write_async")
 
-------------------------------------------
--- Brightness control interface
-------------------------------------------
 local bcontrol = {}
 
 function bcontrol:new(args)
