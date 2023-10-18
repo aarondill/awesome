@@ -18,6 +18,7 @@
 --     return gears.shape.rounded_rect(cr, w, h, theme.border_radius)
 -- end
 local capi = require("capi")
+local compat = require("util.compat")
 local require = require("util.rel_require")
 
 local awful = require("awful")
@@ -123,7 +124,7 @@ function module.new(cfg)
           { -- tag
             id = "text_role",
             widget = wibox.widget.textbox,
-            align = "center",
+            [compat.widget.halign] = "center",
           },
           constrain_icon({ -- tasklist
             id = "tasklist_placeholder",
