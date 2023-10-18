@@ -4,6 +4,7 @@ local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
 local get_child_by_id = require("util.get_child_by_id")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
 local notifs = require("util.notifs")
 local read_async = require("util.file.read_async")
@@ -61,7 +62,7 @@ function bcontrol:init(args)
     ),
   })
 
-  self.timer = timer({
+  self.timer = gtimer.new({
     timeout = args.timeout or 3,
     callback = function()
       self:update()
