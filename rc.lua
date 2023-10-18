@@ -56,7 +56,8 @@ require("module.client")
 require("module.titlebar")
 
 require("util.file.read_async")("/proc/cpuinfo", function(content)
-  if content and content:match("^flags%s:.*"):match("%shypervisor%s") then
+  if content and content:match("^flags%s:.*%shypervisor%s") then
+    require("util.notifs").info("vm")
     return -- if file exists and contains the hypervisor flag (we are in a VM) then don't start the compositor.
   end
   return require("configuration.apps.compositor").start() -- Start the compositor on startup
