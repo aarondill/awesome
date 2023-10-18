@@ -143,17 +143,6 @@ function spawn.spawn(cmd, opts)
   return info, nil
 end
 
----See spawn.spawn for more information
----Stops the process from inheriting the process io
----@param cmd CommandProvider
----@param opts SpawnOptions?
----@see Modified from /usr/share/awesome/lib/awful/spawn.lua
----@deprecated -- This causes too many file descriptors to be created!
----Use inherit_* if you need it, otherwise just let things write to the console.
-function spawn.noninteractive(cmd, opts)
-  return spawn.spawn(cmd, opts)
-end
-
 ---See spawn.spawn and spawn.noninteractive for more information
 ---Stops Awesome from waiting for the process to startup.
 ---@param cmd CommandProvider

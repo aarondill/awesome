@@ -11,7 +11,7 @@ local menubar = require("menubar")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local function open_main_menu()
-  return spawn.noninteractive(apps.default.rofi, {
+  return spawn.spawn(apps.default.rofi, {
     on_failure_callback = function()
       local s = awful.screen.focused()
       if s and s.run_promptbox then s.run_promptbox:run() end
