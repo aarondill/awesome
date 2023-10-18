@@ -1,5 +1,5 @@
 local Battery = require("widget.battery")
-local Brightness = require("widget.brightness")
+local Brightness = require("widget.brightness-sys")
 local CPU = require("widget.cpu")
 local LayoutBox = require("widget.layout-box")
 local MediaControl = require("widget.media-control")
@@ -10,7 +10,6 @@ local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
 local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
-local clickable_container = require("widget.material.clickable-container")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
@@ -109,14 +108,11 @@ local TopPanel = function(s)
         bottom = dpi(4),
         id = "cpu_widget",
       },
-      {
-        Brightness({
-          step = 5,
-          timeout = 10,
-          levels = { 5, 25, 50, 75, 100 },
-        }),
-        widget = clickable_container,
-      },
+      Brightness({
+        step = 5,
+        timeout = 10,
+        levels = { 5, 25, 50, 75, 100 },
+      }),
     },
   })
   s:connect_signal("property::geometry", function()
