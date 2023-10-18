@@ -64,12 +64,12 @@ end
 ---Don't notify due to failure. This function will handle that.
 ---@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
 function open.lock(exit_cb)
-  return spawn_notif_on_err(default.lock, {
+  return spawn.noninteractive(default.lock, {
     sn_rules = false,
     exit_callback = function(reason, code)
       local is_normal_exit = spawn.is_normal_exit(reason, code)
       if not is_normal_exit then
-        notifs.warn(string.format("Exit reason: %s, Exit code: %d", reason, code), {
+        notifs.warn(("Exit reason: %s, Exit code: %d"):format(reason, code), {
           title = "Something went wrong running the lock screen",
         })
       end
@@ -79,7 +79,7 @@ function open.lock(exit_cb)
     on_failure_callback = function()
       if exit_cb then return exit_cb(false) end
     end,
-  }, true)
+  })
 end
 
 return open
