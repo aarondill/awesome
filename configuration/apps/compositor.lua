@@ -30,8 +30,8 @@ end
 ---@return boolean success
 ---@return string? error error message if failed
 function compositor._spawn()
-  local info, err = spawn.noninteractive_nosn(compositor.cmd, {
-    exit_callback = function(reason, code)
+  local info, err = spawn.nosn(compositor.cmd, {
+    exit_callback_err = function(reason, code)
       local msg = exit_msg(reason, code, false)
       if not msg then return end
       notifs.warn(msg, { title = "Compositor Crash!", timeout = 45 })

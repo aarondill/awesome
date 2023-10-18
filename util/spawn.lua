@@ -165,19 +165,6 @@ function spawn.nosn(cmd, opts)
   return spawn.spawn(cmd, opts)
 end
 
----See spawn.spawn, spawn.noninteractive, and spawn.nosn for more information
----Stops Awesome from waiting for the process to startup.
----Also calls spawn.noninteractive.
----If this is not desired, call spawn.spawn with {sn_rules=false} or pass {inherit_std*=true}.
----@param cmd CommandProvider
----@param opts SpawnOptions?
----@see Modified from /usr/share/awesome/lib/awful/spawn.lua
----@deprecated Use spawn.nosn instead see noninteractive
-function spawn.noninteractive_nosn(cmd, opts)
-  opts = opts or {}
-  opts.sn_rules = opts.sn_rules or false
-  return spawn.spawn(cmd, opts)
-end
 --- Spawn a program using the shell.
 ---This calls `cmd` with `$SHELL -c` (via `awful.util.shell`).
 ---@param cmd string The command.

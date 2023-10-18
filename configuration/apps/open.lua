@@ -10,9 +10,8 @@ local open = {}
 
 ---@param cmd string|string[]
 ---@param opts SpawnOptions? Options to pass to utils.spawn
----@param noninteractive boolean? if true: call spawn.noninteractive
 ---Warns the user if a command fails to spawn. Returns the same values as spawn.spawn
-local function spawn_notif_on_err(cmd, opts, noninteractive)
+local function spawn_notif_on_err(cmd, opts)
   opts = opts or {}
   opts.on_failure_callback = function(err)
     local cmd_string = type(cmd) == "table" and tableutils.concat(cmd, "'%s'", " ") or tostring(cmd)
@@ -21,8 +20,7 @@ local function spawn_notif_on_err(cmd, opts, noninteractive)
       { title = "Failed to execute program!" }
     )
   end
-  local f = noninteractive and spawn.noninteractive or spawn.spawn
-  return f(cmd, opts)
+  return spawn.spawn(cmd, opts)
 end
 
 ---Open a terminal with the given command
@@ -57,7 +55,7 @@ function open.browser(url, new_window, spawn_options)
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
   -- Use the user specified if present
-  return spawn_notif_on_err(do_cmd, spawn_options, true)
+  return spawn_notif_on_err(do_cmd, spawn_options)
 end
 ---Open the lock screen
 ---Note, this doesn't block.
@@ -69,7 +67,7 @@ function open.lock()
     local msg = format:format(reason_or_err, code)
     return notifs.warn(msg, { title = "Something went wrong running the lock screen" })
   end
-  return spawn.noninteractive_nosn(default.lock, { exit_callback_err = warn, on_failure_callback = warn })
+  return spawn.nosn(default.lock, { exit_callback_err = warn, on_failure_callback = warn })
 end
 
 return open
