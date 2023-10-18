@@ -326,12 +326,12 @@ spawn.easy_async = spawn.async -- Backwards compatability with awful.spawn.easy_
 ---@param reason "exit"|"signal"|string Used in exit_callback or on_failure_callback. Note: in on_failure_callback this will always return false.
 ---@param code integer? The exit code in exit_callback
 spawn.is_normal_exit = function(reason, code)
-  if not reason or not code then return false end
-  if reason ~= "exit" and reason ~= "signal" then return false end
+  if not reason or not code then return false end -- If either is not provided, this is not a normal exit (used in on_failure_callback)
+  if reason ~= "exit" and reason ~= "signal" then return false end -- If the reason is not 'exit' or 'signal' then this is not a normal exit (likely an error message from on_failure_callback)
   local sigterm = capi.awesome.unix_signal["SIGTERM"] or 15
-  if reason == "signal" and code == sigterm then return true end
-  if reason == "exit" then return code ~= 0 end
-  return false
+  if reason == "signal" and code == sigterm then return true end -- If exited from sigterm, this is normal
+  if reason == "exit" then return code == 0 end -- if exited with code, is normal if code is 0, else not normal
+  return false -- Exited with signal other than SIGTERM. This is likely not normal!
 end
 
 setmetatable(spawn, {

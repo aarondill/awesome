@@ -14,6 +14,7 @@ local spawn = require("util.spawn")
 --- This *MUST* end in a slash
 local log_dir = gfilesystem.get_cache_dir() .. "auto-start" .. "/"
 --- A map of cmds to pids
+---@type table<CommandProvider, integer>
 local processes = {}
 
 local function err(cmd, e)
@@ -23,13 +24,10 @@ local function err(cmd, e)
   })
 end
 
----@param cmd string|string[] the thing to run
+---@param cmd CommandProvider the thing to run
 ---@return integer? pid of the process or nil if error
 local function run_once(cmd)
   if not cmd then return nil end
-  ---@type string|string[]
-  if not type(cmd) == "string" and not type(cmd) == "table" then error("Startup apps must be string or table") end
-
   --- Used in log to ensure that the date matches the *start* date, not the *end* date
   local CMD_DATE = os.date() ---@cast CMD_DATE string
   local pid = spawn.async(cmd, function(stdout, stderr, exitreason, exitcode)
@@ -96,3 +94,4 @@ capi.awesome.connect_signal("exit", function(_)
   end
   processes = {} -- They're all dead. Doesn't matter because the table is lost anyways, but yk.
 end)
+return processes
