@@ -31,6 +31,25 @@ local spawn = {}
 ---@field cmd Command? the command passed into the function. Note: this is expanded if a function was provided.
 
 ---- Spawn Functions
+---@alias exit_callback_func fun(reason: "exit"|"signal", code: integer)
+
+---@param exit_cb? exit_callback_func
+---@param on_err? exit_callback_func
+---@param on_suc? exit_callback_func
+---@return exit_callback_func?
+local function gen_exit_cb(exit_cb, on_err, on_suc)
+  -- If there's no error callback and no success callback, just return the exit callback
+  if not on_err and not on_suc then return exit_cb end
+
+  return function(reason, code)
+    if spawn.is_normal_exit(reason, code) then
+      if on_suc then on_suc(reason, code) end
+    else
+      if on_err then on_err(reason, code) end
+    end
+    if exit_cb then return exit_cb(reason, code) end
+  end
+end
 
 ---@class SpawnOptions
 ---The callback to call when the application starts.
@@ -39,9 +58,14 @@ local spawn = {}
 ---@field start_callback? fun(client: table)
 ---The callback to call when the application exits.
 ---code is the exit status or the signal that killed the application depending on reason
----@field exit_callback? fun(reason: "exit"|"signal", code: integer)
+---@field exit_callback? exit_callback_func
+---The callback to call when the application exits with an error. See spawn.is_normal_exit.
+---code is the exit status or the signal that killed the application depending on reason
+---@field exit_callback_err? exit_callback_func
+---The callback to call when the application exits successfully. See spawn.is_normal_exit.
+---@field exit_callback_suc? exit_callback_func
 ---Called on spawning failure. Permits one to avoid checking the return value.
----@field on_failure_callback? fun(error: string, command: Command)
+---@field on_failure_callback? fun(error: string)
 ---The rules to apply to the window when the application starts.
 ---These are enabled by default. Pass false to disable startup notification detection.
 ---Note: this only works if the application implements startup notifications
@@ -84,7 +108,8 @@ function spawn.spawn(cmd, opts)
     error("No command specified.", 2)
     return nil, "No command specified" -- Should never happen
   end
-  local start_callback, exit_callback = opts.start_callback, opts.exit_callback
+  local start_callback = opts.start_callback
+  local exit_callback = gen_exit_cb(opts.exit_callback, opts.exit_callback_err, opts.exit_callback_suc)
   local use_sn = opts.sn_rules ~= false
   local return_stdin = opts.inherit_stdin == nil and true or not opts.inherit_stdin
   local return_stdout = not opts.inherit_stdout
@@ -94,7 +119,7 @@ function spawn.spawn(cmd, opts)
     capi.awesome.spawn(cmd, use_sn, return_stdin, return_stdout, return_stderr, exit_callback, env_table)
   if type(pid_or_error) == "string" then
     if opts.on_failure_callback then -- Call the user's callback if one exists
-      opts.on_failure_callback(pid_or_error, cmd)
+      opts.on_failure_callback(pid_or_error)
     end
     return nil, pid_or_error
   end
