@@ -1,8 +1,8 @@
 local gio = require("lgi").require("Gio")
 
---- Replace a file content or create a new one - Async :)
+---Get the contents of a file - Async :)
 ---@generic Path :string
----@param path Path file path to write to
+---@param path Path file path to read
 ---@param cb fun(content?: string, error?: userdata, path: Path) function to call when done. content will be nil if the file does not exist
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_read(path, cb)
