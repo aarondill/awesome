@@ -1,5 +1,5 @@
 local Battery = require("widget.battery")
-local Brightness = require("widget.brightness-sys")
+local Brightness = require("widget.brightness")
 local CPU = require("widget.cpu")
 local LayoutBox = require("widget.layout-box")
 local MediaControl = require("widget.media-control")
