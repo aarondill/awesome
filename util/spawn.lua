@@ -146,11 +146,9 @@ end
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
+---@deprecated -- This causes too many file descriptors to be created!
+---Use inherit_* if you need it, otherwise just let things write to the console.
 function spawn.noninteractive(cmd, opts)
-  opts = opts or {}
-  opts.inherit_stdin = opts.inherit_stdin or false
-  opts.inherit_stdout = opts.inherit_stdout or false
-  opts.inherit_stderr = opts.inherit_stderr or false
   return spawn.spawn(cmd, opts)
 end
 
