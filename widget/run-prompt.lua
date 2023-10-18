@@ -23,7 +23,7 @@ local function Run_prompt(s)
     return old_run(...)
   end
   promptbox.exe_callback = function(cmd)
-    spawn.noninteractive(cmd, {
+    spawn.spawn(cmd, {
       on_failure_callback = function(err)
         promptbox.widget:set_text(err)
         if promptbox.timer and promptbox.timer.again then

@@ -142,19 +142,19 @@ local function handle_exit_callback(cb, reason, code)
 end
 ---@param cb fun(success: boolean)
 function MediaControl:PlayPause(cb)
-  spawn.noninteractive(self:handle_name({ "playerctl", "play-pause" }), {
+  spawn.spawn(self:handle_name({ "playerctl", "play-pause" }), {
     exit_callback = bind(handle_exit_callback, cb),
   })
 end
 ---@param cb fun(success: boolean)
 function MediaControl:Previous(cb)
-  spawn.noninteractive(self:handle_name({ "playerctl", "previous" }), {
+  spawn.spawn(self:handle_name({ "playerctl", "previous" }), {
     exit_callback = bind(handle_exit_callback, cb),
   })
 end
 ---@param cb fun(success: boolean)
 function MediaControl:Next(cb)
-  spawn.noninteractive(self:handle_name({ "playerctl", "next" }), {
+  spawn.spawn(self:handle_name({ "playerctl", "next" }), {
     exit_callback = bind(handle_exit_callback, cb),
   })
 end
