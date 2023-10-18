@@ -1,8 +1,6 @@
 -- awesome_mode: api-level=9999:screen=on
 local awful = require("awful")
 local beautiful = require("beautiful")
-local capi = require("capi")
-local compat = require("util.compat")
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
@@ -28,6 +26,10 @@ if gfile.file_readable(utils_path) then
   util_package_path.add_to_path(conf_dir)
   util_package_path.add_to_path(this_dir)
 end
+
+-- Load these *local* packages *After* fixing package.path
+local capi = require("capi")
+local compat = require("util.compat")
 
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()
