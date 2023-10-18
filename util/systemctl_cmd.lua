@@ -7,10 +7,7 @@ local function systemctl_cmd(cmd)
   local spawner = bind.with_args(spawn.nosn, { "systemctl", cmd })
   -- Try with sudo incase no password is needed (for hibernate)
   return spawn.nosn({ "sudo", "-n", "--", "systemctl", cmd }, {
-    exit_callback = function(reason, code)
-      -- Spawn without sudo if original fails
-      if not spawn.is_normal_exit(reason, code) then spawner() end
-    end,
+    exit_callback_err = spawner, -- Spawn without sudo if original fails
     on_failure_callback = spawner,
   })
 end
