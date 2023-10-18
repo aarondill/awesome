@@ -14,8 +14,8 @@ local open = {}
 ---Warns the user if a command fails to spawn. Returns the same values as spawn.spawn
 local function spawn_notif_on_err(cmd, opts, noninteractive)
   opts = opts or {}
-  opts.on_failure_callback = function(err, command)
-    local cmd_string = type(command) == "table" and tableutils.concat(command, "'%s'", " ") or command
+  opts.on_failure_callback = function(err)
+    local cmd_string = type(cmd) == "table" and tableutils.concat(cmd, "'%s'", " ") or tostring(cmd)
     return notifs.critical( -- Warn the user!
       ("Error: %s\nCommand: %s"):format(err, cmd_string),
       { title = "Failed to execute program!" }
@@ -61,25 +61,15 @@ function open.browser(url, new_window, spawn_options)
 end
 ---Open the lock screen
 ---Note, this doesn't block.
----Don't notify due to failure. This function will handle that.
----@param exit_cb? fun(success: boolean) The function to call on exit. success will be true if the screen closed normally, or false if something went wrong.
-function open.lock(exit_cb)
-  return spawn.noninteractive(default.lock, {
-    sn_rules = false,
-    exit_callback = function(reason, code)
-      local is_normal_exit = spawn.is_normal_exit(reason, code)
-      if not is_normal_exit then
-        notifs.warn(("Exit reason: %s, Exit code: %d"):format(reason, code), {
-          title = "Something went wrong running the lock screen",
-        })
-      end
-      -- Call exit_cb with true if the screen closed normally (exit with code 0)
-      if exit_cb then return exit_cb(is_normal_exit) end
-    end,
-    on_failure_callback = function()
-      if exit_cb then return exit_cb(false) end
-    end,
-  })
+function open.lock()
+  ---@param reason_or_err 'exit'|'signal'|string
+  ---@param code integer?
+  local function warn(reason_or_err, code)
+    local format = code and "Exit reason: %s, Exit code: %d" or "Error: %s"
+    local msg = format:format(reason_or_err, code)
+    return notifs.warn(msg, { title = "Something went wrong running the lock screen" })
+  end
+  return spawn.noninteractive_nosn(default.lock, { exit_callback_err = warn, on_failure_callback = warn })
 end
 
 return open
