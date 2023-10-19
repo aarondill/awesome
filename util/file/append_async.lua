@@ -38,7 +38,7 @@ local function file_append(path, content, cb)
       return
     end
     outputstream_write(stream, content, function(write_err)
-      stream:close()
+      stream:close_async()
       garbage_collection.release(index)
       index = nil
       cb(write_err)

@@ -14,9 +14,7 @@ local gtable = require("gears.table")
 ---@field filter? filter_func
 
 local function enumerate_handler_finish(content, cb, ret)
-  content:close_async(0, nil, function(gfile_close, task_close)
-    return gfile_close:close_finish(task_close)
-  end)
+  content:close_async(-1, nil, nil) -- no callback is needed, as I don't care about the result
   return cb(ret, nil)
 end
 local function default_filter() ---@type filter_func
