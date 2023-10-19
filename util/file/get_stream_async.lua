@@ -24,7 +24,8 @@ local GioInputStreamAsyncHelper = {
     end)
   end,
   ---@param self GioInputStreamAsyncHelper
-  ---@param callback fun(content?: string, error?: userdata):any
+  ---Note that line may be nil even if no error occurred!
+  ---@param callback fun(line?: string, error?: userdata):any
   read_line = function(self, callback)
     local data_stream = gio.DataInputStream.new(self.stream)
     local old_location = self:tell() -- The old position is lost after read_line_async. Record it here for later.
@@ -35,6 +36,20 @@ local GioInputStreamAsyncHelper = {
       self:seek(old_location + length + 1, "start") -- Move the main stream position forward -- The old positon is lost! -- Plus 1 for newline
       return callback(line, nil)
     end)
+  end,
+  ---@param self GioInputStreamAsyncHelper
+  ---Note that line may be nil even if no error occurred!
+  ---return `false` to stop reading.
+  ---Iteration will stop if an error occurs (callback will be called with the error)
+  ---@param callback fun(line?: string, error?: userdata): boolean?
+  each_line = function(self, callback)
+    local function handler(line, err)
+      if err then return callback(nil, err) end
+      local res = callback(line, nil)
+      if res == false then return end -- false means stop
+      return self:read_line(handler) -- Loop the next line.
+    end
+    return self:read_line(handler)
   end,
   ---@param self GioInputStreamAsyncHelper
   ---@param count integer
