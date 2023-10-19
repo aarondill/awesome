@@ -55,6 +55,7 @@ function open.browser(url, new_window, spawn_options)
   if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
   if url then do_cmd = concat_command(do_cmd, url) end
   -- Use the user specified if present
+  spawn_options = spawn_options or {}
   spawn_options.inherit_stderr = false
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
