@@ -63,6 +63,8 @@ require("util.file.stream_async")("/proc/cpuinfo", function(stream)
     if line:match("[^\n]flags%s*:.*%shypervisor%s") then return false end
     require("configuration.apps.compositor").start() -- Start the compositor on startup
     return false -- Stop looping
+  end, function()
+    return stream:close()
   end)
 end)
 
