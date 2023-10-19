@@ -3,17 +3,22 @@ local glib = lgi.GLib
 local gio = lgi.Gio
 
 ---@class GioInputStream
----@field read_bytes_async fun(self: GioInputStream, count: integer, io_p: integer, cancel, cb: fun(source: GioInputStream, task: unknown))
----@field skip_async fun(self: GioInputStream, count: integer, io_p: integer, cancel, cb: fun(source: GioInputStream, task: unknown))
+---@field read_bytes_async fun(self: GioInputStream, count: integer, io_p: integer, cancel, cb?: fun(source: GioInputStream, task: unknown))
+---@field skip_async fun(self: GioInputStream, count: integer, io_p: integer, cancel, cb?: fun(source: GioInputStream, task: unknown))
 ---@field seek fun(self: GioInputStream, offset, type): suc: boolean, error: userdata
 ---@field tell fun(self: GioInputStream): integer -- Zero if not seekable
----@field close_async fun(self: GioInputStream, io_p: integer, cancel, cb: fun(source: GioInputStream, task: unknown))
+---@field close_async fun(self: GioInputStream, io_p: integer, cancel, cb?: fun(source: GioInputStream, task: unknown))
 ---@field read_bytes_finish fun(source: GioInputStream, task: unknown): gbytes: table?, error: userdata?
 ---@field skip_finish fun(source: GioInputStream, task: unknown): skipped: integer, error: userdata?
 
+---@class GioDataInputStream :GioInputStream
+---@field read_line_async fun(self: GioDataInputStream,io_p:integer, cancel, cb: fun(source: GioDataInputStream, task:unknown))
+---@field read_line_finish fun(source: GioDataInputStream, task:unknown): line: string, len_or_err: number|userdata
+
 ---@class GioInputStreamAsyncHelper
+---@field data_stream GioDataInputStream?
+---@field stream GioInputStream
 local GioInputStreamAsyncHelper = {
-  stream = nil, ---@type GioInputStream
   ---@param self GioInputStreamAsyncHelper
   ---@param count integer
   ---@param callback fun(content?: string, error?: userdata):any
@@ -24,10 +29,17 @@ local GioInputStreamAsyncHelper = {
     end)
   end,
   ---@param self GioInputStreamAsyncHelper
-  ---Note that line may be nil even if no error occurred!
+  get_data_stream = function(self)
+    self.data_stream = self.data_stream or gio.DataInputStream.new(self.stream)
+    local type = glib.SeekType.SET -- From beginning
+    self.data_stream:seek(self:tell(), type) -- Sync the offset to the main stream's offset.
+    return self.data_stream
+  end,
+  ---@param self GioInputStreamAsyncHelper
+  ---Note that line may be nil even if no error occurred! (EOF)
   ---@param callback fun(line?: string, error?: userdata):any
   read_line = function(self, callback)
-    local data_stream = gio.DataInputStream.new(self.stream)
+    local data_stream = self:get_data_stream()
     local old_location = self:tell() -- The old position is lost after read_line_async. Record it here for later.
 
     return data_stream:read_line_async(-1, nil, function(obj, res)
@@ -38,22 +50,25 @@ local GioInputStreamAsyncHelper = {
     end)
   end,
   ---@param self GioInputStreamAsyncHelper
-  ---Note that line may be nil even if no error occurred!
+  ---Note that line may be nil even if no error occurred! (EOF)
   ---return `false` to stop reading.
-  ---Iteration will stop if an error occurs (callback will be called with the error)
-  ---@param callback fun(line?: string, error?: userdata): boolean?
-  each_line = function(self, callback)
+  ---Iteration will stop if an error occurs (done will be called with the error)
+  ---@param callback fun(line?: string): boolean?
+  ---Called when the operation is done. only called once.
+  ---@param done? fun(error?: userdata): boolean?
+  each_line = function(self, callback, done)
+    done = done or function() end
     local function handler(line, err)
-      if err then return callback(nil, err) end
-      local res = callback(line, nil)
-      if res == false then return end -- false means stop
+      if err then return done(err) end
+      local res = callback(line)
+      if res == false then return done(nil) end -- false means stop
       return self:read_line(handler) -- Loop the next line.
     end
     return self:read_line(handler)
   end,
   ---@param self GioInputStreamAsyncHelper
   ---@param count integer
-  ---@param callback fun(lines?: string[], error?: userdata):any called for each line!
+  ---@param callback fun(lines?: string[], error?: userdata):any
   read_lines = function(self, count, callback)
     local data_stream = gio.DataInputStream.new(self.stream)
     local lines = {}
@@ -116,7 +131,7 @@ local GioInputStreamAsyncHelper = {
   end,
   ---Note: this is an async close. You can not use the steam after calling this anyways though. Regardless of the possibilty of race conditions.
   ---@param self GioInputStreamAsyncHelper
-  ---@param callback fun(suc: boolean, error: string?):any?
+  ---@param callback? fun(suc: boolean, error: string?):any?
   close = function(self, callback)
     return self.stream:close_async(-1, nil, callback and function(source, task)
       local suc, err = source:close_finish(task)
@@ -134,11 +149,15 @@ end
 ---Gets a GioInputStream and GioInputStreamAsyncHelper for the given filepath
 ---@param path string
 ---@param callback fun(stream?: GioInputStreamAsyncHelper, error?: userdata): any
-local function get_stream(path, callback)
+---@param autoclose boolean? Whether to close the stream after callback is done. Defaults: true
+local function get_stream(path, callback, autoclose)
   return gio.File.new_for_path(path):read_async(-1, nil, function(file, task)
     local stream, error = file:read_finish(task)
     if not stream then return callback(nil, error) end
-    return callback(gen_stream_ret(stream), nil)
+    local ret = gen_stream_ret(stream)
+    callback(ret, nil)
+    -- If the user requested not to close the stream, It's their responsibilty to cleanup.
+    if autoclose ~= false then return ret:close() end -- Close the FD
   end)
 end
 
