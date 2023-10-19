@@ -149,15 +149,12 @@ end
 ---Gets a GioInputStream and GioInputStreamAsyncHelper for the given filepath
 ---@param path string
 ---@param callback fun(stream?: GioInputStreamAsyncHelper, error?: userdata): any
----@param autoclose boolean? Whether to close the stream after callback is done. Defaults: true
-local function get_stream(path, callback, autoclose)
+local function get_stream(path, callback)
   return gio.File.new_for_path(path):read_async(-1, nil, function(file, task)
     local stream, error = file:read_finish(task)
     if not stream then return callback(nil, error) end
     local ret = gen_stream_ret(stream)
-    callback(ret, nil)
-    -- If the user requested not to close the stream, It's their responsibilty to cleanup.
-    if autoclose ~= false then return ret:close() end -- Close the FD
+    return callback(ret, nil)
   end)
 end
 
