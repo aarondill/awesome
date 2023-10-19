@@ -217,7 +217,6 @@ local function read_lines_handler(stream, cb, done)
       if not done then return end
       return done()
     end
-    -- This needs tostring() for older lgi versions which returned "GLib.Bytes" instead of Lua strings (I guess)
     if cb then cb(tostring(line) or "") end
 
     -- Read the next line
