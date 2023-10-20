@@ -1,8 +1,10 @@
-## Material and Mouse driven theme for [AwesomeWM 4.3](https://awesomewm.org/)
+## Material and Mouse driven theme for [AwesomeWM](https://awesomewm.org/)
 
 ### Original design by PapyElGringo. Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
 
-This branch is the latest branch! It will not work properly with the git repo. To use the git repo, use the `awesome-git` branch.
+This repo is designed to be compatible with AwesomeWM latest (4.3) and the git HEAD.
+I primarily use latest, so this may be undertested on HEAD.
+If you notice any issues, please create an issue or PR!
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) following the [Material Design guidelines](https://material.io) with a performant opinionated mouse/keyboard workflow to increase daily productivity and comfort.
 
