@@ -12,15 +12,15 @@ local function shape_rounded_rect(cr, w, h)
   return require("gears.shape").rounded_rect(cr, w, h, 8)
 end
 ---@param client AwesomeClientInstance
----@param corner boolean true means square, false means round
-local function renderClient(client, corner)
+---@param render_maximized boolean
+local function renderClient(client, render_maximized)
   if quake:client_is_quake(client) then return end
   if client.skip_decoration then return end ---@diagnostic disable-line :undefined-field this is an injected field
 
-  if client.rendering_mode == corner then return end -- Check cached.
-  client.rendering_mode = corner ---@diagnostic disable-line :inject-field this is an injected field
+  if client.rendering_mode == render_maximized then return end -- Check cached.
+  client.rendering_mode = render_maximized ---@diagnostic disable-line :inject-field this is an injected field
 
-  if corner then
+  if render_maximized then
     client.border_width = 0
     client.shape = nil -- If nil, draws as a rectangle
     return
@@ -43,9 +43,9 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
 
-  local square_corners = is_tag_maximized(currentScreen.selected_tag) or #managed_clients > 1
+  local render_maximized = is_tag_maximized(currentScreen.selected_tag) or #managed_clients <= 1
   for _, client in ipairs(managed_clients) do
-    renderClient(client, client.fullscreen or square_corners)
+    renderClient(client, client.fullscreen or render_maximized)
   end
   changesOnScreenPending = false
 end
