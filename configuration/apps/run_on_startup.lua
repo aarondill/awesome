@@ -25,7 +25,7 @@ local run_on_startup = {
   -- "exec xfce4-power-manager", -- Power manager
   "xset s 0 0", -- disable screen saver
   "xset -dpms", -- Disable dpms because doesn't work with keys?
-  { "xss-lock", "-q", "--", "lock" }, -- Lock on suspend or dpms
+  { "xss-lock", "-q", "-l", "--", "lock" }, -- Lock on suspend or dpms
   "numlockx on",
   { "udiskie", "-q", "-c", config_file_dir .. "/udiskie.yml" }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
