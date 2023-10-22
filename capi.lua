@@ -34,6 +34,7 @@ local function opt(V) end ---@return V | nil
 local boolean = false ---@type boolean
 local string = "" ---@type string
 ---@alias screen table|integer
+---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
 ---@alias gears.surface userdata
 ---@alias CairoPattern userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
@@ -78,6 +79,21 @@ types.AwesomeSignalClass = {
   set_index_miss_handler = function(handler) end, --- Typically this shouldn't be used
   ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
   set_newindex_miss_handler = function(handler) end, --- Typically this shouldn't be used
+}
+---@class AwesomeSignalClassInstance used for connect_signal and disconnect_signal methods
+types.AwesomeSignalClassInstance = {
+  ---@param self AwesomeSignalClassInstance
+  ---@param signal SignalName
+  ---@param callback function
+  connect_signal = function(self, signal, callback) end,
+  ---@param self AwesomeSignalClassInstance
+  ---@param signal SignalName
+  ---@param callback function
+  disconnect_signal = function(self, signal, callback) end,
+  ---@param self AwesomeSignalClassInstance
+  ---@param signal SignalName
+  ---@param ... unknown
+  emit_signal = function(self, signal, ...) end,
 }
 
 ---@class Awesome
@@ -212,72 +228,68 @@ function types.AwesomeRoot:__index(k) end
 function types.AwesomeRoot:__newindex(k, v) end
 
 ---@class AwesomeDbus
-types.AwesomeDbus = {
-  request_name = function() end,
-  release_name = function() end,
-  add_match = function() end,
-  remove_match = function() end,
-  connect_signal = function() end,
-  disconnect_signal = function() end,
-  emit_signal = function() end,
-  __index = function() end,
-  __newindex = function() end,
-}
+---@field request_name fun()
+---@field release_name fun()
+---@field add_match fun()
+---@field remove_match fun()
+---@field connect_signal fun()
+---@field disconnect_signal fun()
+---@field emit_signal fun()
+---@field __index fun()
+---@field __newindex fun()
 
 ---@class AwesomeKeygrabber
-types.AwesomeKeygrabber = {}
 ---@class AwesomeMousegrabber
-types.AwesomeMousegrabber = {}
 ---@class AwesomeMouse
-types.AwesomeMouse = {}
 ---@class AwesomeScreen :AwesomeSignalClass
-types.AwesomeScreen = {}
----@class AwesomeScreenInstance :AwesomeSignalClass
-types.AwesomeScreenInstance = {
-  tags = {}, ---@type AwesomeTagInstance[]
-  geometry = { height = 0, width = 0, x = 0, y = 0 },
-}
+
+---@class AwesomeScreenInstance :AwesomeSignalClassInstance
+---@field tags AwesomeTagInstance[]
+---@field clients AwesomeClientInstance[]
+---@field selected_tags AwesomeTagInstance[]
+---@field selected_tag AwesomeTagInstance?
+---@field geometry { height: number, width: number, x: number, y: number }
+
 ---@class AwesomeButton :AwesomeSignalClass
-types.AwesomeButton = {}
----@class AwesomeTag :AwesomeSignalClass
-types.AwesomeTag = {}
----@class AwesomeTagInstance :AwesomeSignalClass
-types.AwesomeTagInstance = {
-  view_only = function(self) end, ---@param self AwesomeTagInstance
-}
 ---@class AwesomeWindow
-types.AwesomeWindow = {}
 ---@class AwesomeDrawable :AwesomeSignalClass
-types.AwesomeDrawable = {}
 ---@class AwesomeDrawin :AwesomeSignalClass
-types.AwesomeDrawin = {}
----@class AwesomeClientInstance :AwesomeSignalClass
-types.AwesomeClientInstance = {
-  ---@param self AwesomeClientInstance
-  ---@param tag AwesomeTagInstance
-  move_to_tag = function(self, tag) end,
-  ---@param self AwesomeClientInstance
-  ---@param tag AwesomeTagInstance
-  toggle_tag = function(self, tag) end,
-  raise = function(self) end, ---@param self AwesomeClientInstance
-  jump_to = function(self) end, ---@param self AwesomeClientInstance
-  screen = {}, ---@type AwesomeScreenInstance
-  fullscreen = boolean,
-  ---@param self AwesomeClientInstance
-  ---@return AwesomeTagInstance[]
-  ---@nodiscard
-  tags = function(self) end,
-}
+---@class AwesomeTag :AwesomeSignalClass
+
+---@class AwesomeTagInstance :AwesomeSignalClassInstance
+---@field layout AwesomeLayout
+---@field view_only fun(self: AwesomeTagInstance)
+---@field index integer
+---@field screen AwesomeScreenInstance?
+
+---@class AwesomeClientInstance :AwesomeSignalClassInstance
+---@field floating boolean
+---@field maximized boolean
+---@field above boolean
+---@field below boolean
+---@field ontop boolean
+---@field sticky boolean
+---@field maximized_horizontal boolean
+---@field maximized_vertical boolean
+---@field hidden boolean
+---@field border_width integer
+---@field instance string
+---@field name string
+---@field class string
+---@field shape gears.shape
+---@field move_to_tag fun(self: AwesomeClientInstance, tag: AwesomeTagInstance)
+---@field toggle_tag fun(self: AwesomeClientInstance, tag: AwesomeTagInstance)
+---@field raise fun(self: AwesomeClientInstance)
+---@field jump_to fun(self: AwesomeClientInstance)
+---@field screen AwesomeScreenInstance?
+---@field fullscreen boolean
+---@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[]
+
 ---@class AwesomeClient :AwesomeSignalClass
-types.AwesomeClient = {
-  focus = opt(types.AwesomeClientInstance),
-  ---@param screen screen?
-  ---@param stacked boolean?
-  ---@return AwesomeClientInstance[]
-  get = function(screen, stacked) end,
-}
+---@field focus AwesomeClientInstance?
+---@field get fun(screen: screen?, stacked: boolean?): AwesomeClientInstance[]
+
 ---@class AwesomeKey :AwesomeSignalClass
-types.AwesomeKey = {}
 
 ---@alias selectionFunc fun(): string
 ---@alias AwesomeSelection { selection: selectionFunc } | selectionFunc

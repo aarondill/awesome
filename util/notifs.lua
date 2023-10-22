@@ -2,7 +2,7 @@ local bind = require("util.bind")
 local gtable = require("gears.table")
 local naughty = require("naughty")
 
----@alias gears.shape table
+---@alias gears.shape fun(cr: userdata, width: integer, height: integer)
 ---@alias gears.opacity table
 ---@alias gears.margin table
 ---@alias notification table
