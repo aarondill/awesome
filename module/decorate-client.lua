@@ -1,6 +1,5 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
-local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.compat")
 local gshape = require("gears.shape")
@@ -15,17 +14,6 @@ local function renderClient(client, rounded_corners)
 
   if client.rendering_mode == rounded_corners then return end -- Check cached.
   client.rendering_mode = rounded_corners ---@diagnostic disable-line :inject-field this is an injected field
-
-  if not capi.awesome.startup then
-    client.floating = false
-    client.maximized = false
-    client.above = false
-    client.below = false
-    client.ontop = false
-    client.sticky = false
-    client.maximized_horizontal = false
-    client.maximized_vertical = false
-  end
 
   if not rounded_corners then
     client.border_width, client.shape = 0, gshape.rectangle
@@ -64,15 +52,24 @@ end
 
 local function clientCallback(client) ---@param client AwesomeClientInstance
   if changesOnScreenPending then return end
-  if client.skip_decoration or not client.screen then return end ---@diagnostic disable-line :undefined-field this is an injected field
+  if client.skip_decoration then return end ---@diagnostic disable-line :undefined-field this is an injected field
+  local s = client.screen
+  if not s then return end
+
   changesOnScreenPending = true
-  gtimer.delayed_call(bind.with_args(changesOnScreen, client.screen))
+  return gtimer.delayed_call(function()
+    return changesOnScreen(s)
+  end)
 end
 local function tagCallback(tag) ---@param tag AwesomeTagInstance
   if changesOnScreenPending then return end
-  if not tag.screen then return end
+  local s = tag.screen
+  if not s then return end
+
   changesOnScreenPending = true
-  gtimer.delayed_call(bind.with_args(changesOnScreen, tag.screen))
+  return gtimer.delayed_call(function()
+    return changesOnScreen(s)
+  end)
 end
 
 capi.client.connect_signal(compat.signal.manage, clientCallback)
