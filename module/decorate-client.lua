@@ -45,7 +45,7 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
 
   local use_round_courners = (not tag_is_max and #managed_clients > 1)
   for _, client in pairs(managed_clients) do
-    renderClient(client, client.fullscreen or use_round_courners)
+    renderClient(client, not client.fullscreen and use_round_courners)
   end
   changesOnScreenPending = false
 end
