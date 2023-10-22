@@ -25,9 +25,14 @@ function M.table_append(a_table, b_table)
   return a_table
 end
 
+---Returns a table containing elements that pass the filter
+---@generic K, V
+---@param t table<K, V>
+---@param func fun(k: K, v: V): boolean?
+---@return table
 function M.filter(t, func)
   local res = {}
-  for i, v in ipairs(t) do
+  for i, v in pairs(t) do
     if func(i, v) then table.insert(res, v) end
   end
   return res
