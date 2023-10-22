@@ -25,4 +25,12 @@ function M.table_append(a_table, b_table)
   return a_table
 end
 
+function M.filter(t, func)
+  local res = {}
+  for i, v in ipairs(t) do
+    if func(i, v) then table.insert(res, v) end
+  end
+  return res
+end
+
 return M
