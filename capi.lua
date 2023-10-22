@@ -264,6 +264,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 
 ---@class AwesomeClientInstance :AwesomeSignalClassInstance
 ---@field floating boolean
+---@field valid boolean
 ---@field maximized boolean
 ---@field above boolean
 ---@field below boolean
