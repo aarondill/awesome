@@ -21,8 +21,8 @@ local function rofi_command(mode)
     "-theme",
     config_file_dir .. "/rofi/config.rasi",
     "-show",
-    mode,
   }
+  if type(mode) == "string" or type(mode) == "number" then table.insert(cmd, mode) end -- Check type incase passed directly to spawn.*
   return cmd
 end
 return rofi_command

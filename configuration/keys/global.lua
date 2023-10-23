@@ -1,4 +1,5 @@
 local compat = require("util.compat")
+local get_child_by_id = require("util.get_child_by_id")
 local require = require("util.rel_require")
 local tags = require("util.tags")
 
@@ -15,14 +16,6 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local modkey, altkey = mod.modKey, mod.altKey
 
-local function open_main_menu()
-  return spawn.spawn(apps.default.rofi, {
-    on_failure_callback = function()
-      local s = awful.screen.focused()
-      if s and s.run_promptbox then return s.run_promptbox:run() end
-    end,
-  })
-end
 local setup_next_spawned_handler
 -- A scope block to ensure that these values can only be referenced by setup_next_spawned_handler
 do
@@ -65,14 +58,15 @@ local globalKeys = gtable.join(
     aclient.focus.byidx(-1)
   end, { description = "Focus previous by index", group = "client" }),
 
-  awful.key({ modkey }, "r", open_main_menu, { description = "Main Menu", group = "awesome" }),
-  awful.key({ altkey }, "space", open_main_menu, { description = "Main Menu", group = "awesome" }),
-  awful.key({ modkey }, "p", open_main_menu, { description = "Main Menu", group = "awesome" }),
-  awful.key({ modkey }, "w", function()
-    if not spawn.spawn(apps.default.rofi_window) then -- spawn rofi, if it fails, notify
-      notifs.critical("Rofi is required to open the window picker.")
-    end
-  end, { description = "Window Picker", group = "awesome" }),
+  awful.key({ modkey }, "r", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
+  awful.key({ altkey }, "space", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
+  awful.key({ modkey }, "p", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
+  awful.key(
+    { modkey },
+    "w",
+    bind.with_args(apps.open.rofi, "window"),
+    { description = "Window Picker", group = "awesome" }
+  ),
 
   -- Tag management
   awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "View next", group = "tag" }),
@@ -220,9 +214,10 @@ local globalKeys = gtable.join(
     return spawn({ "ibus", "emoji" })
   end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
   awful.key({ modkey, "Shift" }, "`", function()
-    local s = awful.screen.focused() ---@type AwesomeScreenInstance
-    local tl = s.top_panel:get_children_by_id("taglist")[1] ---@diagnostic disable-line :undefined-field This field is injected!
-    if tl then tl.visible = not tl.visible end
+    local s = awful.screen.focused() ---@type AwesomeScreenInstance?
+    local tl = s and get_child_by_id(s.top_panel, "taglist") ---@diagnostic disable-line :undefined-field This field is injected!
+    if not tl then return end
+    tl.visible = not tl.visible
   end, { description = "Toggle the taglist visiblity", group = "hotkeys" })
 )
 
