@@ -38,6 +38,7 @@ local function Run_prompt()
   promptbox.widget.run = function(_widget, ...)
     return promptbox:run(...)
   end -- Expose this on the returned widget
+  promptbox.widget.promptbox = promptbox -- Allow the returned widget to access the promptbox
   return promptbox.widget
 end
 return Run_prompt
