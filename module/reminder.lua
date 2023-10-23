@@ -4,5 +4,8 @@ local read_async = require("util.file.read_async")
 
 return read_async(find_home("./reminder"), function(content, _, path)
   if not content then return end
-  return notifs.info(content:gsub("\n$", ""), { title = ("Reminder (%s)"):format(path) })
+  return notifs.info(
+    content:gsub("^\n*", ""):gsub("\n*$", ""):gsub("\n\n\n", "\n\n"),
+    { title = ("Reminder (%s)"):format(path) }
+  )
 end)
