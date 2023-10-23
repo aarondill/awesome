@@ -241,6 +241,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeKeygrabber
 ---@class AwesomeMousegrabber
 ---@class AwesomeMouse
+---@field current_wibox table? wibox
 ---@class AwesomeScreen :AwesomeSignalClass
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
