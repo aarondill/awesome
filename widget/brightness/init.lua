@@ -95,9 +95,11 @@ function bcontrol:set_text(value)
   return textbox:set_text(string.format(" [%3s] ", value))
 end
 
-function bcontrol:update()
+---@param callback brightness_callback?
+function bcontrol:update(callback)
   return self:get(function(v)
-    return self:set_text(v)
+    self:set_text(v)
+    if callback then return callback(v) end
   end)
 end
 
@@ -135,7 +137,7 @@ end
 
 ---Set the current brightness
 ---@param brightness integer
----@param callback brightness_callback
+---@param callback brightness_callback?
 function bcontrol:set(brightness, callback)
   if not self.path then return end
   brightness = constrain(brightness, self.min, self.max)
@@ -151,7 +153,7 @@ end
 
 ---Increase the current brightness
 ---@param step integer?
----@param callback brightness_callback
+---@param callback brightness_callback?
 function bcontrol:up(step, callback)
   local s = step or self.step
   return self:get(function(v)
@@ -161,7 +163,7 @@ end
 
 ---Decrease the current brightness
 ---@param step integer?
----@param callback brightness_callback
+---@param callback brightness_callback?
 function bcontrol:down(step, callback)
   local s = step or self.step
   return self:get(function(v)
