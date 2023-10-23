@@ -10,14 +10,13 @@ local gtable = require("gears.table")
 ---@param ... any passed to each_cb and done_cb functions after all other arguments
 local function run_callbacks_in_parellel(done_tbl, ret, each_cb, done_cb, index, val, ...)
   local user_args = { ... }
-  each_cb(val, function(res)
+  return each_cb(val, function(res)
     ret[val] = res
     done_tbl[index] = true
     local is_done = not gtable.hasitem(done_tbl, false) -- All are true
     if is_done then
       done_tbl[index] = false -- Reduce the chance of race conditions, subsequent calculations will return false
-      done_cb(ret, table.unpack(user_args))
-      return
+      return done_cb(ret, table.unpack(user_args))
     end
   end, table.unpack(user_args))
 end
@@ -34,8 +33,7 @@ end
 local function parallel_async(for_each, each_cb, done_cb, ...)
   local ret = {}
   if #for_each == 0 then
-    done_cb(ret) -- call with empty table, since no items to process
-    return
+    return done_cb(ret) -- call with empty table, since no items to process
   end
   local done = {}
   for index, v in ipairs(for_each) do
