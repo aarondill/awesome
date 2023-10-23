@@ -1,28 +1,15 @@
+local normalize_path = require("util.normalize_path")
 --- DON'T require anything local here.
 --- The package.path may not be set up correctly.
 --- Only awesomewm library is available.
 
 local M = {}
----@param path string
----@return string
-local function cleanup_path(path)
-  ---@type string
-  local res = path
-  res = res:gsub("/%./", "/") -- no /./
-  res = res:gsub("^(.+)/$", "%1") -- no end slash -- use .+ instead of .* to keep '/' instead of ''
-  res = res:gsub("//+", "/") -- no double slashes
-  local count = -1
-  while count ~= 0 do
-    res, count = res:gsub("^/%.%./", "/") -- remove /../ at root level
-  end
-  return res
-end
 ---Whether package.path contains `dir`
 ---@param dir string
 ---@return boolean
 ---@nodiscard
 function M.path_contains(dir)
-  dir = cleanup_path(assert(dir))
+  dir = normalize_path(assert(dir))
   local lua = ";" .. dir .. "/?.lua;"
   local init = ";" .. dir .. "/?/init.lua;"
   local path_cmp = ";" .. package.path .. ";" -- package.path may not end in a semicolon. Likely won't start with one.
@@ -33,7 +20,7 @@ end
 ---@return boolean
 ---@nodiscard
 function M.cpath_contains(dir)
-  dir = cleanup_path(assert(dir))
+  dir = normalize_path(assert(dir))
   local so = ";" .. dir .. "/?.so;"
   local path_cmp = ";" .. package.cpath .. ";" -- package.cpath may not end in a semicolon. Likely won't start with one.
   return not not string.find(path_cmp, so, 1, true)
@@ -61,7 +48,7 @@ end
 ---@param prepend boolean? default true
 ---@return string cpath the new cpath (for convenience)
 function M.add_to_cpath(dir, prepend)
-  dir = cleanup_path(assert(dir))
+  dir = normalize_path(assert(dir))
   assert(type(dir) == "string")
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
@@ -74,7 +61,7 @@ end
 ---@param prepend boolean? default true
 ---@return string path the new path (for convenience)
 function M.add_to_path(dir, prepend)
-  dir = cleanup_path(assert(dir))
+  dir = normalize_path(assert(dir))
   assert(type(dir) == "string")
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
