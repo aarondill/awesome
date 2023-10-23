@@ -14,7 +14,7 @@ local function find_home()
     file:close()
   end
   ---@type string
-  home = string.match(home, "^.*/$") or "./"
+  home = string.match(home, "^(.*)/?$") or "."
   home_cached = home
   return home
 end
