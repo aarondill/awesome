@@ -54,6 +54,7 @@ require("module.decorate-client")
 require("module.exit-screen")
 require("module.client")
 require("module.titlebar")
+require("module.reminder")
 
 require("util.file.stream_async")("/proc/cpuinfo", function(stream)
   if not stream then return end -- likely file doesn't exist
