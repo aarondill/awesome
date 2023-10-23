@@ -1,8 +1,11 @@
+local get_child_by_id = require("util.get_child_by_id")
 local require = require("util.rel_require")
 
+local ascreen = require("awful.screen")
 local concat_command = require("util.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
 local notifs = require("util.notifs")
+local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
 local spawn = require("util.spawn")
 local tableutils = require("util.table")
 
@@ -70,6 +73,26 @@ function open.lock()
     return notifs.warn(msg, { title = "Something went wrong running the lock screen" })
   end
   return spawn.nosn(default.lock, { exit_callback_err = warn, on_failure_callback = warn })
+end
+
+---Opens rofi
+---@param mode string?
+---TODO: mode should be an enum
+function open.rofi(mode)
+  mode = type(mode) == "string" and mode or nil -- Non-strings should be silently ignored
+  local cmd = rofi_command(mode)
+  return spawn.spawn(cmd, {
+    on_failure_callback = function()
+      --- no mode, or drun or run use promptbox, otherwise warn!
+      if mode and mode ~= "drun" and mode ~= "run" then
+        return notifs.critical(("Rofi is required to open the %s picker."):format(mode))
+      end
+      local s = ascreen.focused() ---@type AwesomeScreenInstance?
+      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt") ---@diagnostic disable-line :undefined-field This field is injected!
+      if not promptbox then return end
+      return promptbox:run()
+    end,
+  })
 end
 
 return open

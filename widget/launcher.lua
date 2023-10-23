@@ -8,16 +8,7 @@ local gtable = require("gears.table")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local icons = require("theme.icons")
 local menubar = require("menubar")
-local spawn = require("util.spawn")
 local wibox = require("wibox")
-local function open_main_menu()
-  return spawn.spawn(apps.default.rofi, {
-    on_failure_callback = function()
-      local s = awful.screen.focused()
-      if s and s.run_promptbox then s.run_promptbox:run() end
-    end,
-  })
-end
 
 ---Create a button widget which will launch a command.
 ---@param args LauncherArgs? Standard widget table arguments, plus image for the image path
@@ -33,7 +24,7 @@ local function launcher_new(args, menu)
   end
   local opts = gtable.crush({ image = icons.launcher }, args, true)
   opts.buttons = gtable.join(
-    awful.button.new({}, 1, nil, open_main_menu),
+    awful.button.new({}, 1, nil, apps.open.rofi),
     awful.button.new({}, 3, nil, bind.with_args(menu.toggle, menu))
   )
   opts.widget = IconButton
