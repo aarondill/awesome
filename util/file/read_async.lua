@@ -3,7 +3,9 @@ local gio = require("lgi").require("Gio")
 ---Get the contents of a file - Async :)
 ---@generic Path :string
 ---@param path Path file path to read
----@param cb fun(content?: string, error?: userdata, path: Path): any function to call when done. content will be nil if the file does not exist
+---function to call when done. content will be nil if the file does not exist
+---Path is the same as was passed into the function. It is *not* expanded.
+---@param cb fun(content?: string, error?: userdata, path: Path): any
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_read(path, cb)
   if type(path) ~= "string" then error("path must be a string", 2) end
