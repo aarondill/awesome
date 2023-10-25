@@ -129,7 +129,7 @@ function spawn.spawn(cmd, opts)
     end
     return nil, pid_or_error
   end
-  if type(opts.stdin_string) == "string" then --
+  if opts.stdin_string then --
     local stream = Gio.UnixOutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
     write_outputstream(stream, opts.stdin_string, function() -- Write string to stdin
       return stream:close() -- Close sync to ensure command exits if waiting for stdin.
