@@ -12,7 +12,7 @@ local default = {
   -- Above are only used *if* installed
   terminal = { terminal },
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
-  region_screenshot = { "flameshot", "gui", "-p", xdg_user_dir("PICTURES") .. "/Screenshots", "-c" },
+  region_screenshot = { "flameshot", "gui", "-p", xdg_user_dir("PICTURES") .. "/Screenshots" },
   browser = { "vivaldi-stable" },
   editor = { terminal, "-e", "nvim" }, -- gui text editor
   brightness = {
