@@ -1,6 +1,6 @@
 local find_home = require("util.find_home")
 local gfilesystem = require("gears.filesystem")
-local cache = {}
+local cache = {} ---@type table<string, string>
 local defaults = {
   CONFIG = "/.config",
   DATA = "/.local/share",
@@ -55,10 +55,8 @@ local function get_xdg_user_dir(dir)
   dir = string.upper(dir)
   if cache[dir] then return cache[dir] end
   local res = get_xdg_user_dir_impl(dir)
-  if res then
-    cache[dir] = res
-    return res
-  end
+  cache[dir] = res
+  return res
 end
 
 return get_xdg_user_dir
