@@ -120,9 +120,6 @@ local globalKeys = gtable.join(
       if not path then return end
       return spawn.nosn({ "xclip", "-selection", "clipboard" }, { -- Copy to clipboard using xclip
         stdin_string = path,
-        exit_callback_suc = function()
-          return notifs.info(("Screenshot path copied to clipboard. (%s)"):format(path))
-        end,
         exit_callback_err = function(_, xcode)
           return notifs.info(("Copying screenshot path to clipboard failed. Exit code: %d"):format(xcode))
         end,
