@@ -1,4 +1,5 @@
 local awful = require("awful")
+local iscallable = require("util.iscallable")
 local require = require("util.rel_require")
 
 local beautiful = require("beautiful")
@@ -38,7 +39,7 @@ end
 ---@param opts DynamicRofiWriteOptions?
 ---@param cb fun(error?: userdata)? function to call when done.
 local function write_conf(opts, cb)
-  if cb ~= nil and type(cb) ~= "function" then error("Callback must be nil or a function!") end
+  assert(iscallable(cb, true))
   opts = opts or {}
   local panel_height = opts.panel_height
   if not panel_height then

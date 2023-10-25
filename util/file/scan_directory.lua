@@ -1,5 +1,6 @@
 local gio = require("lgi").require("Gio")
 local gtable = require("gears.table")
+local iscallable = require("util.iscallable")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
 ---@class scan_directory_args
 ---@field attributes? string[] see: https://docs.gtk.org/gio/method.File.enumerate_children.html
@@ -101,11 +102,11 @@ local function scan_directory(path, args, cb)
   args = args and gtable.clone(args, false) or {} ---@type scan_directory_args
   assert(type(path) == "string", "path must be a string")
   assert(type(args) == "table", "args must be a table")
-  assert(type(cb) == "function", "callback must be a function")
+  assert(iscallable(cb), "callback must be a function")
   assert(type(args.attributes or {}) == "table", "attributes must be a table")
   assert(args.max or 1 > 0, "max must be greater than 0")
   assert(args.block_size or 1 > 0, "block size must be greater than 0")
-  assert(type(args.filter or function() end) == "function", "filter must be a function")
+  assert(iscallable(args.filter, true), "filter must be a function")
   args.attributes = args.attributes or { "FILE_ATTRIBUTE_STANDARD_NAME" }
   args.block_size = args.block_size or 128
   -- if max is specified, block size should not be greater than max
