@@ -1,4 +1,5 @@
 local gio = require("lgi").require("Gio")
+local iscallable = require("util.iscallable")
 
 ---Get the contents of a file - Async :)
 ---@generic Path :string
@@ -8,8 +9,8 @@ local gio = require("lgi").require("Gio")
 ---@param cb fun(content?: string, error?: userdata, path: Path): any
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_read(path, cb)
-  if type(path) ~= "string" then error("path must be a string", 2) end
-  if type(cb) ~= "function" then error("the callback is required") end
+  assert(type(path) ~= "string", "path must be a string")
+  assert(iscallable(cb))
 
   ---params(load_contents_async) GFile* file, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   return gio.File.new_for_path(path):load_contents_async(nil, function(file, task)

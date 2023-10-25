@@ -2,6 +2,7 @@ local capi = require("capi")
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
 local GLib = lgi.require("GLib")
+local iscallable = require("util.iscallable")
 ---@alias create_inhibitor_cb fun(fd?: GioUnixInputStream, err?: userdata)
 
 local cached_locks = setmetatable({}, { __mode = "k" })
@@ -64,7 +65,7 @@ local function create_inhibitor(what, why, mode, who, cb)
   assert(type(what == "string"), "What must be a string!") -- Note: tables should be concatted by now.
   assert(type(who == "string"), "Who must be a string!")
   assert(mode == "block" or mode == "delay", ("Invalid mode: %s!"):format(mode))
-  if cb then assert(type(cb == "function"), "cb must be a function!") end
+  assert(iscallable(cb, true))
 
   local name = "org.freedesktop.login1"
   local object = "/org/freedesktop/login1"

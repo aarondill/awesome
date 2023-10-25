@@ -1,3 +1,4 @@
+local iscallable = require("util.iscallable")
 local require = require("util.rel_require")
 
 local watch = require(..., "watch") ---@module "util.file.watch"
@@ -8,8 +9,8 @@ local watch = require(..., "watch") ---@module "util.file.watch"
 ---@return GioFileMonitor? monitor Make sure this is not garbage collected!
 ---@return userdata? error error if monitor ir nil
 local function watch_directory(path, flags, cb)
-  if type(cb) ~= "function" then error("callback must be a function", 2) end
-  if type(path) ~= "string" then error("path must be a string", 2) end
+  assert(iscallable(cb))
+  assert(type(path) ~= "string", "path must be a string")
   return watch(path, "monitor_directory", flags, cb)
 end
 return watch_directory

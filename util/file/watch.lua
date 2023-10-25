@@ -1,5 +1,6 @@
 local gio = require("lgi").require("Gio")
 local handle_error = require("util.handle_error")
+local iscallable = require("util.iscallable")
 ---@alias GioFileMonitorMethod "monitor" | "monitor_directory" | "monitor_file"
 ---@alias GioFileMonitorFlags "NONE" | "WATCH_HARD_LINKS" | "SEND_MOVED" | "WATCH_MOVES" | "WATCH_MOUNTS"
 ---@alias GioFileMonitorEvent "CHANGED" | "CHANGES_DONE_HINT" | "DELETED" | "CREATED" | "ATTRIBUTE_CHANGED" | "PRE_UNMOUNT" | "UNMOUNTED" | "MOVED" | "RENAMED" | "MOVED_IN" | "MOVED_OUT"
@@ -15,7 +16,7 @@ local handle_error = require("util.handle_error")
 ---@return GioFileMonitor? monitor Make sure this is not garbage collected!
 ---@return userdata? error error if monitor ir nil
 local function watch_common(path, method, flags, cb)
-  if type(cb) ~= "function" then error("callback must be a function", 2) end
+  if not iscallable(cb) then error("callback must be a function", 2) end
   if type(method) ~= "string" then error("method must be a string", 2) end
   if type(path) ~= "string" then error("path must be a string", 2) end
 

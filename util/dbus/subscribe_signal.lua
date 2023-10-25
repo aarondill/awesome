@@ -1,5 +1,6 @@
 local lgi = require("lgi")
 local Gio = lgi.require("Gio")
+local iscallable = require("util.iscallable")
 local M = {}
 ---@alias GLibDBus unknown
 ---@alias DBusSignalCallback fun(bus: GLibDBus, sender: string, object: string, interface: string, signal: string, params: unknown[])
@@ -30,7 +31,7 @@ function M.subscribe(signal)
   assert(type(interface) == "string", "interface must be a string")
   assert(type(member) == "string", "member must be a string")
   assert(type(object) == "string", "object must be a string")
-  assert(type(callback) == "function", "callback must be a function")
+  assert(iscallable(callback))
   local bus = signal.bus or Gio.bus_get_sync(Gio.BusType.SYSTEM)
   local id = bus:signal_subscribe(sender, interface, member, object, nil, Gio.DBusSignalFlags.NONE, callback)
   return { id = id, bus = bus, callback = callback } -- The subscription will be lost if the bus is GCed

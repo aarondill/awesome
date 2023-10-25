@@ -1,5 +1,6 @@
 local array_join = require("util.array_join")
 local gtable = require("gears.table")
+local iscallable = require("util.iscallable")
 local function get_cache(cache, key)
   local func, len, outer = key.func, key.len, key.outer
   local k = gtable.find_first_key(cache, function(props)
@@ -30,7 +31,7 @@ Bind.with_args_cache = setmetatable({}, { __mode = "v" })
 ---@param ... unknown
 ---@return fun(...: unknown): Ret
 function Bind.bind(func, ...)
-  if type(func) ~= "function" then error("func must be a function", 2) end
+  if not iscallable(func) then error("func must be a function", 2) end
   local cache = Bind.bind_cache
   local len = select("#", ...)
   local outer = len > 0 and table.pack(...) or nil -- nil if no arguments are passed
@@ -55,7 +56,7 @@ Bind.with_start_args = Bind.bind -- Alias for symetry with Bind.with_args
 ---@param ... unknown
 ---@return fun(): Ret
 function Bind.with_args(func, ...)
-  if type(func) ~= "function" then error("func must be a function", 2) end
+  if not iscallable(func) then error("func must be a function", 2) end
   local cache = Bind.with_args_cache
   local len = select("#", ...)
   local args = len > 0 and table.pack(...) or nil -- nil if no arguments are passed
