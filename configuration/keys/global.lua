@@ -114,7 +114,24 @@ local globalKeys = gtable.join(
   end, { description = "Start/Stop Compositor", group = "awesome" }),
 
   awful.key({}, "Print", function()
-    return spawn.spawn(apps.default.region_screenshot)
+    return spawn.async(apps.default.region_screenshot, function(_, stderr, reason, code)
+      if not spawn.is_normal_exit(reason, code) then return end
+      local path = stderr:match("flameshot: info: Capture saved as ([^\n]*)") ---@type string?
+      if not path then return end
+      return spawn.nosn({ "xclip", "-selection", "clipboard" }, { -- Copy to clipboard using xclip
+        stdin_string = path,
+        exit_callback_suc = function()
+          return notifs.info(("Screenshot path copied to clipboard. (%s)"):format(path))
+        end,
+        exit_callback_err = function(_, xcode)
+          return notifs.info(("Copying screenshot path to clipboard failed. Exit code: %d"):format(xcode))
+        end,
+        on_failure_callback = function(err)
+          local msg = ("Xclip must be installed to copy to clipboard.\nError: "):format(err)
+          return notifs.warn_once(msg, { title = "xclip failed to spawn!" })
+        end,
+      })
+    end)
   end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
   awful.key({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   awful.key({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),

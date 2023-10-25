@@ -1,19 +1,6 @@
 local garbage_collection = require("util.garbage_collection")
 local gio = require("lgi").require("Gio")
-
--- Write to a stream
-local function outputstream_write(stream, content, cb)
-  ---params(stream:write_async) GOutputStream* stream, void* buffer, gsize count, int io_priority, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
-  stream:write_async(content, content:len(), nil, function(file, task)
-    cb = cb or function() end
-    local new_etags, err = file:write_finish(task)
-    if not new_etags then
-      cb(err)
-    else
-      cb(nil)
-    end
-  end)
-end
+local outputstream_write = require("util.file.write_outputstream")
 
 --- Append to a file's content - Async :)
 ---@param path string file path to append to
@@ -29,19 +16,18 @@ local function file_append(path, content, cb)
 
   ---params(file:g_file_append_to_async): GFile* file, GFileCreateFlags flags, int io_priority, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   -- Append to file
-  gio.File.new_for_path(path):append_to_async({}, io_priority, nil, function(file, task)
+  return gio.File.new_for_path(path):append_to_async({}, io_priority, nil, function(file, task)
     local stream, append_err = file:append_to_finish(task)
     if not stream then
       garbage_collection.release(index)
       index = nil
-      cb(append_err)
-      return
+      return cb(append_err)
     end
-    outputstream_write(stream, content, function(write_err)
+    return outputstream_write(stream, content, function(write_err)
       stream:close_async()
       garbage_collection.release(index)
       index = nil
-      cb(write_err)
+      return cb(write_err)
     end)
   end, 0)
 end

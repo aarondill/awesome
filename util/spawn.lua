@@ -4,6 +4,7 @@ local capi = require("capi")
 local gtable = require("gears.table")
 local iscallable = require("util.iscallable")
 local lgi = require("lgi")
+local write_outputstream = require("util.file.write_outputstream")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
 
@@ -83,6 +84,8 @@ end
 ---If false, the command will be started with an empty environment
 ---If nil, the command will inherit awesome's environment
 ---@field env? table|false
+---@field stdin_string string?
+---A string to input to the stdin of the command.
 
 ---A wrapper around awesome.spawn
 ---This can be used as a drop in replacement for awful.spawn, when only the command is passed, otherwise:
@@ -113,7 +116,8 @@ function spawn.spawn(cmd, opts)
   local start_callback = opts.start_callback
   local exit_callback = gen_exit_cb(opts.exit_callback, opts.exit_callback_err, opts.exit_callback_suc)
   local use_sn = opts.sn_rules ~= false
-  local return_stdin = handle_inherit_default(opts.inherit_stdin)
+  local return_stdin_user = handle_inherit_default(opts.inherit_stdin)
+  local return_stdin = return_stdin_user or not not opts.stdin_string
   local return_stdout = handle_inherit_default(opts.inherit_stdout)
   local return_stderr = handle_inherit_default(opts.inherit_stderr)
   local env_table = opts.env == false and {} or opts.env ---@cast env_table table
@@ -125,6 +129,12 @@ function spawn.spawn(cmd, opts)
     end
     return nil, pid_or_error
   end
+  if type(opts.stdin_string) == "string" then --
+    local stream = Gio.UnixOutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
+    write_outputstream(stream, opts.stdin_string, function() -- Write string to stdin
+      return stream:close() -- Close sync to ensure command exits if waiting for stdin.
+    end)
+  end
 
   if snid then -- The snid will be nil in case of failure
     local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
@@ -135,7 +145,7 @@ function spawn.spawn(cmd, opts)
   local info = { ---@type SpawnInfo
     pid = pid_or_error,
     snid = snid,
-    stdin_fd = stdin,
+    stdin_fd = return_stdin_user and stdin or nil, -- Handle actual return
     stdout_fd = stdout,
     stderr_fd = stderr,
     cmd = cmd,
