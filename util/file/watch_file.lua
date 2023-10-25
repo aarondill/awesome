@@ -10,7 +10,7 @@ local watch = require(..., "watch") ---@module "util.file.watch"
 ---@return userdata? error error if monitor ir nil
 local function watch_file(path, flags, cb)
   assert(iscallable(cb))
-  assert(type(path) ~= "string", "path must be a string")
+  assert(type(path) == "string", "path must be a string")
   return watch(path, "monitor_file", flags, cb)
 end
 return watch_file
