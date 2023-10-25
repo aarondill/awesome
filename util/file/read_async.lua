@@ -9,7 +9,7 @@ local iscallable = require("util.iscallable")
 ---@param cb fun(content?: string, error?: userdata, path: Path): any
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_read(path, cb)
-  assert(type(path) ~= "string", "path must be a string")
+  assert(type(path) == "string", "path must be a string")
   assert(iscallable(cb))
 
   ---params(load_contents_async) GFile* file, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
