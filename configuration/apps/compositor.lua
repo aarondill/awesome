@@ -1,4 +1,5 @@
 local capi = require("capi")
+local gtimer = require("gears.timer")
 local notifs = require("util.notifs")
 local require = require("util.rel_require")
 local spawn = require("util.spawn")
@@ -101,6 +102,23 @@ function compositor.stop(force)
   return compositor._stop(force)
 end
 compositor.kill = compositor.stop --- Alias kill to stop for symetry with compositor.spawn
+
+---Starts the compositor -- takes precations to avoid starting it if it would be a bad idea (ie, in a VM)
+function compositor.autostart()
+  local get_stream = require("util.file.stream_async")
+  return get_stream("/proc/cpuinfo", function(stream)
+    if not stream then return end -- likely file doesn't exist
+    return stream:each_line(function(line)
+      if not line or not line:match("[^\n]flags%s*:") then return true end -- This isn't the line we're looking for
+      -- if contains the hypervisor flag (we are in a VM) then don't start the compositor.
+      if line:match("[^\n]flags%s*:.*%shypervisor%s") then return false end
+      gtimer.delayed_call(compositor.start) -- Start the compositor
+      return false -- Stop looping
+    end, function()
+      return stream:close() -- Cleanup after ourselves
+    end)
+  end)
+end
 
 capi.awesome.connect_signal("exit", function()
   compositor.stop() -- Stop the compositor on exit - should happen anyways, but lets clean up
