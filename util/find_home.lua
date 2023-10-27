@@ -20,6 +20,7 @@ end
 --- Tries to handle the case where HOME is unset
 --- Use the gears.filesystem.get_xdg_* functions instead if possible
 --- Calls io.popen if HOME is unset, but caches the result, so only one call will be made.
+--- Note: absolute paths will still be appended to home. IE: `/file`, `./file`, and `file` are all equivalent.
 ---@param path string? a file to find under $HOME
 ---@return string home
 local function find_home(path)
