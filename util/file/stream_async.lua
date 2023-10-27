@@ -55,13 +55,15 @@ local GioInputStreamAsyncHelper = {
   ---Iteration will stop if an error occurs (done will be called with the error)
   ---@param callback fun(line?: string): boolean?
   ---Called when the operation is done. only called once.
-  ---@param done? fun(error?: userdata): boolean?
+  ---success will be false if cancelled early (by returning false) or true if all lines were read successfully
+  ---Note: if an error occurs, success will be false and error will be set. Else if stopped early, success will be false and error will be nil.
+  ---@param done? fun(success: boolean, error?: userdata): boolean?
   each_line = function(self, callback, done)
-    done = done or function() end
     local function handler(line, err)
-      if err then return done(err) end
+      if err then return done and done(false, err) end
+      if not line then return done and done(true, nil) end -- All lines were read successfully
       local res = callback(line)
-      if res == false then return done(nil) end -- false means stop
+      if res == false then return done and done(false, nil) end -- false means stop
       return self:read_line(handler) -- Loop the next line.
     end
     return self:read_line(handler)
