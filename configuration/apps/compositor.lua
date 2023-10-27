@@ -104,6 +104,7 @@ end
 compositor.kill = compositor.stop --- Alias kill to stop for symetry with compositor.spawn
 
 ---Starts the compositor -- takes precations to avoid starting it if it would be a bad idea (ie, in a VM)
+---Calling this multiple times is not suggested, but shouldn't break anything.
 function compositor.autostart()
   local get_stream = require("util.file.stream_async")
   return get_stream("/proc/cpuinfo", function(stream)
