@@ -1,13 +1,15 @@
-local get_child_by_id = require("util.get_child_by_id")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
 local concat_command = require("util.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
+local get_child_by_id = require("util.get_child_by_id")
+local lgi = require("lgi")
 local notifs = require("util.notifs")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
 local spawn = require("util.spawn")
 local tableutils = require("util.table")
+local Gio = lgi.Gio
 
 local open = {}
 
@@ -60,7 +62,16 @@ function open.browser(url, new_window, spawn_options)
   -- Use the user specified if present
   spawn_options = spawn_options or {}
   spawn_options.inherit_stderr = false
-  return spawn_notif_on_err(do_cmd, spawn_options)
+  spawn_options.inherit_stdout = false
+  local info = spawn_notif_on_err(do_cmd, spawn_options)
+  if not info then return end
+  for _, fd in ipairs({ info.stderr_fd, info.stdout_fd }) do
+    --- Close stdout and stderr
+    --- In this specific case, this is fine because chromium-based browsers open cat processes for their stdio
+    --- These processes can die without the browser being killed by sigpipe.
+    --- See https://github.com/awesomeWM/awesome/issues/3865 for the (eventual) better way to do this.
+    Gio.UnixInputStream.new(fd, true):close()
+  end
 end
 ---Open the lock screen
 ---Note, this doesn't block.
