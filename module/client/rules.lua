@@ -91,7 +91,7 @@ local has_ruled, ruled = pcall(require, "ruled")
 if has_ruled then
   ruled.client.append_rules(rules)
   capi.client.disconnect_signal(compat.signal.manage, ruled.client.apply)
-  capi.client.connect_signal(compat.signal.manage, function(c)
+  return capi.client.connect_signal(compat.signal.manage, function(c)
     if not capi.awesome.startup then return ruled.client.apply(c) end
     return table_utils.foreach(ruled.client.matching_rules(c), function(_, rule)
       if rule.apply_on_restart then return ruled.client.execute(c, rule.properties, { rule.callback }) end
@@ -103,12 +103,12 @@ if has_ruled then
       return ruled.client.execute(c, mini_properties, {})
     end)
   end)
-  return -- Stop here. Below is just awful.rules
+  -- Stop here. Below is just awful.rules
 end
 
 awful.rules.rules = rules
 capi.client.disconnect_signal(compat.signal.manage, awful.rules.apply)
-capi.client.connect_signal(compat.signal.manage, function(c)
+return capi.client.connect_signal(compat.signal.manage, function(c)
   if not capi.awesome.startup then return awful.rules.apply(c) end
   return table_utils.foreach(awful.rules.matching_rules(c, awful.rules.rules), function(_, rule)
     if rule.apply_on_restart then return awful.rules.execute(c, rule.properties, { rule.callback }) end
