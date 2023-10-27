@@ -44,7 +44,7 @@ require("module.git-submodule") -- Import *after* notifications for nice status 
 require("layout")
 
 require("module.tags") -- Setup tags
-require("module.persistent-tag") -- Keep selected tag on restart
+-- require("module.persistent-tag") -- Keep selected tag on restart
 
 -- Init all modules
 require("module.quake") -- Should prob be before decorate-client, and keys.global, as they both require it.
