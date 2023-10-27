@@ -37,5 +37,16 @@ function M.filter(t, func)
   end
   return res
 end
+---It's a foreach function. what more do you want?
+---@generic V
+---@param t V[]
+---Return `false` to stop iterating.
+---@param f fun(k: integer, v: V): boolean?
+function M.foreach(t, f)
+  for i, v in ipairs(t) do
+    local res = f(i, v)
+    if res == false then break end
+  end
+end
 
 return M
