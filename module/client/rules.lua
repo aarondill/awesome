@@ -1,9 +1,12 @@
 local require = require("util.rel_require")
 
 local awful = require("awful")
+local capi = require("capi")
 local client_buttons = require(..., "buttons") ---@module "module.client.buttons"
 local client_keys = require("configuration.keys.client")
+local compat = require("util.compat")
 local gshape = require("gears.shape")
+local table_utils = require("util.table")
 -- Rules
 local rules = {
   -- All clients will match this rule.
@@ -12,8 +15,6 @@ local rules = {
     properties = {
       focus = awful.client.focus.filter,
       raise = true,
-      keys = client_keys,
-      buttons = client_buttons,
       screen = awful.screen.preferred,
       placement = awful.placement.no_overlap + awful.placement.no_offscreen,
       floating = false,
@@ -24,6 +25,15 @@ local rules = {
       sticky = false,
       maximized_horizontal = false,
       maximized_vertical = false,
+    },
+  },
+  -- All clients will match this rule.
+  {
+    rule = {},
+    apply_on_restart = true,
+    properties = {
+      keys = client_keys,
+      buttons = client_buttons,
       size_hints_honor = false, -- No minimum size, no offscreen windows
     },
     callback = function(c)
@@ -75,6 +85,33 @@ local rules = {
 local has_ruled, ruled = pcall(require, "ruled")
 if has_ruled then
   ruled.client.append_rules(rules)
-else
-  awful.rules.rules = rules
+  capi.client.disconnect_signal(compat.signal.manage, ruled.client.apply)
+  capi.client.connect_signal(compat.signal.manage, function(c)
+    if not capi.awesome.startup then return ruled.client.apply(c) end
+    return table_utils.foreach(ruled.client.matching_rules(c), function(_, rule)
+      if rule.apply_on_restart then return ruled.client.execute(c, rule.properties, { rule.callback }) end
+      local mini_properties = { -- These will always be applied.
+        buttons = rule.properties.buttons,
+        keys = rule.properties.keys,
+        size_hints_honor = rule.properties.size_hints_honor,
+      }
+      return ruled.client.execute(c, mini_properties, {})
+    end)
+  end)
+  return -- Stop here. Below is just awful.rules
 end
+
+awful.rules.rules = rules
+capi.client.disconnect_signal(compat.signal.manage, awful.rules.apply)
+capi.client.connect_signal(compat.signal.manage, function(c)
+  if not capi.awesome.startup then return awful.rules.apply(c) end
+  return table_utils.foreach(awful.rules.matching_rules(c, awful.rules.rules), function(_, rule)
+    if rule.apply_on_restart then return awful.rules.execute(c, rule.properties, { rule.callback }) end
+    local mini_properties = { -- These will always be applied.
+      buttons = rule.properties.buttons,
+      keys = rule.properties.keys,
+      size_hints_honor = rule.properties.size_hints_honor,
+    }
+    return awful.rules.execute(c, mini_properties, {})
+  end)
+end)
