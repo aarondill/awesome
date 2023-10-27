@@ -9,18 +9,21 @@ local function remove_leading_backtrack(path)
     e = e + ("../"):len() -- Move forward the window (in front of previous window)
   end
   if s > path:len() then return "/" end
-  return "/" .. path:sub(s) -- Remove the leading (/../)+
+  local res = "/" .. path:sub(s) -- Remove the leading (/../)+
+  if res == "/.." then return "/" end -- Special case for no trailing slash
+  return res
 end
-
 ---Normalizes the path without doing any file operations.
 ---@param path string
 ---@return string
 local function normalize_path(path)
+  if path == "" then return path end -- empty path should be the same
   ---@type string
   local res = path
     :gsub("/%./", "/") -- no /./
     :gsub("^(.+)/$", "%1") -- no end slash -- use .+ instead of .* to keep '/' instead of ''
     :gsub("//+", "/") -- no double slashes
+  if res:len() == 0 then return "." end -- We have removed everything. This shouldn't happen?
   return remove_leading_backtrack(res)
 end
 
