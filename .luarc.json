@@ -3,7 +3,10 @@
   "diagnostics.unusedLocalExclude": ["_*"],
   "workspace.ignoreDir": [".vscode"],
   "workspace": {
-    "library": ["/usr/share/awesome/lib/"]
+    "library": [
+      "/usr/share/awesome/lib/"
+      // "/home/aaron/code/repos/awesome/lib/"
+    ]
   },
   "runtime.path": [
     "/usr/local/share/lua/5.3/?.lua",
