@@ -1,3 +1,4 @@
+local quake = require("module.quake")
 local require = require("util.rel_require")
 
 local awful = require("awful")
@@ -12,6 +13,7 @@ local rules = {
   -- All clients will match this rule.
   {
     rule = {},
+    except = { instance = quake.instance },
     properties = {
       focus = awful.client.focus.filter,
       raise = true,
@@ -27,9 +29,11 @@ local rules = {
       maximized_vertical = false,
     },
     callback = function(c)
+      if capi.awesome.startup then return end -- Not startup windows!
+      if quake:client_is_quake(c) then return end -- Not the quake client
       -- Set the windows at the slave,
       -- i.e. put it at the end of others instead of setting it master.
-      if not capi.awesome.startup then awful.client.setslave(c) end
+      awful.client.setslave(c)
     end,
   },
   -- All clients will match this rule.
