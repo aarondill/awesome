@@ -56,20 +56,8 @@ require("module.client")
 require("module.titlebar")
 require("module.reminder")
 
-require("util.file.stream_async")("/proc/cpuinfo", function(stream)
-  if not stream then return end -- likely file doesn't exist
-  return stream:each_line(function(line)
-    if not line or not line:match("[^\n]flags%s*:") then return true end -- This isn't the line we're looking for
-    -- if contains the hypervisor flag (we are in a VM) then don't start the compositor.
-    if line:match("[^\n]flags%s*:.*%shypervisor%s") then return false end
-    require("configuration.apps.compositor").start() -- Start the compositor on startup
-    return false -- Stop looping
-  end, function()
-    return stream:close()
-  end)
-end)
-
 -- Setup all configurations
+require("configuration.apps.compositor").autostart() -- Start the compositor on startup
 require("configuration.rofi_dynamic")() -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
 capi.root.keys(require("configuration.keys.global"))
