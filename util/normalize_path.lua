@@ -17,7 +17,7 @@ end
 ---@param path string
 ---@return string
 local function normalize_path(path)
-  if path == "" then return path end -- empty path should be the same
+  if not path or path == "" then return path end -- empty path should be the same
   ---@type string
   local res = path
     :gsub("/%./", "/") -- no /./
