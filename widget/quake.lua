@@ -11,7 +11,7 @@ local quake = {}
 
 function quake:_display(visible)
   if visible ~= nil then self.visible = visible end
-  if self.followtag then self.screen = awful.screen.focused() end
+  if self.follow_screen then self.screen = awful.screen.focused() end
   local class_match = function(c)
     -- c.name may be changed!
     return c.instance == self.class
@@ -115,7 +115,7 @@ function quake:hide()
   self:_display(false)
 end
 function quake:_on_tag(tag)
-  if self.followtag then self.screen = awful.screen.focused() end
+  if self.follow_screen then self.screen = awful.screen.focused() end
   tag = tag or self.screen.selected_tag
   return not tag or self.last_tag == tag
 end
@@ -156,7 +156,7 @@ quake.defaults = {
   class = "QuakeDD", -- window name
   border = 1, -- client border width
   visible = false, -- initially not visible
-  followtag = true, -- spawn on currently focused screen
+  follow_screen = true, -- spawn on currently focused screen
   overlap = false, -- overlap wibox
   screen = awful.screen.focused(),
   -- If width or height <= 1 this is a proportion of the workspace
