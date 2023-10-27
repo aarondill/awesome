@@ -1,4 +1,20 @@
-local home_cached
+local normalize_path = require("util.normalize_path")
+local home_cached ---@type string? -- Don't directly access. Use get_and_cache_home
+
+local function get_and_cache_home()
+  if home_cached then return home_cached end
+
+  local home = os.getenv("HOME")
+  if not home then
+    local file = assert(io.popen([[ getent passwd "${USER:-$(id -nu)}" | cut -d: -f6 ]]))
+    home = file:read("l") ---@type string
+    file:close()
+  end
+  ---Remove trailing slashes
+  local ret = #home == 0 and "." or normalize_path(home)
+  home_cached = ret
+  return ret
+end
 
 --- Finds a valid HOME for the user
 --- Tries to handle the case where HOME is unset
@@ -7,20 +23,8 @@ local home_cached
 ---@param path string? a file to find under $HOME
 ---@return string home
 local function find_home(path)
-  if home_cached then return home_cached end
-
-  local home = os.getenv("HOME")
-  if not home then
-    local file = assert(io.popen([[ getent passwd "${USER:-$(id -nu)}" | cut -d: -f6 ]]))
-    home = file:read("l")
-    file:close()
-  end
-  ---@type string
-  home = string.match(home, "^(.*)/?$") or "."
-  home_cached = home
+  local home = get_and_cache_home()
   if not path then return home end
-  --- Do *slight* normalization
-  local ret = (("%s/%s"):format(home, path):gsub("//", "/"):gsub("/./", "/"))
-  return ret:len() == 0 and "." or ret
+  return normalize_path(("%s/%s"):format(home, path))
 end
 return find_home
