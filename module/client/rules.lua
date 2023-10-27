@@ -26,6 +26,11 @@ local rules = {
       maximized_horizontal = false,
       maximized_vertical = false,
     },
+    callback = function(c)
+      -- Set the windows at the slave,
+      -- i.e. put it at the end of others instead of setting it master.
+      if not capi.awesome.startup then awful.client.setslave(c) end
+    end,
   },
   -- All clients will match this rule.
   {
