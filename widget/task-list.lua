@@ -8,6 +8,7 @@ local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local assert_util = require("util.assert_util")
 local compat = require("util.compat")
 ---Common method to create buttons.
 ---@param buttons table?
@@ -36,7 +37,7 @@ end
 ---@param index unknown? The index to get object from. Defaults to 1.
 local function optional_container(if_bool, container, index)
   index = index or 1
-  assert(type(container or {}) == "table", "container must be a table")
+  assert_util.type(container, { "table", "nil" })
 
   if not container or if_bool then
     return container

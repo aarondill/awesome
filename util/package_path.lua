@@ -1,3 +1,4 @@
+local assert_util = require("util.assert_util")
 local normalize_path = require("util.normalize_path")
 --- DON'T require anything local here.
 --- The package.path may not be set up correctly.
@@ -9,7 +10,8 @@ local M = {}
 ---@return boolean
 ---@nodiscard
 function M.path_contains(dir)
-  dir = normalize_path(assert(dir))
+  assert_util.type(dir, "string", "dir")
+  dir = normalize_path(dir)
   local lua = ";" .. dir .. "/?.lua;"
   local init = ";" .. dir .. "/?/init.lua;"
   local path_cmp = ";" .. package.path .. ";" -- package.path may not end in a semicolon. Likely won't start with one.
@@ -20,7 +22,8 @@ end
 ---@return boolean
 ---@nodiscard
 function M.cpath_contains(dir)
-  dir = normalize_path(assert(dir))
+  assert_util.type(dir, "string", "dir")
+  dir = normalize_path(dir)
   local so = ";" .. dir .. "/?.so;"
   local path_cmp = ";" .. package.cpath .. ";" -- package.cpath may not end in a semicolon. Likely won't start with one.
   return not not string.find(path_cmp, so, 1, true)
@@ -35,9 +38,9 @@ end
 ---@nodiscard
 ---@implenote prepend refers to the template to-to, no to-to the template
 local function append_or_prepend(prepend, to, format, args)
-  assert(type(to) == "string")
-  assert(type(format) == "string")
-  assert(type(args) == "table")
+  assert_util.type(to, "string", "to")
+  assert_util.type(format, "string", "format")
+  assert_util.type(args, "table", "args")
   table.insert(args, prepend and (#args + 1) or 1, to) -- order
   format = prepend and (format .. ";%s") or ("%s;" .. format)
   return format:format(table.unpack(args))
@@ -48,8 +51,8 @@ end
 ---@param prepend boolean? default true
 ---@return string cpath the new cpath (for convenience)
 function M.add_to_cpath(dir, prepend)
-  dir = normalize_path(assert(dir))
-  assert(type(dir) == "string")
+  assert_util.type(dir, "string", "dir")
+  dir = normalize_path(dir)
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
   package.cpath = append_or_prepend(prepend, package.cpath, "%s/?.so", { dir })
@@ -61,8 +64,8 @@ end
 ---@param prepend boolean? default true
 ---@return string path the new path (for convenience)
 function M.add_to_path(dir, prepend)
-  dir = normalize_path(assert(dir))
-  assert(type(dir) == "string")
+  assert_util.type(dir, "string", "dir")
+  dir = normalize_path(dir)
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
   local format = "%s/?.lua;%s/?/init.lua"

@@ -1,3 +1,4 @@
+local assert_util = require("util.assert_util")
 local gio = require("lgi").require("Gio")
 local gtable = require("gears.table")
 local iscallable = require("util.iscallable")
@@ -100,13 +101,14 @@ local function scan_directory(path, args, cb)
     cb, args = args, nil
   end
   args = args and gtable.clone(args, false) or {} ---@type scan_directory_args
-  assert(type(path) == "string", "path must be a string")
-  assert(type(args) == "table", "args must be a table")
-  assert(iscallable(cb), "callback must be a function")
-  assert(type(args.attributes or {}) == "table", "attributes must be a table")
-  assert(args.max or 1 > 0, "max must be greater than 0")
-  assert(args.block_size or 1 > 0, "block size must be greater than 0")
-  assert(iscallable(args.filter, true), "filter must be a function")
+  assert_util.type(path, "string", "path")
+  assert_util.type(args, "table", "args")
+  assert_util.iscallable(cb, "cb")
+  if not iscallable(cb) then return error(("%s: expected type %s, but got %s."):format("cb", "callable", type(cb))) end
+  assert_util.type(args.attributes, { "table", "nil" }, "args.attributes")
+  assert_util.assert((args.max or 1) > 0, "max must be greater than 0")
+  assert_util.assert((args.block_size or 1) > 0, "block size must be greater than 0")
+  assert_util.iscallable(args.filter, true, "args.filter")
   args.attributes = args.attributes or { "FILE_ATTRIBUTE_STANDARD_NAME" }
   args.block_size = args.block_size or 128
   -- if max is specified, block size should not be greater than max
@@ -114,7 +116,7 @@ local function scan_directory(path, args, cb)
 
   local attr_str = ""
   for _, v in ipairs(args.attributes) do
-    local gio_attr = assert(gio[v], ("invalid attribute: %s"):format(v))
+    local gio_attr = assert_util.assert(gio[v], ("invalid attribute: %s"):format(v))
     if gio_attr then attr_str = attr_str .. gio_attr .. "," end
   end
 

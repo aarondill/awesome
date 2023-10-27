@@ -1,3 +1,4 @@
+local assert_util = require("util.assert_util")
 local find_home = require("util.find_home")
 local gfilesystem = require("gears.filesystem")
 local cache = {} ---@type table<string, string>
@@ -30,7 +31,7 @@ local function get_xdg_user_dir_impl(dir)
   do
     local conf = gfilesystem.get_configuration_dir()
     local cmd = string.format("exec '%sscripts/xdg-user-dir' '%s'", conf, dir)
-    local f = assert(io.popen(cmd))
+    local f = io.popen(cmd)
     if not f then return "" end
     local result = f:read("*a")
     f:close()
@@ -51,7 +52,7 @@ end
 ---dir should be in capital letters
 ---@param dir string the XDG_USER_DIR to search for
 local function get_xdg_user_dir(dir)
-  assert(type(dir) == "string", "dir must be a string")
+  assert_util.type(dir, "string", "dir")
   dir = string.upper(dir)
   if cache[dir] then return cache[dir] end
   local res = get_xdg_user_dir_impl(dir)
