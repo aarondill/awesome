@@ -32,8 +32,7 @@ function quake:_display(visible)
   if not c then
     if not self.visible then return end
     -- The client does not exist, we spawn it
-    self.spawn(self.class)
-    return
+    return self.spawn(self.class)
   end
 
   -- Set geometry
