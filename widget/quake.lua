@@ -32,7 +32,8 @@ function quake:_display(visible)
   if not c then
     if not self.visible then return end
     -- The client does not exist, we spawn it
-    return self.spawn(self.class)
+    self.spawn(self.class)
+    return
   end
 
   -- Set geometry
@@ -125,7 +126,9 @@ function quake:show(tag)
   tag = tag or self.screen.selected_tag
   local on_tag = self:_on_tag(tag) -- changes self.screen. Call it before.
   local c = self:_display(true)
-  if c and not on_tag then c:move_to_tag(tag) end
+  if c and not on_tag and c.move_to_tag then -- Make sure it's an actual client...
+    c:move_to_tag(tag)
+  end
 end
 ---Toggle the quake application
 ---@param tag table? the tag to show on (optional: current). Only used when showing
