@@ -22,7 +22,7 @@ local strings = require("util.strings")
 ---Show a warning about battery level
 ---@param charge number? the current charge
 local function show_battery_warning(charge)
-  notifs.normal("Houston, we have a problem", {
+  notifs.warn("Houston, we have a problem", {
     icon = files.get_icon("battery-alert"),
     icon_size = dpi(40),
     title = ("Battery is dying (%s%%)"):format(charge or "??"),
