@@ -1,5 +1,6 @@
 --- This module implements dynamic client rendering
 --- It currently only sets the border_width and corner rounding depending on the number of currently drawn clients.
+--- Also handles hiding/showing the top bar
 
 local alayout = require("awful.layout")
 local beautiful = require("beautiful")
@@ -42,8 +43,9 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
 
-  local render_maximized = is_tag_maximized(currentScreen.selected_tag) or #managed_clients <= 1
-  local show_top_bar = not is_tag_maximized(currentScreen.selected_tag) -- If the tag is maximized, don't show the top bar
+  local tag_is_max = is_tag_maximized(currentScreen.selected_tag)
+  local render_maximized = tag_is_max or #managed_clients <= 1
+  local show_top_bar = not tag_is_max or #managed_clients == 0 -- If the tag is maximized, don't show the top bar -- unless no clients.
   for _, client in ipairs(managed_clients) do
     renderClient(client, client.fullscreen or render_maximized)
     if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
