@@ -24,16 +24,12 @@ do
   local next_should_jump = true ---@type boolean?
   ---@param c AwesomeClientInstance
   local function next_spawned_handler(c) ---@return nil
-    -- Don't do it again! Only the first one!
-    capi.client.disconnect_signal(compat.signal.manage, next_spawned_handler)
-    if not next_spawned_tag then
-      return notifs.warn("next_spawned_handler was called with a nil tag. This is probably a bug!") and nil
-    end
+    local t = next_spawned_tag
+    next_spawned_tag = nil
+    if not t then return end -- If no tag, the stop (this has already been called)
     -- Move the client to the indicated tag
-    c:move_to_tag(next_spawned_tag)
+    c:move_to_tag(t)
     if next_should_jump then c:jump_to() end -- Follow/Focus the client.
-    next_spawned_tag = nil -- Ensure we can ID bugs if they occur
-    return nil
   end
   ---A function to be used in a keymapping that will ensure the next window spawned is moved to tag i (on focused screen)
   ---@param i integer
