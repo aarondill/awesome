@@ -86,7 +86,7 @@ function Battery(args)
   local low_power = args.low_power or 15
   local low_power_frequency = args.low_power_frequency or 300
   local battery_path = args.battery_path or nil
-  local last_warning_time = os.time()
+  local last_warning_time = 0
 
   local widget = wibox.widget(widget_template)
   local battery_popup = awful.tooltip({
