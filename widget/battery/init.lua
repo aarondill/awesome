@@ -97,6 +97,7 @@ function Battery(args)
     preferred_positions = { "right", "left", "top", "bottom" },
   })
 
+  ---@param info battery_info
   local update_widget = function(info)
     local res = handle_battery_info(info)
     local icon = widget:get_children_by_id("icon")[1]
@@ -106,7 +107,7 @@ function Battery(args)
     text:set_text(tostring(res.charge) .. "%")
     battery_popup.text = strings.first_upper(res.status)
     -- if X minutes have elapsed since the last warning
-    if should_warn_battery(last_warning_time, res.status, res.charge, low_power, low_power_frequency) then
+    if should_warn_battery(last_warning_time, info.status, res.charge, low_power, low_power_frequency) then
       last_warning_time = os.time()
       show_battery_warning(res.charge)
     end
