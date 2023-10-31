@@ -15,7 +15,7 @@ end
 ---@param render_maximized boolean
 local function renderClient(client, render_maximized)
   if quake:client_is_quake(client) then return end
-  if client.skip_decoration then return end ---@diagnostic disable-line :undefined-field this is an injected field
+  if client.skip_decoration then return end
 
   if client.rendering_mode == render_maximized then return end -- Check cached.
   client.rendering_mode = render_maximized ---@diagnostic disable-line :inject-field this is an injected field
@@ -39,20 +39,26 @@ local function is_tag_maximized(tag)
 end
 local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScreenInstance
   local managed_clients = table_utils.filter(currentScreen.clients, function(_, c)
-    ---@diagnostic disable-next-line :undefined-field this is an injected field
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
 
   local render_maximized = is_tag_maximized(currentScreen.selected_tag) or #managed_clients <= 1
+  local show_top_bar = not is_tag_maximized(currentScreen.selected_tag) -- If the tag is maximized, don't show the top bar
   for _, client in ipairs(managed_clients) do
     renderClient(client, client.fullscreen or render_maximized)
+    if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
   end
+
+  if currentScreen.top_panel then --- Hide bars when app go fullscreen
+    currentScreen.top_panel.visible = show_top_bar
+  end
+
   changesOnScreenPending = false
 end
 
 local function clientCallback(client) ---@param client AwesomeClientInstance
   if changesOnScreenPending then return end
-  if client.skip_decoration then return end ---@diagnostic disable-line :undefined-field this is an injected field
+  if client.skip_decoration then return end
   local s = client.screen
   if not s then return end
 
@@ -78,6 +84,7 @@ capi.client.connect_signal(compat.signal.unmanage, clientCallback)
 capi.client.connect_signal("property::hidden", clientCallback)
 capi.client.connect_signal("property::minimized", clientCallback)
 capi.client.connect_signal("property::fullscreen", clientCallback)
+capi.client.connect_signal("tagged", clientCallback)
 
 capi.tag.connect_signal("property::selected", tagCallback)
 capi.tag.connect_signal("property::layout", tagCallback)

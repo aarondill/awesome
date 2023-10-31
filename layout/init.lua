@@ -1,41 +1,12 @@
-local capi = require("capi")
-local compat = require("util.compat")
 local require = require("util.rel_require")
 
 local awful = require("awful")
 local top_panel = require(..., "top-panel") ---@module "layout.top-panel"
 
+---@class AwesomeScreenInstance
+---@field top_panel widget an injected field that represents the top panel for that screen.
+
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
-  -- Create the Top bar
-  s.top_panel = top_panel(s)
-end)
-
---- Hide bars when app go fullscreen
---- Don't use the parameter without extensive checking
----@param _ table? tag or client
-local function updateBarsVisibility(_)
-  for s in capi.screen do
-    if s.selected_tag then
-      local fullscreen = s.selected_tag.fullscreenMode or (awful.layout.get(s) == awful.layout.suit.max.fullscreen)
-
-      -- Order matter here for shadow
-      s.top_panel.visible = not fullscreen
-    end
-  end
-end
-
-awful.tag.attached_connect_signal(nil, "property::selected", updateBarsVisibility)
-awful.tag.attached_connect_signal(nil, "property::layout", updateBarsVisibility)
-
-capi.client.connect_signal("property::fullscreen", function(c)
-  c.screen.selected_tag.fullscreenMode = c.fullscreen
-  updateBarsVisibility()
-end)
-
-capi.client.connect_signal(compat.signal.unmanage, function(c)
-  if c.fullscreen then
-    c.screen.selected_tag.fullscreenMode = false
-    updateBarsVisibility()
-  end
+  s.top_panel = top_panel(s) -- Create the Top bar
 end)
