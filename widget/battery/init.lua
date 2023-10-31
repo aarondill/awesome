@@ -36,7 +36,7 @@ local function should_warn_battery(last_warning_time, status, charge, low_power,
   if status == "Charging" then return end
   if charge < 0 or charge > low_power then return end
   local time_since_last = os.difftime(os.time(), last_warning_time)
-  if time_since_last < low_power_frequency then return end
+  return time_since_last >= low_power_frequency
 end
 
 ---Handler for files.get_battery_info
