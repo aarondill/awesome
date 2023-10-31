@@ -225,7 +225,7 @@ local globalKeys = gtable.join(
   end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
   awful.key({ modkey, "Shift" }, "`", function()
     local s = awful.screen.focused() ---@type AwesomeScreenInstance?
-    local tl = s and get_child_by_id(s.top_panel, "taglist") ---@diagnostic disable-line :undefined-field This field is injected!
+    local tl = s and get_child_by_id(s.top_panel, "taglist")
     if not tl then return end
     tl.visible = not tl.visible
   end, { description = "Toggle the taglist visiblity", group = "hotkeys" })

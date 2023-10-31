@@ -99,7 +99,7 @@ function open.rofi(mode)
         return notifs.critical(("Rofi is required to open the %s picker."):format(mode))
       end
       local s = ascreen.focused() ---@type AwesomeScreenInstance?
-      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt") ---@diagnostic disable-line :undefined-field This field is injected!
+      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
       if not promptbox then return end
       return promptbox:run()
     end,

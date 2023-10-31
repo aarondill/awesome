@@ -8,6 +8,10 @@ local client_keys = require("configuration.keys.client")
 local compat = require("util.compat")
 local gshape = require("gears.shape")
 local table_utils = require("util.table")
+
+---@class AwesomeClientInstance
+---@field skip_decoration boolean? Whether to skip decorating the client instance. This is an injected field!
+
 -- Rules
 local rules = {
   -- All clients will match this rule.
