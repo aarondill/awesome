@@ -10,9 +10,8 @@ local files = require(..., "files") ---@module "widget.battery.files"
 local gtimer = require("gears.timer")
 local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
-local wibox = require("wibox")
-local dpi = require("beautiful").xresources.apply_dpi
 local strings = require("util.strings")
+local wibox = require("wibox")
 
 -- To use colors from beautiful theme put
 -- following lines in rc.lua before require("battery"):
@@ -24,13 +23,7 @@ local strings = require("util.strings")
 local function show_battery_warning(charge)
   notifs.warn("Houston, we have a problem", {
     icon = files.get_icon("battery-alert"),
-    icon_size = dpi(40),
     title = ("Battery is dying (%s%%)"):format(charge or "??"),
-    timeout = 5,
-    hover_timeout = 0.5,
-    position = "bottom_left",
-    bg = "#d32f2f",
-    fg = "#EEE9EF",
   })
 end
 local widget_template = {
