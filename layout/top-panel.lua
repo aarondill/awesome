@@ -19,7 +19,9 @@ local dpi = require("beautiful").xresources.apply_dpi
 local get_child_by_id = require("util.get_child_by_id")
 local suspend_listener = require("module.suspend-listener")
 
-local TopPanel = function(s)
+---@param args {screen: screen}
+local TopPanel = function(args)
+  local s = args.screen
   local top_panel_height = beautiful.top_panel_height or dpi(32)
   local panel = wibox({
     ontop = true,
@@ -31,6 +33,7 @@ local TopPanel = function(s)
     stretch = false,
     bg = beautiful.bg_normal,
     fg = beautiful.fg_normal,
+    visible = true,
   })
   panel:struts({ top = top_panel_height })
   panel:setup({

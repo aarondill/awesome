@@ -8,5 +8,5 @@ local top_panel = require(..., "top-panel") ---@module "layout.top-panel"
 
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
-  s.top_panel = top_panel(s) -- Create the Top bar
+  s.top_panel = top_panel({ screen = s }) -- Create the Top bar
 end)
