@@ -11,13 +11,10 @@ local function get_wp_path(num) ---@param num integer
   local path = gfilesystem.get_configuration_dir() .. "wallpapers"
   local wp = string.format("%s/%d.jpg", path, num)
   local default = string.format("%s/%d.jpg", path, 1)
-  if gfilesystem.file_readable(wp) then
-    return wp
-  elseif gfilesystem.file_readable(default) then
-    return default
-  else
-    return gfilesystem.get_themes_dir() .. "default/background.png"
-  end
+
+  if gfilesystem.file_readable(wp) then return wp end
+  if gfilesystem.file_readable(default) then return default end
+  return gfilesystem.get_themes_dir() .. "default/background.png"
 end
 
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
@@ -37,13 +34,14 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
 end)
 
 atag.attached_connect_signal(nil, "property::selected", function(tag) ---@param tag AwesomeTagInstance
-  if tag.screen then tag.screen:emit_signal("request::wallpaper") end
+  if not tag.screen then return end
+  return tag.screen:emit_signal("request::wallpaper")
 end)
 capi.screen.connect_signal("property::geometry", function(s) ---@param s AwesomeScreenInstance
-  s:emit_signal("request::wallpaper")
+  return s:emit_signal("request::wallpaper")
 end)
 
-local focused_screen = ascreen.focused() ---@type AwesomeScreenInstance
+local focused_screen = ascreen.focused() ---@type AwesomeScreenInstance?
 if capi.awesome.version <= "v4.3" and focused_screen then
   -- This is not signaled for the first wallpaper in older versions
   focused_screen:emit_signal("request::wallpaper")
