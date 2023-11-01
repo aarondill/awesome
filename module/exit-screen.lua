@@ -22,17 +22,16 @@ local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 ---Passing this ensures only the icon/margin is clickable, rather than the caption below.
 ---@return table button the button widget to show on the exit_screen
 local function buildButton(icon, text, on_release)
-  local imagebox = wibox.widget({
-    widget = wibox.container.margin,
-    margins = dpi(16),
-    wibox.widget.imagebox(icon),
-  })
   local clickable = wibox.widget({
     widget = clickable_container,
     shape = gshape.circle,
     forced_width = icon_size,
     forced_height = icon_size,
-    imagebox,
+    {
+      widget = wibox.container.margin,
+      margins = dpi(16),
+      wibox.widget.imagebox(icon),
+    },
   })
   local widget = wibox.widget({
     {
@@ -55,26 +54,33 @@ local function buildButton(icon, text, on_release)
   return widget
 end
 
--- Get screen geometry
-local screen_geometry = awful.screen.focused().geometry
-
 -- Create the widget
 local exit_screen = wibox({
-  screen = 1,
-  x = screen_geometry.x,
-  y = screen_geometry.y,
   visible = false,
   ontop = true,
   type = "splash",
-  height = screen_geometry.height,
-  width = screen_geometry.width,
 })
-capi.screen.connect_signal("property::geometry", function()
-  local s = capi.screen[1]
-  exit_screen.width = s.geometry.width
-  exit_screen.x = s.geometry.x
-  exit_screen.y = s.geometry.y
-end)
+local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
+  require("util.notifs").info(
+    string.format("update_wibox_screen: %s. exit_screen.screen: %s", tostring(s), exit_screen.screen)
+  )
+  if not s then return end
+  if exit_screen.screen ~= s then
+    if exit_screen.screen then -- Ensure the screen is good
+      exit_screen.screen:disconnect_signal("property::geometry", update_wibox_screen)
+    end
+    s:connect_signal("property::geometry", update_wibox_screen)
+  end
+  local screen_geometry = s.geometry
+  exit_screen.x = screen_geometry.x
+  exit_screen.y = screen_geometry.y
+  exit_screen.height = screen_geometry.height
+  exit_screen.width = screen_geometry.width
+  exit_screen.screen = s
+end
+
+capi.screen.connect_signal("primary_changed", update_wibox_screen)
+update_wibox_screen(capi.screen.primary)
 
 local bg = beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
 exit_screen.bg = bg:match("^#......") .. "DD" -- light transparency
@@ -120,17 +126,17 @@ local function exit_screen_show()
     if event == "release" or not #mods == 0 then return false end
 
     if key == "s" then
-      suspend_command()
+      return suspend_command()
     elseif key == "e" then
-      exit_command()
+      return exit_command()
     elseif key == "l" then
-      lock_command()
+      return lock_command()
     elseif key == "p" then
-      poweroff_command()
+      return poweroff_command()
     elseif key == "r" then
-      reboot_command()
+      return reboot_command()
     elseif key == "Escape" or key == "q" or key == "x" then
-      exit_screen_hide()
+      return exit_screen_hide()
     end
   end))
   exit_screen.visible = true
