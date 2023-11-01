@@ -243,6 +243,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeMouse
 ---@field current_wibox table? wibox
 ---@class AwesomeScreen :AwesomeSignalClass
+---@field primary AwesomeScreenInstance?
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
 ---@field tags AwesomeTagInstance[]
