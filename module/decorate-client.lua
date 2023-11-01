@@ -33,7 +33,7 @@ end
 
 local changesOnScreenPending = false
 
-local function is_tag_maximized(tag)
+local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
   if not tag then return false end
   if tag.layout == alayout.suit.max then return true end
   if tag.layout == alayout.suit.max.fullscreen then return true end
@@ -43,7 +43,8 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
 
-  local tag_is_max = is_tag_maximized(currentScreen.selected_tag)
+  local tag = currentScreen.selected_tag
+  local tag_is_max = is_tag_maximized(tag)
   local render_maximized = tag_is_max or #managed_clients <= 1
   local show_top_bar = not tag_is_max or #managed_clients == 0 -- If the tag is maximized, don't show the top bar -- unless no clients.
   for _, client in ipairs(managed_clients) do
@@ -53,6 +54,9 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
 
   if currentScreen.top_panel then --- Hide bars when app go fullscreen
     currentScreen.top_panel.visible = show_top_bar
+  end
+  if tag then -- Set the gap to zero if maximized
+    tag.gap = tag_is_max and 0 or 4
   end
 
   changesOnScreenPending = false

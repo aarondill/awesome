@@ -2,6 +2,7 @@ local awful = require("awful")
 local capi = require("capi")
 local gtable = require("gears.table")
 local layouts = require("configuration.layouts")
+local table_utils = require("util.table")
 local tags = require("configuration.tags")
 
 if awful.layout.append_default_layouts then -- Added in v5
@@ -12,41 +13,30 @@ else -- v4. Breaks in v5
   awful.layout.layouts = require("configuration.layouts")
 end
 
+---@param tag tag_config
+---@param s AwesomeScreenInstance
+---@param i integer
+local function resolve_tag(tag, s, i)
+  if type(tag) == "table" then return tag end
+  if type(tag) == "function" then return tag(s, i, tags) end -- Screen, index, array
+  if type(tag) == "string" or type(tag) == "number" then return { name = tostring(tag) } end
+  return {} -- Unknown tag -- empty properties
+end
 awful.screen.connect_for_each_screen(function(s)
-  for i, tag in pairs(tags) do
-    if not tag then goto continue end
-    if type(tag) ~= "table" then
-      if type(tag) == "function" then
-        -- Screen, index, array
-        tag = tag(s, i, tags)
-      elseif type(tag) == "string" or type(tag) == "number" then
-        tag = { name = tostring(tag) }
-      else
-        tag = {}
-      end
-    end
-
+  return table_utils.foreach(tags, function(i, tag)
+    if not tag then return end
+    tag = resolve_tag(tag, s, i)
     local params = gtable.crush({
       name = i,
       layout = layouts[1] or awful.layout.suit.tile,
       gap_single_client = true,
       screen = s,
       selected = i == 1,
-    }, tag or {})
+    }, tag)
 
-    -- icon_only not specified, but icon is. Default to only icon.
+    -- icon_only not specified, but icon is, and name isn't. Default to only icon.
     if tag.icon_only == nil and tag.icon and not tag.name then params.icon_only = true end
 
-    awful.tag.add(params.name, params)
-    ::continue::
-  end
-end)
-
-awful.tag.attached_connect_signal(nil, "property::layout", function(t)
-  local currentLayout = awful.tag.getproperty(t, "layout")
-  if currentLayout == awful.layout.suit.max then
-    t.gap = 0
-  else
-    t.gap = 4
-  end
+    return awful.tag.add(params.name, params)
+  end)
 end)

@@ -1,7 +1,7 @@
----@alias tag boolean
+---@alias tag_config boolean
 ---| string
 ---| number
----| fun(screen: integer, index: integer, array: table): props: table
+---| fun(screen: AwesomeScreenInstance, index: integer, array: table): props: table
 ---| table --> a table of tag properties, and name to set the display value
 --- If icon is given, it will be the only thing shown.
 ---   Unless name or icon_only=false are specified
@@ -11,7 +11,7 @@
 --- If function, it will be called with the screen, index in the table, and the tags table
 ---    The function must return a table containing the properties of a tag.
 --- If table, passed to awful.tag.add(name, table) to create a new tag.
----@type tag[]
+---@type tag_config[]
 local tags = {
   true,
   true,

@@ -263,6 +263,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field view_only fun(self: AwesomeTagInstance)
 ---@field index integer
 ---@field screen AwesomeScreenInstance?
+---@field gap integer
 
 ---@class AwesomeClientInstance :AwesomeSignalClassInstance
 ---@field floating boolean
