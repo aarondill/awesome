@@ -61,9 +61,6 @@ local exit_screen = wibox({
   type = "splash",
 })
 local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
-  require("util.notifs").info(
-    string.format("update_wibox_screen: %s. exit_screen.screen: %s", tostring(s), exit_screen.screen)
-  )
   if not s then return end
   if exit_screen.screen ~= s then
     if exit_screen.screen then -- Ensure the screen is good
