@@ -3,5 +3,5 @@ return {
   apps = require(..., "apps"), ---@module "configuration.apps"
   keys = require(..., "keys"), ---@module "configuration.keys"
   layouts = require(..., "layouts"), ---@module "configuration.layouts"
-  DEBUG = false,
+  debug_autostart_failures = false,
 }
