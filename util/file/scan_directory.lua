@@ -92,7 +92,7 @@ end
 ---
 ---@param path string the directory to scan
 ---@param args scan_directory_args? a table describing the list of requestion attributes
----@param cb fun(info?: table, error?: userdata) The function to call when done. If failed, it will be called with nil
+---@param cb fun(info?: table, error?: userdata): any? The function to call when done. If failed, it will be called with nil
 ---@overload fun(path: string, cb: fun(info?: table))
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function scan_directory(path, args, cb)

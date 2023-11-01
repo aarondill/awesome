@@ -7,7 +7,7 @@ local scan_directory = require(..., "scan_directory") ---@module "util.file.scan
 ---@class list_directory_args :scan_directory_args
 ---@field match string? a lua pattern to match against the file names
 
----@alias list_directory_cb fun(names?: string[], error?: userdata)
+---@alias list_directory_cb fun(names?: string[], error?: userdata): any?
 --- Return a file list (name only)
 ---@param path string
 ---@param args list_directory_args?
