@@ -16,6 +16,7 @@ local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local awful_wibar = require("awful.wibar")
 local get_child_by_id = require("util.get_child_by_id")
 local suspend_listener = require("module.suspend-listener")
 
@@ -23,7 +24,7 @@ local suspend_listener = require("module.suspend-listener")
 local TopPanel = function(args)
   local s = args.screen
   local top_panel_height = beautiful.top_panel_height or dpi(32)
-  local panel = wibox({
+  local panel = awful_wibar.new({
     ontop = true,
     screen = s,
     height = top_panel_height,
