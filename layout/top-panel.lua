@@ -37,6 +37,7 @@ local TopPanel = function(args)
     visible = true,
   })
   panel:struts({ top = top_panel_height })
+  -- PERF: This (and the instantiations below) takes ~137 milliseconds. It's the main blocker, taking 65% of startup!
   panel:setup({
     layout = wibox.layout.align.horizontal,
     {
