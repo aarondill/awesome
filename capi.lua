@@ -241,6 +241,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeKeygrabber
 ---@class AwesomeMousegrabber
 ---@class AwesomeMouse
+---@field screen AwesomeScreenInstance
 ---@field current_wibox table? wibox
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
@@ -260,6 +261,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 
 ---@class AwesomeTagInstance :AwesomeSignalClassInstance
 ---@field layout AwesomeLayout
+---@field layouts AwesomeLayout[]
 ---@field view_only fun(self: AwesomeTagInstance)
 ---@field index integer
 ---@field screen AwesomeScreenInstance?

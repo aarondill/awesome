@@ -1,4 +1,7 @@
-local awful = require("awful")
+local abutton = require("awful.button")
+local aclient = require("awful.client")
+local atasklist = require("awful.widget.tasklist")
+local atooltip = require("awful.tooltip")
 local bind = require("util.bind")
 local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
@@ -37,13 +40,10 @@ end
 ---@param index unknown? The index to get object from. Defaults to 1.
 local function optional_container(if_bool, container, index)
   index = index or 1
-  assert_util.type(container, { "table", "nil" })
+  assert_util.type(container, { "table", "nil" }, "container")
 
-  if not container or if_bool then
-    return container
-  else
-    return container[index]
-  end
+  if not container or if_bool then return container end
+  return container[index]
 end
 ---Creates tasklist widgets and returns them
 ---@param buttons table a set of `button`s
@@ -89,7 +89,7 @@ local function create_tasklist_widgets(buttons, c, max_width)
               widget = wibox.container.margin,
             },
             shape = gshape.circle,
-            buttons = awful.button({}, 1, nil, bind.with_args(c.kill, c)),
+            buttons = abutton({}, 1, nil, bind.with_args(c.kill, c)),
             widget = clickable_container,
           },
           margins = dpi(2),
@@ -107,7 +107,7 @@ local function create_tasklist_widgets(buttons, c, max_width)
     tb = bgb:get_children_by_id("tb")[1],
     ib = bgb:get_children_by_id("ib")[1],
     --- Tooltip to display whole title, if it was truncated
-    tt = awful.tooltip({ --- tooltip
+    tt = atooltip({ --- tooltip
       mode = "outside",
       align = "bottom",
       delay_show = 1,
@@ -156,7 +156,7 @@ end
 
 -- we can use a global set of buttons because they work with their parameters
 local tasklist_buttons = gtable.join(
-  awful.button({}, 1, function(c)
+  abutton({}, 1, function(c)
     if c == capi.client.focus then
       c.minimized = true
       return
@@ -168,14 +168,14 @@ local tasklist_buttons = gtable.join(
     capi.client.focus = c
     c:raise()
   end),
-  awful.button({}, 2, function(c) -- middle click
+  abutton({}, 2, function(c) -- middle click
     c:kill()
   end),
-  awful.button({}, 3, function(c) -- right click
+  abutton({}, 3, function(c) -- right click
     c.fullscreen = not c.fullscreen
   end),
-  awful.button({}, 4, bind.with_args(awful.client.focus.byidx, 1)), -- scroll up
-  awful.button({}, 5, bind.with_args(awful.client.focus.byidx, -1)) -- scroll down
+  abutton({}, 4, bind.with_args(aclient.focus.byidx, 1)), -- scroll up
+  abutton({}, 5, bind.with_args(aclient.focus.byidx, -1)) -- scroll down
 )
 
 ---@class TaskListArgs
@@ -192,9 +192,9 @@ local defaults = {
 ---@return TaskList
 local function TaskList(args)
   local config = gtable.join(defaults, args)
-  local tl = awful.widget.tasklist({
+  local tl = atasklist({
     screen = config.screen,
-    filter = awful.widget.tasklist.filter.currenttags,
+    filter = atasklist.filter.currenttags,
     buttons = tasklist_buttons,
     update_function = bind.with_start_args(handle_error(list_update), config),
     layout = wibox.layout.fixed.horizontal(),

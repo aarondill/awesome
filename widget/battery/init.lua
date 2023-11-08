@@ -4,7 +4,7 @@
 local require = require("util.rel_require")
 
 local Icon = require("widget.material.icon")
-local awful = require("awful")
+local atooltip = require("awful.tooltip")
 local calculate_time_remaining = require(..., "time") ---@module "widget.battery.time"
 local files = require(..., "files") ---@module "widget.battery.files"
 local gtimer = require("gears.timer")
@@ -89,7 +89,7 @@ function Battery(args)
   local last_warning_time = 0
 
   local widget = wibox.widget(widget_template)
-  local battery_popup = awful.tooltip({
+  local battery_popup = atooltip({
     objects = { widget },
     mode = "outside",
     align = "left",

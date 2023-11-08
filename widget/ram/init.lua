@@ -1,9 +1,8 @@
-local awful = require("awful")
 local gtimer = require("gears.timer")
-local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
 local mat_slider = require("widget.material.slider")
+local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
@@ -26,7 +25,7 @@ local timer = gtimer.new({
   timeout = 1,
   call_now = true,
   callback = function()
-    awful.spawn.easy_async("free", handle_error(free_handler))
+    spawn.easy_async("free", free_handler)
   end,
 })
 timer:start()

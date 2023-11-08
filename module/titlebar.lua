@@ -1,4 +1,7 @@
-local awful = require("awful")
+local abutton = require("awful.button")
+local alayout = require("awful.layout")
+local amouse = require("awful.mouse")
+local atitlebar = require("awful.titlebar")
 local capi = require("capi")
 local gtable = require("gears.table")
 local wibox = require("wibox")
@@ -10,31 +13,31 @@ local quake = require("module.quake")
 local function render_titlebars(c)
   -- buttons for the titlebar
   local buttons = gtable.join(
-    awful.button({}, 1, function()
+    abutton({}, 1, function()
       c:emit_signal("request::activate", "titlebar", { raise = true })
-      awful.mouse.client.move(c)
+      amouse.client.move(c)
     end),
-    awful.button({}, 3, function()
+    abutton({}, 3, function()
       c:emit_signal("request::activate", "titlebar", { raise = true })
-      awful.mouse.client.resize(c)
+      amouse.client.resize(c)
     end)
   )
 
-  awful.titlebar(c):setup({
+  atitlebar(c):setup({
     {
       { -- Left
-        widget = awful.titlebar.widget.iconwidget(c),
+        widget = atitlebar.widget.iconwidget(c),
         buttons = buttons,
       },
       { -- Title
-        widget = awful.titlebar.widget.titlewidget(c),
+        widget = atitlebar.widget.titlewidget(c),
         buttons = buttons,
         [compat.widget.halign] = "center",
       },
       { -- Right
-        awful.titlebar.widget.minimizebutton(c),
-        awful.titlebar.widget.maximizedbutton(c),
-        awful.titlebar.widget.closebutton(c),
+        atitlebar.widget.minimizebutton(c),
+        atitlebar.widget.maximizedbutton(c),
+        atitlebar.widget.closebutton(c),
         spacing = dpi(6),
         layout = wibox.layout.fixed.horizontal,
       },
@@ -52,7 +55,7 @@ local function should_show_titlebars(c)
   if c.requests_no_titlebar then return false end -- No titlebars
   if not quake:client_is_quake(c) then -- quake is always floating -- handle other ways
     if c.floating then return true end -- Client is floating
-    if c.first_tag and c.first_tag.layout == awful.layout.suit.floating then return true end -- layout is floating
+    if c.first_tag and c.first_tag.layout == alayout.suit.floating then return true end -- layout is floating
   end
 
   -- NOTE: This must be set manually (in a callback),
@@ -64,11 +67,8 @@ end
 
 -- Show or hide the titlebar according to requests_no_titlebar and titlebars_enabled
 local function show_titlebars(c)
-  if should_show_titlebars(c) then
-    awful.titlebar.show(c, "top")
-  else
-    awful.titlebar.hide(c, "top")
-  end
+  if should_show_titlebars(c) then return atitlebar.show(c, "top") end
+  return atitlebar.hide(c, "top")
 end
 
 -- If client requests not to show the titlebar

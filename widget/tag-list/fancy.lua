@@ -21,7 +21,8 @@ local capi = require("capi")
 local compat = require("util.compat")
 local require = require("util.rel_require")
 
-local awful = require("awful")
+local ascreen = require("awful.screen")
+local awidget = require("awful.widget")
 local beautiful = require("beautiful")
 local gtable = require("gears.table")
 local wibox = require("wibox")
@@ -84,13 +85,13 @@ local function fancy_tasklist(cfg, tag)
     },
     widget_template = {
       id = "clienticon",
-      widget = awful.widget.clienticon,
+      widget = awidget.clienticon,
       create_callback = function(self, c, _, _)
         self:get_children_by_id("clienticon")[1].client = c
       end,
     },
   })
-  return awful.widget.tasklist(c)
+  return awidget.tasklist(c)
 end
 
 local module = {}
@@ -113,11 +114,11 @@ function module.new(cfg)
   --- Set default buttons
   taglist_cfg.buttons = taglist_cfg.buttons or require(this_path, "buttons")
 
-  local screen = cfg.screen or awful.screen.focused()
+  local screen = cfg.screen or ascreen.focused()
   taglist_cfg.screen, tasklist_cfg.screen = screen, screen
 
   local overrides = {
-    filter = awful.widget.taglist.filter.all,
+    filter = awidget.taglist.filter.all,
     widget_template = {
       {
         box_margins({
@@ -146,7 +147,7 @@ function module.new(cfg)
       update_callback = update_callback,
     },
   }
-  return awful.widget.taglist(gtable.join(taglist_cfg, overrides))
+  return awidget.taglist(gtable.join(taglist_cfg, overrides))
 end
 
 return module

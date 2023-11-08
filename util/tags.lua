@@ -1,9 +1,10 @@
-local awful = require("awful")
+local ascreen = require("awful.screen")
+local atag = require("awful.tag")
 local M = {}
 
 ---@param o AwesomeClientInstance | AwesomeScreenInstance | nil The objec to find screen on. Default is focused screen.
 function M.get_screen(o)
-  if not o then return awful.screen.focused() end
+  if not o then return ascreen.focused() end
   return o.screen or o
 end
 ---Get a tag by index
@@ -24,7 +25,7 @@ function M.show_tag(i, add)
   local tag = M.get_tag(i)
   if not tag then return end
   if add then
-    awful.tag.viewtoggle(tag)
+    atag.viewtoggle(tag)
   else
     tag:view_only()
   end

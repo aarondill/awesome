@@ -1,6 +1,7 @@
 --- Source: modified from `lain.util.quake`
 
-local awful = require("awful")
+local aclient = require("awful.client")
+local ascreen = require("awful.screen")
 local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.compat")
@@ -11,12 +12,12 @@ local quake = {}
 
 function quake:_display(visible)
   if visible ~= nil then self.visible = visible end
-  if self.follow_screen then self.screen = awful.screen.focused() end
+  if self.follow_screen then self.screen = ascreen.focused() end
   local class_match = function(c)
     -- c.name may be changed!
     return c.instance == self.class
   end
-  local iter = awful.client.iterate(class_match)
+  local iter = aclient.iterate(class_match)
   -- First, we locate the client
   local c = iter() -- consumes first item
   for other_c in iter do
@@ -116,7 +117,7 @@ function quake:hide()
   self:_display(false)
 end
 function quake:_on_tag(tag)
-  if self.follow_screen then self.screen = awful.screen.focused() end
+  if self.follow_screen then self.screen = ascreen.focused() end
   tag = tag or self.screen.selected_tag
   return not tag or self.last_tag == tag
 end
@@ -161,7 +162,7 @@ quake.defaults = {
   visible = false, -- initially not visible
   follow_screen = true, -- spawn on currently focused screen
   overlap = false, -- overlap wibox
-  screen = awful.screen.focused(),
+  screen = ascreen.focused(),
   -- If width or height <= 1 this is a proportion of the workspace
   height = 0.5, -- height
   width = 1, -- width

@@ -1,24 +1,25 @@
-local awful = require("awful")
+local abutton = require("awful.button")
+local atag = require("awful.tag")
 local capi = require("capi")
 local gtable = require("gears.table")
 local modkey = require("configuration.keys.mod").modKey
 
 return gtable.join(
-  awful.button({}, 1, function(t)
+  abutton({}, 1, function(t)
     t:view_only()
   end),
-  awful.button({ modkey }, 1, function(t)
+  abutton({ modkey }, 1, function(t)
     if capi.client.focus then capi.client.focus:move_to_tag(t) end
     t:view_only()
   end),
-  awful.button({}, 3, awful.tag.viewtoggle),
-  awful.button({ modkey }, 3, function(t)
+  abutton({}, 3, atag.viewtoggle),
+  abutton({ modkey }, 3, function(t)
     if capi.client.focus then capi.client.focus:toggle_tag(t) end
   end),
-  awful.button({}, 4, function(t)
-    awful.tag.viewprev(t.screen)
+  abutton({}, 4, function(t)
+    atag.viewprev(t.screen)
   end),
-  awful.button({}, 5, function(t)
-    awful.tag.viewnext(t.screen)
+  abutton({}, 5, function(t)
+    atag.viewnext(t.screen)
   end)
 )
