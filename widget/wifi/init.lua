@@ -8,7 +8,8 @@
 -- @copyright 2017 Pavel Makhov
 -------------------------------------------------
 
-local awful = require("awful")
+local abutton = require("awful.button")
+local atooltip = require("awful.tooltip")
 local clickable_container = require("widget.material.clickable-container")
 local gtable = require("gears.table")
 local spawn = require("util.spawn")
@@ -36,11 +37,11 @@ local widget = wibox.widget({
 })
 
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
-widget_button:buttons(gtable.join(awful.button({}, 1, nil, function()
+widget_button:buttons(gtable.join(abutton({}, 1, nil, function()
   spawn.nosn("wicd-client -n")
 end)))
 -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
-awful.tooltip({
+atooltip({
   objects = { widget_button },
   mode = "outside",
   align = "right",
@@ -57,12 +58,10 @@ awful.tooltip({
 })
 
 local function grabText()
-  if connected then
-    awful.spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout)
-      essid = stdout:match("SSID:(.-)\n")
-      if essid == nil then essid = "N/A" end
-    end)
-  end
+  if not connected then return end
+  return spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout)
+    essid = stdout:match("SSID:(.-)\n") or "N/A"
+  end)
 end
 
 watch("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", 5, function(_, stdout)

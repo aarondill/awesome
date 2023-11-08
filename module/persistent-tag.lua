@@ -1,4 +1,4 @@
-local awful = require("awful")
+local atag = require("awful.tag")
 local capi = require("capi")
 local filepath = "/tmp/awesomewm-last-selected-tags"
 capi.awesome.connect_signal("exit", function(reason_restart)
@@ -36,7 +36,7 @@ capi.awesome.connect_signal("startup", function()
 
   for s in capi.screen do
     local sel_tags = screen_tags[s.index]
-    if #sel_tags > 0 then awful.tag.viewnone(s) end
+    if #sel_tags > 0 then atag.viewnone(s) end
     for _, i in ipairs(sel_tags) do
       local scr_tag = s.tags[i]
       if scr_tag then scr_tag.selected = true end

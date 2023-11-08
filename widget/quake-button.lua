@@ -1,5 +1,5 @@
 local IconButton = require("widget.material.icon-button")
-local awful = require("awful")
+local abutton = require("awful.button")
 local bind = require("util.bind")
 local capi = require("capi")
 local gtable = require("gears.table")
@@ -14,9 +14,9 @@ local QuakeButton = function()
   })
   local open_terminal = bind.with_args(open.terminal)
   iconbutton:buttons(gtable.join(
-    awful.button({}, 1, bind.with_args(capi.awesome.emit_signal, "quake::toggle")),
-    awful.button({}, 2, open_terminal), -- open a new terminal on middle click
-    awful.button({}, 3, open_terminal) -- open a new terminal on right click
+    abutton({}, 1, bind.with_args(capi.awesome.emit_signal, "quake::toggle")),
+    abutton({}, 2, open_terminal), -- open a new terminal on middle click
+    abutton({}, 3, open_terminal) -- open a new terminal on right click
   ))
   -- Not supported yet:
   -- local imgbox = layoutBox:get_children_by_id("imagebox")[1]

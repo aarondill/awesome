@@ -1,5 +1,6 @@
+local abutton = require("awful.button")
+local akeygrabber = require("awful.keygrabber")
 local apps = require("configuration.apps")
-local awful = require("awful")
 local beautiful = require("beautiful")
 local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
@@ -86,7 +87,7 @@ exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or beautiful.fg_
 local exit_screen_grabber
 
 local function exit_screen_hide()
-  awful.keygrabber.stop(exit_screen_grabber)
+  akeygrabber.stop(exit_screen_grabber)
   exit_screen.visible = false
 end
 
@@ -119,7 +120,7 @@ local exit = buildButton(icons.logout, "Exit AWM (e)", handle_error(exit_command
 local lock = buildButton(icons.lock, "Lock (l)", handle_error(lock_command))
 
 local function exit_screen_show()
-  exit_screen_grabber = awful.keygrabber.run(handle_error(function(mods, key, event)
+  exit_screen_grabber = akeygrabber.run(handle_error(function(mods, key, event)
     if event == "release" or not #mods == 0 then return false end
 
     if key == "s" then
@@ -141,9 +142,9 @@ end
 
 exit_screen:buttons(gtable.join(
   -- Middle click - Hide exit_screen
-  awful.button({}, 2, exit_screen_hide),
+  abutton({}, 2, exit_screen_hide),
   -- Right click - Hide exit_screen
-  awful.button({}, 3, exit_screen_hide)
+  abutton({}, 3, exit_screen_hide)
 ))
 -- Item placement
 exit_screen:setup({

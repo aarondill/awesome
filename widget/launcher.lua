@@ -1,6 +1,7 @@
 local IconButton = require("widget.material.icon-button")
+local abutton = require("awful.button")
+local amenu = require("awful.menu")
 local apps = require("configuration.apps")
-local awful = require("awful")
 local bind = require("util.bind")
 local capi = require("capi")
 local concat_command = require("util.concat_command")
@@ -23,10 +24,8 @@ local function launcher_new(args, menu)
     })
   end
   local opts = gtable.crush({ image = icons.launcher }, args, true)
-  opts.buttons = gtable.join(
-    awful.button.new({}, 1, nil, apps.open.rofi),
-    awful.button.new({}, 3, nil, bind.with_args(menu.toggle, menu))
-  )
+  opts.buttons =
+    gtable.join(abutton.new({}, 1, nil, apps.open.rofi), abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu)))
   opts.widget = IconButton
   return wibox.widget(opts)
 end
@@ -63,7 +62,7 @@ function Launcher(args)
     end
   end
 
-  local menu = awful.menu.new({ items = { menu_awesome, menu_terminal } })
+  local menu = amenu.new({ items = { menu_awesome, menu_terminal } })
 
   do -- Load Debian menu entries
     local has_debian, debian = pcall(require, "debian.menu")

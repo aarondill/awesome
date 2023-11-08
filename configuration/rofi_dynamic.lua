@@ -1,7 +1,7 @@
 local require = require("util.rel_require")
 
+local ascreen = require("awful.screen")
 local assert_util = require("util.assert_util")
-local awful = require("awful")
 local beautiful = require("beautiful")
 local config_file_dir = require(..., "apps.conffile_dir") ---@module "configuration.apps.conffile_dir"
 local strings = require("util.strings")
@@ -43,7 +43,7 @@ local function write_conf(opts, cb)
   opts = opts or {}
   local panel_height = opts.panel_height
   if not panel_height then
-    local s = awful.screen.focused() ---@type AwesomeScreenInstance
+    local s = ascreen.focused() ---@type AwesomeScreenInstance
     local screen_h = s and s.geometry.height
     local top_height = beautiful.top_panel_height or 0
     local gap = beautiful.useless_gap or 0 -- Leave a small gap. Not Dynamic!

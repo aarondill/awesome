@@ -1,7 +1,10 @@
 local quake = require("module.quake")
 local require = require("util.rel_require")
 
-local awful = require("awful")
+local aclient = require("awful.client")
+local aplacement = require("awful.placement")
+local arules = require("awful.rules")
+local ascreen = require("awful.screen")
 local capi = require("capi")
 local client_buttons = require(..., "buttons") ---@module "module.client.buttons"
 local client_keys = require("configuration.keys.client")
@@ -19,10 +22,10 @@ local rules = {
     rule = {},
     except = { instance = quake.instance },
     properties = {
-      focus = awful.client.focus.filter,
+      focus = aclient.focus.filter,
       raise = true,
-      screen = awful.screen.preferred,
-      placement = awful.placement.no_overlap + awful.placement.no_offscreen,
+      screen = ascreen.preferred,
+      placement = aplacement.no_overlap + aplacement.no_offscreen,
       floating = false,
       maximized = false,
       above = false,
@@ -37,7 +40,7 @@ local rules = {
       if quake:client_is_quake(c) then return end -- Not the quake client
       -- Set the windows at the slave,
       -- i.e. put it at the end of others instead of setting it master.
-      awful.client.setslave(c)
+      aclient.setslave(c)
     end,
   },
   -- All clients will match this rule.
@@ -81,7 +84,7 @@ local rules = {
       role = { "pop-up" },
     },
     properties = {
-      placement = awful.placement.centered,
+      placement = aplacement.centered,
       ontop = true,
       floating = true,
       drawBackdrop = true,
@@ -114,17 +117,17 @@ if has_ruled then
   -- Stop here. Below is just awful.rules
 end
 
-awful.rules.rules = rules
-capi.client.disconnect_signal(compat.signal.manage, awful.rules.apply)
+arules.rules = rules
+capi.client.disconnect_signal(compat.signal.manage, arules.apply)
 return capi.client.connect_signal(compat.signal.manage, function(c)
-  if not capi.awesome.startup then return awful.rules.apply(c) end
-  return table_utils.foreach(awful.rules.matching_rules(c, awful.rules.rules), function(_, rule)
-    if rule.apply_on_restart then return awful.rules.execute(c, rule.properties, { rule.callback }) end
+  if not capi.awesome.startup then return arules.apply(c) end
+  return table_utils.foreach(arules.matching_rules(c, arules.rules), function(_, rule)
+    if rule.apply_on_restart then return arules.execute(c, rule.properties, { rule.callback }) end
     local mini_properties = { -- These will always be applied.
       buttons = rule.properties.buttons,
       keys = rule.properties.keys,
       size_hints_honor = rule.properties.size_hints_honor,
     }
-    return awful.rules.execute(c, mini_properties, {})
+    return arules.execute(c, mini_properties, {})
   end)
 end)

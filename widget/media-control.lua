@@ -1,4 +1,5 @@
-local awful = require("awful")
+local abutton = require("awful.button")
+local atooltip = require("awful.tooltip")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
 local concat_command = require("util.concat_command")
@@ -64,7 +65,7 @@ function MediaControl:init(args)
     },
   }
   self.widget = wibox.widget(widget_template)
-  self.widget.tooltip = awful.tooltip({
+  self.widget.tooltip = atooltip({
     objects = { self.widget },
     mode = "outside",
     align = "bottom",
@@ -83,11 +84,11 @@ function MediaControl:init(args)
   local update_widget = bind(self.update_widget, self)
   self.widget:buttons(gtable.join(
     -- button 1: left click  - play/pause
-    awful.button({}, 1, bind(self.PlayPause, self, update_widget)),
+    abutton({}, 1, bind(self.PlayPause, self, update_widget)),
     -- button 4: scroll up - previous song
-    awful.button({}, 4, bind(self.debounce_song_changes, self, self.Previous, self, update_widget)),
+    abutton({}, 4, bind(self.debounce_song_changes, self, self.Previous, self, update_widget)),
     -- button 5: scroll down   - next song
-    awful.button({}, 5, bind(self.debounce_song_changes, self, self.Next, self, update_widget))
+    abutton({}, 5, bind(self.debounce_song_changes, self, self.Next, self, update_widget))
   ))
 
   return self.widget
