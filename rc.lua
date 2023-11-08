@@ -1,5 +1,4 @@
 -- awesome_mode: api-level=9999:screen=on
-local awful = require("awful")
 local beautiful = require("beautiful")
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
@@ -15,6 +14,8 @@ pcall(require, "luarocks.loader")
 if not pcall(require, "awful.permissions") then -- Added to replace awful.autofocus
   pcall(require, "awful.autofocus") -- Depreciated in V5
 end
+-- Ignore the $SHELL environment variable
+require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash" or "/bin/sh"
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
 local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
@@ -66,9 +67,10 @@ capi.root.keys(require("configuration.keys.global"))
 require("module.wallpaper")
 
 -- Disable mouse snapping
-awful.mouse.snap.edge_enabled = false
-awful.mouse.snap.client_enabled = false
-awful.mouse.drag_to_tag.enabled = false
+local amouse = require("awful.mouse")
+amouse.snap.edge_enabled = false
+amouse.snap.client_enabled = false
+amouse.drag_to_tag.enabled = false
 
 -- Enable sloppy focus, so that focus follows mouse.
 capi.client.connect_signal("mouse::enter", function(c)
