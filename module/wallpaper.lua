@@ -16,8 +16,8 @@ local function get_wp_path(num) ---@param num integer
   return gfilesystem.get_themes_dir() .. "default/background.png"
 end
 
-local function set_wp(s) ---@param s AwesomeScreenInstance
-  if not s or not s.selected_tag then return end
+capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
+  if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
   local ok, awallpaper = pcall(require, "awful.wallpaper")
   if not ok then return require("gears.wallpaper").maximized(wp_path, s) end
@@ -30,12 +30,6 @@ local function set_wp(s) ---@param s AwesomeScreenInstance
       widget = wibox.widget.imagebox,
     },
   })
-end
-
-capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
-  --PERF: Delay the call until the next iteration to avoid slowing startup
-  --Also avoids freezeing the interface when switching tags, allowing user input to continue being processed
-  return gtimer.delayed_call(set_wp, s)
 end)
 
 atag.attached_connect_signal(nil, "property::selected", function(tag) ---@param tag AwesomeTagInstance
@@ -49,5 +43,6 @@ end)
 local focused_screen = ascreen.focused() ---@type AwesomeScreenInstance?
 if capi.awesome.version <= "v4.3" and focused_screen then
   -- This is not signaled for the first wallpaper in older versions
-  focused_screen:emit_signal("request::wallpaper")
+  -- PERF: This is an expensive operation. Wait until setup is done.
+  gtimer.delayed_call(focused_screen.emit_signal, focused_screen, "request::wallpaper")
 end
