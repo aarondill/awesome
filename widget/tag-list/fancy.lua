@@ -19,6 +19,7 @@
 -- end
 local capi = require("capi")
 local compat = require("util.compat")
+local quake = require("module.quake")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
@@ -61,6 +62,7 @@ local function constrain_icon(widget)
   }
 end
 
+---@param tag AwesomeTagInstance
 local function fancy_tasklist(cfg, tag)
   local MAX_ICONS = 5
   local function only_this_tag(c) ---@param c AwesomeClientInstance
@@ -71,11 +73,10 @@ local function fancy_tasklist(cfg, tag)
       return true -- Truth filter. The filter is called in source (to ensure that we don't get too many clients)
     end,
     source = function()
-      local clients = {}
+      local clients = {} ---@type AwesomeClientInstance[]
       for _, c in ipairs(capi.client.get()) do
-        if #clients < MAX_ICONS and only_this_tag(c) then -- MAX_ICONS and check filter
-          table.insert(clients, c)
-        end
+        if #clients >= MAX_ICONS then break end
+        if only_this_tag(c) then clients[#clients + 1] = c end -- check filter
       end
       return clients
     end,
@@ -98,12 +99,17 @@ local module = {}
 
 local this_path = ...
 
+---@param tag AwesomeTagInstance
 local function update_callback(self, tag, _, _)
   -- make sure that empty tasklists take up no extra space
   local list_separator = self:get_children_by_id("list_separator")[1]
   if not list_separator then return end
-  if #tag:clients() == 0 then return list_separator:set_spacing(0) end
-  return list_separator:set_spacing(internal_spacing)
+  for _, c in ipairs(tag:clients()) do
+    if not quake:client_is_quake(c) then -- At least one non-quake client
+      return list_separator:set_spacing(internal_spacing)
+    end
+  end
+  return list_separator:set_spacing(0) -- empty list separator
 end
 
 ---@param cfg FancyTaglistOptions?
@@ -139,7 +145,7 @@ function module.new(cfg)
       },
       id = "background_role",
       widget = wibox.container.background,
-      create_callback = function(self, tag, _index, _tags)
+      create_callback = function(self, tag, _index, _tags) ---@param tag AwesomeTagInstance
         local tasklist = fancy_tasklist(tasklist_cfg, tag)
         self:get_children_by_id("tasklist_placeholder")[1]:add(tasklist)
         return update_callback(self, tag, _index, _tags)
