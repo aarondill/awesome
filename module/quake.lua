@@ -7,6 +7,7 @@ local quake_class = "QuakeDD"
 --- Create a quake terminal
 local quake_instance = quake_widget({ spawn = apps.open.quake_terminal, class = quake_class })
 capi.awesome.connect_signal("quake::toggle", bind(quake_instance.toggle, quake_instance))
+capi.awesome.connect_signal("quake::kill", bind(quake_instance.kill, quake_instance))
 
 local quake = {}
 function quake:client_is_quake(c) ---@param c AwesomeClientInstance

@@ -156,7 +156,7 @@ end
 
 -- we can use a global set of buttons because they work with their parameters
 local tasklist_buttons = gtable.join(
-  abutton({}, 1, function(c)
+  abutton({}, 1, function(c) ---@param c AwesomeClientInstance
     if c == capi.client.focus then
       c.minimized = true
       return
@@ -168,10 +168,12 @@ local tasklist_buttons = gtable.join(
     capi.client.focus = c
     c:raise()
   end),
-  abutton({}, 2, function(c) -- middle click
+  -- middle click
+  abutton({}, 2, function(c) ---@param c AwesomeClientInstance
     c:kill()
   end),
-  abutton({}, 3, function(c) -- right click
+  -- right click
+  abutton({}, 3, function(c) ---@param c AwesomeClientInstance
     c.fullscreen = not c.fullscreen
   end),
   abutton({}, 4, bind.with_args(aclient.focus.byidx, 1)), -- scroll up

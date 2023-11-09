@@ -246,6 +246,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field current_wibox table? wibox
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
+---@field [integer] AwesomeScreenInstance?
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
 ---@field tags AwesomeTagInstance[]
@@ -253,6 +254,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field selected_tags AwesomeTagInstance[]
 ---@field selected_tag AwesomeTagInstance?
 ---@field geometry AwesomeGeometry
+---@field workarea AwesomeGeometry
 
 ---@class AwesomeButton :AwesomeSignalClass
 ---@class AwesomeWindow
@@ -273,6 +275,9 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field floating boolean
 ---@field valid boolean
 ---@field maximized boolean
+---@field minimized boolean
+---@field isvisible fun(): boolean
+---@field first_tag AwesomeTagInstance?
 ---@field above boolean
 ---@field below boolean
 ---@field ontop boolean
@@ -294,6 +299,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[]
 ---@field size_hints_honor boolean
 ---@field geometry fun(self: AwesomeClientInstance, geometry:AwesomeGeometry?): AwesomeGeometry
+---@field kill fun()
 ---@field skip_taskbar boolean
 
 ---@class AwesomeClient :AwesomeSignalClass

@@ -15,7 +15,7 @@ local QuakeButton = function()
   local open_terminal = bind.with_args(open.terminal)
   iconbutton:buttons(gtable.join(
     abutton({}, 1, bind.with_args(capi.awesome.emit_signal, "quake::toggle")),
-    abutton({}, 2, open_terminal), -- open a new terminal on middle click
+    abutton({}, 2, bind.with_args(capi.awesome.emit_signal, "quake::kill")),
     abutton({}, 3, open_terminal) -- open a new terminal on right click
   ))
   -- Not supported yet:
