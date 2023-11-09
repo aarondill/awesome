@@ -10,14 +10,12 @@ local gtable = require("gears.table")
 -- Quake-like Dropdown application spawn
 local quake = {}
 
-function quake:_display(visible)
-  if visible ~= nil then self.visible = visible end
-  if self.follow_screen then self.screen = ascreen.focused() end
-  local class_match = function(c)
-    -- c.name may be changed!
-    return c.instance == self.class
+---@return AwesomeClientInstance? client
+function quake:_get_client()
+  local class_match = function(c) ---@param c AwesomeClientInstance
+    return c.instance == self.class -- c.name may be changed!
   end
-  local iter = aclient.iterate(class_match)
+  local iter = aclient.iterate(class_match) ---@type fun():AwesomeClientInstance?
   -- First, we locate the client
   local c = iter() -- consumes first item
   for other_c in iter do
@@ -29,7 +27,14 @@ function quake:_display(visible)
     other_c.ontop = false
     other_c.above = false
   end
-
+  return c
+end
+---@param visible boolean?
+---@return AwesomeClientInstance?
+function quake:_display(visible)
+  if visible ~= nil then self.visible = visible end
+  if self.follow_screen then self.screen = ascreen.focused() end
+  local c = self:_get_client()
   if not c then
     if not self.visible then return end
     -- The client does not exist, we spawn it
@@ -60,6 +65,7 @@ function quake:_display(visible)
 
   return c
 end
+---@param c AwesomeClientInstance
 function quake:_hide(c)
   local maximized = c.maximized
   local fullscreen = c.fullscreen
@@ -68,13 +74,10 @@ function quake:_hide(c)
   c.maximized = false
   c.fullscreen = false
   c.hidden = true
-  local ctags = c:tags()
-  for j, _ in pairs(ctags) do
-    ctags[j] = nil
-  end
-  c:tags(ctags)
+  c:tags({})
 end
 
+---@param c AwesomeClientInstance
 function quake:_show(c)
   c.hidden = false
   c.maximized = self.maximized
@@ -86,14 +89,16 @@ function quake:_show(c)
 end
 
 function quake:_compute_size()
+  local i = self.screen.index ---@type integer
   -- skip if we already have a geometry for this screen
-  if self.geometry[self.screen.index] then return self.geometry[self.screen.index] end
-  local s = capi.screen[self.screen.index]
+  if self.geometry[i] then return self.geometry[i] end
+  local s = capi.screen[i]
+  if not s then return end
   local geom = self.overlap and s.geometry or s.workarea
   local width, height = self.width, self.height
   if width <= 1 then width = math.floor(geom.width * width) - 2 * self.border end
   if height <= 1 then height = math.floor(geom.height * height) end
-  local x, y
+  local x, y ---@type number, number
   if self.horiz == "left" then
     x = geom.x
   elseif self.horiz == "right" then
@@ -108,13 +113,19 @@ function quake:_compute_size()
   else
     y = geom.y + (geom.height - height) / 2
   end
-  self.geometry[self.screen.index] = { x = x, y = y, width = width, height = height }
-  return self.geometry[self.screen.index]
+  self.geometry[i] = { x = x, y = y, width = width, height = height }
+  return self.geometry[i]
 end
 
 ---Hide the quake application
 function quake:hide()
   self:_display(false)
+end
+
+function quake:kill()
+  local c = self:_get_client()
+  if not c then return end
+  return c:kill()
 end
 function quake:_on_tag(tag)
   if self.follow_screen then self.screen = ascreen.focused() end
