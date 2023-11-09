@@ -34,6 +34,7 @@ local function opt(V) end ---@return V | nil
 local boolean = false ---@type boolean
 local string = "" ---@type string
 ---@alias screen table|integer
+---@alias AwesomeGeometry { height: number, width: number, x: number, y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
 ---@alias gears.surface userdata
 ---@alias CairoPattern userdata
@@ -251,7 +252,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field clients AwesomeClientInstance[]
 ---@field selected_tags AwesomeTagInstance[]
 ---@field selected_tag AwesomeTagInstance?
----@field geometry { height: number, width: number, x: number, y: number }
+---@field geometry AwesomeGeometry
 
 ---@class AwesomeButton :AwesomeSignalClass
 ---@class AwesomeWindow
@@ -266,6 +267,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field index integer
 ---@field screen AwesomeScreenInstance?
 ---@field gap integer
+---@field clients fun(self: AwesomeTagInstance, clients:AwesomeClientInstance[]?): AwesomeClientInstance[]
 
 ---@class AwesomeClientInstance :AwesomeSignalClassInstance
 ---@field floating boolean
@@ -290,6 +292,9 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field screen AwesomeScreenInstance?
 ---@field fullscreen boolean
 ---@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[]
+---@field size_hints_honor boolean
+---@field geometry fun(self: AwesomeClientInstance, geometry:AwesomeGeometry?): AwesomeGeometry
+---@field skip_taskbar boolean
 
 ---@class AwesomeClient :AwesomeSignalClass
 ---@field focus AwesomeClientInstance?
