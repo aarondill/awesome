@@ -1,8 +1,8 @@
 local capi = require("capi")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
-local notifs = require("util.notifs")
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
@@ -24,15 +24,19 @@ naughty.config.defaults.ontop = true
 naughty.config.defaults.hover_timeout = nil
 
 -- Error handling
-if capi.awesome.startup_errors then
-  notifs.critical(tostring(capi.awesome.startup_errors), {
-    title = "Oops, there were errors during startup!",
-  })
-end
+gtimer.delayed_call(function()
+  if capi.awesome.startup_errors then
+    local notifs = require("util.notifs")
+    notifs.critical(tostring(capi.awesome.startup_errors), {
+      title = "Oops, there were errors during startup!",
+    })
+  end
+end)
 
 do
   local in_error = false
   capi.awesome.connect_signal("debug::error", function(err)
+    local notifs = require("util.notifs")
     if in_error then return end
     in_error = true
 
@@ -47,6 +51,7 @@ end
 ---@param see string? The name of the newer API (default nil)
 ---@param args table? The args to gears.depreciate? I think?
 capi.awesome.connect_signal("debug::deprecate", function(hint, see, args)
+  local notifs = require("util.notifs")
   local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
   notifs.warn(msg)
 end)
