@@ -18,15 +18,16 @@ end
 require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash" or "/bin/sh"
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
+local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
+
 local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
-local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)/.-$") or ".")
-local utils_path = this_dir .. "/util/package_path.lua"
-if gfile.file_readable(utils_path) then
-  local util_package_path = dofile(utils_path)
-  package.loaded["util.package_path"] = util_package_path -- cache it for later
-  util_package_path.add_to_path(conf_dir)
-  util_package_path.add_to_path(this_dir)
-end
+local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)" .. dirsep .. ".-$") or ".") -- Should be same as conf_dir
+local utils_path = table.concat({ this_dir, (("util.package_path"):gsub("%.", dirsep)) .. ".lua" }, dirsep)
+assert(gfile.file_readable(utils_path), "Could not find util.package_path")
+package.loaded["util.package_path"] = dofile(utils_path)
+local util_package_path = require("util.package_path")
+util_package_path.add_to_path(conf_dir)
+util_package_path.add_to_path(this_dir)
 
 -- Load these *local* packages *After* fixing package.path
 local capi = require("capi")
