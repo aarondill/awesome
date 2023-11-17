@@ -20,7 +20,7 @@ require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash"
 -- Add configuration directory to package.?path so awesome --config FILE works right
 local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
 
-local conf_dir = gfile.get_configuration_dir():sub(1, -2) -- Remove slash
+local conf_dir = gfile.get_configuration_dir()
 local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)" .. dirsep .. ".-$") or ".") -- Should be same as conf_dir
 package.path = table.concat({ -- Make sure the following require will work!
   package.path,
