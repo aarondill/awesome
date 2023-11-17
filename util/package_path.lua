@@ -1,5 +1,5 @@
 local assert_util = require("util.assert_util")
-local normalize_path = require("util.normalize_path")
+local path = require("util.path")
 --- DON'T require anything local here.
 --- The package.path may not be set up correctly.
 --- Only awesomewm library is available.
@@ -11,7 +11,7 @@ local M = {}
 ---@nodiscard
 function M.path_contains(dir)
   assert_util.type(dir, "string", "dir")
-  dir = normalize_path(dir)
+  dir = path.normalize(dir)
   local lua = ";" .. dir .. "/?.lua;"
   local init = ";" .. dir .. "/?/init.lua;"
   local path_cmp = ";" .. package.path .. ";" -- package.path may not end in a semicolon. Likely won't start with one.
@@ -23,7 +23,7 @@ end
 ---@nodiscard
 function M.cpath_contains(dir)
   assert_util.type(dir, "string", "dir")
-  dir = normalize_path(dir)
+  dir = path.normalize(dir)
   local so = ";" .. dir .. "/?.so;"
   local path_cmp = ";" .. package.cpath .. ";" -- package.cpath may not end in a semicolon. Likely won't start with one.
   return not not string.find(path_cmp, so, 1, true)
@@ -52,7 +52,7 @@ end
 ---@return string cpath the new cpath (for convenience)
 function M.add_to_cpath(dir, prepend)
   assert_util.type(dir, "string", "dir")
-  dir = normalize_path(dir)
+  dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
   package.cpath = append_or_prepend(prepend, package.cpath, "%s/?.so", { dir })
@@ -65,7 +65,7 @@ end
 ---@return string path the new path (for convenience)
 function M.add_to_path(dir, prepend)
   assert_util.type(dir, "string", "dir")
-  dir = normalize_path(dir)
+  dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
   local format = "%s/?.lua;%s/?/init.lua"
