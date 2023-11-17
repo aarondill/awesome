@@ -1,3 +1,4 @@
+require("module.notifications") -- In case this is called before rc.lua requires it
 local bind = require("util.bind")
 local gtable = require("gears.table")
 local naughty = require("naughty")
