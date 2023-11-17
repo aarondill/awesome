@@ -6,19 +6,19 @@ local path = require("util.path")
 local shell_escape = require("util.shell_escape")
 local cache = {} ---@type table<string, string>
 local defaults = {
-  CONFIG = "/.config",
-  DATA = "/.local/share",
-  STATE = "/.local/state",
-  CACHE = "/.cache",
+  CONFIG = ".config",
+  DATA = path.join(".local", "share"),
+  STATE = path.join(".local", "state"),
+  CACHE = ".cache",
 
-  DESKTOP = "/Desktop",
-  DOWNLOAD = "/Downloads",
-  TEMPLATES = "/Templates",
-  PUBLICSHARE = "/Public",
-  DOCUMENTS = "/Documents",
-  MUSIC = "/Music",
-  PICTURES = "/Pictures",
-  VIDEOS = "/Videos",
+  DESKTOP = "Desktop",
+  DOWNLOAD = "Downloads",
+  TEMPLATES = "Templates",
+  PUBLICSHARE = "Public",
+  DOCUMENTS = "Documents",
+  MUSIC = "Music",
+  PICTURES = "Pictures",
+  VIDEOS = "Videos",
 }
 
 ---@param dir string
@@ -43,7 +43,7 @@ local function get_xdg_user_dir_impl(dir)
   end
 
   -- Defaults
-  if defaults[dir] then return find_home() .. defaults[dir] end
+  if defaults[dir] then return path.join(find_home(), defaults[dir]) end
 
   -- -- Manual case - We shouldn't reach this.
   -- local s = dir:sub(1, 1) .. string.lower(dir:sub(2))
