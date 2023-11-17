@@ -2,7 +2,6 @@ local require = require("util.rel_require")
 ---@diagnostic disable: assign-type-mismatch -- To allow nil values
 local M = {
   append_async = nil, ---@module "util.file.append_async"
-  basename = nil, ---@module "util.file.basename"
   exists = nil, ---@module "util.file.exists"
   list_directory = nil, ---@module "util.file.list_directory"
   read_async = nil, ---@module "util.file.read_async"
