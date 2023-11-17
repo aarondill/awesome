@@ -10,6 +10,12 @@ local Gio, GLib = lgi.Gio, lgi.GLib
 
 local M = {}
 
+---The directory separator as a string. This is “/” on UNIX machines and “" under Windows.
+M.sep = GLib.DIR_SEPARATOR_S ---@type string
+
+---The search path separator as a string. This is “:” on UNIX machines and “;” under Windows.
+M.delimiter = GLib.SEARCHPATH_SEPARATOR_S ---@type string
+
 ---Joins paths with slashes.
 ---Usage: path.join({'directory', 'file'}) OR path.join('directory', 'file')
 ---@param tbl string|string[] note: if a table is passed, remaining arguments are ignored
