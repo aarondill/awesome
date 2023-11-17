@@ -1,3 +1,4 @@
+local path = require("util.path")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
@@ -62,7 +63,7 @@ local function write_conf(opts, cb)
     "// vim" .. ":ft=css commentstring=//%s:", -- hack to stop vim from processing this modeline here
   })
 
-  write_async(config_file_dir .. "/rofi/dynamic.rasi", conf, cb) -- this file should be ignored
+  write_async(path.resolve(config_file_dir, "rofi", "dynamic.rasi"), conf, cb) -- this file should be ignored
 end
 
 return write_conf
