@@ -108,5 +108,13 @@ end
 function M.dirname(path)
   return GLib.path_get_dirname(path)
 end
+--- The path.extname() method returns the extension of the path, from the last
+--- dot to end of string in the last portion of the path.
+--- If the path has no extension or begins with a dot (and no other dot), and empty string is returned
+---@param path string
+---@return string
+function M.extname(path)
+  return M.basename(path):match(".+(%..+)") or ""
+end
 
 return M
