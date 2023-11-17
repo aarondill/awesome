@@ -3,17 +3,18 @@ local atag = require("awful.tag")
 local capi = require("capi")
 local gfilesystem = require("gears.filesystem")
 local gtimer = require("gears.timer")
+local path = require("util.path")
 local wibox = require("wibox")
 
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
-  local path = gfilesystem.get_configuration_dir() .. "wallpapers"
-  local wp = string.format("%s/%d.jpg", path, num)
-  local default = string.format("%s/%d.jpg", path, 1)
+  local p = path.relative(gfilesystem.get_configuration_dir(), "wallpapers")
+  local wp = string.format("%s/%d.jpg", p, num)
+  local default = string.format("%s/%d.jpg", p, 1)
 
   if gfilesystem.file_readable(wp) then return wp end
   if gfilesystem.file_readable(default) then return default end
-  return gfilesystem.get_themes_dir() .. "default/background.png"
+  return path.resolve(gfilesystem.get_themes_dir(), "default", "background.png")
 end
 
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance

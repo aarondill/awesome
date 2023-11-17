@@ -180,7 +180,7 @@ function MediaControl:info(cb)
   do
     local format_stats = {}
     for _, v in ipairs(variables) do
-      table.insert(format_stats, "{{" .. v .. "}}")
+      table.insert(format_stats, table.concat({ "{{", v, "}}" }))
     end
     cmd = self:handle_name({
       "playerctl",

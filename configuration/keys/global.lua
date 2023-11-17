@@ -245,21 +245,22 @@ for i = 1, 9 do
     descr_next_spawned = { description = "Move the next spawned client to tag #", group = "tag" }
     descr_next_spawned_no_jump = { description = "Move the next spawned client to tag #;don't focus", group = "tag" }
   end
+  local num = "#" .. i + 9
   globalKeys = gtable.join(
     globalKeys,
     -- View tag only.
-    akey({ modkey }, "#" .. i + 9, bind.with_args(tags.show_tag, i), descr_view),
+    akey({ modkey }, num, bind.with_args(tags.show_tag, i), descr_view),
     -- Toggle tag display.
-    akey({ modkey, "Control" }, "#" .. i + 9, bind.with_args(tags.show_tag, i, true), descr_toggle),
+    akey({ modkey, "Control" }, num, bind.with_args(tags.show_tag, i, true), descr_toggle),
     -- Move client to tag.
-    akey({ modkey, "Shift" }, "#" .. i + 9, function()
+    akey({ modkey, "Shift" }, num, function()
       local c = capi.client.focus
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
       if tag then return c:move_to_tag(tag) end
     end, descr_move),
     -- Move client to tag and focus
-    akey({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
+    akey({ modkey, "Control", "Shift" }, num, function()
       local c = capi.client.focus
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
@@ -267,18 +268,18 @@ for i = 1, 9 do
       return c:jump_to()
     end, descr_move_view),
     -- Toggle tag on focused client.
-    akey({ modkey, "Control", altkey }, "#" .. i + 9, function()
+    akey({ modkey, "Control", altkey }, num, function()
       local c = capi.client.focus
       local tag = c and tags.get_tag(i, c)
       if not c or not tag then return end
       return c:toggle_tag(tag)
     end, descr_toggle_focus),
     -- Move next spawned window to tag.
-    akey({ modkey, altkey }, "#" .. i + 9, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned),
+    akey({ modkey, altkey }, num, bind.with_args(setup_next_spawned_handler, i), descr_next_spawned),
     -- Move next spawned window to tag. Don't focus.
     akey(
       { modkey, "Shift", altkey },
-      "#" .. i + 9,
+      num,
       bind.with_args(setup_next_spawned_handler, i, false),
       descr_next_spawned_no_jump
     )

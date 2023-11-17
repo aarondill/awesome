@@ -8,17 +8,18 @@ local Run_prompt = require("widget.run-prompt")
 local TagList = require("widget.tag-list.fancy")
 local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
+local awful_wibar = require("awful.wibar")
 local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
+local get_child_by_id = require("util.get_child_by_id")
+local gstring = require("gears.string")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local spawn = require("util.spawn")
+local suspend_listener = require("module.suspend-listener")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local awful_wibar = require("awful.wibar")
-local get_child_by_id = require("util.get_child_by_id")
-local suspend_listener = require("module.suspend-listener")
 
 ---@param args {screen: screen}
 local TopPanel = function(args)
@@ -76,7 +77,7 @@ local TopPanel = function(args)
           -- 24h format: %H:%M
           -- 12h fornat: %I:%M %p
           -- dd/mm/yyyy: %d/%m/%Y
-          format = '<span font="' .. beautiful.font .. '">%I:%M %p</span>',
+          format = table.concat({ '<span font="', gstring.xml_escape(beautiful.font), '">%I:%M %p</span>' }),
           refresh = 30, -- TRY to fix issues with refresh after suspend
           widget = wibox.widget.textclock,
           id = "textclock",
