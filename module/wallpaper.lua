@@ -8,7 +8,7 @@ local wibox = require("wibox")
 
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
-  local p = path.relative(gfilesystem.get_configuration_dir(), "wallpapers")
+  local p = path.resolve(gfilesystem.get_configuration_dir(), "wallpapers")
   local wp = string.format("%s/%d.jpg", p, num)
   local default = string.format("%s/%d.jpg", p, 1)
 
