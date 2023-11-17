@@ -1,15 +1,4 @@
-local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
 local sep = ";"
-
-local gfile = require("gears.filesystem")
-
-local conf = gfile.get_configuration_dir() -- Note: ends in a slash already
---- Ensure that package.path contains the configuration directory
-package.path = table.concat({
-  package.path,
-  table.concat({ conf, "?.lua" }, dirsep),
-  table.concat({ conf, "init", "?.lua" }, dirsep),
-}, sep)
 
 local assert_util = require("util.assert_util") -- This has no requires
 local gtable = require("gears.table")
