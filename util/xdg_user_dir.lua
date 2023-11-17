@@ -1,6 +1,9 @@
 local assert_util = require("util.assert_util")
 local find_home = require("util.find_home")
 local gfilesystem = require("gears.filesystem")
+local gstring = require("gears.string")
+local path = require("util.path")
+local shell_escape = require("util.shell_escape")
 local cache = {} ---@type table<string, string>
 local defaults = {
   CONFIG = "/.config",
@@ -30,7 +33,8 @@ local function get_xdg_user_dir_impl(dir)
   -- `xdg-user-dir` command
   do
     local conf = gfilesystem.get_configuration_dir()
-    local cmd = string.format("exec '%sscripts/xdg-user-dir' '%s'", conf, dir)
+    local exec = path.join(conf, "scripts", "xdg-user-dir")
+    local cmd = shell_escape({ "exec", exec, dir })
     local f = io.popen(cmd)
     if not f then return "" end
     local result = f:read("*a")
@@ -53,7 +57,16 @@ end
 ---@param dir string the XDG_USER_DIR to search for
 local function get_xdg_user_dir(dir)
   assert_util.type(dir, "string", "dir")
-  dir = string.upper(dir)
+  dir = dir:upper()
+  if gstring.startswith(dir, "XDG_") then -- Turn XDG_CONFIG_HOME to CONFIG
+    if gstring.endswith(dir, "_HOME") then
+      dir = dir:sub(3, -(1 + ("_HOME"):len()))
+    elseif gstring.endswith(dir, "_DIR") then
+      dir = dir:sub(3, -(1 + ("_DIR"):len()))
+    else
+      return error(("Invalid xdg directory: '%s'"):format(dir), 2)
+    end
+  end
   if cache[dir] then return cache[dir] end
   local res = get_xdg_user_dir_impl(dir)
   cache[dir] = res
