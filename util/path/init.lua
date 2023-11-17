@@ -6,6 +6,7 @@ local Gio, GLib = lgi.Gio, lgi.GLib
 ---@field get_relative_path fun(self: Gio.File, other: Gio.File): string?
 ---@field get_parent fun(self: Gio.File): Gio.File?
 ---@field get_path fun(self: Gio.File): string?
+---@field get_basename fun(self: Gio.File): string?
 
 local M = {}
 
@@ -84,6 +85,20 @@ function M.relative(from, to)
   local rel = assert(tmp:get_relative_path(dest), "Could not get relative path: this is a bug!")
   table.insert(pathv, rel)
   return M.join(pathv)
+end
+
+---Gets the basename and removes an optional suffix
+---@param path string|Gio.File
+---@param suffix string?
+function M.basename(path, suffix)
+  -- suffix = suffix ~= nil and suffix or ""
+  local file = type(path) == "userdata" and path or Gio.File.new_for_path(path)
+  local basename = file:get_basename()
+  if not basename then return basename end -- invalid file (empty string)
+  if suffix and basename:sub(-suffix:len()) == suffix then
+    basename = basename:sub(1, -(suffix:len() + 1)) -- remove the trailing suffix
+  end
+  return basename
 end
 
 return M
