@@ -34,11 +34,11 @@ end
 
 ---Returns the path normalized to resolve '..' and '.' segments
 ---Trailing slashes are stripped
----If an empty string is passed, returns nil
+---If an empty string is passed, returns ''
 ---If a relative path is passed and absolute is true, returns an absolute path, using the current working directory
 ---@param path string the path to normalize
 ---@param absolute boolean? default: `true`
----@return string?
+---@return string
 function M.normalize(path, absolute)
   absolute = absolute == nil and true or absolute
   absolute = M.is_absolute(path) and true or absolute -- If given an absolute path, return one, regardless
@@ -46,10 +46,18 @@ function M.normalize(path, absolute)
   local absfile = Gio.File.new_for_path(path) ---@type Gio.File
   local abspath = absfile:get_path() --- The normalized absolute path
 
-  if not abspath then return abspath end -- if invalid path, stop handling it
+  if not abspath or abspath == "" then return "" end -- if invalid path, stop handling it
 
   if absolute then return abspath end
-  return M.relative(".", absfile)
+  return M.relative(".", absfile) or abspath
+end
+
+---exactly equivalent to path.normalize(path.join(...), true)
+---Returns a normalized absolute path
+---@param ... string
+---@return string
+function M.resolve(...)
+  return M.normalize(M.join(...), true)
 end
 
 ---Returns a relative path from `from` to `to`
