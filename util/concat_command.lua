@@ -1,10 +1,10 @@
+local shell_escape = require("util.shell_escape")
 local tableutils = require("util.table")
 ---Stringifies a table of commands/args. Quoting each one and seperating by a space
----Note: arguments that contain the `'` charector are unsafe!
 ---@param command string[]
 ---@return string
 local function stringify_command(command)
-  return tableutils.concat(command, "'%s'", " ")
+  return shell_escape(command)
 end
 
 ---concat_command when command is a table
@@ -32,7 +32,7 @@ end
 
 ---Concat arguments to a command.
 ---If either argument is a string, a string will be returned. Tables are prefered.
----This function will handle quoting, if it's passed a table of args. Arguments that contain `'` are unsafe.
+---This function will handle quoting, if it's passed a table of args.
 ---If a string is passed, no quote handling will be performed on the passed string.
 ---This function will shallow copy any table passed in. It should be safe to modify the returned table, but if it contains non-strings, be very careful.
 ---@param command string[] the command to concat onto
