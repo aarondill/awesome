@@ -36,23 +36,14 @@ end
 ---Trailing slashes are stripped
 ---If an empty string is passed, returns nil
 ---If a relative path is passed and absolute is true, returns an absolute path, using the current working directory
----Note:
----If a Gio.File is passed, an absolute path is returned, because the original path is inaccessible.
----Call relative() to get a relative path if necessary.
----@param path string|Gio.File the path to normalize
+---@param path string the path to normalize
 ---@param absolute boolean? default: `true`
 ---@return string?
 function M.normalize(path, absolute)
-  if type(path) == "userdata" then
-    absolute = true -- There's no way to recover the path from the passed Gio.File
-  elseif type(path) == "string" then
-    absolute = absolute == nil and true or absolute
-    absolute = M.is_absolute(path) and true or absolute -- If given an absolute path, return one, regardless
-  else
-    error("Invalid path", 2)
-  end
+  absolute = absolute == nil and true or absolute
+  absolute = M.is_absolute(path) and true or absolute -- If given an absolute path, return one, regardless
 
-  local absfile = Gio.File.new_for_path(path)
+  local absfile = Gio.File.new_for_path(path) ---@type Gio.File
   local abspath = absfile:get_path() --- The normalized absolute path
 
   if not abspath then return abspath end -- if invalid path, stop handling it
@@ -100,13 +91,12 @@ function M.relative(from, to)
 end
 
 ---Gets the basename and removes an optional suffix
----@param path string|Gio.File
+---@param path string
 ---@param suffix string?
+---@return string
 function M.basename(path, suffix)
-  -- suffix = suffix ~= nil and suffix or ""
-  local file = type(path) == "userdata" and path or Gio.File.new_for_path(path)
-  local basename = file:get_basename()
-  if not basename then return basename end -- invalid file (empty string)
+  if not path or path == "" then return "" end
+  local basename = GLib.path_get_basename(path)
   if suffix and basename:sub(-suffix:len()) == suffix then
     basename = basename:sub(1, -(suffix:len() + 1)) -- remove the trailing suffix
   end
