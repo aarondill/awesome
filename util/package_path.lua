@@ -1,8 +1,19 @@
-local assert_util = require("util.assert_util")
-local path = require("util.path")
---- DON'T require anything local here.
---- The package.path may not be set up correctly.
---- Only awesomewm library is available.
+local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
+local sep = ";"
+
+local gfile = require("gears.filesystem")
+
+local conf = gfile.get_configuration_dir() -- Note: ends in a slash already
+--- Ensure that package.path contains the configuration directory
+package.path = table.concat({
+  package.path,
+  table.concat({ conf, "?.lua" }, dirsep),
+  table.concat({ conf, "init", "?.lua" }, dirsep),
+}, sep)
+
+local assert_util = require("util.assert_util") -- This has no requires
+local gtable = require("gears.table")
+local path = require("util.path") -- This only requires lgi
 
 local M = {}
 ---Whether package.path contains `dir`
@@ -11,10 +22,11 @@ local M = {}
 ---@nodiscard
 function M.path_contains(dir)
   assert_util.type(dir, "string", "dir")
-  dir = path.normalize(dir)
-  local lua = ";" .. dir .. "/?.lua;"
-  local init = ";" .. dir .. "/?/init.lua;"
-  local path_cmp = ";" .. package.path .. ";" -- package.path may not end in a semicolon. Likely won't start with one.
+  dir = path.normalize(dir, false)
+  local lua = table.concat({ sep, path.join(dir, "?.lua"), sep }, "")
+  local init = table.concat({ sep, path.join(dir, "?", "init.lua"), sep }, "")
+  -- package.path may not end in a semicolon. Likely won't start with one.
+  local path_cmp = table.concat({ sep, package.path, sep }, "")
   return not not (string.find(path_cmp, lua, 1, true) and string.find(path_cmp, init, 1, true))
 end
 ---Whether package.cpath contains `dir`
@@ -23,27 +35,11 @@ end
 ---@nodiscard
 function M.cpath_contains(dir)
   assert_util.type(dir, "string", "dir")
-  dir = path.normalize(dir)
-  local so = ";" .. dir .. "/?.so;"
-  local path_cmp = ";" .. package.cpath .. ";" -- package.cpath may not end in a semicolon. Likely won't start with one.
+  dir = path.normalize(dir, false)
+  local so = table.concat({ sep, path.join(dir, "?.so"), sep }, "")
+  -- package.cpath may not end in a semicolon. Likely won't start with one.
+  local path_cmp = table.concat({ sep, package.cpath, sep }, "")
   return not not string.find(path_cmp, so, 1, true)
-end
-
----A utility for appending to the path and cpath
----@param prepend boolean prepend to the string?
----@param to string append or prepend to this string
----@param format string a format string for string.format
----@param args unknown[] a table of arguments to pass to string.format. This will be modified!
----@return string str the new formatted string. The parts will be semicolon delimited.
----@nodiscard
----@implenote prepend refers to the template to-to, no to-to the template
-local function append_or_prepend(prepend, to, format, args)
-  assert_util.type(to, "string", "to")
-  assert_util.type(format, "string", "format")
-  assert_util.type(args, "table", "args")
-  table.insert(args, prepend and (#args + 1) or 1, to) -- order
-  format = prepend and (format .. ";%s") or ("%s;" .. format)
-  return format:format(table.unpack(args))
 end
 
 ---Add to packge.cpath
@@ -55,7 +51,9 @@ function M.add_to_cpath(dir, prepend)
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
-  package.cpath = append_or_prepend(prepend, package.cpath, "%s/?.so", { dir })
+  local new = { package.cpath, path.join(dir, "?.so") }
+  if prepend then new = gtable.reverse(new) end
+  package.cpath = table.concat(new, sep)
   return package.cpath
 end
 
@@ -68,8 +66,9 @@ function M.add_to_path(dir, prepend)
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
-  local format = "%s/?.lua;%s/?/init.lua"
-  package.path = append_or_prepend(prepend, package.path, format, { dir, dir })
+  local new = { package.path, path.join(dir, "?.lua"), path.join(dir, "?", "init.lua") }
+  if prepend then new = gtable.reverse(new) end
+  package.path = table.concat(new, sep)
   return package.path
 end
 
