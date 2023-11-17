@@ -26,6 +26,12 @@ function M.join(tbl, ...)
   return GLib.build_filenamev(tbl)
 end
 
+---@param path string
+---@return boolean
+function M.is_absolute(path)
+  return GLib.path_is_absolute(path)
+end
+
 ---Returns the path normalized to resolve '..' and '.' segments
 ---Trailing slashes are stripped
 ---If an empty string is passed, returns nil
@@ -41,7 +47,7 @@ function M.normalize(path, absolute)
     absolute = true -- There's no way to recover the path from the passed Gio.File
   elseif type(path) == "string" then
     absolute = absolute == nil and true or absolute
-    absolute = path:sub(1, 1) == "/" and true or absolute -- If given an absolute path, return one, regardless
+    absolute = M.is_absolute(path) and true or absolute -- If given an absolute path, return one, regardless
   else
     error("Invalid path", 2)
   end
