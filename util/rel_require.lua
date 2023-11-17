@@ -32,7 +32,7 @@ local function relative_require(this_path, path, assert)
   if not this_path then return nil end
   --- True if the calling file is an init.lua and is called by require('module.sub')
   local is_init_not_called = source_path.filename(2) == "init" and not this_path:match("%.init$")
-  local this_module = is_init_not_called and (this_path .. ".") or (this_path):match("^(.-)[^%.]+$") -- returns 'lib.foo.'
+  local this_module = is_init_not_called and this_path or (this_path):match("^(.-)%.[^%.]+$") -- returns 'lib.foo'
 
   if assert then
     local msg = ("Could not find dir of module '%s'"):format(this_path)
@@ -40,7 +40,7 @@ local function relative_require(this_path, path, assert)
   end
   if not this_module then return nil end
 
-  local module_path = this_module .. path
+  local module_path = table.concat({ this_module, path }, ".")
   local ok, ret = pcall_handler(pcall(require, module_path))
   if assert then
     local msg = ("Could not require module '%s'.\nerror:\n%s"):format(module_path, ret)
