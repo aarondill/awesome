@@ -40,9 +40,8 @@ do
     if in_error then return end
     in_error = true
 
-    notifs.critical(tostring(err) .. "\n" .. debug.traceback(nil, 2), {
-      title = "Oops, an error happened!",
-    })
+    local msg = table.concat({ tostring(err), debug.traceback(nil, 2) }, "\n")
+    notifs.critical(msg, { title = "Oops, an error happened!" })
     in_error = false
   end)
 end

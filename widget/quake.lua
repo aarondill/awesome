@@ -6,9 +6,26 @@ local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.compat")
 local gtable = require("gears.table")
+local spawn = require("util.spawn")
 
 -- Quake-like Dropdown application spawn
+---@class QuakeTerminalWidget
 local quake = {}
+---Set defaults on module so they can be a) overwritten b) detected by lsp
+quake.spawn = function(class)
+  return { "xterm", "-class", class }
+end
+quake.class = "QuakeDD" -- window name
+quake.border = 1 -- client border width
+quake.visible = false -- initially not visible
+quake.follow_screen = true -- spawn on currently focused screen
+quake.overlap = false -- overlap wibox
+quake.screen = ascreen.focused()
+-- If width or height <= 1 this is a proportion of the workspace
+quake.height = 0.5 -- height
+quake.width = 1 -- width
+quake.vert = "top" -- top, bottom or center
+quake.horiz = "left" -- left, right or center
 
 ---@return AwesomeClientInstance? client
 function quake:_get_client()
@@ -38,7 +55,7 @@ function quake:_display(visible)
   if not c then
     if not self.visible then return end
     -- The client does not exist, we spawn it
-    self.spawn(self.class)
+    local cmd = self.spawn(self.class)
     return
   end
 
@@ -163,27 +180,9 @@ function quake:_unmanaged(c)
   if not self:_client_is_self(c) then return end
   self.visible = false
 end
-quake.defaults = {
-  -- spawn application
-  spawn = function(class)
-    return "xterm -class" .. class
-  end,
-  class = "QuakeDD", -- window name
-  border = 1, -- client border width
-  visible = false, -- initially not visible
-  follow_screen = true, -- spawn on currently focused screen
-  overlap = false, -- overlap wibox
-  screen = ascreen.focused(),
-  -- If width or height <= 1 this is a proportion of the workspace
-  height = 0.5, -- height
-  width = 1, -- width
-  vert = "top", -- top, bottom or center
-  horiz = "left", -- left, right or center
-}
 function quake.new(conf)
-  local defaults = gtable.clone(quake.defaults, false)
-  local self = gtable.crush(defaults, conf or {}, true)
-  self = gtable.crush(self, quake, true)
+  local self = gtable.clone(quake, true)
+  self = gtable.crush(self, conf, true) -- Override defaults using conf
   self.geometry = {} -- internal use
   self.maximized = false
   self.fullscreen = false

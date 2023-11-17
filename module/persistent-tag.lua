@@ -13,7 +13,7 @@ capi.awesome.connect_signal("exit", function(reason_restart)
   end
   local str = table.concat(t, "\n")
   -- Write synchronously so it's written before awesome closes!
-  local f = io.open(filepath, "w+")
+  local f = (io.open(filepath, "w+"))
   if not f then return error("Could not open file " .. filepath) end
   f:write(str)
   return f:close()

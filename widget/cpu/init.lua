@@ -1,15 +1,14 @@
 local gtimer = require("gears.timer")
-local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
 local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
+-- All special characters escaped in a string: %%, %^, %$, ...
+local patternchars = table.concat({ "[", ("%^$().[]*+-?"):gsub("(.)", "%%%1"), "]" })
+-- Taken from gears.string.quote_pattern
 local function escape_pattern(str)
-  -- Taken from gears.string.quote_pattern
-  -- All special characters escaped in a string: %%, %^, %$, ...
-  local patternchars = "[" .. ("%^$().[]*+-?"):gsub("(.)", "%%%1") .. "]"
   return str:gsub(patternchars, "%%%1")
 end
 
@@ -92,7 +91,7 @@ function CPU(args)
     call_now = true,
     timeout = args.timeout or 15,
     callback = function()
-      read_async("/proc/stat", handle_error(file_callback))
+      read_async("/proc/stat", file_callback)
     end,
   })
 
