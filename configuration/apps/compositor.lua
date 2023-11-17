@@ -1,7 +1,11 @@
+local path = require("util.path")
+local require = require("util.rel_require")
+
+local Gio = require("lgi").Gio
 local capi = require("capi")
+local gfile = require("gears.filesystem")
 local gtimer = require("gears.timer")
 local notifs = require("util.notifs")
-local require = require("util.rel_require")
 local spawn = require("util.spawn")
 
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
@@ -10,7 +14,19 @@ local config_file_dir = require(..., "conffile_dir") ---@module "configuration.a
 --- Note: This module is *not* intended to support multiple compositor processes. Also note that *Xorg* doesn't support multiple compositor processes.
 local compositor = {}
 compositor.pid_file = os.tmpname() -- A unique filename to use for the pid of *this* AwesomeWM process. Note that this *should* support multiple Xorg/AwesomeWM processes.
-compositor.cmd = { "picom", "--config", config_file_dir .. "/picom.conf", "--write-pid-path", compositor.pid_file }
+
+local runtime = os.getenv("XDG_RUNTIME_DIR") or ("/run/user/" .. assert(Gio.Credentials.new():get_unix_user()))
+local log_file = path.join(runtime, "/picom", (os.getenv("DISPLAY") or "picom") .. ".log")
+assert(gfile.make_parent_directories(log_file))
+compositor.cmd = {
+  "picom",
+  "--config",
+  config_file_dir .. "/picom.conf",
+  "--write-pid-path",
+  compositor.pid_file,
+  "--log-file",
+  log_file,
+}
 ---@param reason "exit"|"signal"
 ---@param code integer
 ---@param output_signals boolean? Whether to output on a signal. Defaults to true.
