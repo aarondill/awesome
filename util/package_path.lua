@@ -2,7 +2,9 @@ local sep = ";"
 
 local assert_util = require("util.assert_util") -- This has no requires
 local gtable = require("gears.table")
+local notifs = require("util.notifs")
 local path = require("util.path") -- This only requires lgi
+local strings = require("util.strings")
 
 local M = {}
 ---Whether package.path contains `dir`
@@ -58,6 +60,24 @@ function M.add_to_path(dir, prepend)
   local new = { package.path, path.join(dir, "?.lua"), path.join(dir, "?", "init.lua") }
   if prepend then new = gtable.reverse(new) end
   package.path = table.concat(new, sep)
+  return package.path
+end
+
+---Remove duplicate paths from packge.path
+---Keeps the first one.
+---@param force boolean? default: false. Should remove relative and absolute paths that refer to the same path?
+function M.dedupe(force)
+  force = not not force
+  local res = {}
+  local seen = {} -- Already found this one
+  for _, p in ipairs(strings.split(package.path, sep)) do
+    local normal = path.normalize(p, force) -- If force, consider all paths as absolute, else keep relative paths
+    if not seen[normal] then
+      seen[normal] = true
+      table.insert(res, p) -- Keep the original path
+    end
+  end
+  package.path = table.concat(res, sep)
   return package.path
 end
 
