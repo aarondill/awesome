@@ -102,5 +102,11 @@ function M.basename(path, suffix)
   end
   return basename
 end
+---Gets the dirname
+---@param path string
+---@return string
+function M.dirname(path)
+  return GLib.path_get_dirname(path)
+end
 
 return M
