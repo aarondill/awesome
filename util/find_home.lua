@@ -1,4 +1,4 @@
-local normalize_path = require("util.normalize_path")
+local path = require("util.path")
 local home_cached ---@type string? -- Don't directly access. Use get_and_cache_home
 
 local function get_and_cache_home()
@@ -11,7 +11,7 @@ local function get_and_cache_home()
     file:close()
   end
   ---Remove trailing slashes
-  local ret = #home == 0 and "." or normalize_path(home)
+  local ret = #home == 0 and "." or path.normalize(home)
   home_cached = ret
   return ret
 end
@@ -21,11 +21,11 @@ end
 --- Use the gears.filesystem.get_xdg_* functions instead if possible
 --- Calls io.popen if HOME is unset, but caches the result, so only one call will be made.
 --- Note: absolute paths will still be appended to home. IE: `/file`, `./file`, and `file` are all equivalent.
----@param path string? a file to find under $HOME
+---@param file string? a file to find under $HOME
 ---@return string home
-local function find_home(path)
+local function find_home(file)
   local home = get_and_cache_home()
-  if not path then return home end
-  return normalize_path(("%s/%s"):format(home, path))
+  if not file then return home end
+  return path.normalize(("%s/%s"):format(home, file))
 end
 return find_home
