@@ -8,6 +8,15 @@ local Gio, GLib = lgi.Gio, lgi.GLib
 ---@field get_path fun(self: Gio.File): string?
 ---@field get_basename fun(self: Gio.File): string?
 
+---If a File is passed, it is returned.
+---@param path string|Gio.File
+---@return Gio.File
+local function new_file_for_path(path)
+  if type(path) == "userdata" then return path end
+  assert(type(path) == "string")
+  return Gio.File.new_for_path(path)
+end
+
 local M = {}
 
 ---The directory separator as a string. This is “/” on UNIX machines and “\" under Windows.
@@ -43,7 +52,7 @@ function M.normalize(path, absolute)
   absolute = absolute == nil and true or absolute
   absolute = M.is_absolute(path) and true or absolute -- If given an absolute path, return one, regardless
 
-  local absfile = Gio.File.new_for_path(path) ---@type Gio.File
+  local absfile = new_file_for_path(path)
   local abspath = absfile:get_path() --- The normalized absolute path
 
   if not abspath or abspath == "" then return "" end -- if invalid path, stop handling it
@@ -69,8 +78,8 @@ end
 function M.relative(from, to)
   from = from ~= "" and from or "." -- Empty strings or nil should be '.'
   to = to ~= "" and to or "." -- Empty strings or nil should be '.'
-  local base = type(from) == "userdata" and from or Gio.File.new_for_path(from)
-  local dest = type(to) == "userdata" and to or Gio.File.new_for_path(to)
+  local base = new_file_for_path(from)
+  local dest = new_file_for_path(to)
   do
     if base:equal(dest) then return "." end -- Given the cwd
     local rel = base:get_relative_path(dest) -- Given a child of the cwd
