@@ -10,7 +10,7 @@ local Gio, GLib = lgi.Gio, lgi.GLib
 
 local M = {}
 
----The directory separator as a string. This is “/” on UNIX machines and “" under Windows.
+---The directory separator as a string. This is “/” on UNIX machines and “\" under Windows.
 M.sep = GLib.DIR_SEPARATOR_S ---@type string
 
 ---The search path separator as a string. This is “:” on UNIX machines and “;” under Windows.
@@ -124,5 +124,9 @@ end
 function M.extname(path)
   return M.basename(path):match(".+(%..+)") or ""
 end
+
+--- The path to the root directory
+--- '/' on unix. 'C:\' on windows, where C is the current drive
+M.root = M.normalize(M.sep, true) ---@type string
 
 return M

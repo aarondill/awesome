@@ -1,3 +1,4 @@
+local path = require("util.path")
 local require = require("util.rel_require")
 local rofi_dynamic = require("configuration.rofi_dynamic")
 
@@ -19,7 +20,7 @@ local function rofi_command(mode)
     "-width",
     tostring(xres.apply_dpi(400)),
     "-theme",
-    config_file_dir .. "/rofi/config.rasi",
+    path.resolve(config_file_dir, "rofi", "config.rasi"),
     "-show",
   }
   if type(mode) == "string" or type(mode) == "number" then table.insert(cmd, mode) end -- Check type incase passed directly to spawn.*

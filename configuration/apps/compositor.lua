@@ -15,13 +15,14 @@ local config_file_dir = require(..., "conffile_dir") ---@module "configuration.a
 local compositor = {}
 compositor.pid_file = os.tmpname() -- A unique filename to use for the pid of *this* AwesomeWM process. Note that this *should* support multiple Xorg/AwesomeWM processes.
 
-local runtime = os.getenv("XDG_RUNTIME_DIR") or ("/run/user/" .. assert(Gio.Credentials.new():get_unix_user()))
-local log_file = path.join(runtime, "/picom", (os.getenv("DISPLAY") or "picom") .. ".log")
+local runtime = os.getenv("XDG_RUNTIME_DIR")
+  or path.join(path.root, "run", "user", assert(Gio.Credentials.new():get_unix_user()))
+local log_file = path.resolve(runtime, "picom", (os.getenv("DISPLAY") or "picom") .. ".log")
 assert(gfile.make_parent_directories(log_file))
 compositor.cmd = {
   "picom",
   "--config",
-  config_file_dir .. "/picom.conf",
+  path.resolve(config_file_dir, "picom.conf"),
   "--write-pid-path",
   compositor.pid_file,
   "--log-file",
@@ -123,7 +124,7 @@ compositor.kill = compositor.stop --- Alias kill to stop for symetry with compos
 ---Calling this multiple times is not suggested, but shouldn't break anything.
 function compositor.autostart()
   local get_stream = require("util.file.stream_async")
-  return get_stream("/proc/cpuinfo", function(stream)
+  return get_stream(path.join(path.root, "proc", "cpuinfo"), function(stream)
     if not stream then return end -- likely file doesn't exist
     return stream:each_line(function(line)
       if not line or not line:match("[^\n]flags%s*:") then return true end -- This isn't the line we're looking for

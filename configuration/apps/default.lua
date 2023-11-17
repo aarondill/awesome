@@ -1,3 +1,4 @@
+local path = require("util.path")
 local require = require("util.rel_require")
 
 local xdg_user_dir = require("util.xdg_user_dir")
@@ -13,7 +14,7 @@ local default = {
   terminal = { terminal },
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
   region_screenshot = function()
-    local dest = xdg_user_dir("PICTURES") .. "/Screenshots"
+    local dest = path.join(assert(xdg_user_dir("PICTURES")), "Screenshots")
     assert(require("gears.filesystem").make_directories(dest)) -- Ensure parent directory exists
     return { "flameshot", "gui", "-p", dest }
   end,

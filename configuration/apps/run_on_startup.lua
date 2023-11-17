@@ -1,3 +1,4 @@
+local path = require("util.path")
 local require = require("util.rel_require")
 
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
@@ -16,7 +17,7 @@ if not gfile.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/polkit
 ---@type CommandProvider[]
 local run_on_startup = {
   "dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
-  { "xsettingsd", "-c", config_file_dir .. "/xsettingsd.conf" },
+  { "xsettingsd", "-c", path.resolve(config_file_dir, "xsettingsd.conf") },
   { polkit }, -- Authentication popup
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
@@ -27,15 +28,15 @@ local run_on_startup = {
   "xset -dpms", -- Disable dpms because doesn't work with keys?
   { "xss-lock", "-q", "-l", "--", "lock" }, -- Lock on suspend or dpms
   "numlockx on",
-  { "udiskie", "-q", "-c", config_file_dir .. "/udiskie.yml" }, -- Automount disks.
+  { "udiskie", "-q", "-c", path.resolve(config_file_dir, "udiskie.yml") }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { notification_daemon },
-  { "libinput-gestures", "--conffile", config_file_dir .. "/libinput-gestures.conf" }, -- Enable touch gesture support
+  { "libinput-gestures", "--conffile", path.resolve(config_file_dir, "libinput-gestures.conf") }, -- Enable touch gesture support
   -- { "hp-systray" }, -- Ensure HP printer software is active.
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
   -- to avoid multipled instances, inside the awspawn script
-  { gfile.get_configuration_dir() .. "scripts/awspawn" }, -- Spawn "dirty" apps that can linger between sessions
+  { path.resolve(gfile.get_configuration_dir(), "scripts", "awspawn") }, -- Spawn "dirty" apps that can linger between sessions
 }
 
 return run_on_startup

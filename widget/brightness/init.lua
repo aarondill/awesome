@@ -7,6 +7,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
 local notifs = require("util.notifs")
+local path = require("util.path")
 local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local write_async = require("util.file.write_async")
@@ -73,8 +74,9 @@ function bcontrol:init(args)
   if not self.path then
     local bat_dir = "/sys/class/backlight/"
     list_directory(bat_dir, { max = 1 }, function(names)
-      if not names or not names[1] then return end
-      local dir = bat_dir .. names[1]
+      local name = names and names[1]
+      if not name then return end
+      local dir = path.join(bat_dir, name)
       self.path = dir
       self:update()
     end)
@@ -118,7 +120,7 @@ end
 ---@param callback fun(max_bright: integer)
 function bcontrol:get_max_bright(callback)
   if self.max_bright then return callback(self.max_bright) end
-  return read_async(self.path .. "/max_brightness", function(max_bright)
+  return read_async(path.join(self.path, "max_brightness"), function(max_bright)
     self.max_bright = tonumber(max_bright) --- Cache this so I don't have to keep looking for it.
     return callback(self.max_bright)
   end)
@@ -127,7 +129,7 @@ end
 ---@param callback brightness_callback This may never be called if path is not set.
 function bcontrol:get(callback)
   if not self.path then return end
-  return read_async(self.path .. "/brightness", function(bright)
+  return read_async(path.join(self.path, "brightness"), function(bright)
     if not bright then return end
     return self:get_max_bright(function(max_bright)
       return calc_bright(bright, max_bright, callback)
@@ -143,7 +145,7 @@ function bcontrol:set(brightness, callback)
   brightness = constrain(brightness, self.min, self.max)
   self:get_max_bright(function(max_bright)
     local brightness_val = math.floor((brightness / 100) * max_bright + 0.5)
-    write_async(self.path .. "/brightness", tostring(brightness_val), function(err)
+    write_async(path.join(self.path, "brightness"), tostring(brightness_val), function(err)
       if err then return notifs.critical(tostring(err)) end
       self:set_text(brightness)
       if callback then return callback(brightness) end

@@ -13,9 +13,8 @@ local function font(size)
   return string.format("%s %d", f, size or 10)
 end
 
-local function do_theme(theme, theme_dir)
+local function do_theme(theme, _theme_dir)
   theme = theme or {}
-  theme.icons = icons.DIR .. "/"
 
   -- Colors Pallets
   theme.fg = mat_colors.hue_blue
