@@ -95,7 +95,7 @@ function M.notify(loglevel, text, opts, extra_opts)
     loglevel = nil
   end
 
-  opts = opts and gtable.clone(opts, true) or {}
+  opts = opts and gtable.clone(opts, false) or {} --- A deep clone is not needed, since no values' values are changed
   opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
   if extra_opts then gtable.crush(opts, extra_opts) end
 
