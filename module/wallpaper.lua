@@ -5,6 +5,10 @@ local gfilesystem = require("gears.filesystem")
 local gtimer = require("gears.timer")
 local path = require("util.path")
 local wibox = require("wibox")
+local cairo = require("lgi").cairo
+local GdkPixbuf = require("lgi").GdkPixbuf
+local QUALITY_REDUCTION = 2 / 3
+-- QUALITY_REDUCTION = 1 / 9
 
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
@@ -15,6 +19,12 @@ local function get_wp_path(num) ---@param num integer
   if gfilesystem.file_readable(wp) then return wp end
   if gfilesystem.file_readable(default) then return default end
   return path.resolve(gfilesystem.get_themes_dir(), "default", "background.png")
+end
+
+local function get_geometry(s)
+  if s and s.geometry then return s.geometry end
+  local width, height = capi.root.size()
+  return { x = 0, y = 0, width = width, height = height }
 end
 
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
@@ -31,7 +41,15 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
       },
     })
   else
-    require("gears.wallpaper").maximized(wp_path, s)
+    --- A reimplementation of surface.load_uncached_silently which scales down the image
+    local geom = get_geometry(s)
+    local aspect_w = math.floor(QUALITY_REDUCTION * geom.width)
+    local aspect_h = math.floor(QUALITY_REDUCTION * geom.height)
+    local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
+    if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
+    local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
+    local surf = cairo.Surface:is_type_of(_surface) and _surface or cairo.Surface(_surface, true)
+    require("gears.wallpaper").maximized(surf, s)
   end
   --PERF: Collect the previous wallpaper (Cairo Surface)
   --Since these can be very high resolution images,
