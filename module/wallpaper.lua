@@ -20,17 +20,23 @@ end
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
   if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
-  local ok, awallpaper = pcall(require, "awful.wallpaper")
-  if not ok then return require("gears.wallpaper").maximized(wp_path, s) end
-  return awallpaper({
-    screen = s,
-    widget = {
-      horizontal_fit_policy = "fit",
-      vertical_fit_policy = "fit",
-      image = wp_path,
-      widget = wibox.widget.imagebox,
-    },
-  })
+  if pcall(require, "awful.wallpaper") then
+    require("awful.wallpaper")({
+      screen = s,
+      widget = {
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = wp_path,
+        widget = wibox.widget.imagebox,
+      },
+    })
+  else
+    require("gears.wallpaper").maximized(wp_path, s)
+  end
+  --PERF: Collect the previous wallpaper (Cairo Surface)
+  --Since these can be very high resolution images,
+  --we save a lot of memory by collecting them.
+  return collectgarbage("collect")
 end)
 
 atag.attached_connect_signal(nil, "property::selected", function(tag) ---@param tag AwesomeTagInstance

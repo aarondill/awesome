@@ -93,7 +93,5 @@ end)
 _G.collectgarbagetimer = require("gears.timer").new({
   timeout = 30,
   autostart = true,
-  callback = function()
-    collectgarbage("collect")
-  end,
+  callback = require("util.bind").with_args(collectgarbage, "collect"),
 })
