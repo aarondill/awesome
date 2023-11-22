@@ -7,8 +7,11 @@ local path = require("util.path")
 local wibox = require("wibox")
 local cairo = require("lgi").cairo
 local GdkPixbuf = require("lgi").GdkPixbuf
-local QUALITY_REDUCTION = 2 / 3
--- QUALITY_REDUCTION = 1 / 9
+--- Place in a module so it can be changed at runtime
+local M = {
+  --- Note: This is directly related to the amount of memory AwesomeWM will use
+  QUALITY_REDUCTION = 2 / 3,
+}
 
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
@@ -43,8 +46,8 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   else
     --- A reimplementation of surface.load_uncached_silently which scales down the image
     local geom = get_geometry(s)
-    local aspect_w = math.floor(QUALITY_REDUCTION * geom.width)
-    local aspect_h = math.floor(QUALITY_REDUCTION * geom.height)
+    local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
+    local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
     local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
     if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
     local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
@@ -71,3 +74,4 @@ if capi.awesome.version <= "v4.3" and focused_screen then
   -- PERF: This is an expensive operation. Wait until setup is done.
   gtimer.delayed_call(focused_screen.emit_signal, focused_screen, "request::wallpaper")
 end
+return M
