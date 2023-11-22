@@ -145,8 +145,9 @@ types.Awesome = {
   ---@return string error
   load_image = function(name) end, ---@nodiscard
   ---@param pixbuf userdata
+  ---@param path string
   ---@return gears.surface
-  pixbuf_to_surface = function(pixbuf) end, ---@nodiscard
+  pixbuf_to_surface = function(pixbuf, path) end, ---@nodiscard
   ---@param size integer
   set_preferred_icon_size = function(size) end,
   ---@param name string
