@@ -33,26 +33,29 @@ end
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
   if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
+
+  --- A reimplementation of surface.load_uncached_silently which scales down the image
+  local geom = get_geometry(s)
+  local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
+  local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
+  local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
+  if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
+  local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
+  local surf = cairo.Surface:is_type_of(_surface) and _surface or cairo.Surface(_surface, true)
+
   if pcall(require, "awful.wallpaper") then
     require("awful.wallpaper")({
       screen = s,
       widget = {
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = wp_path,
+        image = surf,
         widget = wibox.widget.imagebox,
       },
     })
   else
-    --- A reimplementation of surface.load_uncached_silently which scales down the image
-    local geom = get_geometry(s)
-    local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
-    local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
-    local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
-    if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
-    local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
-    local surf = cairo.Surface:is_type_of(_surface) and _surface or cairo.Surface(_surface, true)
     require("gears.wallpaper").maximized(surf, s)
+    surf:finish()
   end
   --PERF: Collect the previous wallpaper (Cairo Surface)
   --Since these can be very high resolution images,
