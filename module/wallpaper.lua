@@ -60,6 +60,9 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   --PERF: Collect the previous wallpaper (Cairo Surface)
   --Since these can be very high resolution images,
   --we save a lot of memory by collecting them.
+
+  ---@diagnostic disable-next-line: cast-local-type -- it's nil! They can't be accessed anymore
+  surf, _surface, pixbuf, geom = nil, nil, nil, nil -- No more references
   return collectgarbage("collect")
 end)
 
