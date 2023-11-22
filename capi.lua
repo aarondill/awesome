@@ -36,7 +36,6 @@ local string = "" ---@type string
 ---@alias screen table|integer
 ---@alias AwesomeGeometry { height: number, width: number, x: number, y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
----@alias gears.surface userdata
 ---@alias CairoPattern userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
@@ -61,6 +60,8 @@ local string = "" ---@type string
 --- | "spawn::completed"
 --- | "spawn::initiated"
 --- | "spawn::timeout"
+---@class gears.surface :userdata
+---@field finish fun()
 
 ---@class AwesomeSignalClass
 types.AwesomeSignalClass = {
