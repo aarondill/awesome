@@ -5,21 +5,28 @@ local gtable = require("gears.table")
 local modkey = require("configuration.keys.mod").modKey
 
 return gtable.join(
-  abutton({}, 1, function(t)
+  abutton.new({}, 1, function(t) ---@param t AwesomeTagInstance
     t:view_only()
   end),
-  abutton({ modkey }, 1, function(t)
+  abutton.new({ modkey }, 1, function(t) ---@param t AwesomeTagInstance
     if capi.client.focus then capi.client.focus:move_to_tag(t) end
     t:view_only()
   end),
-  abutton({}, 3, atag.viewtoggle),
-  abutton({ modkey }, 3, function(t)
-    if capi.client.focus then capi.client.focus:toggle_tag(t) end
+  ---@param t AwesomeTagInstance
+  abutton.new({}, 2, function(t) -- middle click
+    if not capi.client.focus then return end
+    capi.client.focus:move_to_tag(t)
+    t:view_only()
   end),
-  abutton({}, 4, function(t)
+  abutton.new({}, 3, atag.viewtoggle),
+  abutton.new({ modkey }, 3, function(t) ---@param t AwesomeTagInstance
+    if not capi.client.focus then return end
+    capi.client.focus:toggle_tag(t)
+  end),
+  abutton.new({}, 4, function(t) ---@param t AwesomeTagInstance
     atag.viewprev(t.screen)
   end),
-  abutton({}, 5, function(t)
+  abutton.new({}, 5, function(t) ---@param t AwesomeTagInstance
     atag.viewnext(t.screen)
   end)
 )
