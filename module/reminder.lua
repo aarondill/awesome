@@ -27,8 +27,8 @@ local function extensions(path, exts, include_original)
   end
   return ret
 end
-local home_reminder_paths = { find_home("./reminder"), find_home("./.reminder") }
-local paths = extensions(home_reminder_paths, { "txt", "md" })
+local home_reminder_paths = { "reminder", ".reminder", ".todo", "todo" }
+local paths = extensions(gtable.map(find_home, home_reminder_paths), { "txt", "md" })
 local index = 1
 
 local function handler(content, _, path)
