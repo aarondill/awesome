@@ -1,5 +1,5 @@
 local assert_util = require("util.assert_util")
-local gio = require("lgi").require("Gio")
+local new_file_for_path = require("util.file.new_file_for_path")
 
 ---Get the contents of a file - Async :)
 ---@generic Path :string
@@ -12,18 +12,13 @@ local function file_read(path, cb)
   assert_util.type(path, "string", "path")
   assert_util.iscallable(cb, "cb")
 
-  ---params(load_contents_async) GFile* file, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
-  return gio.File.new_for_path(path):load_contents_async(nil, function(file, task)
+  return new_file_for_path(path):load_contents_async(nil, function(file, task)
     -- onsuccess: content, etag_out
     -- onfail: success(false), error
-    local success, error = file:load_contents_finish(task)
-    if not success then
-      return cb(nil, error, path)
-    else
-      local content = success
-      -- local etag_out = error
-      return cb(content, nil, path)
-    end
+    local content, error = file:load_contents_finish(task)
+    -- LuaLS's type narrowing doesn't realize that this can't be a number if content is nil.
+    if not content and type(error) ~= "number" then return cb(nil, error, path) end
+    return cb(content, nil, path)
   end)
 end
 
