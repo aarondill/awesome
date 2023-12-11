@@ -12,6 +12,7 @@
 ---@field path_get_basename fun(path: string): string
 ---If the file name has no directory components “.” is returned
 ---@field path_get_dirname fun(path: string): string
+---@field get_home_dir fun(): string
 
 local lgi = require("lgi") ---@type lgi
 return lgi.Gio
