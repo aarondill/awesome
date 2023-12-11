@@ -25,6 +25,19 @@ function M.table_append(a_table, b_table)
   return a_table
 end
 
+---Returns a table containing elements from the function
+---@generic K, V, R
+---@param t table<K, V>
+---@param func fun(k: K, v: V): R
+---@return table<K, R>
+function M.map(t, func)
+  local res = {}
+  for i, v in pairs(t) do
+    res[i] = func(i, v)
+  end
+  return res
+end
+
 ---Returns a table containing elements that pass the filter
 ---@generic K, V
 ---@param t table<K, V>
