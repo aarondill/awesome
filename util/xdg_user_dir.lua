@@ -1,5 +1,4 @@
 local assert_util = require("util.assert_util")
-local find_home = require("util.find_home")
 local gfilesystem = require("gears.filesystem")
 local gstring = require("gears.string")
 local path = require("util.path")
@@ -43,7 +42,7 @@ local function get_xdg_user_dir_impl(dir)
   end
 
   -- Defaults
-  if defaults[dir] then return path.join(find_home(), defaults[dir]) end
+  if defaults[dir] then return path.join(path.get_home(), defaults[dir]) end
 
   -- -- Manual case - We shouldn't reach this.
   -- local s = dir:sub(1, 1) .. string.lower(dir:sub(2))
