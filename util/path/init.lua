@@ -1,23 +1,13 @@
-local lgi = require("lgi")
-local Gio, GLib = lgi.Gio, lgi.GLib
-
----@class Gio.File: userdata
----@field equal fun(self: Gio.File, other: Gio.File): boolean
----@field get_relative_path fun(self: Gio.File, other: Gio.File): string?
----@field get_parent fun(self: Gio.File): Gio.File?
----@field get_path fun(self: Gio.File): string?
----@field get_basename fun(self: Gio.File): string?
-
----If a File is passed, it is returned.
----@param path string|Gio.File
----@return Gio.File
-local function new_file_for_path(path)
-  if type(path) == "userdata" then return path end
-  assert(type(path) == "string")
-  return Gio.File.new_for_path(path)
-end
-
-local M = {}
+local lgi = require("util.lgi")
+local new_file_for_path = require("util.file.new_file_for_path")
+local GLib = lgi.GLib
+---@diagnostic disable: assign-type-mismatch -- To allow nil values
+local M = {
+  tildify = nil, ---@module 'util.path.tildify'
+  untildify = nil, ---@module 'util.path.untildify'
+  get_filepath = nil, ---@module 'util.path.get_filepath'
+}
+---@diagnostic enable: assign-type-mismatch
 
 ---The directory separator as a string. This is “/” on UNIX machines and “\" under Windows.
 M.sep = GLib.DIR_SEPARATOR_S ---@type string
@@ -72,8 +62,8 @@ end
 ---Returns a relative path from `from` to `to`
 ---Trailing slashes are stripped
 ---If either `from` or `to` is an empty string or nil, it's treated as the current directory
----@param from? string|Gio.File
----@param to? string|Gio.File
+---@param from? string|GFile
+---@param to? string|GFile
 ---@return string? path nil if no path exists. this should never happen on unix!
 function M.relative(from, to)
   from = from ~= "" and from or "." -- Empty strings or nil should be '.'
@@ -87,7 +77,7 @@ function M.relative(from, to)
   end
   -- ./../../directory
   local pathv = {} ---@type string[]
-  local tmp = base ---@type Gio.File?
+  local tmp = base ---@type GFile?
   --- Start with the cwd and progressively go ../ until dest is found under cwd.
   --- If we reach '/' and still don't have a relative path to dest, then return nil.
   --- Note: None of this does any file operations.
@@ -138,4 +128,11 @@ end
 --- '/' on unix. 'C:\' on windows, where C is the current drive
 M.root = M.normalize(M.sep, true) ---@type string
 
-return M
+local require = require("util.rel_require")
+local this_path = ...
+return setmetatable(M, {
+  __index = function(_, key)
+    local m = require(this_path, key, false) -- No TCO!
+    return m
+  end,
+})
