@@ -28,12 +28,24 @@ end
 ---Returns a table containing elements from the function
 ---@generic K, V, R
 ---@param t table<K, V>
----@param func fun(k: K, v: V): R
+---@param func fun(v: V, k: K, t: table<K, V>): R
 ---@return table<K, R>
 function M.map(t, func)
   local res = {}
   for i, v in pairs(t) do
-    res[i] = func(i, v)
+    res[i] = func(v, i, t)
+  end
+  return res
+end
+---Just like map(), but the function is called with *only* the values
+---@generic K, V, R
+---@param t table<K, V>
+---@param func fun(v: V): R
+---@return table<K, R>
+function M.map_val(t, func)
+  local res = {}
+  for i, v in pairs(t) do
+    res[i] = func(v)
   end
   return res
 end
