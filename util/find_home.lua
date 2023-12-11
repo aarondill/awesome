@@ -1,12 +1,16 @@
 local GLib = require("util.lgi").GLib
 local path = require("util.path")
 
---- Finds a valid HOME for the user
---- Note: absolute paths will still be appended to home. IE: `/file`, `./file`, and `file` are all equivalent.
+local home_cached = nil
+---Finds a valid HOME for the user
+---Note: absolute paths will still be appended to home. IE: `/file`, `./file`, and `file` are all equivalent.
 ---@param file string? a file to find under $HOME
+---@param force_nocache boolean? force the cache to be cleared, always finding a new value for HOME. Note this may invoke file operations, and is not recommended.
 ---@return string home
-local function find_home(file)
-  local home = GLib.get_home_dir()
+local function find_home(file, force_nocache)
+  if force_nocache then home_cached = nil end
+  local home = home_cached or GLib.get_home_dir()
+  home_cached = home
   if not file then return home end
   return path.resolve(home, file)
 end
