@@ -4,7 +4,7 @@ local atag = require("awful.tag")
 local capi = require("capi")
 local gtable = require("gears.table")
 local layouts = require("configuration.layouts")
-local table_utils = require("util.table")
+local table_utils = require("util.tables")
 local tags = require("configuration.tags")
 
 if alayout.append_default_layouts then -- Added in v5

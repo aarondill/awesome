@@ -8,7 +8,7 @@ local lgi = require("lgi")
 local notifs = require("util.notifs")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
 local spawn = require("util.spawn")
-local tableutils = require("util.table")
+local tableutils = require("util.tables")
 local Gio = lgi.Gio
 
 local open = {}

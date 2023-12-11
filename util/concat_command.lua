@@ -1,5 +1,5 @@
 local shell_escape = require("util.shell_escape")
-local tableutils = require("util.table")
+local tableutils = require("util.tables")
 ---Stringifies a table of commands/args. Quoting each one and seperating by a space
 ---@param command string[]
 ---@return string

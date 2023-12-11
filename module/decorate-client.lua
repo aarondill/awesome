@@ -7,7 +7,7 @@ local beautiful = require("beautiful")
 local capi = require("capi")
 local gtimer = require("gears.timer")
 local quake = require("module.quake")
-local table_utils = require("util.table")
+local table_utils = require("util.tables")
 
 local function shape_rounded_rect(cr, w, h)
   return require("gears.shape").rounded_rect(cr, w, h, 8)
