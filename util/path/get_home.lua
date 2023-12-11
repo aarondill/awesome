@@ -7,11 +7,11 @@ local home_cached = nil
 ---@param file string? a file to find under $HOME
 ---@param force_nocache boolean? force the cache to be cleared, always finding a new value for HOME. Note this may invoke file operations, and is not recommended.
 ---@return string home
-local function find_home(file, force_nocache)
-  if force_nocache then home_cached = nil end
+local function get_home(file, force_nocache)
+  if force_nocache == true then home_cached = nil end
   local home = home_cached or GLib.get_home_dir()
   home_cached = home
   if not file then return home end
   return path.resolve(home, file)
 end
-return find_home
+return get_home

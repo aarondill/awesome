@@ -13,6 +13,7 @@ local M = {
   basename = nil, ---@module 'util.path.basename'
   dirname = nil, ---@module 'util.path.dirname'
   extname = nil, ---@module 'util.path.extname'
+  get_home = nil, ---@module 'util.path.get_home'
 }
 ---@diagnostic enable: assign-type-mismatch
 local this_path = ... ---@type string

@@ -1,4 +1,3 @@
-local find_home = require("util.find_home")
 local get_filepath = require("util.path.get_filepath")
 local new_file_for_path = require("util.file.new_file_for_path")
 local path = require("util.path")
@@ -8,7 +7,7 @@ local path = require("util.path")
 ---@param filepath string|GFile
 ---@return string
 local function tildify(filepath)
-  local home = new_file_for_path(find_home())
+  local home = new_file_for_path(path.get_home())
   local file = new_file_for_path(filepath)
   local relpath = home:get_relative_path(file)
 

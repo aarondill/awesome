@@ -1,4 +1,3 @@
-local find_home = require("util.find_home")
 local get_filepath = require("util.path.get_filepath")
 local gstring = require("gears.string")
 local path = require("util.path")
@@ -11,7 +10,7 @@ local path = require("util.path")
 local function untildify(filepath, sep)
   sep = sep or path.sep
   if not gstring.startswith(filepath, "~" .. sep) then return get_filepath(filepath) end
-  local home = find_home()
+  local home = path.get_home()
   --- 2 because 1-indexing, +1 for ~, + sep:len()
   local relpath = get_filepath(filepath):sub(2 + sep:len())
   return path.join(home, relpath)

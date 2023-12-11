@@ -1,8 +1,8 @@
-local find_home = require("util.find_home")
 local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local read_async = require("util.file.read_async")
+local tables = require("util.tables")
 
 ---Return a table of permutations of extensions
 ---Note: this boils down to ("%s%s"):format. It does *no* path manipulation.
@@ -32,7 +32,7 @@ local extensions = { ".txt", ".md" }
 local files_wo_extensions = add_suffix(path.sep, home_reminder_paths, false)
 local allowed_files = add_suffix(files_wo_extensions, extensions, true)
 --- reminder/todo.txt, todo.txt, .reminder.md, ...
-local paths = add_suffix(gtable.map(find_home, home_reminder_paths), gtable.join(extensions, allowed_files))
+local paths = add_suffix(tables.map_val(home_reminder_paths, path.get_home), gtable.join(extensions, allowed_files))
 local index = 1
 
 local function handler(content, _, fpath)
