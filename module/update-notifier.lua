@@ -12,6 +12,7 @@ local wrap = function(f)
     updates = updates + (count or 0)
     left = left - 1
     if left > 0 then return end
+    if updates <= 0 then return end -- Don't bother me if there are no updates
     return notifs.info(MESSAGE_FORMAT:format(updates))
   end
 end
