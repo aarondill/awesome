@@ -54,5 +54,23 @@ function M.title_case(str)
   if type(str) ~= "string" then error("Expected string. Found: " .. type(str) .. " instead.") end
   return str:sub(1, 1):upper() .. str:sub(2):lower():gsub("%s%l", string.upper)
 end
+---@nodiscard
+---Counts the number of instances of sub in str
+---@param str string the string to check for
+---@param sub? string [default: '\n']
+---@return integer
+function M.count(str, sub)
+  sub = sub or "\n"
+  local matches = 0
+  local i = 1
+  while true do
+    local startI, endI = str:find(sub, i, true)
+    if startI == nil then break end
+    matches = matches + 1
+    i = endI + 1
+  end
+
+  return matches
+end
 
 return M
