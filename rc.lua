@@ -60,6 +60,7 @@ require("module.exit-screen")
 require("module.client")
 require("module.titlebar")
 require("module.reminder")
+require("module.update-notifier")
 
 -- Setup all configurations
 require("configuration.apps.compositor").autostart() -- Start the compositor on startup
