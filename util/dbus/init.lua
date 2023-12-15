@@ -4,6 +4,7 @@ local M = {
   get_prop = nil, ---@module "util.dbus.get_prop"
   create_inhibitor = nil, ---@module "util.dbus.create_inhibitor"
   subscribe_signal = nil, ---@module "util.dbus.subscribe_signal"
+  properties_changed = nil, ---@module "util.dbus.properties_changed"
 }
 ---@diagnostic enable: assign-type-mismatch
 assert(#M == 0, "Tag list module has keys set. This is a bug! Use the metatable!")
