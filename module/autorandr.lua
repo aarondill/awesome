@@ -1,7 +1,18 @@
 local dbus = require("util.dbus")
+local gfile = require("gears.filesystem")
+local path = require("util.path.init")
+local spawn = require("util.spawn")
 
+-- Debounce it!
+local last_time = os.time()
 local function spawn_autorandr()
-  require("util.notifs").info("RUN SPAWN AUTORANDR!")
+  local time = os.time()
+  local time_since_last = os.difftime(time, last_time)
+  if time_since_last <= 5 then return end
+  last_time = time
+  local conf_dir = gfile.get_configuration_dir()
+  local binpath = path.resolve(conf_dir, "deps", "autorandr", "autorandr.py")
+  return spawn.nosn({ binpath, "--change", "--default", "--default" })
 end
 
 -- Run on resume from suspend
