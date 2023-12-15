@@ -251,6 +251,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field [integer] AwesomeScreenInstance?
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
+---@field valid boolean
 ---@field tags AwesomeTagInstance[]
 ---@field clients AwesomeClientInstance[]
 ---@field selected_tags AwesomeTagInstance[]
