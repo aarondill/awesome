@@ -3,7 +3,7 @@ local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
 local replace_in_widget = require("util.replace_in_widget")
 local GLib = require("lgi").GLib
-local which = GLib.find_program_in_path ---@type fun(prog: string): string?
+local which = GLib.find_program_in_path
 
 -- replace_if_present(cmd, replace_widget, replace_in, function(path, replace_widget, replace_in)
 -- Do something with path (guarenteed to be non-nil)
