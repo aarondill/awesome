@@ -1,3 +1,4 @@
+local capi = require("capi")
 local dbus = require("util.dbus")
 local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
@@ -35,16 +36,22 @@ subids[#subids + 1] = dbus.properties_changed.subscribe(
   end
 )
 
-local binname = "autorandr-launcher"
-local binpath = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher", binname)
-spawn.nosn({ gfile.file_executable(binpath) and binpath or binname }, {
-  on_failure_callback = function(err)
-    return notifs.error(
-      err .. ("\nPlease make sure to build by running `make -C '%s'`"):format(path.dirname(binpath)),
-      { "Failed to spawn autorandr-launcher" }
-    )
-  end,
-})
+do
+  local binname = "autorandr-launcher"
+  local binpath = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher", binname)
+  local info = spawn.nosn({ gfile.file_executable(binpath) and binpath or binname }, {
+    on_failure_callback = function(err)
+      return notifs.error(
+        err .. ("\nPlease make sure to build by running `make -C '%s'`"):format(path.dirname(binpath)),
+        { "Failed to spawn autorandr-launcher" }
+      )
+    end,
+  })
+  capi.awesome.connect_signal("exit", function()
+    local sig = capi.awesome.unix_signal.SIGTERM
+    return capi.awesome.kill(-info.pid, sig or 15)
+  end)
+end
 
 -- local members = { "DeviceAdded", "DeviceRemoved", "DeviceChanged" }
 -- --- HACK: Use Colord to detect added devices
