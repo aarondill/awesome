@@ -31,7 +31,8 @@ local function renderClient(client, render_maximized)
   client.shape = shape_rounded_rect
 end
 
-local changesOnScreenPending = false
+---@type table<AwesomeScreenInstance, true>
+local changesOnScreenPending = {}
 
 local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
   if not tag then return false end
@@ -39,6 +40,7 @@ local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
   if tag.layout == alayout.suit.max.fullscreen then return true end
 end
 local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScreenInstance
+  if not currentScreen.valid then return end -- Check if the screen is still valid!
   local managed_clients = table_utils.filter(currentScreen.clients, function(_, c)
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
@@ -58,30 +60,21 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
   if tag then -- Set the gap to zero if maximized
     tag.gap = tag_is_max and 0 or 4
   end
-
-  changesOnScreenPending = false
+  changesOnScreenPending[currentScreen] = nil
 end
 
 local function clientCallback(client) ---@param client AwesomeClientInstance
-  if changesOnScreenPending then return end
   if client.skip_decoration then return end
   local s = client.screen
-  if not s then return end
-
-  changesOnScreenPending = true
-  return gtimer.delayed_call(function()
-    return changesOnScreen(s)
-  end)
+  if not s or changesOnScreenPending[s] then return end
+  changesOnScreenPending[s] = true
+  return gtimer.delayed_call(changesOnScreen, s)
 end
 local function tagCallback(tag) ---@param tag AwesomeTagInstance
-  if changesOnScreenPending then return end
   local s = tag.screen
-  if not s then return end
-
-  changesOnScreenPending = true
-  return gtimer.delayed_call(function()
-    return changesOnScreen(s)
-  end)
+  if not s or changesOnScreenPending[s] then return end
+  changesOnScreenPending[s] = true
+  return gtimer.delayed_call(changesOnScreen, s)
 end
 
 local compat = require("util.compat")
