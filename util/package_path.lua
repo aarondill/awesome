@@ -2,7 +2,6 @@ local sep = ";"
 
 local assert_util = require("util.assert_util") -- This has no requires
 local gtable = require("gears.table")
-local notifs = require("util.notifs")
 local path = require("util.path") -- This only requires lgi
 local strings = require("util.strings")
 
@@ -63,21 +62,34 @@ function M.add_to_path(dir, prepend)
   return package.path
 end
 
----Remove duplicate paths from packge.path
----Keeps the first one.
----@param force boolean? default: false. Should remove relative and absolute paths that refer to the same path?
-function M.dedupe(force)
-  force = not not force
+--- Adds to both package.cpath and package.path
+---@param dir string
+---@param prepend boolean? see add_to_path
+function M.add_to_both(dir, prepend)
+  M.add_to_cpath(dir, prepend)
+  return M.add_to_path(dir, prepend)
+end
+
+---@param force boolean Should remove relative and absolute paths that refer to the same path?
+local function _uniq(pathvar, force)
   local res = {}
   local seen = {} -- Already found this one
-  for _, p in ipairs(strings.split(package.path, sep)) do
+  for _, p in ipairs(strings.split(pathvar, sep)) do
     local normal = path.normalize(p, force) -- If force, consider all paths as absolute, else keep relative paths
     if not seen[normal] then
       seen[normal] = true
       table.insert(res, p) -- Keep the original path
     end
   end
-  package.path = table.concat(res, sep)
+  return table.concat(res, sep)
+end
+---Remove duplicate paths from packge.path and package.cpath
+---Keeps the first one.
+---@param force boolean? default: false. Should remove relative and absolute paths that refer to the same path?
+function M.dedupe(force)
+  force = not not force
+  package.path = _uniq(package.path, force)
+  package.cpath = _uniq(package.cpath, force)
   return package.path
 end
 
