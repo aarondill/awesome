@@ -11,10 +11,10 @@ local last_time = os.time()
 local function spawn_autorandr()
   local time = os.time()
   local time_since_last = os.difftime(time, last_time)
-  if time_since_last <= 5 then return end
+  if time_since_last <= 2 then return end
   last_time = time
   local binpath = path.resolve(conf_dir, "deps", "autorandr", "autorandr.py")
-  return spawn.nosn({ binpath, "--change", "--default", "--default" })
+  return spawn.nosn({ binpath, "--change", "--default", "default" }, { on_failure_callback = notifs.error })
 end
 
 ---Run on resume from suspend
