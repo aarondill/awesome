@@ -4,3 +4,4 @@
 [submodule "deps/autorandr"]
 	path = deps/autorandr
 	url = https://github.com/phillipberndt/autorandr
+  ignore = untracked  # <====
