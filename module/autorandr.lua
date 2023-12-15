@@ -1,7 +1,7 @@
 local dbus = require("util.dbus")
 local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
-local path = require("util.path.init")
+local path = require("util.path")
 local spawn = require("util.spawn")
 
 local conf_dir = gfile.get_configuration_dir()
