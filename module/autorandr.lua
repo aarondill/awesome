@@ -37,8 +37,7 @@ subids[#subids + 1] = dbus.properties_changed.subscribe(
 
 local binname = "autorandr-launcher"
 local binpath = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher", binname)
-if not gfile.file_executable(binpath) then binpath = binname end
-spawn.nosn({ binpath }, {
+spawn.nosn({ gfile.file_executable(binpath) and binpath or binname }, {
   on_failure_callback = function(err)
     return notifs.error(
       err .. ("\nPlease make sure to build by running `make -C '%s'`"):format(path.dirname(binpath)),
