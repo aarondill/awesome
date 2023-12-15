@@ -25,11 +25,13 @@ local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)" .. dirsep ..
 package.path = table.concat({ -- Make sure the following require will work!
   package.path,
   table.concat({ this_dir, "?.lua" }, dirsep),
-  table.concat({ this_dir, "init", "?.lua" }, dirsep),
+  table.concat({ this_dir, "?", "init.lua" }, dirsep),
 }, ";")
+local path = require("util.path")
 local util_package_path = require("util.package_path")
-util_package_path.add_to_path(conf_dir)
-util_package_path.add_to_path(this_dir)
+util_package_path.add_to_both(conf_dir)
+util_package_path.add_to_both(this_dir)
+util_package_path.add_to_both(path.join(this_dir, "deps")) -- Add /deps to package.[c]path
 util_package_path.dedupe() -- Remove any duplicate path segments -- especially the above concat
 
 -- Load these *local* packages *After* fixing package.path
