@@ -88,11 +88,9 @@ local rules = {
       ontop = true,
       floating = true,
       drawBackdrop = true,
-      shape = function()
-        return function(cr, w, h)
-          gshape.rounded_rect(cr, w, h, 8)
-        end
-      end,
+      shape = compat.rules.shape_function(function(cr, w, h)
+        return gshape.rounded_rect(cr, w, h, 8)
+      end),
       skip_decoration = true,
     },
   },
