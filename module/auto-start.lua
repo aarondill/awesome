@@ -44,9 +44,11 @@ local function run_once(cmd)
   if info then return info.pid end
 end
 
-for _, app in ipairs(apps.run_on_startup) do
-  processes[app] = run_once(app)
-end
+capi.awesome.connect_signal("startup", function()
+  for _, app in ipairs(apps.run_on_startup) do
+    processes[app] = run_once(app)
+  end
+end)
 -- Kill them all on exit
 capi.awesome.connect_signal("exit", function(_)
   for _, pid in pairs(processes) do
