@@ -37,7 +37,6 @@ local run_on_startup = {
   -- Add applications that need to be killed between reloads
   -- to avoid multipled instances, inside the awspawn script
   { path.resolve(gfile.get_configuration_dir(), "scripts", "awspawn") }, -- Spawn "dirty" apps that can linger between sessions
-  { "welcome" },
 }
 
 return run_on_startup
