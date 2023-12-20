@@ -32,13 +32,17 @@ local function lazy_set(key)
   end
 end
 
+---Returns true if the current version is <= the given version
+---Returns false if the current version is greater than the given version
 ---@param v string?
+---@return boolean
 local function vers_cmp(v)
   if not v then return false end
   return capi.awesome.version <= v -- awesome.version is a string
 end
 ---@generic A,B
 ---return a if v or b
+---If current version <= v then returns a, else b
 ---@param v string
 ---@param a A
 ---@param b B
@@ -91,6 +95,17 @@ local M = verify_functions({
     set_border_focus = lazy_set(vers("v4.3", "border_focus", "border_color_active")),
     get_border_normal = lazy_access(vers("v4.3", "border_normal", "border_color_normal")),
     set_border_normal = lazy_set(vers("v4.3", "border_normal", "border_color_normal")),
+  },
+  rules = {
+    --- Awesome 4.3 and below (awful.rules) didn't check exclude shape in it's function check
+    --- Due to this, you had to wrap shape functions in an function that just returns the value
+    --- In Awesome-git, (ruled) specifically excludes `shape` and so this check is no longer necessary (or functional)
+    ---@generic F :function
+    ---@param f F
+    ---@return F|fun():F
+    shape_function = function(f)
+      return vers("v4.3", ret_val(f), f)
+    end,
   },
 })
 
