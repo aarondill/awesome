@@ -70,7 +70,7 @@ local function normalize_command(cmd, opts)
 
   if not cmd or #cmd == 0 then error("No command specified.", 3) end -- 3 is caller of spawn.spawn
 
-  --- Remove any non-numeric keys from cmd and apply them to opts instead (note: opts' values will *not* be overwritten!)
+  --- Remove any non-numeric keys from cmd and apply them to opts instead
   --- Note: this process clones the cmd if it is a table (otherwise it won't matter)
   if type(cmd) == "table" then
     local new_cmd = {}
@@ -78,7 +78,7 @@ local function normalize_command(cmd, opts)
       if type(k) == "number" then
         new_cmd[k] = v
       else
-        if opts[k] == nil then opts[k] = v end
+        opts[k] = v
       end
     end
     cmd = new_cmd
