@@ -91,7 +91,7 @@ end
 ---The callback to call when the application starts.
 ---This is passed the client object (https://awesomewm.org/doc/api/classes/client.html)
 ---Note: this only works if the application implements startup notifications and sn_rules are enabled
----@field start_callback? fun(client: table)
+---@field start_callback? fun(client: AwesomeClientInstance)
 ---The callback to call when the application exits.
 ---code is the exit status or the signal that killed the application depending on reason
 ---@field exit_callback? exit_callback_func
