@@ -8,7 +8,7 @@ local write_outputstream = require("util.file.write_outputstream")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
 
----@alias Command string|string[]
+---@alias Command string|string[]|SpawnOptions
 ---@alias CommandProvider Command | fun(opts: SpawnOptions): Command
 
 local spawn = {}
@@ -29,7 +29,8 @@ local spawn = {}
 ---awful.spawn.read_lines(Gio.UnixInputStream.new(stderr_fd, true), stderr_callback, stderr_done_callback, true)
 ---```
 ---@field stderr_fd integer?
----@field cmd Command? the command passed into the function. Note: this is expanded if a function was provided.
+---@field cmd string|string[] the command spawned. This is after normalization has taken place.
+---@field opts SpawnOptions the options used to spawn the command. This is after normalization has taken place.
 
 ---- Spawn Functions
 ---@alias exit_callback_func fun(reason: "exit"|"signal", code: integer)
@@ -50,6 +51,40 @@ local function gen_exit_cb(exit_cb, on_err, on_suc)
     end
     if exit_cb then return exit_cb(reason, code) end
   end
+end
+
+---Normalizes cmd and opts. Handles the case where cmd is a function, and moves any options from cmd to opts.
+---Clones both cmd and opts, so after this function is called, they are safe to modify
+---@param cmd CommandProvider
+---@param opts SpawnOptions?
+---@return string|string[] cmd A command
+---@return SpawnOptions opts SpawnOptions
+local function normalize_command(cmd, opts)
+  opts = opts and gtable.clone(opts, false) or {} -- Clone the user supplied options so they can be modified
+  if cmd and iscallable(cmd) then
+    -- Call the user's command with the current set of options
+    -- Note that the user may modify this table, or return options in the returned command
+    cmd = cmd(opts)
+  end
+  assert(type(cmd) ~= "function", "cmd is a function! expected Command.")
+
+  if not cmd or #cmd == 0 then error("No command specified.", 3) end -- 3 is caller of spawn.spawn
+
+  --- Remove any non-numeric keys from cmd and apply them to opts instead (note: opts' values will *not* be overwritten!)
+  --- Note: this process clones the cmd if it is a table (otherwise it won't matter)
+  if type(cmd) == "table" then
+    local new_cmd = {}
+    for k, v in pairs(cmd) do
+      if type(k) == "number" then
+        new_cmd[k] = v
+      else
+        if opts[k] == nil then opts[k] = v end
+      end
+    end
+    cmd = new_cmd
+  end
+
+  return cmd, opts
 end
 
 ---@class SpawnOptions
@@ -104,16 +139,11 @@ end
 ---Note: start_callback only works when opts.sn_rules is given
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.spawn(cmd, opts)
-  opts = opts or {}
   local function handle_inherit_default(v) ---@param v boolean?
     return (v ~= nil or false) and not v -- nil->false, else->not v
   end
-  if cmd and iscallable(cmd) then cmd = cmd(opts) end ---@cast cmd Command
-  if not cmd or #cmd == 0 then
-    error("No command specified.", 2)
-    return nil, "No command specified" -- Should never happen
-  end
-  local start_callback = opts.start_callback
+  cmd, opts = normalize_command(cmd, opts)
+
   local exit_callback = gen_exit_cb(opts.exit_callback, opts.exit_callback_err, opts.exit_callback_suc)
   local use_sn = opts.sn_rules ~= false
   local return_stdin_user = handle_inherit_default(opts.inherit_stdin)
@@ -130,6 +160,7 @@ function spawn.spawn(cmd, opts)
     return nil, pid_or_error
   end
   if opts.stdin_string then --
+    ---@type GioOutputStream
     local stream = Gio.UnixOutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
     write_outputstream(stream, opts.stdin_string, function() -- Write string to stdin
       return stream:close() -- Close sync to ensure command exits if waiting for stdin.
@@ -137,20 +168,22 @@ function spawn.spawn(cmd, opts)
   end
 
   if snid then -- The snid will be nil in case of failure
-    local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
     if awful_spawn.snid_buffer then -- else fail silently
-      awful_spawn.snid_buffer[snid] = { sn_rules, { start_callback } }
+      local sn_rules = type(opts.sn_rules) ~= "boolean" and opts.sn_rules or {}
+      awful_spawn.snid_buffer[snid] = { sn_rules, { opts.start_callback } } -- Cheat by using awful.spawn's snid detection code instead.
     end
   end
-  local info = { ---@type SpawnInfo
+
+  ---@type SpawnInfo
+  return {
     pid = pid_or_error,
     snid = snid,
     stdin_fd = return_stdin_user and stdin or nil, -- Handle actual return
     stdout_fd = stdout,
     stderr_fd = stderr,
     cmd = cmd,
+    opts = opts,
   }
-  return info, nil
 end
 
 ---See spawn.spawn and spawn.noninteractive for more information
