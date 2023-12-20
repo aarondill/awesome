@@ -102,6 +102,8 @@ end
 ---@field exit_callback_suc? exit_callback_func
 ---Called on spawning failure. Permits one to avoid checking the return value.
 ---@field on_failure_callback? fun(error: string)
+---Called on spawning success. Permits one to avoid checking the return value.
+---@field on_success_callback? fun(info: SpawnInfo)
 ---The rules to apply to the window when the application starts.
 ---These are enabled by default. Pass false to disable startup notification detection.
 ---Note: this only works if the application implements startup notifications
@@ -175,7 +177,7 @@ function spawn.spawn(cmd, opts)
   end
 
   ---@type SpawnInfo
-  return {
+  local info = {
     pid = pid_or_error,
     snid = snid,
     stdin_fd = return_stdin_user and stdin or nil, -- Handle actual return
@@ -184,6 +186,11 @@ function spawn.spawn(cmd, opts)
     cmd = cmd,
     opts = opts,
   }
+
+  if opts.on_success_callback then -- Call the user's callback if one exists
+    opts.on_success_callback(info)
+  end
+  return info
 end
 
 ---See spawn.spawn and spawn.noninteractive for more information
