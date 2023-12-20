@@ -303,13 +303,14 @@ end
 ---@param opts SpawnOptions?
 ---@return integer? pid
 ---@return string? error
+---@return SpawnInfo? info only if no error
 function spawn.with_lines(cmd, callbacks, opts)
   callbacks = callbacks or {}
   opts = opts or {}
   local stdout_callback, stderr_callback = callbacks.stdout, callbacks.stderr
   local done_callback = callbacks.done or callbacks.output_done
 
-  local new_opts = gtable.join(opts, {
+  local new_opts = gtable.join(opts, { -- Clones opts
     sn_rules = false,
     inherit_stdin = true,
     inherit_stdout = not stdout_callback,
@@ -320,6 +321,9 @@ function spawn.with_lines(cmd, callbacks, opts)
   local info, err = spawn.spawn(cmd, new_opts)
   if not info then return nil, err end -- Error
   local stdout, stderr = info.stdout_fd, info.stderr_fd
+  -- Don't mess with my options.
+  if stdout_callback then assert(stdout, "You must not provide an cmd.inherit_stdout while using spawn.with_lines") end
+  if stderr_callback then assert(stderr, "You must not provide an cmd.inherit_stderr while using spawn.with_lines") end
 
   local streams_left = 0
   streams_left = streams_left + (stdout_callback and 1 or 0)
@@ -333,7 +337,7 @@ function spawn.with_lines(cmd, callbacks, opts)
 
   if stdout_callback then spawn.read_lines(Gio.UnixInputStream.new(stdout, true), stdout_callback, step_done, true) end
   if stderr_callback then spawn.read_lines(Gio.UnixInputStream.new(stderr, true), stderr_callback, step_done, true) end
-  return info.pid, nil
+  return info.pid, nil, info
 end
 spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awful.spawn.with_line_callback
 --- Asynchronously spawn a program and capture its output. (wraps `spawn.with_line_callback`).
@@ -342,8 +346,9 @@ spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awfu
 ---@param opts SpawnOptions?
 ---@return integer? pid
 ---@return string? error
+---@return SpawnInfo? info only if no error
 function spawn.async(cmd, callback, opts)
-  opts = opts or {}
+  opts = opts and gtable.clone(opts, false) or {} -- Clone opts, since we modify it in a moment
   local stdout, stderr = "", ""
   local exitcode, exitreason
   local function done_callback()
@@ -352,13 +357,14 @@ function spawn.async(cmd, callback, opts)
 
   local exit_callback_fired = false
   local output_done_callback_fired = false
-  function opts.exit_callback(reason, code)
+  local function exit_callback(reason, code)
     exitcode = code
     exitreason = reason
     exit_callback_fired = true
     if output_done_callback_fired then return done_callback() end
   end
-  return spawn.with_line_callback(cmd, {
+  opts.exit_callback = exit_callback
+  local pid, err, info = spawn.with_lines(cmd, {
     stdout = function(str)
       stdout = stdout .. str .. "\n"
     end,
@@ -370,6 +376,11 @@ function spawn.async(cmd, callback, opts)
       if exit_callback_fired then return done_callback() end
     end,
   }, opts)
+  if info then
+    local ok = info.opts.exit_callback == exit_callback
+    assert(ok, "You must not provide a cmd.exit_callback while using spawn.async!")
+  end
+  return pid, err, info
 end
 spawn.easy_async = spawn.async -- Backwards compatability with awful.spawn.easy_async
 
