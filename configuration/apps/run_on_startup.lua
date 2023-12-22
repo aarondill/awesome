@@ -32,7 +32,7 @@ local run_on_startup = {
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { notification_daemon },
   { "libinput-gestures", "--conffile", path.resolve(config_file_dir, "libinput-gestures.conf") }, -- Enable touch gesture support
-  { "redshift" }, -- this uses the system configuration
+  { "redshift", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
   -- { "hp-systray" }, -- Ensure HP printer software is active.
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
