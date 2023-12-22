@@ -30,4 +30,5 @@
 ---@field reset fun(self: GCancellable)
 
 local lgi = require("lgi") ---@type lgi
-return lgi.Gio
+local Gio = lgi.Gio
+return Gio

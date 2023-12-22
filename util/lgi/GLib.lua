@@ -16,4 +16,5 @@
 ---@field find_program_in_path fun(prog: string): string?
 
 local lgi = require("lgi") ---@type lgi
-return lgi.Gio
+local GLib = lgi.GLib
+return GLib
