@@ -1,4 +1,5 @@
 local GLib = require("util.lgi").GLib
+local new_file_for_path = require("util.file.new_file_for_path")
 local require = require("util.rel_require")
 ---@diagnostic disable: assign-type-mismatch -- To allow nil values
 local M = {
@@ -30,6 +31,6 @@ M.sep = GLib.DIR_SEPARATOR_S
 M.delimiter = GLib.SEARCHPATH_SEPARATOR_S
 ---The path to the root directory
 ---'/' on unix. 'C:\' on windows, where C is the current drive
-M.root = M.normalize(M.sep, true)
+M.root = new_file_for_path(GLib.DIR_SEPARATOR_S):get_path() or GLib.DIR_SEPARATOR_S
 
 return M
