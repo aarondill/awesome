@@ -7,7 +7,7 @@ local shell_escape = require("util.shell_escape")
 if not io.popen then return end
 
 -- -C=run in this directory, since lua doesn't support 'cd'ing
-local cmd = shell_escape({ "git", "-C", gfile.get_configuration_dir(), "submodule", "update", "--init" })
+local cmd = shell_escape({ "git", "-C", gfile.get_configuration_dir(), "submodule", "update", "--init", "--recursive" })
 
 local file = io.popen(cmd, "r")
 if not file then return end
