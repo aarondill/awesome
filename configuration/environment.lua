@@ -1,8 +1,16 @@
 local has_posix, posix = pcall(require, "posix.stdlib")
+local gfile = require("gears.filesystem")
 local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
+local path = require("util.path")
 
 local function setenv()
+  local deps_bindir = path.resolve(gfile.get_configuration_dir(), "deps", ".bin")
+  -- A default PATH. If $PATH is unset, there's bigger problems.
+  local pathvar = os.getenv("PATH") or table.concat({ "/usr/bin", "/bin", "/usr/sbin", "/sbin" }, path.delimiter)
+  pathvar = table.concat({ deps_bindir, pathvar }, path.delimiter)
+  posix.setenv("PATH", pathvar) -- Set the PATH environment variable to include /deps/.bin/
+
   posix.setenv("GTK_IM_MODULE", "xim") -- Fix for browsers
   posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
   posix.setenv("XMODIFIERS", "@im=ibus")

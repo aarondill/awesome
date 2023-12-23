@@ -13,8 +13,7 @@ local function spawn_autorandr()
   local time_since_last = os.difftime(time, last_time)
   if time_since_last <= 2 then return end
   last_time = time
-  local binpath = path.resolve(conf_dir, "deps", "autorandr", "autorandr.py")
-  return spawn.nosn({ binpath, "--change", "--default", "default" }, { on_failure_callback = notifs.error })
+  return spawn.nosn({ "autorandr", "--change", "--default", "default" }, { on_failure_callback = notifs.error })
 end
 
 ---Run on resume from suspend
@@ -37,20 +36,23 @@ subids[#subids + 1] = dbus.properties_changed.subscribe(
 )
 
 do
-  local binname = "autorandr-launcher"
-  local binpath = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher", binname)
-  local info = spawn.nosn({ gfile.file_executable(binpath) and binpath or binname }, {
+  local info = spawn.nosn({ "autorandr-launcher" }, {
     on_failure_callback = function(err)
-      return notifs.error(
-        err .. ("\nPlease make sure to build by running `make -C '%s'`"):format(path.dirname(binpath)),
-        { "Failed to spawn autorandr-launcher" }
-      )
+      local dir = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher")
+      local make_cmd = ("make -C '%s'"):format(dir)
+      local msg = table.concat({
+        err,
+        ("make sure to build by running `%s`"):format(make_cmd),
+      }, "\n")
+      return notifs.error(msg, { title = "Failed to spawn autorandr-launcher" })
     end,
   })
-  capi.awesome.connect_signal("exit", function()
-    local sig = capi.awesome.unix_signal.SIGTERM
-    return capi.awesome.kill(-info.pid, sig or 15)
-  end)
+  if info then
+    capi.awesome.connect_signal("exit", function()
+      local sig = capi.awesome.unix_signal.SIGTERM
+      return capi.awesome.kill(-info.pid, sig or 15)
+    end)
+  end
 end
 
 -- local members = { "DeviceAdded", "DeviceRemoved", "DeviceChanged" }

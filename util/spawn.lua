@@ -197,6 +197,7 @@ end
 ---Stops Awesome from waiting for the process to startup.
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
+---@return SpawnInfo?, string?
 ---@see Modified from /usr/share/awesome/lib/awful/spawn.lua
 function spawn.nosn(cmd, opts)
   opts = opts or {}
@@ -207,6 +208,7 @@ end
 --- Spawn a program using the shell.
 ---This calls `cmd` with `$SHELL -c` (via `awful.util.shell`).
 ---@param cmd string The command.
+---@return SpawnInfo?, string?
 function spawn.with_shell(cmd, opts)
   if not cmd or cmd == "" then error("No command specified.", 2) end
   return spawn.nosn({ require("awful.util").shell, "-c", cmd }, opts)
