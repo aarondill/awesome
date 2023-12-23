@@ -1,18 +1,17 @@
-#!/usr/bin/env bash
-set -euC -o pipefail
+#!/usr/bin/env sh
+set -euC
 
 # Ensure we're in the correct directory
-SOURCE="${BASH_SOURCE[0]:-}"
-DIR=$(dirname -- "$SOURCE")
-[ -d "$DIR" ] || {
+dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+[ -d "$dir" ] || {
   printf '%s\n' "Could not find containing directory for script!" >&2
   exit 1
 }
-cd "$DIR"
+cd "$dir"
 
 ID=${FORCE_ID:-}
 if [ -z "${ID}" ]; then ID=$(. /etc/os-release && echo "${ID_LIKE:-${ID:-}}"); fi
-case "${ID,,}" in
+case "$ID" in
 debian | ubuntu)
   sudo apt install \
     awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance \
@@ -21,7 +20,7 @@ debian | ubuntu)
     playerctl libinput-tools
   ;;
 arch)
-  if ! command -v yay &>/dev/null; then
+  if ! command -v yay >/dev/null 2>/dev/null; then
     printf '%s\n' "Please install yay to use this setup script" >&2
     exit 1
   fi

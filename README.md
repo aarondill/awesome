@@ -18,7 +18,7 @@ If using `setup.sh`, skip to 3) after successfully running it.
 ```shell
 git clone https://github.com/aarondill/awesome ~/.config/awesome
 cd ~/.config/awesome/
-bash ./setup.sh
+./setup.sh
 # run lxappearance to modify theme if so desired
 
 ```
