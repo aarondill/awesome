@@ -13,6 +13,15 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) foll
 ## Installation
 
 for convenience, a `setup.sh` script has been provided, simply clone the repository and run `./setup.sh` to auto install dependencies and setup submodules.
+If using `setup.sh`, skip to 3) after successfully running it.
+
+```shell
+git clone https://github.com/aarondill/awesome ~/.config/awesome
+cd ~/.config/awesome/
+bash ./setup.sh
+# run lxappearance to modify theme if so desired
+
+```
 
 ### 1) Get all the dependencies
 
@@ -49,7 +58,7 @@ yay -S --needed awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins 
 ### 2) Clone the configuration
 
 ```
-git clone https://github.com/aarondill/titus-awesome ~/.config/awesome
+git clone https://github.com/aarondill/awesome ~/.config/awesome
 git submodule update --init --recursive
 make -C deps/autorandr/contrib/autorandr_launcher/
 ```
