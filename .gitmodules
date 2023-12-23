@@ -3,7 +3,8 @@
 	url = https://github.com/lcpz/awesome-freedesktop
 [submodule "deps/autorandr"]
 	path = deps/autorandr
-	url = https://github.com/phillipberndt/autorandr
+  # url = https://github.com/phillipberndt/autorandr
+	url = https://github.com/aarondill/autorandr # use my fork to fix edid detection
   ignore = untracked  # <====
 [submodule "deps/libinput-gestures"]
 	path = deps/libinput-gestures
