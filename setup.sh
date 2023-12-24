@@ -59,6 +59,6 @@ log "Compiling luaposix (${LUAPOSIX_DIR#"$dir/"})"
   cd "$LUAPOSIX_DIR"
   # Note: if using lua 5.1, we may be missing the 'bit32' module!
   "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
-  log "Installing luaposix to $LUAPOSIX_DEST"
+  log "Installing luaposix to ${LUAPOSIX_DEST#"$dir/"}"
   "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
 )
