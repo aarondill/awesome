@@ -19,7 +19,14 @@ If using `setup.sh`, skip to 3) after successfully running it.
 git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
 cd ~/.config/awesome/ && ./setup.sh
 # run lxappearance to modify theme if so desired
+```
 
+NOTE: `setup.sh` calls `awesome --version` to make sure luaposix is compiled with the right version of lua. if your awesome or lua are not in the PATH, set $AWESOME or $LUA respectively to override the executable.
+Note that $LUA's version _must_ match the version that will be used by awesome
+
+```shell
+awesome-client 'require("naughty").notify({text=_VERSION})' # awesome v4.3 or before
+awesome-client 'require("naughty").notify({message=_VERSION})' # awesome v4.4 or later
 ```
 
 Minimum required to run this configuration (not recommended):
