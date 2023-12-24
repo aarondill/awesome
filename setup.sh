@@ -48,10 +48,15 @@ if [ "$install" -eq 1 ]; then
   esac
 fi
 
+if [ -z "${LUA:-}" ]; then
+  LUA_VERSION=$(awesome --version | perl -ne 'm/running with Lua (\d+.\d+)/ && print "$1"')
+  LUA="lua$LUA_VERSION"
+fi
+
 # Check that lua is installed.
 # Do this to allow the user to choose their preferred lua version (since 'lua' is a virtual package in debian/ubuntu)
-if ! has lua; then
-  err "Could not find lua installation! Please ensure a lua interpreter is installed and try again."
+if ! has "$LUA"; then
+  err "Could not find '$LUA'! Please make sure your lua installation matches awesome's compiled version (see awesome --help)"
   exit 1
 fi
 
@@ -67,7 +72,7 @@ log "Compiling luaposix (${LUAPOSIX_DIR#"$dir/"})"
 (
   cd "$LUAPOSIX_DIR"
   # Note: if using lua 5.1, we may be missing the 'bit32' module!
-  "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
+  "$LUA" "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
   log "Installing luaposix to ${LUAPOSIX_DEST#"$dir/"}"
-  "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
+  "$LUA" "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
 )
