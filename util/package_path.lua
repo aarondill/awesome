@@ -42,6 +42,7 @@ function M.add_to_cpath(dir, prepend)
       assert_util.type(d, "string", ("dir[%s]"):format(i))
       M.add_to_cpath(d, prepend)
     end
+    return package.cpath
   end
   assert_util.type(dir, "string", "dir")
   assert(type(dir) == "string") -- make luals happy
@@ -64,6 +65,7 @@ function M.add_to_path(dir, prepend)
       assert_util.type(d, "string", ("dir[%s]"):format(i))
       M.add_to_path(d, prepend)
     end
+    return package.path
   end
   assert_util.type(dir, "string", "dir")
   assert(type(dir) == "string") -- make luals happy
