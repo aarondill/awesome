@@ -4,7 +4,6 @@
 [submodule "deps/autorandr"]
 	path = deps/autorandr
   url = https://github.com/phillipberndt/autorandr
-  ignore = untracked  # <====
 [submodule "deps/libinput-gestures"]
 	path = deps/libinput-gestures
 	url = https://github.com/bulletmark/libinput-gestures.git
