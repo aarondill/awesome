@@ -47,13 +47,16 @@ if [ "$install" -eq 1 ]; then
 fi
 
 git submodule update --init --recursive
-make -C deps/autorandr/contrib/autorandr_launcher/
+
+AR_LAUNCHER_DIR="$dir/deps/autorandr/contrib/autorandr_launcher"
+log "Compiling autorandr_launcher (${AR_LAUNCHER_DIR#"$dir/"})"
+(cd "$AR_LAUNCHER_DIR" && make -s)
 
 LUAPOSIX_DIR="$dir/deps/luaposix"
 LUAPOSIX_DEST="$dir/deps/.build"
-( # note: subshell so pwd is not lost
+log "Compiling luaposix (${LUAPOSIX_DIR#"$dir/"})"
+(
   cd "$LUAPOSIX_DIR"
-  log "Compiling luaposix ($LUAPOSIX_DIR)"
   # Note: if using lua 5.1, we may be missing the 'bit32' module!
   "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
   log "Installing luaposix to $LUAPOSIX_DEST"
