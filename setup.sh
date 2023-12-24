@@ -2,6 +2,7 @@
 set -euC
 log() { printf '%s\n' "$@" || true; }
 err() { printf '%s\n' "$@" >&2 || true; }
+has() { [ -x "$(command -v "$1" 2>/dev/null)" ]; }
 
 # Ensure we're in the correct directory
 dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
@@ -15,6 +16,12 @@ ID=${FORCE_ID:-}
 if [ -z "${ID}" ]; then ID=$(. /etc/os-release && echo "${ID_LIKE:-${ID:-}}"); fi
 install=1 # call ./setup.sh no-install to skip dep installation
 if [ "${1:-}" = "no-install" ]; then install=0; fi
+
+# Check that lua is installed. Do this to allow the user to choose their prefered lua version (since 'lua' is a virtual package)
+if ! has lua; then
+  err "Could not find lua installation! Please ensure a lua interpreter is installed and try again."
+  exit 1
+fi
 
 if [ "$install" -eq 1 ]; then
   case "$ID" in
