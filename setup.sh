@@ -48,11 +48,11 @@ git submodule update --init --recursive
 make -C deps/autorandr/contrib/autorandr_launcher/
 
 LUAPOSIX_DIR="$dir/deps/luaposix"
-LUAPOSIX_DEST="$dir/deps/posix"
+LUAPOSIX_DEST="$dir/deps/build"
 ( # note: subshell so pwd is not lost
   printf '%s\n' "Compiling luaposix"
   cd "$LUAPOSIX_DIR"
   # Note: if using lua 5.1, we may be missing the 'bit32' module!
   "$LUAPOSIX_DIR/build-aux/luke" LDOC='true'                     # build luaposix, set LDOC to 'true' to avoid compiling docs
-  "$LUAPOSIX_DIR/build-aux/luke" PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/posix so these can be required
+  "$LUAPOSIX_DIR/build-aux/luke" PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/build so these can be required
 )
