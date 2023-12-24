@@ -48,8 +48,10 @@ if [ "$install" -eq 1 ]; then
   esac
 fi
 
+# Use the AWESOME and LUA variables to configure this if needed
+AWESOME=${AWESOME:-awesome}
 if [ -z "${LUA:-}" ]; then
-  LUA_VERSION=$(awesome --version | perl -ne 'm/running with Lua (\d+.\d+)/ && print "$1"')
+  LUA_VERSION=$("$AWESOME" --version | perl -ne 'm/running with Lua (\d+.\d+)/ && print "$1"')
   LUA="lua$LUA_VERSION"
 fi
 
