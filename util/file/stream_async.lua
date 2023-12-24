@@ -57,8 +57,15 @@ local GioInputStreamAsyncHelper = {
   ---Called when the operation is done. only called once.
   ---success will be false if cancelled early (by returning false) or true if all lines were read successfully
   ---Note: if an error occurs, success will be false and error will be set. Else if stopped early, success will be false and error will be nil.
-  ---@param done? fun(success: boolean, error?: userdata): boolean?
+  ---Note: The default done callback closes the stream!
+  ---@param done? false|fun(success: boolean, error?: userdata): boolean?
   each_line = function(self, callback, done)
+    if done == nil then
+      -- Cleanup after ourselves
+      done = function()
+        return self:close()
+      end
+    end
     local function handler(line, err)
       if err then return done and done(false, err) end
       if not line then return done and done(true, nil) end -- All lines were read successfully
