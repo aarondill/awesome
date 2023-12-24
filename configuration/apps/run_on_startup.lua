@@ -1,8 +1,12 @@
-local path = require("util.path")
 local require = require("util.rel_require")
 
+local GLib = require("util.lgi.GLib")
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
+local path = require("util.path")
+local shell_escape = require("util.shell_escape")
+local which = GLib.find_program_in_path
+
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
 if not gfile.file_executable(notification_daemon) then
   notification_daemon = "/usr/lib/notification-daemon/notification-daemon"
@@ -31,7 +35,6 @@ local run_on_startup = {
   { "udiskie", "-q", "-c", path.resolve(config_file_dir, "udiskie.yml") }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { notification_daemon },
-  { "libinput-gestures", "--conffile", path.resolve(config_file_dir, "libinput-gestures.conf") }, -- Enable touch gesture support
   { "redshift", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
   -- { "hp-systray" }, -- Ensure HP printer software is active.
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
@@ -39,5 +42,28 @@ local run_on_startup = {
   -- to avoid multipled instances, inside the awspawn script
   { path.resolve(gfile.get_configuration_dir(), "scripts", "awspawn") }, -- Spawn "dirty" apps that can linger between sessions
 }
+
+---Note: this is already escaped
+---This is some evil synchronise code, but it's needed to ensure that we have a touch pad to play with
+local cmd = shell_escape(which("libinput-list-devices") or { "libinput", "list-devices" })
+local f = assert(io.popen(("%s 2>/dev/null"):format(cmd), "r"))
+local has_touchpad = false
+for line in f:lines("l") do
+  if line:find("^Capabilities:") then
+    -- Append a space incase it ends with touch
+    if (line .. " "):find(" touch ") then
+      has_touchpad = true
+      break
+    end
+  end
+end
+f:close()
+
+if has_touchpad then
+  table.insert(
+    run_on_startup,
+    { "libinput-gestures", "--conffile", path.resolve(config_file_dir, "libinput-gestures.conf") } -- Enable touch gesture support
+  )
+end
 
 return run_on_startup
