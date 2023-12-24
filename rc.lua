@@ -29,9 +29,11 @@ package.path = table.concat({ -- Make sure the following require will work!
 }, ";")
 local path = require("util.path")
 local util_package_path = require("util.package_path")
-util_package_path.add_to_both(conf_dir)
-util_package_path.add_to_both(this_dir)
-util_package_path.add_to_both(path.join(this_dir, "deps")) -- Add /deps to package.[c]path
+util_package_path.add_to_both({
+  this_dir, -- This should be conf_dir
+  conf_dir,
+  path.join(this_dir, "deps"), -- Add /deps to package.[c]path
+}, true)
 util_package_path.dedupe() -- Remove any duplicate path segments -- especially the above concat
 
 -- Load these *local* packages *After* fixing package.path
