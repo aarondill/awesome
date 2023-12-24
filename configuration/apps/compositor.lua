@@ -127,13 +127,11 @@ function compositor.autostart()
   return get_stream(path.join(path.root, "proc", "cpuinfo"), function(stream)
     if not stream then return end -- likely file doesn't exist
     return stream:each_line(function(line)
-      if not line or not line:match("[^\n]flags%s*:") then return true end -- This isn't the line we're looking for
+      if not line or not line:find("^flags%s*:") then return true end -- This isn't the line we're looking for
       -- if contains the hypervisor flag (we are in a VM) then don't start the compositor.
-      if line:match("[^\n]flags%s*:.*%shypervisor%s") then return false end
+      if line:find("^flags%s*:.*%shypervisor%s") then return false end
       gtimer.delayed_call(compositor.start) -- Start the compositor
       return false -- Stop looping
-    end, function()
-      return stream:close() -- Cleanup after ourselves
     end)
   end)
 end
