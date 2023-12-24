@@ -1,4 +1,4 @@
-[submodule "freedesktop"]
+[submodule "deps/freedesktop"]
 	path = deps/freedesktop
 	url = https://github.com/lcpz/awesome-freedesktop
 [submodule "deps/autorandr"]
