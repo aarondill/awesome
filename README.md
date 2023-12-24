@@ -62,3 +62,22 @@ install `qt5-style-plugins` (debian) | `qt5-styleplugins` (arch)
 
 All configuration should be possible through the `/configuration` directory.
 Note that some of this has become complicated, so please report an issue if any arise.
+
+## Running:
+
+Start awesome you might start any other X window manager.
+
+If you don't know how to do this, I suggest you research the topic.
+Use one of the following commands, depending on your installed packages:
+
+```
+startx "$(which awesome)"
+xinit "$(which awesome)"
+```
+
+If you cloned the repository to an unusual location, you can use awesome's `-c` option to start it
+The configuration should handle this without issue.
+
+```
+startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
+```
