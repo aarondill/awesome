@@ -33,11 +33,18 @@ function M.cpath_contains(dir)
 end
 
 ---Add to packge.cpath
----@param dir string
+---@param dir string|string[]
 ---@param prepend boolean? default true
 ---@return string cpath the new cpath (for convenience)
 function M.add_to_cpath(dir, prepend)
+  if type(dir) == "table" then
+    for i, d in ipairs(dir) do
+      assert_util.type(d, "string", ("dir[%s]"):format(i))
+      M.add_to_cpath(d, prepend)
+    end
+  end
   assert_util.type(dir, "string", "dir")
+  assert(type(dir) == "string") -- make luals happy
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
@@ -48,11 +55,18 @@ function M.add_to_cpath(dir, prepend)
 end
 
 ---Add to packge.path
----@param dir string
+---@param dir string|string[]
 ---@param prepend boolean? default true
 ---@return string path the new path (for convenience)
 function M.add_to_path(dir, prepend)
+  if type(dir) == "table" then
+    for i, d in ipairs(dir) do
+      assert_util.type(d, "string", ("dir[%s]"):format(i))
+      M.add_to_path(d, prepend)
+    end
+  end
   assert_util.type(dir, "string", "dir")
+  assert(type(dir) == "string") -- make luals happy
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
@@ -63,7 +77,7 @@ function M.add_to_path(dir, prepend)
 end
 
 --- Adds to both package.cpath and package.path
----@param dir string
+---@param dir string|string[]
 ---@param prepend boolean? see add_to_path
 function M.add_to_both(dir, prepend)
   M.add_to_cpath(dir, prepend)
