@@ -29,10 +29,10 @@ package.path = table.concat({ -- Make sure the following require will work!
 }, ";")
 local path = require("util.path")
 local util_package_path = require("util.package_path")
-util_package_path.add_to_both({
-  this_dir,
+util_package_path.add_to_both({ -- Note: this table is reversed, because each path gets prepended
   conf_dir,
   path.join(this_dir, "deps"), -- Add /deps to package.[c]path
+  this_dir,
 }, true)
 local deps_path = require("deps")
 util_package_path.add_to_path(deps_path.path)
