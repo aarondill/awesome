@@ -17,30 +17,25 @@ if [ -z "${ID}" ]; then ID=$(. /etc/os-release && echo "${ID_LIKE:-${ID:-}}"); f
 install=1 # call ./setup.sh no-install to skip dep installation
 if [ "${1:-}" = "no-install" ]; then install=0; fi
 
-# Check that lua is installed. Do this to allow the user to choose their prefered lua version (since 'lua' is a virtual package)
-if ! has lua; then
-  err "Could not find lua installation! Please ensure a lua interpreter is installed and try again."
-  exit 1
-fi
-
 if [ "$install" -eq 1 ]; then
   case "$ID" in
   debian | ubuntu)
-    sudo apt install \
+    sudo apt install -- \
       awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance \
       brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome \
       blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils \
       playerctl libinput-tools
     ;;
   arch)
-    if ! command -v yay >/dev/null 2>/dev/null; then
+    if ! has yay; then
       err "Please install yay to use this setup script"
       exit 1
     fi
-    yay -S --needed awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
+    yay -S --needed -- \
+      awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
       lxappearance brightnessctl flameshot pasystray network-manager-applet \
       polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus \
-      numlockx alsa-utils playerctl libinput
+      numlockx alsa-utils playerctl libinput lua
     ;;
   '') # Strict compliance would set this to 'linux', but it's not useful to do.
     err "Could not find ID_LIKE or ID in /etc/os-release. Please set the FORCE_ID variable if your system is a supported system."
@@ -51,6 +46,13 @@ if [ "$install" -eq 1 ]; then
     exit 1
     ;;
   esac
+fi
+
+# Check that lua is installed.
+# Do this to allow the user to choose their preferred lua version (since 'lua' is a virtual package in debian/ubuntu)
+if ! has lua; then
+  err "Could not find lua installation! Please ensure a lua interpreter is installed and try again."
+  exit 1
 fi
 
 git submodule update --init --recursive
