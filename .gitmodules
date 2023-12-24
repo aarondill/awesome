@@ -8,3 +8,6 @@
 [submodule "deps/libinput-gestures"]
 	path = deps/libinput-gestures
 	url = https://github.com/bulletmark/libinput-gestures.git
+[submodule "deps/luaposix"]
+	path = deps/luaposix
+	url = https://github.com/luaposix/luaposix/
