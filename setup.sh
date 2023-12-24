@@ -1,10 +1,12 @@
 #!/usr/bin/env sh
 set -euC
+log() { printf '%s\n' "$@" || true; }
+err() { printf '%s\n' "$@" >&2 || true; }
 
 # Ensure we're in the correct directory
 dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 [ -d "$dir" ] || {
-  printf '%s\n' "Could not find containing directory for script!" >&2
+  err "Could not find containing directory for script!"
   exit 1
 }
 cd "$dir"
@@ -25,7 +27,7 @@ if [ "$install" -eq 1 ]; then
     ;;
   arch)
     if ! command -v yay >/dev/null 2>/dev/null; then
-      printf '%s\n' "Please install yay to use this setup script" >&2
+      err "Please install yay to use this setup script"
       exit 1
     fi
     yay -S --needed awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
@@ -34,11 +36,11 @@ if [ "$install" -eq 1 ]; then
       numlockx alsa-utils playerctl
     ;;
   '') # Strict compliance would set this to 'linux', but it's not useful to do.
-    printf '%s\n' "Could not find ID_LIKE or ID in /etc/os-release. Please set the FORCE_ID variable if your system is a supported system." >&2
+    err "Could not find ID_LIKE or ID in /etc/os-release. Please set the FORCE_ID variable if your system is a supported system."
     exit 1
     ;;
   *)
-    printf '%s\n' "Unrecognized ID_LIKE or ID: $ID. Please report this as a bug if your system is not supported." >&2
+    err "Unrecognized ID_LIKE or ID: $ID. Please report this as a bug if your system is not supported."
     exit 1
     ;;
   esac
@@ -48,11 +50,12 @@ git submodule update --init --recursive
 make -C deps/autorandr/contrib/autorandr_launcher/
 
 LUAPOSIX_DIR="$dir/deps/luaposix"
-LUAPOSIX_DEST="$dir/deps/build"
+LUAPOSIX_DEST="$dir/deps/.build"
 ( # note: subshell so pwd is not lost
-  printf '%s\n' "Compiling luaposix"
   cd "$LUAPOSIX_DIR"
+  log "Compiling luaposix ($LUAPOSIX_DIR)"
   # Note: if using lua 5.1, we may be missing the 'bit32' module!
-  "$LUAPOSIX_DIR/build-aux/luke" LDOC='true'                     # build luaposix, set LDOC to 'true' to avoid compiling docs
-  "$LUAPOSIX_DIR/build-aux/luke" PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/build so these can be required
+  "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
+  log "Installing luaposix to $LUAPOSIX_DEST"
+  "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
 )
