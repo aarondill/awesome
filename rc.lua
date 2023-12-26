@@ -105,3 +105,12 @@ _G.collectgarbagetimer = require("gears.timer").new({
   autostart = true,
   callback = require("util.bind").with_args(collectgarbage, "collect"),
 })
+
+local primary = capi.screen.primary
+if primary then
+  require("awful.screen").focus(primary)
+  capi.mouse.coords({
+    x = primary.geometry.width / 2,
+    y = primary.geometry.height / 2,
+  }, true)
+end
