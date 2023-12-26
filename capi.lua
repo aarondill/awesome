@@ -33,7 +33,7 @@ local types = {}
 local function opt(V) end ---@return V | nil
 local boolean = false ---@type boolean
 local string = "" ---@type string
----@alias screen table|integer
+---@alias screen AwesomeScreenInstance|integer
 ---@alias AwesomeGeometry { height: number, width: number, x: number, y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
 ---@alias CairoPattern userdata
@@ -252,6 +252,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
 ---@field valid boolean
+---@field index integer
 ---@field tags AwesomeTagInstance[]
 ---@field clients AwesomeClientInstance[]
 ---@field selected_tags AwesomeTagInstance[]
@@ -275,6 +276,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field clients fun(self: AwesomeTagInstance, clients:AwesomeClientInstance[]?): AwesomeClientInstance[]
 
 ---@class AwesomeClientInstance :AwesomeSignalClassInstance
+---@field opacity number between 0 and 1
 ---@field floating boolean
 ---@field valid boolean
 ---@field maximized boolean
@@ -303,6 +305,9 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field size_hints_honor boolean
 ---@field geometry fun(self: AwesomeClientInstance, geometry:AwesomeGeometry?): AwesomeGeometry
 ---@field kill fun()
+---@field swap fun(self: AwesomeClientInstance, c: AwesomeClientInstance)
+---Note: if s is nil, default is self.screen.index+1
+---@field move_to_screen fun(self: AwesomeClientInstance, s?: screen)
 ---@field skip_taskbar boolean
 
 ---@class AwesomeClient :AwesomeSignalClass

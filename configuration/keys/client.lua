@@ -1,63 +1,79 @@
 local require = require("util.rel_require")
 
 local aclient = require("awful.client")
-local akey = require("awful.key")
 local atitlebar = require("awful.titlebar")
+local awful_key = require("awful.key")
 local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local modkey = mod.modKey
+---A typed helper around awful_key.new -- Note: specific to this file
+---@alias aKeyDataTable {description: string, group: string}
+---@param modKeys string[]
+---@param key string
+---@param press? fun(c: AwesomeClientInstance): any
+---@param release? (fun(c: AwesomeClientInstance): any)|aKeyDataTable
+---@param data? aKeyDataTable
+local ckey = function(modKeys, key, press, release, data)
+  return awful_key.new(modKeys, key, press, release, data)
+end
+
 -- Key bindings
 local clientkeys = gtable.join(
-  akey({ modkey }, "f", function(c)
+  ckey({ modkey }, "f", function(c)
     c.fullscreen = not c.fullscreen
     c:raise()
   end, { description = "toggle fullscreen", group = "client" }),
 
-  akey({ modkey }, "q", function(c)
+  ckey({ modkey }, "q", function(c)
     c:kill()
   end, { description = "close", group = "client" }),
 
-  akey({ modkey, "Control" }, "s", function(c)
+  ckey({ modkey, "Control" }, "s", function(c)
     c.sticky = not c.sticky
   end, { description = "toggle sticky", group = "client" }),
-  akey({ modkey, "Control" }, "space", aclient.floating.toggle, { description = "toggle floating", group = "client" }),
-  akey({ modkey, "Shift" }, "Return", function(c)
-    c:swap(aclient.getmaster())
+  ckey({ modkey, "Control" }, "space", aclient.floating.toggle, { description = "toggle floating", group = "client" }),
+  ckey({ modkey, "Shift" }, "Return", function(c)
+    local master = aclient.getmaster() ---@type AwesomeClientInstance?
+    if master then return c:swap(master) end
   end, { description = "move to master", group = "client" }),
 
-  -- akey({ modkey }, "o", function(c)
-  -- 	c:move_to_screen()
-  -- end, { description = "move window to next screen", group = "client" }),
+  ckey({ modkey, "Shift", "Control" }, "k", function(c)
+    c:move_to_screen()
+  end, { description = "move window to next screen", group = "client" }),
+  ckey({ modkey, "Shift", "Control" }, "j", function(c)
+    local s = c.screen and c.screen.index - 1 -- Might be nil, thus +1, but there's a bigger problem here
+    c:move_to_screen(s)
+  end, { description = "move window to prev screen", group = "client" }),
 
-  akey({ modkey }, "o", function(c)
-    c.opacity = c.opacity + 0.1
+  ckey({ modkey }, "o", function(c)
+    c.opacity = math.min(c.opacity + 0.1, 1)
   end, { description = "Increase opacity", group = "client" }),
-  akey({ modkey, "Shift" }, "o", function(c)
+  ckey({ modkey, "Shift" }, "o", function(c)
     c.opacity = math.max(c.opacity - 0.1, 0.2)
   end, { description = "Decrease opacity", group = "client" }),
 
-  akey({ modkey }, "t", function(c)
+  ckey({ modkey }, "t", function(c)
     c.ontop = not c.ontop
   end, { description = "toggle keep on top", group = "client" }),
-  akey({ modkey }, "n", function(c)
+  ckey({ modkey }, "n", function(c)
     -- The client currently has the input focus, so it cannot be
     -- minimized, since minimized clients can't have the focus.
     c.minimized = true
   end, { description = "minimize", group = "client" }),
-  akey({ modkey }, "m", function(c)
+  ckey({ modkey }, "m", function(c)
     c.maximized = not c.maximized
     c:raise()
   end, { description = "(un)maximize", group = "client" }),
-  akey({ modkey, "Control" }, "m", function(c)
+  ckey({ modkey, "Control" }, "m", function(c)
     c.maximized_vertical = not c.maximized_vertical
     c:raise()
   end, { description = "(un)maximize vertically", group = "client" }),
-  akey({ modkey, "Shift" }, "m", function(c)
+  ckey({ modkey, "Shift" }, "m", function(c)
     c.maximized_horizontal = not c.maximized_horizontal
     c:raise()
   end, { description = "(un)maximize horizontally", group = "client" }),
 
-  akey({ modkey }, "`", function(c)
+  ckey({ modkey }, "`", function(c)
     atitlebar.toggle(c, "top")
   end, { description = "toggle top titlebar", group = "client" })
 )
