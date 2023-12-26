@@ -4,6 +4,7 @@ local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local spawn = require("util.spawn")
+local suspend_listener = require("module.suspend-listener")
 
 local conf_dir = gfile.get_configuration_dir()
 -- Debounce it!
@@ -17,58 +18,79 @@ local function spawn_autorandr()
 end
 
 ---Run on resume from suspend
-require("module.suspend-listener").register_listener(function(is_before)
+local function suspend_handler(is_before)
   if is_before then return end -- Only run after resume
   return spawn_autorandr()
-end)
+end
+local function upower_properties_handler(_, changed)
+  if changed["LidIsClosed"] == nil then return end
+  return spawn_autorandr()
+end
+local function autorandr_failure_handler(err)
+  local dir = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher")
+  local make_cmd = ("make -C '%s'"):format(dir)
+  local msg = table.concat({
+    err,
+    ("make sure to build by running `%s`"):format(make_cmd),
+  }, "\n")
+  return notifs.error(msg, { title = "Failed to spawn autorandr-launcher" })
+end
 --- There's not much of a reason to keep these, but the bus objects
 --- *must* be kept from being garbage collected or else the subscrition is lost.
-local subids = {}
+local subids = {
+  LidIsClosed = nil,
+}
 
--- Use UPower to listen for lid state changes
-subids[#subids + 1] = dbus.properties_changed.subscribe(
-  "org.freedesktop.UPower",
-  "/org/freedesktop/UPower",
-  function(_, changed)
-    if changed["LidIsClosed"] == nil then return end
-    return spawn_autorandr()
-  end
-)
+local listener_pid ---@type integer?
+capi.awesome.connect_signal("exit", function()
+  local sig = capi.awesome.unix_signal.SIGTERM or 15
+  return capi.awesome.kill(-listener_pid, sig)
+end)
 
-do
-  local info = spawn.nosn({ "autorandr-launcher" }, {
-    on_failure_callback = function(err)
-      local dir = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher")
-      local make_cmd = ("make -C '%s'"):format(dir)
-      local msg = table.concat({
-        err,
-        ("make sure to build by running `%s`"):format(make_cmd),
-      }, "\n")
-      return notifs.error(msg, { title = "Failed to spawn autorandr-launcher" })
-    end,
-  })
-  if info then
-    capi.awesome.connect_signal("exit", function()
-      local sig = capi.awesome.unix_signal.SIGTERM
-      return capi.awesome.kill(-info.pid, sig or 15)
-    end)
+---Start autorandr-launcher if not already running
+---Note that just because this returned an error doesn't necisarily mean that nothing changed!
+---@return SpawnInfo?
+---@return string? error
+local function start_listener()
+  suspend_listener.register_listener(suspend_handler) -- this will handle duplicate listeners
+  -- Use UPower to listen for lid state changes
+  subids.LidIsClosed =
+    dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", upower_properties_handler)
+
+  if listener_pid then
+    local is_alive = capi.awesome.kill(listener_pid, 0) --Note: could fail due to privaliges, but that's fine
+    if is_alive then -- Don't start a second instance!
+      return nil, "autorandr-launcher is already running!"
+    end
   end
+
+  local info, err = spawn.nosn({ "autorandr-launcher" }, { on_failure_callback = autorandr_failure_handler })
+  if not info then return nil, err end
+  listener_pid = info.pid
+  return info, nil
 end
 
--- local members = { "DeviceAdded", "DeviceRemoved", "DeviceChanged" }
--- --- HACK: Use Colord to detect added devices
--- for _, m in ipairs(members) do
---   subids[#subids + 1] = dbus.subscribe_signal.subscribe({
---     sender = "org.freedesktop.ColorManager",
---     object = "/org/freedesktop/ColorManager",
---
---     interface = "org.freedesktop.ColorManager",
---     member = m,
---     callback = function()
---       notifs.info("running color manager callback")
---       return spawn_autorandr()
---     end,
---   })
--- end
+---Stop a running autorandr-launcher
+---Note that just because this returned an error doesn't necisarily mean that nothing changed!
+---@return true? success
+---@return string? error
+local function stop_listener()
+  suspend_listener.unregister_listener(suspend_handler)
+  if subids.LidIsClosed then
+    dbus.properties_changed.unsubscribe(subids.LidIsClosed)
+    subids.LidIsClosed = nil
+  end
 
-return subids
+  if not listener_pid then return nil, "autorandr-launcher is not running!" end
+  local sig = capi.awesome.unix_signal.SIGTERM or 15
+  local suc = capi.awesome.kill(listener_pid, sig)
+  if not suc then return nil, "failed to stop autorandr-launcher" end
+  listener_pid = nil
+  return true
+end
+
+return {
+  start_listener = start_listener,
+  stop_listener = stop_listener,
+  _subscription_ids = subids,
+}
