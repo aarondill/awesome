@@ -18,7 +18,7 @@ naughty.config.padding = 8
 naughty.config.spacing = 8
 
 naughty.config.defaults.timeout = 5
-naughty.config.defaults.screen = 1
+-- naughty.config.defaults.screen = 1
 naughty.config.defaults.position = "bottom_left"
 naughty.config.defaults.ontop = true
 naughty.config.defaults.hover_timeout = nil
