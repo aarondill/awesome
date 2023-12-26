@@ -249,6 +249,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
 ---@field [integer] AwesomeScreenInstance?
+---@field [AwesomeScreenInstance] AwesomeScreenInstance
 
 ---@class AwesomeScreenInstance :AwesomeSignalClassInstance
 ---@field valid boolean
