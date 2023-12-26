@@ -77,7 +77,12 @@ local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
   exit_screen.screen = s
 end
 
-capi.screen.connect_signal("primary_changed", update_wibox_screen)
+capi.screen.connect_signal("primary_changed", function(s) ---@param s AwesomeScreenInstance
+  ---This handler gets called twice. Once on the old screen and once on the new screen
+  ---If this is the old screen, ignore it, wait until the new screen is called.
+  if s ~= capi.screen.primary then return end
+  return update_wibox_screen(s)
+end)
 update_wibox_screen(capi.screen.primary)
 
 local bg = beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
