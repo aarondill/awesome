@@ -35,6 +35,7 @@ local boolean = false ---@type boolean
 local string = "" ---@type string
 ---@alias screen AwesomeScreenInstance|integer
 ---@alias AwesomeGeometry { height: number, width: number, x: number, y: number }
+---@alias AwesomePosition { x: number,  y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
 ---@alias CairoPattern userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
@@ -244,8 +245,10 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeKeygrabber
 ---@class AwesomeMousegrabber
 ---@class AwesomeMouse
+---@field coords fun(coords_table?: AwesomePosition, silent?: boolean): {[integer]: boolean, x: number, y: number}
 ---@field screen AwesomeScreenInstance
 ---@field current_wibox table? wibox
+
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
 ---@field [integer] AwesomeScreenInstance?
