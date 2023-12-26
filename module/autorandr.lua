@@ -10,11 +10,13 @@ local M = {}
 
 local conf_dir = gfile.get_configuration_dir()
 -- Debounce it!
-local last_time = os.time()
+local last_time = nil
 local function spawn_autorandr()
   local time = os.time()
-  local time_since_last = os.difftime(time, last_time)
-  if time_since_last <= 2 then return end
+  if last_time then
+    local time_since_last = os.difftime(time, last_time)
+    if time_since_last <= 2 then return end
+  end
   last_time = time
   return spawn.nosn({ "autorandr", "--change", "--default", "default" }, { on_failure_callback = notifs.error })
 end
