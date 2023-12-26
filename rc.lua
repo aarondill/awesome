@@ -69,7 +69,7 @@ require("module.client")
 require("module.titlebar")
 require("module.reminder")
 require("module.update-notifier")
-require("module.autorandr") -- Ensure this is after submodules
+require("module.autorandr").start_listener() -- Ensure this is after submodules
 
 -- Setup all configurations
 require("configuration.apps.compositor").autostart() -- Start the compositor on startup
