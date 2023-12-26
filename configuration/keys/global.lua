@@ -104,8 +104,19 @@ local globalKeys = gtable.join(
   akey({ modkey, "Shift" }, "c", function()
     -- This is dynamic so it doesn't require compositor before needed (thusly creating a tempfile)
     -- The file will be cleaned up, but it's better to avoid creating it if not needed.
-    require("configuration.apps.compositor").toggle()
+    return require("configuration.apps.compositor").toggle()
   end, { description = "Start/Stop Compositor", group = "awesome" }),
+
+  akey({ modkey, "Shift" }, "c", function()
+    -- This is dynamic so it doesn't require compositor before needed (thusly creating a tempfile)
+    -- The file will be cleaned up, but it's better to avoid creating it if not needed.
+    return require("configuration.apps.compositor").toggle()
+  end, { description = "Start/Stop Compositor", group = "awesome" }),
+
+  --- Note: this should really only be needed while setting a new configuration
+  akey({ modkey, "Shift" }, "Print", function()
+    return require("module.autorandr").toggle_listener()
+  end, { description = "Start/Stop autorandr", group = "awesome" }),
 
   akey({}, "Print", function()
     return spawn.async(apps.default.region_screenshot, function(_, stderr, reason, code)
