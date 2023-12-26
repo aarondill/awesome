@@ -60,6 +60,8 @@ function M.start_listener()
   M._subscription_ids.LidIsClosed =
     dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", upower_properties_handler)
 
+  spawn_autorandr() -- Spawn when starting to ensure correct state (also for startup)
+
   if listener_pid then
     local is_alive = capi.awesome.kill(listener_pid, 0) --Note: could fail due to privaliges, but that's fine
     if is_alive then -- Don't start a second instance!
