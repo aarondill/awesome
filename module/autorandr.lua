@@ -6,6 +6,8 @@ local path = require("util.path")
 local spawn = require("util.spawn")
 local suspend_listener = require("module.suspend-listener")
 
+local M = {}
+
 local conf_dir = gfile.get_configuration_dir()
 -- Debounce it!
 local last_time = os.time()
@@ -37,7 +39,7 @@ local function autorandr_failure_handler(err)
 end
 --- There's not much of a reason to keep these, but the bus objects
 --- *must* be kept from being garbage collected or else the subscrition is lost.
-local subids = {
+M._subscription_ids = {
   LidIsClosed = nil,
 }
 
@@ -46,15 +48,16 @@ capi.awesome.connect_signal("exit", function()
   local sig = capi.awesome.unix_signal.SIGTERM or 15
   return capi.awesome.kill(-listener_pid, sig)
 end)
+M.is_active = false
 
 ---Start autorandr-launcher if not already running
 ---Note that just because this returned an error doesn't necisarily mean that nothing changed!
 ---@return SpawnInfo?
 ---@return string? error
-local function start_listener()
+function M.start_listener()
   suspend_listener.register_listener(suspend_handler) -- this will handle duplicate listeners
   -- Use UPower to listen for lid state changes
-  subids.LidIsClosed =
+  M._subscription_ids.LidIsClosed =
     dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", upower_properties_handler)
 
   if listener_pid then
@@ -67,6 +70,7 @@ local function start_listener()
   local info, err = spawn.nosn({ "autorandr-launcher" }, { on_failure_callback = autorandr_failure_handler })
   if not info then return nil, err end
   listener_pid = info.pid
+  M.is_active = true
   return info, nil
 end
 
@@ -74,11 +78,11 @@ end
 ---Note that just because this returned an error doesn't necisarily mean that nothing changed!
 ---@return true? success
 ---@return string? error
-local function stop_listener()
+function M.stop_listener()
   suspend_listener.unregister_listener(suspend_handler)
-  if subids.LidIsClosed then
-    dbus.properties_changed.unsubscribe(subids.LidIsClosed)
-    subids.LidIsClosed = nil
+  if M._subscription_ids.LidIsClosed then
+    dbus.properties_changed.unsubscribe(M._subscription_ids.LidIsClosed)
+    M._subscription_ids.LidIsClosed = nil
   end
 
   if not listener_pid then return nil, "autorandr-launcher is not running!" end
@@ -86,11 +90,17 @@ local function stop_listener()
   local suc = capi.awesome.kill(listener_pid, sig)
   if not suc then return nil, "failed to stop autorandr-launcher" end
   listener_pid = nil
+  M.is_active = false
   return true
 end
 
-return {
-  start_listener = start_listener,
-  stop_listener = stop_listener,
-  _subscription_ids = subids,
-}
+---Note that if one of the previous invocations failed, this may result in odd behaviour
+---@return boolean? success if false or nil, something went wrong
+---@return string? error
+function M.toggle_listener()
+  if M.is_active then return M.stop_listener() end
+  local info, err = M.start_listener()
+  return info ~= nil, err
+end
+
+return M
