@@ -50,15 +50,26 @@ function M.map_val(t, func)
   return res
 end
 
+---Returns the first element for which the function returns true
+---@generic K, V
+---@param t table<K, V>
+---@param func fun(v: V, k: K, t: table<K, V>): boolean?
+---@return V?, K?
+function M.find(t, func)
+  for i, v in pairs(t) do
+    if func(v, i, t) then return v, i end
+  end
+end
+
 ---Returns a table containing elements that pass the filter
 ---@generic K, V
 ---@param t table<K, V>
----@param func fun(k: K, v: V): boolean?
+---@param func fun(v: V, k: K, t: table<K, V>): boolean?
 ---@return table
 function M.filter(t, func)
   local res = {}
   for i, v in pairs(t) do
-    if func(i, v) then table.insert(res, v) end
+    if func(v, i, t) then table.insert(res, v) end
   end
   return res
 end
@@ -66,10 +77,10 @@ end
 ---@generic V
 ---@param t V[]
 ---Return `false` to stop iterating.
----@param f fun(k: integer, v: V): boolean?
+---@param f fun(v: V, k: integer): boolean?
 function M.foreach(t, f)
   for i, v in ipairs(t) do
-    local res = f(i, v)
+    local res = f(v, i)
     if res == false then break end
   end
 end

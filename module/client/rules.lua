@@ -102,7 +102,7 @@ if has_ruled then
   capi.client.disconnect_signal(compat.signal.manage, ruled.client.apply)
   return capi.client.connect_signal(compat.signal.manage, function(c)
     if not capi.awesome.startup then return ruled.client.apply(c) end
-    return table_utils.foreach(ruled.client.matching_rules(c), function(_, rule)
+    return table_utils.foreach(ruled.client.matching_rules(c), function(rule)
       if rule.apply_on_restart then return ruled.client.execute(c, rule.properties, { rule.callback }) end
       local mini_properties = { -- These will always be applied.
         buttons = rule.properties.buttons,
@@ -119,7 +119,7 @@ arules.rules = rules
 capi.client.disconnect_signal(compat.signal.manage, arules.apply)
 return capi.client.connect_signal(compat.signal.manage, function(c)
   if not capi.awesome.startup then return arules.apply(c) end
-  return table_utils.foreach(arules.matching_rules(c, arules.rules), function(_, rule)
+  return table_utils.foreach(arules.matching_rules(c, arules.rules), function(rule)
     if rule.apply_on_restart then return arules.execute(c, rule.properties, { rule.callback }) end
     local mini_properties = { -- These will always be applied.
       buttons = rule.properties.buttons,

@@ -25,7 +25,7 @@ local function resolve_tag(tag, s, i)
   return {} -- Unknown tag -- empty properties
 end
 ascreen.connect_for_each_screen(function(s)
-  return table_utils.foreach(tags, function(i, tag)
+  return table_utils.foreach(tags, function(tag, i)
     if not tag then return end
     tag = resolve_tag(tag, s, i)
     local params = gtable.crush({

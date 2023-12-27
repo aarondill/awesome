@@ -41,7 +41,7 @@ local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
 end
 local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScreenInstance
   if not currentScreen.valid then return end -- Check if the screen is still valid!
-  local managed_clients = table_utils.filter(currentScreen.clients, function(_, c)
+  local managed_clients = table_utils.filter(currentScreen.clients, function(c)
     return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
   end)
 
