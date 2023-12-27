@@ -1,19 +1,32 @@
 local abutton = require("awful.button")
 local akeygrabber = require("awful.keygrabber")
-local apps = require("configuration.apps")
 local beautiful = require("beautiful")
+local bind = require("util.bind")
 local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
+local compat = require("util.compat")
+local exit_screen_conf = require("configuration.exit-screen")
+local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
-local icons = require("theme.icons")
-local systemctl_cmd = require("util.systemctl_cmd")
+local tables = require("util.tables")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local bind = require("util.bind")
-local compat = require("util.compat")
-local tables = require("util.tables")
+
+---@class ExitScreenConf
+---if `true` then any unrecognized keys will exit
+---@field exit_keys string[]|true
+---@field buttons ExitScreenButton[]
+---@field opacity number|string? A number between 0-1 or a hexadecimal number between 00-FF. Note: this overrides the theme
+---@field fg string? A 6-digit hex color starting with #. Note: this overrides the theme
+---@field bg string? A 6-digit hex color starting with #. Note: this overrides the theme
+
+---@class ExitScreenButton
+---@field [1] string the display text of the button (note: the key will be appended)
+---@field [2]? string the key to be pressed
+---@field cmd? fun(self: ExitScreenButton, type: 'click'|'key'): any
+---@field icon? string The path to the icon to be displayed
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
@@ -29,20 +42,20 @@ local function exit_screen_hide()
   akeygrabber.stop(exit_screen_grabber)
   exit_screen.visible = false
 end
----@param key ExitScreenKey
+---@param button ExitScreenButton
 ---@param type 'key'|'click'
-local function run_cmd(key, type)
+local function run_cmd(button, type)
   exit_screen_hide() -- Always hide the exit screen first!
-  if not key.cmd then return end
-  return key:cmd(type)
+  if not button.cmd then return end
+  return button:cmd(type)
 end
 
 ---Build a clickable button for the exit screen
----@param key ExitScreenKey
----@return table button the button widget to show on the exit_screen
-local function buildButton(key)
-  local title = key[1] or "<No Text Provided>"
-  local k = key[2]
+---@param button ExitScreenButton
+---@return table button_widget the button widget to show on the exit_screen
+local function buildButton(button)
+  local title = button[1] or "<No Text Provided>"
+  local k = button[2]
   local text = k and ("%s (%s)"):format(title, k) or title
   local clickable = wibox.widget({
     widget = clickable_container,
@@ -52,10 +65,10 @@ local function buildButton(key)
     {
       widget = wibox.container.margin,
       margins = dpi(16),
-      wibox.widget.imagebox(key.icon),
+      wibox.widget.imagebox(button.icon),
     },
   })
-  clickable:connect_signal("button::release", bind.with_args(run_cmd, key, "click"))
+  clickable:connect_signal("button::release", bind.with_args(run_cmd, button, "click"))
   return wibox.widget({
     {
       widget = wibox.container.margin,
@@ -97,45 +110,32 @@ capi.screen.connect_signal("primary_changed", function(s) ---@param s AwesomeScr
 end)
 update_wibox_screen(capi.screen.primary)
 
-local bg = beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
-exit_screen.bg = bg:match("^#......") .. "DD" -- light transparency
-exit_screen.fg = beautiful.exit_screen_fg or beautiful.wibar_fg or beautiful.fg_normal or "#FEFEFE"
+local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
 
-local function suspend_command()
-  apps.open.lock()
-  return systemctl_cmd("suspend-then-hibernate")
-end
+local opacity = exit_screen_conf.opacity or beautiful.exit_screen_opacity or 0.62
+-- Convert a 0-1 number to hexadecimal
+local alpha = type(opacity) == "number" and string.format("%X", math.floor(opacity * 255)) or opacity
+exit_screen.bg = bg:find("^#%x+$") and bg:match("^#......") .. alpha or bg -- light transparency if we can parse it, else give up
+exit_screen.fg = exit_screen_conf.fg
+  or beautiful.exit_screen_fg
+  or beautiful.wibar_fg
+  or beautiful.fg_normal
+  or "#FEFEFE"
 
----@class ExitScreenKey
----@field [1] string the display text of the button (note: the key will be appended)
----@field [2]? string the key to be pressed
----@field cmd? fun(self: ExitScreenKey, type: 'click'|'key'): any
----@field icon? string The path to the icon to be displayed
-
----@type string[]|true
----Note: if exit_keys is `true` then any unrecognized keys will exit
-local exit_keys = true --- { "Escape", "q", "x" }
-local keys = { ---@type ExitScreenKey[]
-  { "Poweroff", "p", cmd = bind.with_args(systemctl_cmd, "poweroff"), icon = icons.power },
-  { "Restart", "r", cmd = bind.with_args(systemctl_cmd, "reboot"), icon = icons.restart },
-  { "Suspend-Then-Hibernate", "s", cmd = suspend_command, icon = icons.sleep },
-  { "Exit AWM", "e", cmd = bind.with_args(capi.awesome.quit, 0), icon = icons.logout },
-  { "Lock", "l", cmd = apps.open.lock, icon = icons.lock },
-}
-local buttons = tables.map(keys, buildButton) -- Note: keeps order of keys array
+local buttons = tables.map(exit_screen_conf.buttons, buildButton) -- Note: keeps order of buttons array
 
 local function exit_screen_show()
   exit_screen_grabber = akeygrabber.run(handle_error(function(mods, key, event)
     if event == "release" or not #mods == 0 then return false end -- this isn't my event!
 
-    for _, v in ipairs(keys) do
-      if key == v[2] then
-        run_cmd(v, "key") -- call the cmd
+    for _, button in ipairs(exit_screen_conf.buttons) do
+      if key == button[2] then
+        run_cmd(button, "key") -- call the cmd
         return true -- we handled this event
       end
     end
 
-    if exit_keys == true or gtable.hasitem(exit_keys, key) then
+    if exit_screen_conf.exit_keys == true or gtable.hasitem(exit_screen_conf.exit_keys, key) then
       exit_screen_hide()
       return true -- we handled this event
     end
