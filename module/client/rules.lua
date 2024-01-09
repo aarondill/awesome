@@ -125,11 +125,12 @@ if has_ruled then
   return capi.client.connect_signal(compat.signal.manage, function(c)
     if not capi.awesome.startup then return ruled.client.apply(c) end
     return table_utils.foreach(ruled.client.matching_rules(c), function(rule)
-      if rule.apply_on_restart then return ruled.client.execute(c, rule.properties, { rule.callback }) end
+      local props = rule.properties or {}
+      if rule.apply_on_restart then return ruled.client.execute(c, props, { rule.callback }) end
       local mini_properties = { -- These will always be applied.
-        buttons = rule.properties.buttons,
-        keys = rule.properties.keys,
-        size_hints_honor = rule.properties.size_hints_honor,
+        buttons = props.buttons,
+        keys = props.keys,
+        size_hints_honor = props.size_hints_honor,
       }
       return ruled.client.execute(c, mini_properties, {})
     end)
@@ -142,11 +143,12 @@ capi.client.disconnect_signal(compat.signal.manage, arules.apply)
 return capi.client.connect_signal(compat.signal.manage, function(c)
   if not capi.awesome.startup then return arules.apply(c) end
   return table_utils.foreach(arules.matching_rules(c, arules.rules), function(rule)
-    if rule.apply_on_restart then return arules.execute(c, rule.properties, { rule.callback }) end
+    local props = rule.properties or {}
+    if rule.apply_on_restart then return arules.execute(c, props, { rule.callback }) end
     local mini_properties = { -- These will always be applied.
-      buttons = rule.properties.buttons,
-      keys = rule.properties.keys,
-      size_hints_honor = rule.properties.size_hints_honor,
+      buttons = props.buttons,
+      keys = props.keys,
+      size_hints_honor = props.size_hints_honor,
     }
     return arules.execute(c, mini_properties, {})
   end)
