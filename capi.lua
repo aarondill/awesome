@@ -248,6 +248,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field coords fun(coords_table?: AwesomePosition, silent?: boolean): {[integer]: boolean, x: number, y: number}
 ---@field screen AwesomeScreenInstance
 ---@field current_wibox table? wibox
+---@field current_client AwesomeClientInstance?
 
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
@@ -312,6 +313,8 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field swap fun(self: AwesomeClientInstance, c: AwesomeClientInstance)
 ---Note: if s is nil, default is self.screen.index+1
 ---@field move_to_screen fun(self: AwesomeClientInstance, s?: screen)
+--- Introduced in V5. Replaces awful.autofocus
+---@field grant? fun(self: AwesomeClientInstance, req: string, context: string)
 ---@field skip_taskbar boolean
 
 ---@class AwesomeClient :AwesomeSignalClass
