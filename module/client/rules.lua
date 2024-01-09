@@ -91,7 +91,7 @@ local rules = {
     rule_any = { instance = { "fslite.vercel.app" } },
     callback = function(c) ---@param c AwesomeClientInstance
       -- HACK: chromium doesn't respect the initial property when using '--app=%s'
-      gtimer.start_new(0.09, function()
+      gtimer.start_new(0.2, function()
         if not c.valid then return end
         c.maximized = false
       end)
