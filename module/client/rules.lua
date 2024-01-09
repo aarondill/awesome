@@ -10,12 +10,23 @@ local client_buttons = require(..., "buttons") ---@module "module.client.buttons
 local client_keys = require("configuration.keys.client")
 local compat = require("util.compat")
 local gshape = require("gears.shape")
+local gtimer = require("gears.timer")
 local table_utils = require("util.tables")
 
 ---@class AwesomeClientInstance
 ---@field skip_decoration boolean? Whether to skip decorating the client instance. This is an injected field!
 
+---@alias AwesomeRule<T> { [string]: T }
+---@class (exact) AwesomeRules
+---@field rule? AwesomeRule<string>
+---@field rule_any? AwesomeRule<string[]>
+---@field except? AwesomeRule<string>
+---@field except_any? AwesomeRule<string[]>
+---@field properties? table
+---@field callback? fun(c: AwesomeClientInstance): any
+
 -- Rules
+---@type AwesomeRules[]
 local rules = {
   -- All clients will match this rule.
   {
@@ -70,11 +81,21 @@ local rules = {
   -- },
   {
     rule_any = { role = { "browser" } },
-    properties = { opacity = 0.90 },
+    properties = { opacity = 0.90, maximized = false },
   },
   {
     rule_any = { class = { "ripdrag" } }, -- Make ripdrag follow the tag
     properties = { sticky = true },
+  },
+  {
+    rule_any = { instance = { "fslite.vercel.app" } },
+    callback = function(c) ---@param c AwesomeClientInstance
+      -- HACK: chromium doesn't respect the initial property when using '--app=%s'
+      gtimer.start_new(0.09, function()
+        if not c.valid then return end
+        c.maximized = false
+      end)
+    end,
   },
   -- Dialog clients should float and have rounded corners
   {
@@ -83,6 +104,7 @@ local rules = {
       class = { "Wicd-client.py", "calendar.google.com", "ripdrag" },
       role = { "pop-up" },
     },
+    except_any = { instance = { "fslite.vercel.app" } },
     properties = {
       placement = aplacement.centered,
       ontop = true,
