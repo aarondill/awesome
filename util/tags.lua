@@ -7,7 +7,7 @@ local M = {}
 ---@param c AwesomeClientInstance | AwesomeScreenInstance | nil the client (or screen) whose screen the tag belongs to default focused.
 ---@return AwesomeTagInstance?
 function M.get_tag(i, c)
-  local screen = get_screen.get(c)
+  local screen = get_screen.get(c) or get_screen.focused()
   if not screen then return nil end
   local tag = screen.tags[i]
   return tag
