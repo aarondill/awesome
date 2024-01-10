@@ -125,6 +125,12 @@ function Battery(args)
     autostart = not not battery_path,
     callback = callback,
   })
+  require("module.suspend-listener").register_listener(function(is_before)
+    if is_before then return end
+    timer:again() -- Restart the timer
+    return callback()
+  end, { weak = widget })
+
   if not battery_path then
     files.find_battery_path(function(path)
       battery_path = path or battery_path
