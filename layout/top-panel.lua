@@ -20,10 +20,12 @@ local spawn = require("util.spawn")
 local suspend_listener = require("module.suspend-listener")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local get_screen = require("util.get_screen")
 
 ---@param args {screen: screen}
 local TopPanel = function(args)
-  local s = args.screen
+  local s = get_screen.get(args.screen) or get_screen.focused()
+  assert(s, "Could not get screen!")
   local top_panel_height = beautiful.top_panel_height or dpi(32)
   local panel = awful_wibar.new({
     ontop = true,
