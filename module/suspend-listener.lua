@@ -1,6 +1,7 @@
 local M = {}
----@alias suspendCallback fun(is_before: boolean)
+---@alias suspendCallback fun(is_before: boolean): any
 M.callbacks = {} ---@type table<suspendCallback, unknown>
+M.callbacks_weak = setmetatable({}, { __mode = "v" }) ---@type table<suspendCallback, unknown>
 
 local function handler(_bus, _sender, _object, _interface, _signal, params)
   -- "signals are sent right before (with the argument True) and
@@ -8,6 +9,9 @@ local function handler(_bus, _sender, _object, _interface, _signal, params)
   -- reboot/poweroff, resp. suspend/hibernate."
   local before_sleep = params[1]
   for cb in pairs(M.callbacks) do
+    cb(before_sleep)
+  end
+  for cb in pairs(M.callbacks_weak) do
     cb(before_sleep)
   end
 end
@@ -37,19 +41,33 @@ end
 
 ---Register a callback
 ---@param cb suspendCallback
+---@param opts? {weak: unknown} if weak is non-nil, use it as the key in a weak table
 ---@return boolean success whether something changed.
-M.register_listener = function(cb)
-  if M.callbacks[cb] then return false end
-  M.callbacks[cb] = true
+M.register_listener = function(cb, opts)
+  opts = opts or {}
+  if opts.weak then
+    if M.callbacks_weak[cb] == opts.weak then return false end
+    M.callbacks_weak[cb] = opts.weak
+  else
+    if M.callbacks[cb] then return false end
+    M.callbacks[cb] = true
+  end
   create_subscription() -- Ensure we are connected to dbus!
   return true
 end
 ---Remove a previously registered callback
 ---@param cb suspendCallback
+---@param opts? {weak: unknown} if weak is non-nil, use it in a weak table
 ---@return boolean success whether something changed.
-M.unregister_listener = function(cb)
-  if not M.callbacks[cb] then return false end
-  M.callbacks[cb] = nil
+M.unregister_listener = function(cb, opts)
+  opts = opts or {}
+  if opts.weak then
+    if M.callbacks_weak[cb] == nil then return false end
+    M.callbacks_weak[cb] = nil
+  else
+    if not M.callbacks[cb] then return false end
+    M.callbacks[cb] = nil
+  end
   remove_subscription()
   return true
 end
