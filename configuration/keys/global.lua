@@ -27,6 +27,14 @@ local gkey = function(modKeys, key, press, release, data)
   return awful_key.new(modKeys, key, press, release, data)
 end
 
+---send a notification alerting the new state of `what`
+---@param what string
+---@param state boolean
+local function toggle_notif(what, state)
+  local stateStr = state and "enabled" or "disabled"
+  return notifs.info(("%s: %s"):format(what, stateStr), { timeout = 2, ignore_suspend = true })
+end
+
 local modkey, altkey = mod.modKey, mod.altKey
 
 local setup_next_spawned_handler
@@ -115,12 +123,16 @@ local globalKeys = gtable.join(
   gkey({ modkey, "Shift" }, "c", function()
     -- This is dynamic so it doesn't require compositor before needed (thusly creating a tempfile)
     -- The file will be cleaned up, but it's better to avoid creating it if not needed.
-    return require("configuration.apps.compositor").toggle()
+    local compositor = require("configuration.apps.compositor")
+    compositor.toggle()
+    return toggle_notif("compositor", compositor.is_running())
   end, { description = "Start/Stop Compositor", group = "awesome" }),
 
   --- Note: this should really only be needed while setting a new configuration
   gkey({ modkey, "Shift" }, "Print", function()
-    return require("module.autorandr").toggle_listener()
+    local autorandr = require("module.autorandr")
+    autorandr.toggle_listener()
+    return toggle_notif("autorandr", autorandr.is_active)
   end, { description = "Start/Stop autorandr", group = "awesome" }),
 
   gkey({}, "Print", function()
