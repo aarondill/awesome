@@ -34,23 +34,22 @@ local widget_template = {
 
 local function should_warn_battery(last_warning_time, status, charge, low_power, low_power_frequency)
   if status == "Charging" then return end
-  if charge < 0 or charge > low_power then return end
+  if not charge or charge < 0 or charge > low_power then return end
   local time_since_last = os.difftime(os.time(), last_warning_time)
   return time_since_last >= low_power_frequency
 end
 
 ---Handler for files.get_battery_info
 ---@param info battery_info
----@return {icon: string, charge: number, status: string}
+---@return {icon: string, charge?: number, status: string}
 local function handle_battery_info(info)
-  local charge = info.capacity and tonumber(info.capacity) or 0
+  local charge = info.capacity and tonumber(info.capacity)
   local status = info.status and string.lower(info.status)
   local batteryIconName = "battery"
-  local default_charge = 100
 
   if status == "charging" or status == "full" then batteryIconName = batteryIconName .. "-charging" end
 
-  local roundedCharge = math.floor(charge / 10) * 10
+  local roundedCharge = math.floor((charge or 0) / 10) * 10
   if roundedCharge == 0 then
     batteryIconName = batteryIconName .. "-outline"
   elseif roundedCharge ~= 100 then
@@ -58,12 +57,10 @@ local function handle_battery_info(info)
   end
 
   local remaining = calculate_time_remaining(info)
-
-  local f_charge = math.floor(charge)
-  local non_nan_charge = (f_charge ~= f_charge) and default_charge or f_charge
+  -- local non_nan_charge = (f_charge ~= f_charge) and default_charge or f_charge
   return {
     icon = files.get_icon(batteryIconName),
-    charge = non_nan_charge,
+    charge = charge and math.floor(charge),
     status = string.format("%s%s", strings.first_upper(status or ""), remaining and ", " .. remaining or ""),
   }
 end
@@ -104,7 +101,7 @@ function Battery(args)
     local text = widget:get_children_by_id("text")[1]
 
     icon:set_image(res.icon)
-    text:set_text(tostring(res.charge) .. "%")
+    text:set_text(tostring(res.charge or "??") .. "%")
     battery_popup.text = strings.first_upper(res.status)
     -- if X minutes have elapsed since the last warning
     if should_warn_battery(last_warning_time, info.status, res.charge, low_power, low_power_frequency) then
