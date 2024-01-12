@@ -39,29 +39,34 @@ local function should_warn_battery(last_warning_time, status, charge, low_power,
   return time_since_last >= low_power_frequency
 end
 
+---@param status string?
+---@param charge number?
+---@return string
+local function get_battery_icon_name(status, charge)
+  local battery_icon = "battery"
+
+  if not charge then return battery_icon .. "-unknown" end
+
+  if status == "charging" or status == "full" then battery_icon = battery_icon .. "-charging" end
+
+  local roundedCharge = math.floor(charge / 10) * 10
+  if roundedCharge == 100 then return battery_icon end
+  if roundedCharge == 0 then return battery_icon .. "-outline" end
+  return ("%s-%s"):format(battery_icon, roundedCharge)
+end
+
 ---Handler for files.get_battery_info
 ---@param info battery_info
 ---@return {icon: string, charge?: number, status: string}
 local function handle_battery_info(info)
   local charge = info.capacity and tonumber(info.capacity)
   local status = info.status and string.lower(info.status)
-  local batteryIconName = "battery"
-
-  if status == "charging" or status == "full" then batteryIconName = batteryIconName .. "-charging" end
-
-  local roundedCharge = math.floor((charge or 0) / 10) * 10
-  if roundedCharge == 0 then
-    batteryIconName = batteryIconName .. "-outline"
-  elseif roundedCharge ~= 100 then
-    batteryIconName = batteryIconName .. "-" .. roundedCharge
-  end
-
   local remaining = calculate_time_remaining(info)
-  -- local non_nan_charge = (f_charge ~= f_charge) and default_charge or f_charge
+  local battery_icon_name = get_battery_icon_name(status, charge)
   return {
-    icon = files.get_icon(batteryIconName),
+    icon = files.get_icon(battery_icon_name),
     charge = charge and math.floor(charge),
-    status = string.format("%s%s", strings.first_upper(status or ""), remaining and ", " .. remaining or ""),
+    status = ("%s%s"):format(strings.first_upper(status or ""), remaining and ", " .. remaining or ""),
   }
 end
 
