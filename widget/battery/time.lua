@@ -24,7 +24,9 @@ local function calculate_time_remaining(info)
   local remaining_energy = info.energy_now and (tonumber(info.energy_now) / 1000) or nil
   local remaining_capacity = info.charge_now and (tonumber(info.charge_now) / 1000) or nil
 
-  if present_rate and remaining_energy and not remaining_capacity then
+  if not present_rate or not remaining_energy then return format_message(nil, "rate information unavailable") end
+
+  if not remaining_capacity then
     if voltage then
       remaining_capacity = (remaining_energy * 1000) / voltage
       present_rate = (present_rate * 1000) / voltage
@@ -33,11 +35,11 @@ local function calculate_time_remaining(info)
     end
   end
 
-  if not present_rate or not remaining_energy then return format_message(nil, "rate information unavailable") end
   -- convert energy values (in mWh) to charge values (in mAh) if needed and possible
   if last_capacity_unit and not last_capacity then
     last_capacity = voltage and (last_capacity_unit * 1000 / voltage) or last_capacity_unit
   end
+  if not last_capacity then return format_message(nil, "battery capacity unavailable") end
 
   if present_rate <= MIN_PRESENT_RATE then present_rate = 0 end
 
