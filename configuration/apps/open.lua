@@ -91,21 +91,25 @@ end
 ---TODO: mode should be an enum
 function open.rofi(mode)
   mode = type(mode) == "string" and mode or nil -- Non-strings should be silently ignored
-  local cmd = rofi_command(mode)
-  return spawn.spawn(cmd, {
-    on_failure_callback = function()
-      --- no mode, or drun or run use promptbox, otherwise warn!
-      if not mode or mode == "drun" and mode == "run" then
-        local s = ascreen.focused() ---@type AwesomeScreenInstance?
-        local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
-        if not promptbox then return end
-        promptbox:run()
-      elseif mode == "window" then
-        require("awful.menu").clients({ theme = { width = 250 } }, { keygrabber = true, coords = { x = 525, y = 330 } })
-      else
-        notifs.critical(("Rofi is required to open the %s picker."):format(mode))
-      end
+  local function rofi_failure_callback()
+    --- no mode, or drun or run use promptbox, otherwise warn!
+    if not mode or mode == "drun" and mode == "run" then
+      local s = ascreen.focused() ---@type AwesomeScreenInstance?
+      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
+      if not promptbox then return end
+      promptbox:run()
+    elseif mode == "window" then
+      require("awful.menu").clients({ theme = { width = 250 } }, { keygrabber = true, coords = { x = 525, y = 330 } })
+    else
+      notifs.critical(("Rofi is required to open the %s picker."):format(mode))
+    end
+  end
+  return spawn.spawn(rofi_command(mode), {
+    sn_rules = false, -- rofi supports it, but if it fails, we don't want to wait for it.
+    exit_callback_err = function(reason, code)
+      if reason == "exit" and code == 127 then rofi_failure_callback() end
     end,
+    on_failure_callback = rofi_failure_callback,
   })
 end
 
