@@ -128,8 +128,9 @@ local globalKeys = gtable.join(
     -- This is dynamic so it doesn't require compositor before needed (thusly creating a tempfile)
     -- The file will be cleaned up, but it's better to avoid creating it if not needed.
     local compositor = require("configuration.apps.compositor")
+    local is_running = compositor.is_running()
     compositor.toggle()
-    return toggle_notif("compositor", compositor.is_running())
+    return toggle_notif("compositor", not is_running)
   end, { description = "Start/Stop Compositor", group = "awesome" }),
 
   --- Note: this should really only be needed while setting a new configuration
