@@ -95,13 +95,16 @@ function open.rofi(mode)
   return spawn.spawn(cmd, {
     on_failure_callback = function()
       --- no mode, or drun or run use promptbox, otherwise warn!
-      if mode and mode ~= "drun" and mode ~= "run" then
-        return notifs.critical(("Rofi is required to open the %s picker."):format(mode))
+      if not mode or mode == "drun" and mode == "run" then
+        local s = ascreen.focused() ---@type AwesomeScreenInstance?
+        local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
+        if not promptbox then return end
+        promptbox:run()
+      elseif mode == "window" then
+        require("awful.menu").clients({ theme = { width = 250 } }, { keygrabber = true, coords = { x = 525, y = 330 } })
+      else
+        notifs.critical(("Rofi is required to open the %s picker."):format(mode))
       end
-      local s = ascreen.focused() ---@type AwesomeScreenInstance?
-      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
-      if not promptbox then return end
-      return promptbox:run()
     end,
   })
 end
