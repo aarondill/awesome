@@ -2,6 +2,7 @@ local compat = require("util.compat")
 local get_child_by_id = require("util.get_child_by_id")
 local require = require("util.rel_require")
 local tags = require("util.tags")
+local throttle = require("util.throttle")
 
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
@@ -61,6 +62,8 @@ do
     return capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
   end
 end
+--- throttle delay on tag changes
+local delay = 0.25 ---@type number
 -- Key bindings
 local globalKeys = gtable.join(
   -- Hotkeys
@@ -81,11 +84,12 @@ local globalKeys = gtable.join(
   gkey({ modkey }, "w", bind.with_args(apps.open.rofi, "window"), { description = "Window Picker", group = "awesome" }),
 
   -- Tag management
-  gkey({ modkey }, "Right", atag.viewnext, { description = "View next", group = "tag" }),
-  gkey({ modkey }, "Left", atag.viewprev, { description = "View previous", group = "tag" }),
-  gkey({ modkey }, "Tab", atag.viewnext, { description = "View next", group = "tag" }),
-  gkey({ modkey, "Shift" }, "Tab", atag.viewprev, { description = "View previous", group = "tag" }),
-  gkey({ modkey }, "Escape", atag.history.restore, { description = "Go back", group = "tag" }),
+  ---PERF: These are throttled because they invoke a wallpaper change (which is expensive).
+  gkey({ modkey }, "Right", throttle(atag.viewnext, delay), { description = "View next", group = "tag" }),
+  gkey({ modkey }, "Left", throttle(atag.viewprev, delay), { description = "View previous", group = "tag" }),
+  gkey({ modkey }, "Tab", throttle(atag.viewnext, delay), { description = "View next", group = "tag" }),
+  gkey({ modkey, "Shift" }, "Tab", throttle(atag.viewprev, delay), { description = "View previous", group = "tag" }),
+  gkey({ modkey }, "Escape", throttle(atag.history.restore, delay), { description = "Go back", group = "tag" }),
 
   -- Layout management
 
