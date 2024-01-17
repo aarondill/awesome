@@ -80,7 +80,8 @@ local rules = {
   -- 	end,
   -- },
   {
-    rule_any = { role = { "browser" } },
+    -- Note: when using --app=%s, the role=browser is not applied, instead use the class
+    rule_any = { role = { "browser" }, class = { "Vivaldi-stable" } },
     properties = { opacity = 0.90, maximized = false },
   },
   {
