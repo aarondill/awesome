@@ -2,6 +2,7 @@
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
 local require = require("util.rel_require")
+local throttle = require("util.throttle")
 
 local Icon = require("widget.material.icon")
 local atooltip = require("awful.tooltip")
@@ -32,11 +33,10 @@ local widget_template = {
   layout = wibox.layout.fixed.horizontal,
 }
 
-local function should_warn_battery(last_warning_time, status, charge, low_power, low_power_frequency)
-  if status == "Charging" then return end
-  if not charge or charge < 0 or charge > low_power then return end
-  local time_since_last = os.difftime(os.time(), last_warning_time)
-  return time_since_last >= low_power_frequency
+local function should_warn_battery(status, charge, low_power)
+  if status == "Charging" then return false end
+  if not charge then return false end
+  return charge >= 0 and charge <= low_power
 end
 
 ---@param status string?
@@ -88,7 +88,7 @@ function Battery(args)
   local low_power = args.low_power or 15
   local low_power_frequency = args.low_power_frequency or 300
   local battery_path = args.battery_path or nil
-  local last_warning_time = 0
+  local throttled_show_battery_warning = throttle(show_battery_warning, low_power_frequency)
 
   local widget = wibox.widget(widget_template)
   local battery_popup = atooltip({
@@ -108,10 +108,8 @@ function Battery(args)
     icon:set_image(res.icon)
     text:set_text(tostring(res.charge or "??") .. "%")
     battery_popup.text = strings.first_upper(res.status)
-    -- if X minutes have elapsed since the last warning
-    if should_warn_battery(last_warning_time, info.status, res.charge, low_power, low_power_frequency) then
-      last_warning_time = os.time()
-      show_battery_warning(res.charge)
+    if should_warn_battery(info.status, res.charge, low_power) then
+      return throttled_show_battery_warning(res.charge) -- This will handle too many notifs
     end
   end
 
