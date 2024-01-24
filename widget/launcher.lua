@@ -24,8 +24,13 @@ local function launcher_new(args, menu)
     })
   end
   local opts = gtable.crush({ image = icons.launcher }, args, true)
-  opts.buttons =
-    gtable.join(abutton.new({}, 1, nil, apps.open.rofi), abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu)))
+  opts.buttons = gtable.join(
+    abutton.new({}, 1, nil, apps.open.rofi),
+    abutton.new({}, 2, nil, function() -- Open exit screen on middle click
+      return require("module.exit-screen").show()
+    end),
+    abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu))
+  )
   opts.widget = IconButton
   return wibox.widget(opts)
 end
