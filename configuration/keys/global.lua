@@ -18,6 +18,8 @@ local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
+local delay = require("configuration").tag_throttle_delay
+
 ---A typed helper around awful_key.new -- Note: specific to this file
 ---@param modKeys string[]
 ---@param key string
@@ -62,8 +64,6 @@ do
     return capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
   end
 end
---- throttle delay on tag changes
-local delay = 0.25 ---@type number
 -- Key bindings
 local globalKeys = gtable.join(
   -- Hotkeys
