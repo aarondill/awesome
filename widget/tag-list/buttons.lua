@@ -3,6 +3,8 @@ local atag = require("awful.tag")
 local capi = require("capi")
 local gtable = require("gears.table")
 local modkey = require("configuration.keys.mod").modKey
+local throttle = require("util.throttle")
+local delay = require("configuration").tag_throttle_delay
 
 return gtable.join(
   abutton.new({}, 1, function(t) ---@param t AwesomeTagInstance
@@ -23,10 +25,18 @@ return gtable.join(
     if not capi.client.focus then return end
     capi.client.focus:toggle_tag(t)
   end),
-  abutton.new({}, 4, function(t) ---@param t AwesomeTagInstance
-    atag.viewprev(t.screen)
-  end),
-  abutton.new({}, 5, function(t) ---@param t AwesomeTagInstance
-    atag.viewnext(t.screen)
-  end)
+  abutton.new(
+    {},
+    4,
+    throttle(function(t) ---@param t AwesomeTagInstance
+      atag.viewprev(t.screen)
+    end, delay)
+  ),
+  abutton.new(
+    {},
+    5,
+    throttle(function(t) ---@param t AwesomeTagInstance
+      atag.viewnext(t.screen)
+    end, delay)
+  )
 )
