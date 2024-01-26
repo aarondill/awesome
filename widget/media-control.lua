@@ -8,6 +8,7 @@ local gtimer = require("gears.timer")
 local spawn = require("util.spawn")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local clickable_container = require("widget.material.clickable-container")
 
 ---@class MediaControl.args
 local defaults = {
@@ -52,16 +53,28 @@ function MediaControl:init(args)
   gtable.crush(self, defaults, true) -- Set default
   if args then gtable.crush(self, args or {}, true) end -- Set any user overrides
 
+  local update_widget = bind(self.update_widget, self)
   local widget_template = {
-    layout = wibox.layout.fixed.horizontal,
-    { id = "icon", widget = wibox.widget.imagebox },
+    widget = clickable_container,
+    buttons = gtable.join(
+      -- button 1: left click  - play/pause
+      abutton({}, 1, bind(self.PlayPause, self, update_widget)),
+      -- button 4: scroll up - previous song
+      abutton({}, 4, bind(self.debounce_song_changes, self, self.Previous, self, update_widget)),
+      -- button 5: scroll down   - next song
+      abutton({}, 5, bind(self.debounce_song_changes, self, self.Next, self, update_widget))
+    ),
     {
-      layout = wibox.container.scroll.horizontal,
-      step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
-      max_size = self.max_width ~= 0 and self.max_width or nil,
-      speed = self.scroll_speed,
-      fps = self.fps,
-      { id = "current_song", widget = wibox.widget.textbox },
+      layout = wibox.layout.fixed.horizontal,
+      { id = "icon", widget = wibox.widget.imagebox },
+      {
+        layout = wibox.container.scroll.horizontal,
+        step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+        max_size = self.max_width ~= 0 and self.max_width or nil,
+        speed = self.scroll_speed,
+        fps = self.fps,
+        { id = "current_song", widget = wibox.widget.textbox },
+      },
     },
   }
   self.widget = wibox.widget(widget_template)
@@ -80,16 +93,6 @@ function MediaControl:init(args)
   end
 
   self:watch(self.refresh_rate)
-
-  local update_widget = bind(self.update_widget, self)
-  self.widget:buttons(gtable.join(
-    -- button 1: left click  - play/pause
-    abutton({}, 1, bind(self.PlayPause, self, update_widget)),
-    -- button 4: scroll up - previous song
-    abutton({}, 4, bind(self.debounce_song_changes, self, self.Previous, self, update_widget)),
-    -- button 5: scroll down   - next song
-    abutton({}, 5, bind(self.debounce_song_changes, self, self.Next, self, update_widget))
-  ))
 
   return self.widget
 end
