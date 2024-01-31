@@ -46,23 +46,38 @@ do
   --- The tag to move the next spawned window to.
   local next_spawned_tag = nil ---@type AwesomeTagInstance?
   local next_should_jump = true ---@type boolean?
-  ---@param c AwesomeClientInstance
-  local function next_spawned_handler(c) ---@return nil
-    local t = next_spawned_tag
-    next_spawned_tag = nil
+  local function next_spawned_handler(c) ---@param c AwesomeClientInstance
+    local t, j = next_spawned_tag, next_should_jump
+    next_spawned_tag, next_should_jump = nil, nil
     if not t then return end -- If no tag, the stop (this has already been called)
-    -- Move the client to the indicated tag
-    c:move_to_tag(t)
-    if next_should_jump then c:jump_to() end -- Follow/Focus the client.
+    c:move_to_tag(t) -- Move the client to the indicated tag
+    if j then c:jump_to() end -- Follow/Focus the client.
+  end
+  ---@param tag AwesomeTagInstance
+  ---@param jump boolean?
+  ---@param disable boolean?
+  local function notif_jump(tag, jump, disable)
+    local msg = ("move next window to tag '%s'%s"):format(tag.name, jump and " (jump)" or "")
+    if disable then msg = "disabled " .. msg end
+    return notifs.info(msg, { timeout = 2, ignore_suspend = true })
   end
   ---A function to be used in a keymapping that will ensure the next window spawned is moved to tag i (on focused screen)
+  ---Toggles the status. If i and should_jump are the same between two calls, it will be removed instead
   ---@param i integer
   ---@param should_jump boolean? default true
   function setup_next_spawned_handler(i, should_jump)
-    next_spawned_tag = tags.get_tag(i)
-    next_should_jump = should_jump == nil and true or should_jump
-    return capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
+    local t = tags.get_tag(i)
+    local j = should_jump == nil and true or should_jump or false
+    local disable = t == next_spawned_tag and j == next_should_jump -- Same args, disable it
+    next_spawned_tag, next_should_jump = nil, nil
+    if t and not disable then -- if no tag, disable
+      next_spawned_tag, next_should_jump = t, j
+    end
+    if not t then return end -- Don't notify if no tag found
+    return notif_jump(t, j, disable) -- Inform the user of the current state (there's no other visual indicator)
   end
+  -- Connect the spawn handler. this is a noop if next_spawned_tag is false
+  capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
 end
 -- Key bindings
 local globalKeys = gtable.join(
