@@ -272,6 +272,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeTag :AwesomeSignalClass
 
 ---@class AwesomeTagInstance :AwesomeSignalClassInstance
+---@field name string
 ---@field layout AwesomeLayout
 ---@field layouts AwesomeLayout[]
 ---@field view_only fun(self: AwesomeTagInstance)
