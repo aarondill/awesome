@@ -1,3 +1,4 @@
+local bind = require("util.bind")
 local capi = require("capi")
 local dbus = require("util.dbus")
 local gfile = require("gears.filesystem")
@@ -5,21 +6,13 @@ local notifs = require("util.notifs")
 local path = require("util.path")
 local spawn = require("util.spawn")
 local suspend_listener = require("module.suspend-listener")
+local throttle = require("util.throttle")
 
 local M = {}
 
 local conf_dir = gfile.get_configuration_dir()
--- Debounce it!
-local last_time = nil
-local function spawn_autorandr()
-  local time = os.time()
-  if last_time then
-    local time_since_last = os.difftime(time, last_time)
-    if time_since_last <= 2 then return end
-  end
-  last_time = time
-  return spawn.nosn({ "autorandr", "--change", "--default", "default" }, { on_failure_callback = notifs.error })
-end
+local spawn_args = { "autorandr", "--change", "--default", "default" }
+local spawn_autorandr = throttle(bind(spawn.nosn, spawn_args, { on_failure_callback = notifs.error }), 2)
 
 ---Run on resume from suspend
 local function suspend_handler(is_before)
