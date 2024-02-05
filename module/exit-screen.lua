@@ -1,12 +1,12 @@
 local abutton = require("awful.button")
 local akeygrabber = require("awful.keygrabber")
+local ascreen = require("awful.screen")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
-local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
 local compat = require("util.compat")
 local exit_screen_conf = require("configuration.exit-screen")
-local gcolor = require("gears.color")
+local get_screen = require("util.get_screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
@@ -102,14 +102,6 @@ local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
   exit_screen.screen = s
 end
 
-capi.screen.connect_signal("primary_changed", function(s) ---@param s AwesomeScreenInstance
-  ---This handler gets called twice. Once on the old screen and once on the new screen
-  ---If this is the old screen, ignore it, wait until the new screen is called.
-  if s ~= capi.screen.primary then return end
-  return update_wibox_screen(s)
-end)
-update_wibox_screen(capi.screen.primary)
-
 local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
 
 local opacity = exit_screen_conf.opacity or beautiful.exit_screen_opacity or 0.62
@@ -124,7 +116,11 @@ exit_screen.fg = exit_screen_conf.fg
 
 local buttons = tables.map(exit_screen_conf.buttons, buildButton) -- Note: keeps order of buttons array
 
-local function exit_screen_show()
+---@param opts? {screen?: screen}
+local function exit_screen_show(opts)
+  opts = opts or {}
+  local screen = get_screen.get(opts.screen) or get_screen.focused()
+  update_wibox_screen(screen)
   exit_screen_grabber = akeygrabber.run(handle_error(function(mods, key, event)
     if event == "release" or not #mods == 0 then return false end -- this isn't my event!
 
