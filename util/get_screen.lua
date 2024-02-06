@@ -3,6 +3,11 @@ local capi = require("capi")
 local M = {}
 
 ---@return AwesomeScreenInstance?
+function M.primary()
+  return capi.screen.primary
+end
+
+---@return AwesomeScreenInstance?
 function M.focused()
   return ascreen.focused()
 end
