@@ -13,6 +13,7 @@ local handle_error = require("util.handle_error")
 local tables = require("util.tables")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local capi = require("capi")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -87,7 +88,9 @@ local function buildButton(button)
 end
 
 local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
-  if not s then return end
+  if not s and exit_screen.screen.valid then return end -- no s given and we have a valid screen already
+  s = s or get_screen.focused() or get_screen.primary() -- Switch to focused screen if previous screen was removed
+  if not s or not s.valid then return end
   if exit_screen.screen ~= s then
     if exit_screen.screen then -- Ensure the screen is good
       exit_screen.screen:disconnect_signal("property::geometry", update_wibox_screen)
@@ -95,11 +98,14 @@ local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
     s:connect_signal("property::geometry", update_wibox_screen)
   end
   local screen_geometry = s.geometry
-  exit_screen.x = screen_geometry.x
-  exit_screen.y = screen_geometry.y
-  exit_screen.height = screen_geometry.height
-  exit_screen.width = screen_geometry.width
+  exit_screen:geometry({
+    x = screen_geometry.x,
+    y = screen_geometry.y,
+    height = screen_geometry.height,
+    width = screen_geometry.width,
+  })
   exit_screen.screen = s
+  exit_screen:emit_signal("widget::redraw_needed")
 end
 
 local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
@@ -121,8 +127,12 @@ local function exit_screen_show(opts)
   opts = opts or {}
   local screen = get_screen.get(opts.screen) or get_screen.focused()
   update_wibox_screen(screen)
-  exit_screen_grabber = akeygrabber.run(handle_error(function(mods, key, event)
+  ---@param mods string[]
+  ---@param key string
+  ---@param event "release"|"press"
+  exit_screen_grabber = akeygrabber.run(function(mods, key, event)
     if event == "release" or not #mods == 0 then return false end -- this isn't my event!
+    -- if exit_screen.screen ~= get_screen.focused() then return false end -- ignore non-focused events
 
     for _, button in ipairs(exit_screen_conf.buttons) do
       if key == button[2] then
@@ -137,7 +147,7 @@ local function exit_screen_show(opts)
     end
 
     return false -- we didn't handle this event
-  end))
+  end)
   exit_screen.visible = true
 end
 
