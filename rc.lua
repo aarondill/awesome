@@ -70,7 +70,7 @@ require("module.update-notifier")
 require("module.autorandr").start_listener() -- Ensure this is after submodules
 
 -- Setup all configurations
-require("configuration.apps.compositor").autostart() -- Start the compositor on startup
+-- require("configuration.apps.compositor").autostart() -- Start the compositor on startup
 require("configuration.rofi_dynamic")() -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
 capi.root.keys(require("configuration.keys.global"))
