@@ -7,6 +7,7 @@ local path = require("util.path")
 local wibox = require("wibox")
 local cairo = require("lgi").cairo
 local GdkPixbuf = require("lgi").GdkPixbuf
+local tables = require("util.tables")
 --- Place in a module so it can be changed at runtime
 local M = {
   --- Note: This is directly related to the amount of memory AwesomeWM will use
@@ -24,11 +25,14 @@ local function get_wp_path(num) ---@param num integer
   return path.resolve(gfilesystem.get_themes_dir(), "default", "background.png")
 end
 
-local function get_geometry(s)
+local function get_geometry(s) ---@param s AwesomeScreenInstance
   if s and s.geometry then return s.geometry end
   local width, height = capi.root.size()
   return { x = 0, y = 0, width = width, height = height }
 end
+
+---@class AwesomeScreenInstance
+---@field _wallpaper? table A table describing the last wallpaper set on the screen. This is an injected field!
 
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
   if not s.selected_tag then return end
@@ -38,6 +42,12 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   local geom = get_geometry(s)
   local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
   local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
+
+  local new_wallpaper = { wp_path, aspect_w, aspect_h, M.QUALITY_REDUCTION }
+  -- The wallpaper (and size) hasn't changed. Don't modify it.
+  if tables.deep_equal(s._wallpaper, new_wallpaper) then return end
+  s._wallpaper = new_wallpaper
+
   local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
   if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
   local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
@@ -74,10 +84,13 @@ capi.screen.connect_signal("property::geometry", function(s) ---@param s Awesome
   return s:emit_signal("request::wallpaper")
 end)
 
-local focused_screen = ascreen.focused() ---@type AwesomeScreenInstance?
-if capi.awesome.version <= "v4.3" and focused_screen then
+if capi.awesome.version <= "v4.3" then
   -- This is not signaled for the first wallpaper in older versions
   -- PERF: This is an expensive operation. Wait until setup is done.
-  gtimer.delayed_call(focused_screen.emit_signal, focused_screen, "request::wallpaper")
+  gtimer.delayed_call(function()
+    for s in capi.screen do
+      s:emit_signal("request::wallpaper")
+    end
+  end)
 end
 return M
