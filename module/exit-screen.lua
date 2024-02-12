@@ -1,6 +1,5 @@
 local abutton = require("awful.button")
 local akeygrabber = require("awful.keygrabber")
-local ascreen = require("awful.screen")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
@@ -9,11 +8,9 @@ local exit_screen_conf = require("configuration.exit-screen")
 local get_screen = require("util.get_screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
-local handle_error = require("util.handle_error")
 local tables = require("util.tables")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local capi = require("capi")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit

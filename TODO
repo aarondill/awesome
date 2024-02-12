@@ -1,8 +1,8 @@
 #!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 if true then return end
----TODO: open exit-screen on focused screen
----show() should take an optional screen
+---TODO: Status bar indicator with logo for distro.
+---Source icons from /boot/grub/themes/argon/icons/
 
 -- TODO: implement notification center (only in awesome-git)
 -- awesome-shell@widgets/noti-center.lua is a good place to start
