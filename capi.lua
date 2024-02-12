@@ -11,7 +11,7 @@ local capi = { ---@diagnostic disable :undefined-global These are injected by Aw
   keygrabber = keygrabber, ---@type AwesomeKeygrabber
   mousegrabber = mousegrabber, ---@type AwesomeMousegrabber
   mouse = mouse, ---@type AwesomeMouse
-  screen = screen, ---@type AwesomeScreen
+  screen = screen, ---@type AwesomeScreen|AwesomeScreenIterator
   button = button, ---@type AwesomeButton
   tag = tag, ---@type AwesomeTag
   window = window, ---@type AwesomeWindow
@@ -250,6 +250,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field current_wibox table? wibox
 ---@field current_client AwesomeClientInstance?
 
+---@alias AwesomeScreenIterator fun(_: nil, prev?: AwesomeScreenInstance):AwesomeScreenInstance?
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
 ---@field [integer] AwesomeScreenInstance?
