@@ -3,13 +3,14 @@
 ---If a field is missing, add it and report it.
 
 ---Compare against gio.FileType.*, or use gio.FileType[GFileType] to get a string
----@alias GFileType 0|1|2|3|4|5|6
+---@alias GFileTypeEnum 0|1|2|3|4|5|6
+---@alias GFileType "UNKNOWN"|"REGULAR"|"DIRECTORY"|"SYMBOLIC_LINK"|"SPECIAL"|"SHORTCUT"|"MOUNTABLE"
 
 ---@class GFileInfo
 ---@field has_attribute fun(self: GFileInfo, attribute: string): boolean
 ---@field list_attributes fun(self: GFileInfo, namespace?: string): string[]?
 ---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_TYPE.
----@field get_file_type fun(self: GFileInfo): GFileType
+---@field get_file_type fun(self: GFileInfo): GFileTypeEnum
 ---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_NAME.
 ---@field get_name fun(self: GFileInfo): string
 ---Gets the file’s size (in bytes)
