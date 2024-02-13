@@ -20,6 +20,7 @@ local spawn = require("util.spawn")
 local suspend_listener = require("module.suspend-listener")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local distro = require("widget.distro")
 local get_screen = require("util.get_screen")
 
 ---@param args {screen: screen}
@@ -57,6 +58,7 @@ local TopPanel = function(args)
         stop_icon = icons.stop,
         pause_icon = icons.pause,
       }),
+      { distro(), margins = dpi(4), widget = wibox.container.margin },
       {
         {
           horizontal = true,
@@ -91,11 +93,7 @@ local TopPanel = function(args)
       },
       {
         Battery({ timeout = 15 }),
-        left = dpi(4),
-        right = dpi(4),
-        top = dpi(4),
-        bottom = dpi(4),
-
+        margins = dpi(4),
         widget = wibox.container.margin,
         id = "battery_widget",
       },
