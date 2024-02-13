@@ -29,7 +29,8 @@ local M = {}
 ---Defaults to 1: The caller of this function.
 ---@return string
 function M.path(level)
-  return getpath(level)
+  local path = getpath(level)
+  return path
 end
 ---Gets the file name of the file that contains the function at level 'level'
 ---Doesn't include the path or the extension of the file
