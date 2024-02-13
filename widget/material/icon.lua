@@ -1,9 +1,7 @@
 -- Default widget requirements
 local base = require("wibox.widget.base")
 local gtable = require("gears.table")
-
--- Commons requirements
-local wibox = require("wibox")
+local imagebox = require("wibox.widget.imagebox")
 
 -- Local declarations
 
@@ -68,7 +66,7 @@ local function new(icon, size, render_empty)
   local ret = base.make_widget(nil, nil, { enable_properties = true })
   gtable.crush(ret, Icon, true)
   ret._private.icon = icon
-  ret._private.imagebox = wibox.widget.imagebox(icon)
+  ret._private.imagebox = imagebox(icon)
   ret._private.size = size
   ret._private.render_empty = render_empty
   return ret
