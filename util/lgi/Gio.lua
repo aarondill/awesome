@@ -7,6 +7,7 @@
 ---@class Gio
 ---@field FILE_ATTRIBUTE_STANDARD_TYPE "standard::type"
 ---@field File GFileStatic
+---@field FileType { [0]: "UNKNOWN", [1]: "REGULAR", [2]: "DIRECTORY", [3]: "SYMBOLIC_LINK", [4]: "SPECIAL", [5]: "SHORTCUT", [6]: "MOUNTABLE", }
 
 ---@class GFileStatic
 ---@field new_for_path fun(path: string): GFile
