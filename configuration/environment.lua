@@ -11,6 +11,7 @@ local function setenv()
   pathvar = table.concat({ deps_bindir, pathvar }, path.delimiter)
   posix.setenv("PATH", pathvar) -- Set the PATH environment variable to include /deps/.bin/
 
+  posix.setenv("GTK_THEME", "Yaru:dark") -- Prefer dark theme
   posix.setenv("GTK_IM_MODULE", "xim") -- Fix for browsers
   posix.setenv("QT_IM_MODULE", "xim") -- Not sure if this works or not, but whatever
   posix.setenv("XMODIFIERS", "@im=ibus")
