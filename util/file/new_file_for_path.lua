@@ -10,7 +10,7 @@
 ---@field has_attribute fun(self: GFileInfo, attribute: string): boolean
 ---@field list_attributes fun(self: GFileInfo, namespace?: string): string[]?
 ---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_TYPE.
----@field get_file_type fun(self: GFileInfo): GFileTypeEnum
+---@field get_file_type fun(self: GFileInfo): GFileType
 ---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_NAME.
 ---@field get_name fun(self: GFileInfo): string
 ---Gets the file’s size (in bytes)
