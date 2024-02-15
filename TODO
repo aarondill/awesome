@@ -1,6 +1,6 @@
 #!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
-if true then return end
+error("You can't require the todo file!")
 ---TODO: Import all files automatically (copy from lazy.nvim lsmod)
 
 -- TODO: implement notification center (only in awesome-git)
