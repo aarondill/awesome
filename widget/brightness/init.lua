@@ -81,7 +81,7 @@ function bcontrol:init(args)
       self:update()
     end)
   end
-  require("module.suspend-listener").register_listener(function(is_before)
+  require("util.suspend-listener").register_listener(function(is_before)
     if is_before then return end
     self.timer:again()
     return self:update()

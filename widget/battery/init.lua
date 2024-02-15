@@ -125,7 +125,7 @@ function Battery(args)
     autostart = not not battery_path,
     callback = callback,
   })
-  require("module.suspend-listener").register_listener(function(is_before)
+  require("util.suspend-listener").register_listener(function(is_before)
     if is_before then return end
     timer:again() -- Restart the timer
     return callback()
