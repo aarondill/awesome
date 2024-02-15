@@ -71,7 +71,7 @@ end
 
 ---@param opts? NotifyOpts|string
 local function has_msg(opts)
-  return type(opts) == "table" and (opts.message or opts.text)
+  return type(opts) == "table" and (opts.message or opts.text) or nil
 end
 ---@alias loglevel "low"| "normal"| "critical"| "ok"| "info"| "warn"
 ---Create a notification.
@@ -96,7 +96,10 @@ function M.notify(loglevel, text, opts, extra_opts)
   end
 
   opts = opts and gtable.clone(opts, false) or {} --- A deep clone is not needed, since no values' values are changed
-  opts.preset = (loglevel and naughty.config.presets[loglevel]) or opts.preset
+  if loglevel then
+    opts.preset = naughty.config.presets[loglevel]
+    if not opts.preset then error("Invalid loglevel: " .. loglevel) end
+  end
   if extra_opts then gtable.crush(opts, extra_opts) end
 
   return _notify(text, opts)

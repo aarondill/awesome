@@ -67,6 +67,7 @@ require("module.exit-screen")
 require("module.client")
 require("module.reminder")
 require("module.update-notifier")
+require("module.lastlog")
 require("module.autorandr").start_listener() -- Ensure this is after submodules
 
 -- Setup all configurations

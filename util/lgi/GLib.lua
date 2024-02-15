@@ -13,6 +13,7 @@
 ---If the file name has no directory components “.” is returned
 ---@field path_get_dirname fun(path: string): string
 ---@field get_home_dir fun(): string
+---@field get_user_name fun(): string
 ---@field find_program_in_path fun(prog: string): string?
 
 local lgi = require("lgi") ---@type lgi
