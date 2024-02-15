@@ -5,7 +5,7 @@ local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local spawn = require("util.spawn")
-local suspend_listener = require("module.suspend-listener")
+local suspend_listener = require("util.suspend-listener")
 local throttle = require("util.throttle")
 
 local M = {}
