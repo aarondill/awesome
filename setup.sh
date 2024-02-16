@@ -23,8 +23,8 @@ if [ "$install" -eq 1 ]; then
     sudo apt install -- \
       awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance \
       brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome \
-      blueman diodon udiskie xss-lock notification-daemon ibus numlockx alsa-utils \
-      playerctl libinput-tools x11-xserver-utils redshift
+      blueman diodon udiskie xss-lock notification-daemon ibus numlockx playerctl \
+      libinput-tools x11-xserver-utils redshift pulseaudio-utils
     ;;
   arch)
     if ! has yay; then
@@ -35,7 +35,7 @@ if [ "$install" -eq 1 ]; then
       awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
       lxappearance brightnessctl flameshot pasystray network-manager-applet \
       polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus \
-      numlockx alsa-utils playerctl libinput xorg-xrandr redshift
+      numlockx playerctl libinput xorg-xrandr redshift libpulse
     ;;
   '') # Strict compliance would set this to 'linux', but it's not useful to do.
     err "Could not find ID_LIKE or ID in /etc/os-release. Please set the FORCE_ID variable if your system is a supported system."

@@ -25,9 +25,12 @@ local default = {
     down = { "brightnessctl", "set", "10%-", "-e", "-n", "5" },
   },
   volume = {
-    up = { "amixer", "sset", "Master", "5%+", "unmute" },
-    down = { "amixer", "sset", "Master", "5%-", "unmute" },
-    toggle_mute = { "amixer", "sset", "Master", "toggle" },
+    up = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%" },
+    down = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%" },
+    toggle_mute = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle" },
+    -- up = { "amixer", "sset", "Master", "5%+", "unmute" },
+    -- down = { "amixer", "sset", "Master", "5%-", "unmute" },
+    -- toggle_mute = { "amixer", "sset", "Master", "toggle" },
   },
 }
 
