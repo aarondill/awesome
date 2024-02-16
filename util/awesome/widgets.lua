@@ -29,7 +29,7 @@ end
 ---@param replace_in table
 ---@param cb? fun(cmd:string[], replace_widget:table, replace_in:table) defaults to spawning cmd
 function M.clickable_if(cmd, replace_widget, replace_in, cb)
-  if not cmd or not replace_widget or not replace_in or not cb then error("clickable_if requires 4 arguments") end
+  if not cmd or not replace_widget or not replace_in then error("clickable_if requires 3 arguments") end
   local cmdname = type(cmd) == "string" and cmd or assert(cmd[1], "no command specified")
   local path = GLib.find_program_in_path(cmdname)
   if not path then return end

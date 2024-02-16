@@ -11,11 +11,9 @@ return function(...)
   for n = 1, select("#", ...) do
     local arg = select(n, ...)
     assertions.type(arg, "table", "argument " .. n)
-    for argn = 1, (arg.n or #arg) do
-      local v = arg[argn]
-      tn = tn + 1
-      t[tn] = v
-    end
+    local alen = arg.n or #arg
+    table.move(arg, 1, alen, tn + 1, t)
+    tn = tn + alen
   end
   t.n = tn
   return t

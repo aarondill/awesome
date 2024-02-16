@@ -2,7 +2,7 @@ local require = require("util.rel_require")
 local widgets = require("util.awesome.widgets")
 
 local ascreen = require("awful.screen")
-local concat_command = require("util.concat_command")
+local concat_command = require("util.command.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
 local lgi = require("lgi")
 local notifs = require("util.notifs")

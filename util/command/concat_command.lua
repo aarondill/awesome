@@ -1,26 +1,15 @@
-local shell_escape = require("util.shell_escape")
----Stringifies a table of commands/args. Quoting each one and seperating by a space
----@param command string[]
----@return string
-local function stringify_command(command)
-  return shell_escape(command)
-end
+local rel_require = require("util.rel_require")
+local shell_escape = rel_require(..., "shell_escape") ---@module "util.command.shell_escape"
+local assertions = require("util.types.assertions")
+local tables = require("util.tables")
 
 ---concat_command when command is a table
 ---@param command string[]
 ---@param args string|string[]
 ---@return string[]|string new_cmd string if args is a string
 local function __concat_command_tbl(command, args)
-  if type(args) == "string" then return stringify_command(command) .. " " .. args end
-  -- shallow copy the table.
-  -- This shouldn't be an issue since strings are stateless
-  ---@type string[]
-  local new_command = table.move(command, 1, #command, 1, {})
-
-  for _, a in ipairs(args) do
-    table.insert(new_command, a)
-  end
-  return new_command
+  if type(args) == "string" then return table.concat({ shell_escape(command), args }, " ") end
+  return tables.tbl_join(command, args)
 end
 
 ---concat_command when command is a string
@@ -28,9 +17,8 @@ end
 ---@param args string|string[]
 ---@return string new_cmd
 local function __concat_command_str(command, args)
-  if type(args) == "string" then return command .. " " .. args end
-
-  return command .. stringify_command(args) -- handles quotes
+  if type(args) == "table" then args = shell_escape(args) end
+  return table.concat({ command, args }, " ") -- handles quotes
 end
 
 ---Concat arguments to a command.
@@ -44,18 +32,11 @@ end
 ---@overload fun(command: string, args: string|string[]): string
 ---@overload fun(command: string[]|string, args: string): string
 local function concat_command(command, args)
-  do
-    local t_args = type(args)
-    if t_args ~= "string" and t_args ~= "table" then error("args must be a string or a table", 2) end
-  end
+  assertions.type(args, { "string", "table" }, "args", 2)
+  assertions.type(command, { "string", "table" }, "command", 2)
 
-  if type(command) == "string" then
-    return __concat_command_str(command, args)
-  elseif type(command) == "table" then
-    return __concat_command_tbl(command, args)
-  else
-    error("command must be a string or table", 2)
-  end
+  if type(command) == "string" then return __concat_command_str(command, args) end
+  return __concat_command_tbl(command, args)
 end
 
 return concat_command

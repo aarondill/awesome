@@ -1,7 +1,7 @@
 local path = require("util.path")
 local require = require("util.rel_require")
 
-local xdg_user_dir = require("util.xdg_user_dir")
+local xdg_user_dir = require("util.command.xdg_user_dir")
 local terminal = "wezterm"
 
 -- List of apps to start by default on some actions - Don't use shell features.
