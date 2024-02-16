@@ -60,14 +60,7 @@ require("module.tags") -- Setup tags
 require("module.persistent-tag") -- Keep selected tag on restart
 
 -- Init all modules
-require("module.quake") -- Should prob be before client.decorate, and keys.global, as they both require it.
-require("module.auto-start")
-require("module.systemd-inhibit")
-require("module.exit-screen")
-require("module.client")
-require("module.reminder")
-require("module.update-notifier")
-require("module.lastlog")
+require("util.dir_require")("module")
 require("module.autorandr").start_listener() -- Ensure this is after submodules
 
 -- Setup all configurations
