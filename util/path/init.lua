@@ -1,8 +1,9 @@
 local GLib = require("util.lgi").GLib
+local metainit = require("util.metainit")
 local new_file_for_path = require("util.file.new_file_for_path")
-local require = require("util.rel_require")
----@diagnostic disable: assign-type-mismatch -- To allow nil values
-local M = {
+
+---@diagnostic disable: assign-type-mismatch
+local M = metainit(..., {
   tildify = nil, ---@module 'util.path.tildify'
   untildify = nil, ---@module 'util.path.untildify'
   get_filepath = nil, ---@module 'util.path.get_filepath'
@@ -15,15 +16,7 @@ local M = {
   dirname = nil, ---@module 'util.path.dirname'
   extname = nil, ---@module 'util.path.extname'
   get_home = nil, ---@module 'util.path.get_home'
-}
----@diagnostic enable: assign-type-mismatch
-local this_path = ... ---@type string
-setmetatable(M, {
-  __index = function(_, key)
-    local m = require(this_path, key, false) -- No TCO!
-    return m
-  end,
-})
+}) ---@diagnostic enable: assign-type-mismatch
 
 ---The directory separator as a string. This is “/” on UNIX machines and “\" under Windows.
 M.sep = GLib.DIR_SEPARATOR_S
