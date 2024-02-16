@@ -19,7 +19,7 @@ local open = {}
 local function spawn_notif_on_err(cmd, opts)
   opts = opts or {}
   opts.on_failure_callback = function(err)
-    local cmd_string = type(cmd) == "table" and tableutils.concat(cmd, "'%s'", " ") or tostring(cmd)
+    local cmd_string = type(cmd) == "table" and tableutils.concat(cmd, " ", "'%s'") or tostring(cmd)
     return notifs.critical( -- Warn the user!
       ("Error: %s\nCommand: %s"):format(err, cmd_string),
       { title = "Failed to execute program!" }

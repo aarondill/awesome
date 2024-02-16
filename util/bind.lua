@@ -1,6 +1,6 @@
-local array_join = require("util.array_join")
 local gtable = require("gears.table")
 local iscallable = require("util.iscallable")
+local tables = require("util.tables")
 local function get_cache(cache, key)
   local func, len, outer = key.func, key.len, key.outer
   local k = gtable.find_first_key(cache, function(props)
@@ -42,7 +42,7 @@ function Bind.bind(func, ...)
 
   cache[key] = function(...)
     if not outer then return func(...) end -- save processing/memory in storing the above table
-    local args = select("#", ...) > 0 and array_join.concat(outer, ...) or outer -- Avoid the copy if possible
+    local args = select("#", ...) > 0 and tables.tbl_concat(outer, ...) or outer -- Avoid the copy if possible
     return func(table.unpack(args, 1, args.n))
   end
   return cache[key]

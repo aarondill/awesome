@@ -1,5 +1,4 @@
 local shell_escape = require("util.shell_escape")
-local tableutils = require("util.tables")
 ---Stringifies a table of commands/args. Quoting each one and seperating by a space
 ---@param command string[]
 ---@return string
@@ -17,7 +16,11 @@ local function __concat_command_tbl(command, args)
   -- This shouldn't be an issue since strings are stateless
   ---@type string[]
   local new_command = table.move(command, 1, #command, 1, {})
-  return tableutils.table_append(new_command, args)
+
+  for _, a in ipairs(args) do
+    table.insert(new_command, a)
+  end
+  return new_command
 end
 
 ---concat_command when command is a string
