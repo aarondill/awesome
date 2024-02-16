@@ -25,9 +25,9 @@ local default = {
     down = { "brightnessctl", "set", "10%-", "-e", "-n", "5" },
   },
   volume = {
-    up = { "amixer", "-D", "pulse", "sset", "Master", "5%+", "unmute" },
-    down = { "amixer", "-D", "pulse", "sset", "Master", "5%-", "unmute" },
-    toggle_mute = { "amixer", "-D", "pulse", "sset", "Master", "toggle" },
+    up = { "amixer", "sset", "Master", "5%+", "unmute" },
+    down = { "amixer", "sset", "Master", "5%-", "unmute" },
+    toggle_mute = { "amixer", "sset", "Master", "toggle" },
   },
 }
 
