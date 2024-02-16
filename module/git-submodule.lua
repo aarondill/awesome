@@ -1,6 +1,6 @@
 local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
-local shell_escape = require("util.shell_escape")
+local shell_escape = require("util.command.shell_escape")
 
 -- NEVER use io.popen. But, I *need* this to be synchronous so the modules are available later in the code.
 -- So, this is a rare exception. This command should only take a long time the first time it is called.

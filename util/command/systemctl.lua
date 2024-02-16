@@ -2,7 +2,7 @@ local bind = require("util.bind")
 local spawn = require("util.spawn")
 ---Run `systemctl cmd`, handling sudo and polkit
 ---@param cmd string? the command to run.
-local function systemctl_cmd(cmd)
+local function systemctl(cmd)
   cmd = cmd or "suspend-then-hibernate"
   local spawner = bind.with_args(spawn.nosn, { "systemctl", cmd })
   -- Try with sudo incase no password is needed (for hibernate)
@@ -12,4 +12,4 @@ local function systemctl_cmd(cmd)
   })
 end
 
-return systemctl_cmd
+return systemctl

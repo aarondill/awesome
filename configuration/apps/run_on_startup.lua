@@ -4,7 +4,7 @@ local GLib = require("util.lgi.GLib")
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 local path = require("util.path")
-local shell_escape = require("util.shell_escape")
+local shell_escape = require("util.command.shell_escape")
 local which = GLib.find_program_in_path
 
 local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
