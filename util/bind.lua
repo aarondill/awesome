@@ -26,10 +26,10 @@ Bind.with_args_cache = setmetatable({}, { __mode = "v" })
 
 ---Return a function which will call func with the original args and any other arguments passed (javascript's function.bind)
 ---I've tried typing this, but it's not possible with lua-language-server's implementation.
----@generic Ret
----@param func fun(...: unknown): Ret
+---@generic Ret, Ret2, Ret3, Ret4
+---@param func fun(...: unknown): Ret, Ret2, Ret3, Ret4
 ---@param ... unknown
----@return fun(...: unknown): Ret
+---@return fun(...: unknown): Ret, Ret2, Ret3, Ret4
 function Bind.bind(func, ...)
   if not iscallable(func) then error("func must be a function", 2) end
   local cache = Bind.bind_cache
@@ -51,10 +51,10 @@ Bind.with_start_args = Bind.bind -- Alias for symetry with Bind.with_args
 
 ---Return a function which will call func with the original args and only those args.
 ---I've tried typing this, but it's not possible with lua-language-server's implementation.
----@generic Ret
----@param func fun(...: unknown): Ret
+---@generic Ret, Ret2, Ret3, Ret4
+---@param func fun(...: unknown): Ret, Ret2, Ret3, Ret4
 ---@param ... unknown
----@return fun(): Ret
+---@return fun(): Ret, Ret2, Ret3, Ret4
 function Bind.with_args(func, ...)
   if not iscallable(func) then error("func must be a function", 2) end
   local cache = Bind.with_args_cache

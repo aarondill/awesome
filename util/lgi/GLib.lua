@@ -15,6 +15,7 @@
 ---@field get_home_dir fun(): string
 ---@field get_user_name fun(): string
 ---@field find_program_in_path fun(prog: string): string?
+---@field Error GErrorStatic
 
 local lgi = require("lgi") ---@type lgi
 local GLib = lgi.GLib

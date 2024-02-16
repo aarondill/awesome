@@ -7,7 +7,20 @@
 ---An intentionally opaque class that must be passed to the _finish method. This should only ever be used *once*!
 ---@class GAsyncResult
 ---@alias GAsyncReadyCallback<T> fun(self: T, task: GAsyncResult)
+
+---These are performed through lgi
+---@alias LGI.Error.domain table|string
+---@alias LGI.Error.code string|integer
+
 ---@class GError :userdata
+---@field message string
+---@field domain string
+---@field code string
+---@field matches fun(self: GError, other: GError): boolean
+---@field matches fun(self: GError, domain: LGI.Error.domain, code: LGI.Error.code): boolean
+
+---@class GErrorStatic
+---@field new fun(domain: LGI.Error.domain, code: LGI.Error.code, message: string): GError
 
 ---@class lgi
 ---@field Gio Gio
