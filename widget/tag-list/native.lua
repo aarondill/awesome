@@ -5,7 +5,7 @@ local ataglist = require("awful.widget.taglist")
 local clickable_container = require("widget.material.clickable-container")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
 
 local M = { mt = {} }

@@ -77,7 +77,7 @@ local function tagCallback(tag) ---@param tag AwesomeTagInstance
   return gtimer.delayed_call(changesOnScreen, s)
 end
 
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 capi.client.connect_signal(compat.signal.manage, clientCallback)
 capi.client.connect_signal(compat.signal.unmanage, clientCallback)
 capi.client.connect_signal("property::hidden", clientCallback)

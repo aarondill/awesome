@@ -7,7 +7,7 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local bind = require("util.bind")
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.

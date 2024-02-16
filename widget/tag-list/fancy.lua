@@ -18,7 +18,7 @@
 --     return gears.shape.rounded_rect(cr, w, h, theme.border_radius)
 -- end
 local capi = require("capi")
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 local quake = require("module.quake")
 local require = require("util.rel_require")
 

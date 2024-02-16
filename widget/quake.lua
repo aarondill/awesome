@@ -4,9 +4,8 @@ local aclient = require("awful.client")
 local ascreen = require("awful.screen")
 local bind = require("util.bind")
 local capi = require("capi")
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
-local spawn = require("util.spawn")
 
 -- Quake-like Dropdown application spawn
 ---@class QuakeTerminalWidget
