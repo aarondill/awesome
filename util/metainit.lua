@@ -6,6 +6,8 @@ function metatable:__index(key)
   assert(type(self.__filename) == "string", missing_msg:format("__filename"))
   local rel_require = require("util.rel_require")
   local m = rel_require(self.__module, key, false, self.__filename) -- No TCO!
+  -- local msg = ("Requiring key: %s.%s: %s"):format(self.__module, key, m)
+  -- require("naughty").notify({ text = msg })
   return m
 end
 

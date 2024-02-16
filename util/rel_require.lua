@@ -33,7 +33,8 @@ local function relative_require(this_path, path, assert, _this_filename)
   if not this_path then return nil end
   --- True if the calling file is an init.lua and is called by require('module.sub')
 
-  local is_init_not_called = (_this_filename or source_path.filename(2)) ~= this_path:match("%.(.*)$")
+  local last_path_segment = this_path:match(".*%.(.*)$") or this_path
+  local is_init_not_called = (_this_filename or source_path.filename(2)) ~= last_path_segment
   local this_module = is_init_not_called and this_path or (this_path):match("^(.-)%.[^%.]+$") -- returns 'lib.foo'
 
   if assert then
