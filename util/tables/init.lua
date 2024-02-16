@@ -11,5 +11,6 @@ local M = require("util.metainit")(..., { ---@diagnostic disable: assign-type-mi
   map_val = nil, ---@module "util.tables.map_val"
   tbl_concat = nil, ---@module "util.tables.tbl_concat"
   tbl_join = nil, ---@module "util.tables.tbl_join"
+  clone = nil, ---@module "util.tables.clone"
 }) ---@diagnostic enable: assign-type-mismatch
 return M
