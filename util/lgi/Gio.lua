@@ -6,8 +6,11 @@
 
 ---@class Gio
 ---@field FILE_ATTRIBUTE_STANDARD_TYPE "standard::type"
+---@field FILE_ATTRIBUTE_STANDARD_NAME "standard::name"
 ---@field File GFileStatic
+---@field FileQueryInfoFlags {NOFOLLOW_SYMLINKS: 1, NONE: 0}
 ---@field FileType { [0]: "UNKNOWN", [1]: "REGULAR", [2]: "DIRECTORY", [3]: "SYMBOLIC_LINK", [4]: "SPECIAL", [5]: "SHORTCUT", [6]: "MOUNTABLE", }
+---@field IOErrorEnum { [string]: integer, [integer]: string }
 
 ---@class GFileStatic
 ---@field new_for_path fun(path: string): GFile

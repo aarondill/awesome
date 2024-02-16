@@ -33,10 +33,12 @@ local function list_directory(path, args, cb)
 
   args.match = nil -- don't pass to scan_directory
   return scan_directory(path, args, function(files, err)
-    if files == nil then return cb(files, err) end
-    local names = {}
+    if files == nil then return cb(nil, err) end
+    local names = {} ---@type string[]
     for k, v in ipairs(files) do
-      names[k] = v[FILE_NAME_PROP]
+      local name = v[FILE_NAME_PROP]
+      assert(type(name) == "string", "File name is not a string")
+      names[k] = name
     end
     return cb(names, nil)
   end)

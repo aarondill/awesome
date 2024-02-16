@@ -1,5 +1,5 @@
 local assert_util = require("util.assert_util")
-local gio = require("lgi").require("Gio")
+local gio = require("util.lgi").Gio
 local gtable = require("gears.table")
 local iscallable = require("util.iscallable")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
@@ -15,20 +15,28 @@ local iscallable = require("util.iscallable")
 ---Note: this will *only* be called on files that have at least one (given) attribute set.
 ---@field filter? filter_func
 
+---@alias FileInfoRet table<string, string|table>
+---@alias FileInfoCB fun(info?: FileInfoRet[], error?: userdata) The function to call when done. If failed, it will be called with nil
+
+---@param content GFileEnumerator
+---@param cb FileInfoCB
+---@param ret FileInfoRet[]
 local function enumerate_handler_finish(content, cb, ret)
-  content:close_async(-1, nil, nil) -- no callback is needed, as I don't care about the result
+  content:close_async(-1) -- no callback is needed, as I don't care about the result
   return cb(ret, nil)
 end
 local function default_filter() ---@type filter_func
   return true, true
 end
----@param cb fun(info?: table, error?: userdata) The function to call when done. If failed, it will be called with nil
+---@param content GFileEnumerator
+---@param cb FileInfoCB The function to call when done. If failed, it will be called with nil
 ---@param args scan_directory_args
----@param ret table? used for recursive calls
+---@param ret? FileInfoRet[] used for recursive calls
 local function enumerate_handler(content, args, cb, ret)
   ret = ret or {} -- create if not passed
   -- if max is specified, block size should not be greater than max
-  local block_size = args.max and math.min(args.block_size or 128, args.max) or args.block_size
+  local block_size =
+    assert(args.max and math.min(args.block_size, args.max) or args.block_size, "args.block_size must be set")
   local filter = args.filter or default_filter -- User defined filter or else default true filter
   if block_size <= 0 then -- next request would not return anything
     -- max files have been hit -- or invalid input
@@ -36,11 +44,13 @@ local function enumerate_handler(content, args, cb, ret)
   end
   return content:next_files_async(block_size, 0, nil, function(file_enum, task2)
     local file_list = file_enum:next_files_finish(task2)
+    if not file_list then return enumerate_handler_finish(content, cb, ret) end
     --- Number of files included in this iteration.
     --- Used to calculate when we hit the max number of files desired.
     --- This should not be incremeneted if the filter returns false.
     local included_files = 0
     for _, file in ipairs(file_list) do
+      ---@type FileInfoRet
       local ret_attr, has_attr = {}, false
       for _, v in ipairs(args.attributes) do
         local attr, val = gio[v], nil
@@ -92,8 +102,8 @@ end
 ---
 ---@param path string the directory to scan
 ---@param args scan_directory_args? a table describing the list of requestion attributes
----@param cb fun(info?: table, error?: userdata): any? The function to call when done. If failed, it will be called with nil
----@overload fun(path: string, cb: fun(info?: table))
+---@param cb FileInfoCB The function to call when done. If failed, it will be called with nil
+---@overload fun(path: string, cb: FileInfoCB)
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function scan_directory(path, args, cb)
   if not path then return end

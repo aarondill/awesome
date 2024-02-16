@@ -1,6 +1,5 @@
-local exists = require("util.file.exists")
+local exists = require("util.file.sync.exists")
 local gstring = require("gears.string")
-local strings = require("util.strings")
 -- This test is inaccurate, but given separate / and /boot partitions and the
 -- fact that only some architectures have ld-linux.so, I can't see anything
 -- better. Make sure this test has a high number so that more accurate tests
