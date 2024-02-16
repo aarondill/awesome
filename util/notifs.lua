@@ -115,6 +115,7 @@ M.ok = bind(M.notify, "ok") ---@type logFunc
 M.info = bind(M.notify, "info") ---@type logFunc
 M.warn = bind(M.notify, "warn") ---@type logFunc
 M.error = bind(M.notify, "critical") ---@type logFunc -- error as synonym for critical
+M.debug = bind(M.notify, "warn") ---@type logFunc -- debug as synonym for warn
 -- Once
 M.low_once = bind(M.notify_once, "low") ---@type logFunc
 M.normal_once = bind(M.notify_once, "normal") ---@type logFunc
@@ -123,5 +124,6 @@ M.ok_once = bind(M.notify_once, "ok") ---@type logFunc
 M.info_once = bind(M.notify_once, "info") ---@type logFunc
 M.warn_once = bind(M.notify_once, "warn") ---@type logFunc
 M.error_once = bind(M.notify_once, "critical") ---@type logFunc -- error as synonym for critical
+M.debug = bind(M.notify, "warn") ---@type logFunc -- debug as synonym for warn
 
 return M
