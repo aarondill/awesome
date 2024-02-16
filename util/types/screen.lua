@@ -24,8 +24,4 @@ function M.get(o)
   return nil -- IDK
 end
 
-return setmetatable(M, {
-  __call = function(_, ...)
-    return M.get(...)
-  end,
-})
+return M

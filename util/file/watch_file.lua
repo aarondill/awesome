@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local require = require("util.rel_require")
 
 local watch = require(..., "watch") ---@module "util.file.watch"
@@ -9,8 +9,8 @@ local watch = require(..., "watch") ---@module "util.file.watch"
 ---@return GioFileMonitor? monitor Make sure this is not garbage collected!
 ---@return userdata? error error if monitor ir nil
 local function watch_file(path, flags, cb)
-  assert_util.iscallable(cb, "cb")
-  assert_util.type(path, "string", "path")
+  assertions.iscallable(cb, "cb")
+  assertions.type(path, "string", "path")
   return watch(path, "monitor_file", flags, cb)
 end
 return watch_file

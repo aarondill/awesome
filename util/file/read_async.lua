@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local new_file_for_path = require("util.file.new_file_for_path")
 
 ---Get the contents of a file - Async :)
@@ -9,8 +9,8 @@ local new_file_for_path = require("util.file.new_file_for_path")
 ---@param cb fun(content?: string, error?: userdata, path: Path): any
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_read(path, cb)
-  assert_util.type(path, "string", "path")
-  assert_util.iscallable(cb, "cb")
+  assertions.type(path, "string", "path")
+  assertions.iscallable(cb, "cb")
 
   return new_file_for_path(path):load_contents_async(nil, function(file, task)
     -- onsuccess: content, etag_out

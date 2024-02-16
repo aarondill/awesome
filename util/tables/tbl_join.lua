@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 --- return a new array containing the concatenation of all of its
 --- parameters. Array parameters have their values shallow-copied
 --- to the final array. All parameters are must be tables, or else
@@ -10,7 +10,7 @@ return function(...)
   local tn = 0
   for n = 1, select("#", ...) do
     local arg = select(n, ...)
-    assert_util.type(arg, "table", "argument " .. n)
+    assertions.type(arg, "table", "argument " .. n)
     for argn = 1, (arg.n or #arg) do
       local v = arg[argn]
       tn = tn + 1

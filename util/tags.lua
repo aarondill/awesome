@@ -1,5 +1,5 @@
 local atag = require("awful.tag")
-local get_screen = require("util.get_screen")
+local screen = require("util.types.screen")
 local M = {}
 
 ---Get a tag by index
@@ -7,9 +7,9 @@ local M = {}
 ---@param c AwesomeClientInstance | AwesomeScreenInstance | nil the client (or screen) whose screen the tag belongs to default focused.
 ---@return AwesomeTagInstance?
 function M.get_tag(i, c)
-  local screen = get_screen.get(c) or get_screen.focused()
-  if not screen then return nil end
-  local tag = screen.tags[i]
+  local s = screen.get(c) or screen.focused()
+  if not s then return nil end
+  local tag = s.tags[i]
   return tag
 end
 ---Show a tag by index.

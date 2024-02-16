@@ -2,7 +2,7 @@ local path = require("util.path")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local beautiful = require("beautiful")
 local config_file_dir = require(..., "apps.conffile_dir") ---@module "configuration.apps.conffile_dir"
 local strings = require("util.strings")
@@ -40,7 +40,7 @@ end
 ---@param opts DynamicRofiWriteOptions?
 ---@param cb fun(error?: userdata)? function to call when done.
 local function write_conf(opts, cb)
-  assert_util.iscallable(cb, true, "cb")
+  assertions.iscallable(cb, true, "cb")
   opts = opts or {}
   local panel_height = opts.panel_height
   if not panel_height then

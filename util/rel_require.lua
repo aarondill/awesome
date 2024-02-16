@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local pcall_handler = require("util.pcall_handler")
 local source_path = require("util.source_path")
 
@@ -16,8 +16,8 @@ local source_path = require("util.source_path")
 ---@overload fun(module: string, path: nil, assert?: boolean): any, unknown -- The regular require
 local function relative_require(this_path, path, assert, _this_filename)
   if assert == nil then assert = true end
-  assert_util.type(assert, "boolean", "assert")
-  assert_util.type(this_path, { "string", "nil" }, "this_path")
+  assertions.type(assert, "boolean", "assert")
+  assertions.type(this_path, { "string", "nil" }, "this_path")
   if type(this_path) == "string" and path == nil then
     path, this_path = this_path, nil -- swap the arguments
     -- Native require function
@@ -25,10 +25,10 @@ local function relative_require(this_path, path, assert, _this_filename)
     local ok, ret = pcall_handler(pcall(require, path))
     return ok and table.unpack(ret, 1, ret.n) or nil
   end
-  assert_util.type(path, "string", "path") -- wait until after above check, in case used like normal require
+  assertions.type(path, "string", "path") -- wait until after above check, in case used like normal require
   if assert then
     local msg = ("Could not find module. Call %s from a required file."):format(debug.getinfo(1, "n").name)
-    assert_util.assert(this_path, msg)
+    assertions.assert(this_path, msg)
   end
   if not this_path then return nil end
   --- True if the calling file is an init.lua and is called by require('module.sub')
@@ -39,7 +39,7 @@ local function relative_require(this_path, path, assert, _this_filename)
 
   if assert then
     local msg = ("Could not find dir of module '%s'"):format(this_path)
-    assert_util.assert(this_module, msg)
+    assertions.assert(this_module, msg)
   end
   if not this_module then return nil end
 
@@ -47,7 +47,7 @@ local function relative_require(this_path, path, assert, _this_filename)
   local ok, ret = pcall_handler(pcall(require, module_path))
   if assert then
     local msg = ("Could not require module '%s'.\nerror:\n%s"):format(module_path, ret)
-    assert_util.assert(ok, msg)
+    assertions.assert(ok, msg)
   end
   if not ok then return nil end
   return table.unpack(ret, 1, ret.n)

@@ -1,6 +1,6 @@
 local gio = require("lgi").require("Gio")
 local handle_error = require("util.handle_error")
-local iscallable = require("util.iscallable")
+local iscallable = require("util.types.iscallable")
 ---@alias GioFileMonitorMethod "monitor" | "monitor_directory" | "monitor_file"
 ---@alias GioFileMonitorFlags "NONE" | "WATCH_HARD_LINKS" | "SEND_MOVED" | "WATCH_MOVES" | "WATCH_MOUNTS"
 ---@alias GioFileMonitorEvent "CHANGED" | "CHANGES_DONE_HINT" | "DELETED" | "CREATED" | "ATTRIBUTE_CHANGED" | "PRE_UNMOUNT" | "UNMOUNTED" | "MOVED" | "RENAMED" | "MOVED_IN" | "MOVED_OUT"

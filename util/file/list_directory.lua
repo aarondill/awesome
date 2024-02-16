@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local gtable = require("gears.table")
 local require = require("util.rel_require")
 local FILE_NAME_PROP = "FILE_ATTRIBUTE_STANDARD_NAME"
@@ -20,8 +20,8 @@ local function list_directory(path, args, cb)
     cb, args = args, nil
   end
   args = args and gtable.clone(args) or {} ---@type list_directory_args
-  assert_util.type(args, "table", "args")
-  assert_util.type(args.match, { "string", "nil" }, "args.match")
+  assertions.type(args, "table", "args")
+  assertions.type(args.match, { "string", "nil" }, "args.match")
 
   local match = args.match
   args.filter = match -- if a match is specified, filter based on it.

@@ -1,4 +1,4 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local gfilesystem = require("gears.filesystem")
 local gstring = require("gears.string")
 local path = require("util.path")
@@ -55,7 +55,7 @@ end
 ---dir should be in capital letters
 ---@param dir string the XDG_USER_DIR to search for
 local function get_xdg_user_dir(dir)
-  assert_util.type(dir, "string", "dir")
+  assertions.type(dir, "string", "dir")
   dir = dir:upper()
   if gstring.startswith(dir, "XDG_") then -- Turn XDG_CONFIG_HOME to CONFIG
     if gstring.endswith(dir, "_HOME") then
