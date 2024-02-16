@@ -1,7 +1,7 @@
-local assert_util = require("util.assert_util")
+local assertions = require("util.types.assertions")
 local gio = require("util.lgi").Gio
 local gtable = require("gears.table")
-local iscallable = require("util.iscallable")
+local iscallable = require("util.types.iscallable")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
 ---@class scan_directory_args
 ---@field attributes? string[] see: https://docs.gtk.org/gio/method.File.enumerate_children.html
@@ -111,14 +111,14 @@ local function scan_directory(path, args, cb)
     cb, args = args, nil
   end
   args = args and gtable.clone(args, false) or {} ---@type scan_directory_args
-  assert_util.type(path, "string", "path")
-  assert_util.type(args, "table", "args")
-  assert_util.iscallable(cb, "cb")
+  assertions.type(path, "string", "path")
+  assertions.type(args, "table", "args")
+  assertions.iscallable(cb, "cb")
   if not iscallable(cb) then return error(("%s: expected type %s, but got %s."):format("cb", "callable", type(cb))) end
-  assert_util.type(args.attributes, { "table", "nil" }, "args.attributes")
-  assert_util.assert((args.max or 1) > 0, "max must be greater than 0")
-  assert_util.assert((args.block_size or 1) > 0, "block size must be greater than 0")
-  assert_util.iscallable(args.filter, true, "args.filter")
+  assertions.type(args.attributes, { "table", "nil" }, "args.attributes")
+  assertions.assert((args.max or 1) > 0, "max must be greater than 0")
+  assertions.assert((args.block_size or 1) > 0, "block size must be greater than 0")
+  assertions.iscallable(args.filter, true, "args.filter")
   args.attributes = args.attributes or { "FILE_ATTRIBUTE_STANDARD_NAME" }
   args.block_size = args.block_size or 128
   -- if max is specified, block size should not be greater than max
@@ -126,7 +126,7 @@ local function scan_directory(path, args, cb)
 
   local attr_str = ""
   for _, v in ipairs(args.attributes) do
-    local gio_attr = assert_util.assert(gio[v], ("invalid attribute: %s"):format(v))
+    local gio_attr = assertions.assert(gio[v], ("invalid attribute: %s"):format(v))
     if gio_attr then attr_str = attr_str .. gio_attr .. "," end
   end
 

@@ -5,9 +5,9 @@ local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
 local compat = require("util.compat")
 local exit_screen_conf = require("configuration.exit-screen")
-local get_screen = require("util.get_screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
+local screen = require("util.types.screen")
 local tables = require("util.tables")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -86,7 +86,7 @@ end
 
 local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
   if not s and exit_screen.screen.valid then return end -- no s given and we have a valid screen already
-  s = s or get_screen.focused() or get_screen.primary() -- Switch to focused screen if previous screen was removed
+  s = s or screen.focused() or screen.primary() -- Switch to focused screen if previous screen was removed
   if not s or not s.valid then return end
   if exit_screen.screen ~= s then
     if exit_screen.screen then -- Ensure the screen is good
@@ -122,14 +122,14 @@ local buttons = tables.map(exit_screen_conf.buttons, buildButton) -- Note: keeps
 ---@param opts? {screen?: screen}
 local function exit_screen_show(opts)
   opts = opts or {}
-  local screen = get_screen.get(opts.screen) or get_screen.focused()
-  update_wibox_screen(screen)
+  local s = screen.get(opts.screen) or screen.focused()
+  update_wibox_screen(s)
   ---@param mods string[]
   ---@param key string
   ---@param event "release"|"press"
   exit_screen_grabber = akeygrabber.run(function(mods, key, event)
     if event == "release" or not #mods == 0 then return false end -- this isn't my event!
-    -- if exit_screen.screen ~= get_screen.focused() then return false end -- ignore non-focused events
+    -- if exit_screen.screen ~= screen.focused() then return false end -- ignore non-focused events
 
     for _, button in ipairs(exit_screen_conf.buttons) do
       if key == button[2] then

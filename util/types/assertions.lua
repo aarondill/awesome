@@ -43,7 +43,7 @@ end
 ---@param level integer? default: 1 Same number as passed to error(msg, level)
 ---@overload fun(val: unknown?, name: string, level: integer?)
 function Assert.iscallable(val, permit_nil, name, level)
-  local iscallable = require("util.iscallable")
+  local iscallable = require("util.types.iscallable")
   if type(permit_nil) == "string" then
     assert(not name or type(name) == "number")
     assert(not level)
@@ -70,9 +70,8 @@ function Assert.assert(bool, msg, level, ...)
   error(msg, level + 1) -- Plus 1 to error on caller
 end
 
-setmetatable(Assert, {
-  __call = function(_, ...)
-    return Assert.type(...)
-  end,
-})
-return Assert
+local mt = {}
+function mt:call(...)
+  return assert(...)
+end
+return setmetatable(Assert, mt)

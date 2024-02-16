@@ -1,6 +1,6 @@
 local sep = ";"
 
-local assert_util = require("util.assert_util") -- This has no requires
+local assertions = require("util.types.assertions") -- This has no requires
 local gtable = require("gears.table")
 local path = require("util.path") -- This only requires lgi
 local strings = require("util.strings")
@@ -11,7 +11,7 @@ local M = {}
 ---@return boolean
 ---@nodiscard
 function M.path_contains(dir)
-  assert_util.type(dir, "string", "dir")
+  assertions.type(dir, "string", "dir")
   dir = path.normalize(dir, false)
   local lua = table.concat({ sep, path.join(dir, "?.lua"), sep }, "")
   local init = table.concat({ sep, path.join(dir, "?", "init.lua"), sep }, "")
@@ -24,7 +24,7 @@ end
 ---@return boolean
 ---@nodiscard
 function M.cpath_contains(dir)
-  assert_util.type(dir, "string", "dir")
+  assertions.type(dir, "string", "dir")
   dir = path.normalize(dir, false)
   local so = table.concat({ sep, path.join(dir, "?.so"), sep }, "")
   -- package.cpath may not end in a semicolon. Likely won't start with one.
@@ -39,12 +39,12 @@ end
 function M.add_to_cpath(dir, prepend)
   if type(dir) == "table" then
     for i, d in ipairs(dir) do
-      assert_util.type(d, "string", ("dir[%s]"):format(i))
+      assertions.type(d, "string", ("dir[%s]"):format(i))
       M.add_to_cpath(d, prepend)
     end
     return package.cpath
   end
-  assert_util.type(dir, "string", "dir")
+  assertions.type(dir, "string", "dir")
   assert(type(dir) == "string") -- make luals happy
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
@@ -62,12 +62,12 @@ end
 function M.add_to_path(dir, prepend)
   if type(dir) == "table" then
     for i, d in ipairs(dir) do
-      assert_util.type(d, "string", ("dir[%s]"):format(i))
+      assertions.type(d, "string", ("dir[%s]"):format(i))
       M.add_to_path(d, prepend)
     end
     return package.path
   end
-  assert_util.type(dir, "string", "dir")
+  assertions.type(dir, "string", "dir")
   assert(type(dir) == "string") -- make luals happy
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend

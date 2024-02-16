@@ -1,5 +1,5 @@
 local gtable = require("gears.table")
-local iscallable = require("util.iscallable")
+local iscallable = require("util.types.iscallable")
 local tables = require("util.tables")
 local function get_cache(cache, key)
   local func, len, outer = key.func, key.len, key.outer

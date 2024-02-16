@@ -1,5 +1,5 @@
-local assert_util = require("util.assert_util")
-local iscallable = require("util.iscallable")
+local assertions = require("util.types.assertions")
+local iscallable = require("util.types.iscallable")
 local notifs = require("util.notifs")
 local pcall_handler = require("util.pcall_handler")
 
@@ -10,7 +10,7 @@ local pcall_handler = require("util.pcall_handler")
 ---@param on_error? any if type is function, it will be called with the error as the only parameter. Else, it will be returned in the case of an error.
 ---@return T safe_cb Note: the return types are now different, but lua_ls can't handle the generics neccisary to describe this.
 local function handle_error(func, on_error)
-  assert_util.iscallable(func, "func")
+  assertions.iscallable(func, "func")
   -- Recursive, but there's no exit handler, so it will be okay
   local on_err_cb = iscallable(on_error) and handle_error(on_error) or on_error
 
