@@ -9,7 +9,7 @@ local source_path = require("util.source_path")
 ---@param this_path string? pass ...
 ---@param path string the path to require
 ---@param assert boolean? Whether to error on failure. Default: true
----@param _this_filename 'init'? The filename to use when checking for init.lua-ness
+---@param _this_filename string? The filename to use when checking for init.lua. Use source_path.filename() to get this.
 ---@return any? mod the module required or nil if not found
 ---@return unknown? loaderdata the second param returned from require (or nil if not found)
 ---@overload fun(this_path: string, path: string, assert: true): any, unknown -- Not nil
