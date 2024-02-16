@@ -1,61 +1,112 @@
 --- Source: modified from `lain.util.quake`
 
 local aclient = require("awful.client")
-local ascreen = require("awful.screen")
 local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
+local notifs = require("util.notifs")
+local screen = require("util.types.screen")
+local tables = require("util.tables")
 
 -- Quake-like Dropdown application spawn
----@class QuakeTerminalWidget
+---@class QuakeTerminalWidget :QuakeConfig
 local quake = {}
----Set defaults on module so they can be a) overwritten b) detected by lsp
-quake.spawn = function(class)
-  return { "xterm", "-class", class }
+local function get_default_config()
+  ---@class QuakeConfig
+  local ret = {
+    class = "QuakeDD", -- window name
+    border = 1, -- client border width
+    visible = false, -- initially not visible
+    follow_screen = true, -- spawn on currently focused screen
+    overlap = false, -- overlap wibox
+    screen = screen.focused(), ---@type AwesomeScreenInstance?
+    -- If width or height <= 1 this is a proportion of the workspace
+    height = 0.5, -- height
+    width = 1, -- width
+    vert = "top", -- top, bottom or center
+    horiz = "left", -- left, right or center
+    ---@param self QuakeTerminalWidget
+    ---@param c AwesomeClientInstance
+    settings = function(self, c) end,
+    spawn = function(class) ---@param class string
+      return require("util.spawn").spawn({ "xterm", "-class", class })
+    end,
+  }
+  return ret
 end
-quake.class = "QuakeDD" -- window name
-quake.border = 1 -- client border width
-quake.visible = false -- initially not visible
-quake.follow_screen = true -- spawn on currently focused screen
-quake.overlap = false -- overlap wibox
-quake.screen = ascreen.focused()
--- If width or height <= 1 this is a proportion of the workspace
-quake.height = 0.5 -- height
-quake.width = 1 -- width
-quake.vert = "top" -- top, bottom or center
-quake.horiz = "left" -- left, right or center
 
+quake.geometry = setmetatable({}, { __mode = "k" }) ---@type table<AwesomeScreenInstance, AwesomeGeometry>
+---@param c AwesomeClientInstance
+---Sets client to be a normal client
+function quake:_disown(c)
+  if c == self.client then self.client = nil end
+  -- let's remove the sticky bit which may persist between awesome restarts.
+  -- We don't close them as they may be valuable. They will just turn into
+  -- normal clients.
+  c.sticky = false
+  c.ontop = false
+  c.above = false
+end
 ---@return AwesomeClientInstance? client
 function quake:_get_client()
-  local class_match = function(c) ---@param c AwesomeClientInstance
-    return c.instance == self.class -- c.name may be changed!
-  end
-  local iter = aclient.iterate(class_match) ---@type fun():AwesomeClientInstance?
+  if self.client and self.client.valid then return self.client end
+  local iter = aclient.iterate(function(c) ---@param c AwesomeClientInstance
+    return self:_client_is_self(c)
+  end) ---@type fun():AwesomeClientInstance?
   -- First, we locate the client
-  local c = iter() -- consumes first item
+  self.client = iter() -- consumes first item
   for other_c in iter do
-    -- Additional matching clients, let's remove the sticky bit
-    -- which may persist between awesome restarts. We don't close
-    -- them as they may be valuable. They will just turn into
-    -- normal clients.
-    other_c.sticky = false
-    other_c.ontop = false
-    other_c.above = false
+    self:_disown(other_c)
   end
-  return c
+  return self.client
 end
----@param visible boolean?
+function quake:_get_valid_screen(s) ---@param s AwesomeScreenInstance?
+  if s and s.valid then
+    self.screen = s
+    return
+  end
+  if not self.follow_screen then -- we should stay on this screen, and it's already valid
+    if self.screen and self.screen.valid then return end
+  end
+  -- Change to focused screen if necessary
+  local focused = screen.focused()
+  if focused ~= self.screen then self.screen = focused end
+end
+local pending_display = nil
+---@param visible boolean|'toggle'?
+---@param target_tag AwesomeTagInstance?
 ---@return AwesomeClientInstance?
-function quake:_display(visible)
-  if visible ~= nil then self.visible = visible end
-  if self.follow_screen then self.screen = ascreen.focused() end
+function quake:_display(visible, target_tag)
+  self:_get_valid_screen()
+  if pending_display then
+    self.visible = true
+    target_tag = pending_display
+    pending_display = nil
+    notifs.info("pending_display: " .. tostring(target_tag))
+  else
+    target_tag = target_tag or self.screen.selected_tag
+    if type(visible) == "boolean" then -- given a value
+      self.visible = visible
+    end
+    if visible == "toggle" then -- we're already visible, so check if we're going to a different tag
+      if not self.visible then
+        self.visible = true
+      elseif self.last_tag then
+        self.visible = target_tag ~= self.last_tag
+      else
+        self.visible = false
+      end
+    end
+  end
+  if self.visible and not target_tag then return notifs.warn("Can't display quake client without a selected tag!") end
+
   local c = self:_get_client()
   if not c then
     if not self.visible then return end
-    -- The client does not exist, we spawn it
-    local cmd = self.spawn(self.class)
-    return
+    pending_display = target_tag
+    self.spawn(self.class) -- The client does not exist, we spawn it
+    return nil
   end
 
   -- Set geometry
@@ -70,46 +121,33 @@ function quake:_display(visible)
   c.above = true
   c.skip_taskbar = true
 
-  -- Additional user settings
-  if self.settings then self.settings(c) end
+  self:settings(c) -- Additional user settings
 
   if self.visible then -- Toggle display
-    self:_show(c)
+    self.last_tag = target_tag
+    c.maximized, c.fullscreen = self.maximized, self.fullscreen
+    c.hidden = false
+    c:raise()
+    c:tags({ target_tag })
+    capi.client.focus = c
   else
-    self:_hide(c)
+    self.maximized = c.maximized -- Preserve user settings
+    self.fullscreen = c.fullscreen
+    c.maximized, c.fullscreen = false, false
+    c.hidden = true
+    c:tags({}) -- remove from all tags
   end
 
   return c
 end
----@param c AwesomeClientInstance
-function quake:_hide(c)
-  local maximized = c.maximized
-  local fullscreen = c.fullscreen
-  self.maximized = maximized
-  self.fullscreen = fullscreen
-  c.maximized = false
-  c.fullscreen = false
-  c.hidden = true
-  c:tags({})
-end
 
----@param c AwesomeClientInstance
-function quake:_show(c)
-  c.hidden = false
-  c.maximized = self.maximized
-  c.fullscreen = self.fullscreen
-  c:raise()
-  self.last_tag = self.screen.selected_tag
-  c:tags({ self.screen.selected_tag })
-  capi.client.focus = c
-end
-
+--- Note: assumes that _get_valid_screen has been called!
+---@return AwesomeGeometry?
 function quake:_compute_size()
-  local i = self.screen.index ---@type integer
-  -- skip if we already have a geometry for this screen
-  if self.geometry[i] then return self.geometry[i] end
-  local s = capi.screen[i]
+  local s = self.screen
   if not s then return end
+  -- skip if we already have a geometry for this screen
+  if self.geometry[s] then return self.geometry[s] end
   local geom = self.overlap and s.geometry or s.workarea
   local width, height = self.width, self.height
   if width <= 1 then width = math.floor(geom.width * width) - 2 * self.border end
@@ -129,13 +167,8 @@ function quake:_compute_size()
   else
     y = geom.y + (geom.height - height) / 2
   end
-  self.geometry[i] = { x = x, y = y, width = width, height = height }
-  return self.geometry[i]
-end
-
----Hide the quake application
-function quake:hide()
-  self:_display(false)
+  self.geometry[s] = { x = x, y = y, width = width, height = height }
+  return self.geometry[s]
 end
 
 function quake:kill()
@@ -143,54 +176,51 @@ function quake:kill()
   if not c then return end
   return c:kill()
 end
-function quake:_on_tag(tag)
-  if self.follow_screen then self.screen = ascreen.focused() end
-  tag = tag or self.screen.selected_tag
-  return not tag or self.last_tag == tag
+
+---Hide the quake application
+function quake:hide()
+  return self:_display(false)
 end
 ---Show the quake application
----@param tag table? the tag to show on (optional: current)
+---@param tag AwesomeTagInstance? the tag to show on (optional: current)
 function quake:show(tag)
-  tag = tag or self.screen.selected_tag
-  local on_tag = self:_on_tag(tag) -- changes self.screen. Call it before.
-  local c = self:_display(true)
-  if c and not on_tag and c.move_to_tag then -- Make sure it's an actual client...
-    c:move_to_tag(tag)
-  end
+  return self:_display(true, tag)
 end
 ---Toggle the quake application
----@param tag table? the tag to show on (optional: current). Only used when showing
+---@param tag AwesomeTagInstance? the tag to show on (optional: current). Only used when showing
 function quake:toggle(tag)
-  if not self:_on_tag(tag) or not self.visible then
-    self:show()
-  else
-    self:hide()
-  end
+  return self:_display("toggle", tag)
 end
 
-function quake:_client_is_self(c)
-  return c.instance == self.class and c.screen == self.screen
+function quake:_client_is_self(c) ---@param c AwesomeClientInstance
+  return c.instance == self.class
 end
-function quake:_managed(c)
+function quake:_managed(c) ---@param c AwesomeClientInstance
   if not self:_client_is_self(c) then return end
+  if self.client then
+    local msg =
+      "A second quake client has been detected. This is not allowed! Don't spawn multiple clients with the same class."
+    notifs.warn(msg)
+    self:_disown(self.client)
+  end
+  self.client = c
   self:_display()
 end
-function quake:_unmanaged(c)
+function quake:_unmanaged(c) ---@param c AwesomeClientInstance
   if not self:_client_is_self(c) then return end
+  self.client = nil
   self.visible = false
 end
+---@param conf QuakeConfig
 function quake.new(conf)
-  local self = gtable.clone(quake, true)
-  self = gtable.crush(self, conf, true) -- Override defaults using conf
-  self.geometry = {} -- internal use
-  self.maximized = false
-  self.fullscreen = false
-
+  local self = tables.clone(quake, true)
+  gtable.crush(self, get_default_config(), true) -- Override defaults using conf
+  gtable.crush(self, conf, true) -- Override defaults using conf
+  self.maximized, self.fullscreen = false, false
   capi.client.connect_signal(compat.signal.manage, bind(self._managed, self))
   capi.client.connect_signal(compat.signal.unmanage, bind(self._unmanaged, self))
-
-  self:_display() -- Handle initial self.visible
-
+  -- Handle initial self.visible
+  if self.visible then self:_display() end
   return self
 end
 
