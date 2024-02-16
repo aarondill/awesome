@@ -16,8 +16,8 @@ local source_path = require("util.source_path")
 ---@overload fun(module: string, path: nil, assert?: boolean): any, unknown -- The regular require
 local function relative_require(this_path, path, assert, _this_filename)
   if assert == nil then assert = true end
-  assertions.type(assert, "boolean", "assert")
-  assertions.type(this_path, { "string", "nil" }, "this_path")
+  assertions.type(assert, "boolean", "assert", 2)
+  assertions.type(this_path, { "string", "nil" }, "this_path", 2)
   if type(this_path) == "string" and path == nil then
     path, this_path = this_path, nil -- swap the arguments
     -- Native require function
@@ -39,7 +39,7 @@ local function relative_require(this_path, path, assert, _this_filename)
 
   if assert then
     local msg = ("Could not find dir of module '%s'"):format(this_path)
-    assertions.assert(this_module, msg)
+    assertions.assert(this_module, msg, 2)
   end
   if not this_module then return nil end
 
@@ -47,7 +47,7 @@ local function relative_require(this_path, path, assert, _this_filename)
   local ok, ret = pcall_handler(pcall(require, module_path))
   if assert then
     local msg = ("Could not require module '%s'.\nerror:\n%s"):format(module_path, ret)
-    assertions.assert(ok, msg)
+    assertions.assert(ok, msg, 2)
   end
   if not ok then return nil end
   return table.unpack(ret, 1, ret.n)
