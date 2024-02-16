@@ -2,7 +2,6 @@
 local abutton = require("awful.button")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
-local get_child_by_id = require("util.get_child_by_id")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
@@ -11,6 +10,7 @@ local path = require("util.path")
 local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local write_async = require("util.file.write_async")
+local widgets     = require("util.awesome.widgets")
 
 local bcontrol = {}
 
@@ -98,7 +98,7 @@ function bcontrol:set_text(value)
   if type(value) == "number" then
     value = math.floor(0.5 + value) -- Round it if not an integer
   end
-  local textbox = assert(get_child_by_id(self.widget, "textbox"), "Textbox is required")
+  local textbox = assert(widgets.get_by_id(self.widget, "textbox"), "Textbox is required")
   return textbox:set_text(string.format(" [%3s] ", value))
 end
 

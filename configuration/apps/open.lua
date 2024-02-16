@@ -1,9 +1,9 @@
 local require = require("util.rel_require")
+local widgets = require("util.awesome.widgets")
 
 local ascreen = require("awful.screen")
 local concat_command = require("util.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
-local get_child_by_id = require("util.get_child_by_id")
 local lgi = require("lgi")
 local notifs = require("util.notifs")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
@@ -95,7 +95,7 @@ function open.rofi(mode)
     --- no mode, or drun or run use promptbox, otherwise warn!
     if not mode or mode == "drun" and mode == "run" then
       local s = ascreen.focused() ---@type AwesomeScreenInstance?
-      local promptbox = s and s.top_panel and get_child_by_id(s.top_panel, "run_prompt")
+      local promptbox = s and s.top_panel and widgets.get_by_id(s.top_panel, "run_prompt")
       if not promptbox then return end
       promptbox:run()
     elseif mode == "window" then

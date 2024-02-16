@@ -2,7 +2,7 @@ local gshape = require("gears.shape")
 local mat_colors = require("theme.mat-colors")
 local theme_assets = require("beautiful.theme_assets")
 local dpi = require("beautiful").xresources.apply_dpi
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 local icons = require("theme.icons")
 
 ---Return a valid font of size given

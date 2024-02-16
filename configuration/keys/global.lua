@@ -1,8 +1,4 @@
-local compat = require("util.compat")
-local get_child_by_id = require("util.get_child_by_id")
 local require = require("util.rel_require")
-local tags = require("util.tags")
-local throttle = require("util.throttle")
 
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
@@ -12,10 +8,14 @@ local atag = require("awful.tag")
 local awful_key = require("awful.key")
 local bind = require("util.bind")
 local capi = require("capi")
+local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
+local tags = require("util.tags")
+local throttle = require("util.throttle")
+local widgets = require("util.awesome.widgets")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local delay = require("configuration").tag_throttle_delay
@@ -272,7 +272,7 @@ local globalKeys = gtable.join(
   end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
   gkey({ modkey, "Shift" }, "`", function()
     local s = ascreen.focused() ---@type AwesomeScreenInstance?
-    local tl = s and get_child_by_id(s.top_panel, "taglist")
+    local tl = s and widgets.get_by_id(s.top_panel, "taglist")
     if not tl then return end
     tl.visible = not tl.visible
   end, { description = "Toggle the taglist visiblity", group = "hotkeys" })

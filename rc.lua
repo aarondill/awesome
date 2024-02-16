@@ -42,7 +42,7 @@ util_package_path.dedupe() -- Remove any duplicate path segments -- especially t
 
 -- Load these *local* packages *After* fixing package.path
 local capi = require("capi")
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 
 -- Set environment variables. (ONLY for POSIX systems)
 require("configuration.environment")()

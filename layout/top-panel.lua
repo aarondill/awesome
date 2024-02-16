@@ -12,16 +12,15 @@ local awful_wibar = require("awful.wibar")
 local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
 local distro = require("widget.distro")
-local get_child_by_id = require("util.get_child_by_id")
 local gstring = require("gears.string")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
-local make_clickable_if_prog = require("util.make_clickable_if_prog")
 local screen = require("util.types.screen")
 local spawn = require("util.spawn")
 local suspend_listener = require("util.suspend-listener")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local widgets = require("util.awesome.widgets")
 
 ---@param args {screen: screen}
 local TopPanel = function(args)
@@ -124,38 +123,26 @@ local TopPanel = function(args)
     panel.y = s.geometry.y
   end)
 
-  local clock_widget = assert(get_child_by_id(panel, "clock_margin"), "clock_margin is missing!")
-  local battery_widget = assert(get_child_by_id(panel, "battery_widget"), "battery_widget is missing!")
-  local cpu_widget = assert(get_child_by_id(panel, "cpu_widget"), "cpu_widget is missing!")
+  local clock_widget = assert(widgets.get_by_id(panel, "clock_margin"), "clock_margin is missing!")
+  local battery_widget = assert(widgets.get_by_id(panel, "battery_widget"), "battery_widget is missing!")
+  local cpu_widget = assert(widgets.get_by_id(panel, "cpu_widget"), "cpu_widget is missing!")
 
   local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
 
   suspend_listener.register_listener(function(is_before)
     if is_before then return end
-    local textclock = get_child_by_id(panel, "textclock")
+    local textclock = widgets.get_by_id(panel, "textclock")
     if not textclock then return end
     return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
   end)
 
-  -- Setup click click handler if calendar is installed
-  make_clickable_if_prog(apps.default.calendar, clock_widget, panel.widget, function(_)
-    -- Hide the calendar on click (won't hide otherwise)
-    month_calendar.visible = false
-    -- needed to ensure it reapears on next mouse-over
-    month_calendar._calendar_clicked_on = false
-    spawn.spawn(apps.default.calendar)
+  widgets.clickable_if(apps.default.calendar, clock_widget, panel.widget, function(cmd)
+    month_calendar.visible = false -- Hide the calendar on click (won't hide otherwise)
+    month_calendar._calendar_clicked_on = false -- needed to ensure it reapears on next mouse-over
+    return spawn.spawn(cmd)
   end)
-
-  -- Check if battery_manager is available
-  make_clickable_if_prog(apps.default.battery_manager, battery_widget, panel.widget, function(_)
-    spawn.spawn(apps.default.battery_manager)
-  end)
-
-  -- Check if system_manager is available
-  make_clickable_if_prog(apps.default.system_manager, cpu_widget, panel.widget, function(_)
-    spawn.spawn(apps.default.system_manager)
-  end)
-
+  widgets.clickable_if(apps.default.battery_manager, battery_widget, panel.widget)
+  widgets.clickable_if(apps.default.system_manager, cpu_widget, panel.widget)
   return panel
 end
 

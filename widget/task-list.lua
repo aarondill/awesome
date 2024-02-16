@@ -12,7 +12,7 @@ local icons = require("theme.icons")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local assertions = require("util.types.assertions")
-local compat = require("util.compat")
+local compat = require("util.awesome.compat")
 ---Common method to create buttons.
 ---@param buttons table?
 ---@param object table

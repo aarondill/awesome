@@ -3,11 +3,11 @@ local alayout = require("awful.layout")
 local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local capi = require("capi")
+local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
+local quake = require("module.quake")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local compat = require("util.compat")
-local quake = require("module.quake")
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 local function render_titlebars(c)
