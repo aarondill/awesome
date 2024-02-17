@@ -57,11 +57,11 @@ notifications:
   #   false                   disable
   #   -1                      use the libnotify default timeout
 
-  timeout: 0.5 # set the default for all notifications
+  timeout: 1 # set the default for all notifications
 
   # Specify only if you want to overwrite the default:
-  device_mounted: -1 # mount notification
-  device_unmounted: -1 # unmount notification
+  # device_mounted: -1 # mount notification
+  # device_unmounted: -1 # unmount notification
   device_added: false # device has appeared
   device_removed: false # device has disappeared
   device_unlocked: -1 # encrypted device was unlocked
