@@ -50,7 +50,7 @@ local function get_xdg_user_dir_impl(dir)
 end
 
 ---Finds the xdg_user_dir using the xdg-user-dir program
----Uses io.popen, but caches values
+---Uses synchronous commands, but caches values
 ---dir should be in capital letters
 ---@param dir string the XDG_USER_DIR to search for
 local function get_xdg_user_dir(dir)

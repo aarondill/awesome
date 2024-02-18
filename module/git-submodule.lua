@@ -2,9 +2,8 @@ local Gio = require("util.lgi.Gio")
 local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
 
--- NEVER use io.popen. But, I *need* this to be synchronous so the modules are available later in the code.
+-- I *need* this to be synchronous so the modules are available later in the code.
 -- So, this is a rare exception. This command should only take a long time the first time it is called.
-if not io.popen then return end
 
 -- -C=run in this directory, since lua doesn't support 'cd'ing
 local cmd = { "git", "-C", gfile.get_configuration_dir(), "submodule", "update", "--init", "--recursive" }

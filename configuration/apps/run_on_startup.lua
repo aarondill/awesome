@@ -1,6 +1,7 @@
 local require = require("util.rel_require")
 
 local GLib = require("util.lgi.GLib")
+local Gio = require("util.lgi.Gio")
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 local path = require("util.path")
@@ -45,10 +46,14 @@ local run_on_startup = {
 
 ---Note: this is already escaped
 ---This is some evil synchronise code, but it's needed to ensure that we have a touch pad to play with
-local cmd = shell_escape(which("libinput-list-devices") or { "libinput", "list-devices" })
-local f = assert(io.popen(("%s 2>/dev/null"):format(cmd), "r"))
+local lid = which("libinput-list-devices")
+local cmd = lid and { lid } or { "libinput", "list-devices" }
+local p = assert(Gio.Subprocess.new(cmd, { "STDOUT_PIPE", "STDERR_SILENCE" }))
+local stdout = Gio.DataInputStream.new(assert(p:get_stdout_pipe()))
 local has_touchpad = false
-for line in f:lines("l") do
+while true do
+  local line = stdout:read_line()
+  if not line then break end
   if line:find("^Capabilities:") then
     -- Append a space incase it ends with touch
     if (line .. " "):find(" touch ") then
@@ -56,8 +61,8 @@ for line in f:lines("l") do
       break
     end
   end
+  stdout:close_async(0)
 end
-f:close()
 
 if has_touchpad then
   table.insert(
