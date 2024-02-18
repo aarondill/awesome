@@ -18,6 +18,7 @@ end
 require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash" or "/bin/sh"
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
+-- Note: we can't use util.lgi here because util might not be in the path
 local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
 
 local conf_dir = gfile.get_configuration_dir()
@@ -41,59 +42,20 @@ util_package_path.add_to_cpath(deps_path.cpath)
 util_package_path.dedupe() -- Remove any duplicate path segments -- especially the above concat
 
 -- Load these *local* packages *After* fixing package.path
-local capi = require("capi")
-local compat = require("util.awesome.compat")
 
--- Set environment variables. (ONLY for POSIX systems)
-require("configuration.environment")()
-
--- Theme
-beautiful.init(require("theme")) -- Import the theme BEFORE layout/widgets!
-
-require("module.notifications")
-require("module.git-submodule") -- Import *after* notifications for nice status messages
-
--- Layout
-require("layout")
-
-require("module.tags") -- Setup tags
-require("module.persistent-tag") -- Keep selected tag on restart
-
--- Init all modules
-require("util.dir_require")("module")
-require("module.autorandr").start_listener() -- Ensure this is after submodules
+require("configuration.environment")() -- Set environment variables. This should be done before spawning *any* child processes!
+require("theme") -- Import the theme BEFORE layout/widgets!
+require("layout") -- Set up the layout -- this may be needed before modules
+require("util.dir_require")("module") -- Init all modules
 
 -- Setup all configurations
 -- require("configuration.apps.compositor").autostart() -- Start the compositor on startup
 require("configuration.rofi_dynamic")() -- Async setup of rofi for current theme
 require("widget.launcher") -- Sets up menubar.utils.term
-capi.root.keys(require("configuration.keys.global"))
-
--- Different tags for each wallpaper
-require("module.wallpaper")
+require("configuration.keys.global") -- Setup the global keys
 
 -- Disable mouse snapping
 local amouse = require("awful.mouse")
 amouse.snap.edge_enabled = false
 amouse.snap.client_enabled = false
 amouse.drag_to_tag.enabled = false
-
--- Enable sloppy focus, so that focus follows mouse.
-capi.client.connect_signal("mouse::enter", function(c)
-  c:emit_signal("request::activate", "mouse_enter", { raise = true })
-end)
-
--- Make the focused window have a glowing border
-capi.client.connect_signal("focus", function(c)
-  c.border_color = compat.beautiful.get_border_focus(beautiful)
-end)
-capi.client.connect_signal("unfocus", function(c)
-  c.border_color = compat.beautiful.get_border_normal(beautiful)
-end)
-
--- Run garbage collector regularly to prevent memory leaks
-_G.collectgarbagetimer = require("gears.timer").new({
-  timeout = 30,
-  autostart = true,
-  callback = require("util.bind").with_args(collectgarbage, "collect"),
-})

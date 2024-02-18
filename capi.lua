@@ -271,6 +271,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeTag :AwesomeSignalClass
 
 ---@class AwesomeTagInstance :AwesomeSignalClassInstance
+---@field selected boolean
 ---@field name string
 ---@field layout AwesomeLayout
 ---@field layouts AwesomeLayout[]
@@ -350,7 +351,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 -- If true then merge tags (select the client's first tag additionally) when
 -- client and its first tag as arguments.
 -- the client is not visible. If it is a function, it will be called with the
----@field jump_to fun(self: AwesomeClientInstance, merge: boolean|fun(self: AwesomeClientInstance, old: AwesomeTagInstance?)) Jump to the given client.
+---@field jump_to fun(self: AwesomeClientInstance, merge?: boolean|fun(self: AwesomeClientInstance, old: AwesomeTagInstance?)) Jump to the given client.
 ---@field kill fun(self: AwesomeClientInstance) Kill a client.
 ---@field lower fun(self: AwesomeClientInstance) Lower a client on bottom of others which are on the same layer.
 ---@field move_to_screen fun(self: AwesomeClientInstance, s?: AwesomeScreenInstance) Move a client to a screen. Note: if s is nil, default is next screen

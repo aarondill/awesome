@@ -1,3 +1,4 @@
+require("module.git-submodule") -- ensure autorandr has already been downloaded
 local bind = require("util.bind")
 local capi = require("capi")
 local dbus = require("util.dbus")
@@ -100,4 +101,5 @@ function M.toggle_listener()
   return info ~= nil, err
 end
 
+M.start_listener() -- Setup this module by starting the listener
 return M
