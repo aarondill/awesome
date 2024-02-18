@@ -61,59 +61,57 @@ function quake:_get_client()
   end
   return self.client
 end
-function quake:_get_valid_screen(s) ---@param s AwesomeScreenInstance?
-  if s and s.valid then
-    self.screen = s
-    return
-  end
+---@param s AwesomeScreenInstance?
+---@return AwesomeScreenInstance?
+function quake:_get_valid_screen(s)
+  if s and s.valid then return s end
   if not self.follow_screen then -- we should stay on this screen, and it's already valid
-    if self.screen and self.screen.valid then return end
+    if self.screen and self.screen.valid then return self.screen end
   end
   -- Change to focused screen if necessary
-  local focused = screen.focused()
-  if focused ~= self.screen then self.screen = focused end
+  return screen.focused()
 end
 local pending_display = nil
 ---@param visible boolean|'toggle'?
 ---@param target_tag AwesomeTagInstance?
----@return AwesomeClientInstance?
 function quake:_display(visible, target_tag)
-  self:_get_valid_screen()
-  if pending_display then
+  self.screen = assert(self:_get_valid_screen(), "Can't display quake client without a valid screen!")
+  if pending_display then -- we ignore the target_tag
     self.visible = true
-    target_tag = pending_display
-    pending_display = nil
-    notifs.info("pending_display: " .. tostring(target_tag))
+    target_tag, pending_display = pending_display, nil
   else
     target_tag = target_tag or self.screen.selected_tag
     if type(visible) == "boolean" then -- given a value
       self.visible = visible
-    end
-    if visible == "toggle" then -- we're already visible, so check if we're going to a different tag
+    elseif visible == "toggle" then -- we're already visible, so check if we're going to a different tag
       if not self.visible then
-        self.visible = true
-      elseif self.last_tag then
+        self.visible = true -- if not visible, we should *always* become visible
+      elseif self.last_tag then -- already visible, so if we're changing tags, stay visible, else hide
         self.visible = target_tag ~= self.last_tag
-      else
+      else -- We're somehow visible, but we don't have a last tag. just hide and hope it fixes itself
         self.visible = false
       end
     end
   end
-  if self.visible and not target_tag then return notifs.warn("Can't display quake client without a selected tag!") end
+
+  if self.visible and not target_tag then
+    return notifs.warn("Can't display quake client without a selected tag!") and nil
+  end
 
   local c = self:_get_client()
   if not c then
+    -- No client, but we aren't supposed to display, so it's fine
     if not self.visible then return end
-    pending_display = target_tag
-    self.spawn(self.class) -- The client does not exist, we spawn it
-    return nil
+    pending_display = target_tag -- save the tag to display so we can restore it after spawn finishes
+    self.spawn(self.class) -- Spawn the client, _managed will call us later so we can display it
+    return
   end
 
   -- Set geometry
   c.floating = true
   c.border_width = self.border
   c.size_hints_honor = false
-  c:geometry(self.geometry[self.screen.index] or self:_compute_size())
+  c:geometry(self:_compute_size(self.screen))
 
   -- Set not sticky and on top
   c.sticky = false
@@ -126,25 +124,21 @@ function quake:_display(visible, target_tag)
   if self.visible then -- Toggle display
     self.last_tag = target_tag
     c.maximized, c.fullscreen = self.maximized, self.fullscreen
-    c.hidden = false
+    c.hidden, c.focusable = false, true
     c:raise()
     c:tags({ target_tag })
     capi.client.focus = c
   else
-    self.maximized = c.maximized -- Preserve user settings
-    self.fullscreen = c.fullscreen
-    c.maximized, c.fullscreen = false, false
+    self.maximized, self.fullscreen = c.maximized, c.fullscreen
+    c.maximized, c.fullscreen, c.focusable = false, false, false
     c.hidden = true
     c:tags({}) -- remove from all tags
   end
-
-  return c
 end
 
---- Note: assumes that _get_valid_screen has been called!
+---@param s AwesomeScreenInstance
 ---@return AwesomeGeometry?
-function quake:_compute_size()
-  local s = self.screen
+function quake:_compute_size(s)
   if not s then return end
   -- skip if we already have a geometry for this screen
   if self.geometry[s] then return self.geometry[s] end
@@ -171,27 +165,6 @@ function quake:_compute_size()
   return self.geometry[s]
 end
 
-function quake:kill()
-  local c = self:_get_client()
-  if not c then return end
-  return c:kill()
-end
-
----Hide the quake application
-function quake:hide()
-  return self:_display(false)
-end
----Show the quake application
----@param tag AwesomeTagInstance? the tag to show on (optional: current)
-function quake:show(tag)
-  return self:_display(true, tag)
-end
----Toggle the quake application
----@param tag AwesomeTagInstance? the tag to show on (optional: current). Only used when showing
-function quake:toggle(tag)
-  return self:_display("toggle", tag)
-end
-
 function quake:_client_is_self(c) ---@param c AwesomeClientInstance
   return c.instance == self.class
 end
@@ -210,6 +183,33 @@ function quake:_unmanaged(c) ---@param c AwesomeClientInstance
   if not self:_client_is_self(c) then return end
   self.client = nil
   self.visible = false
+end
+
+--------------------------------------------------------------------------------------------
+-------------------------------- Public interface functions --------------------------------
+--------------------------------------------------------------------------------------------
+
+---Kill the current quake client
+---@return boolean success false if no client exists
+function quake:kill()
+  local c = self:_get_client()
+  if c then c:kill() end
+  return c ~= nil
+end
+
+---Hide the quake application
+function quake:hide()
+  return self:_display(false)
+end
+---Show the quake application
+---@param tag AwesomeTagInstance? the tag to show on (optional: current)
+function quake:show(tag)
+  return self:_display(true, tag)
+end
+---Toggle the quake application
+---@param tag AwesomeTagInstance? the tag to show on (optional: current). Only used when showing
+function quake:toggle(tag)
+  return self:_display("toggle", tag)
 end
 ---@param conf QuakeConfig
 function quake.new(conf)
