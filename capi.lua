@@ -38,6 +38,7 @@ local string = "" ---@type string
 ---@alias AwesomePosition { x: number,  y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
 ---@alias CairoPattern userdata
+---@alias CairoSurface userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
 ---@alias xprop_type string|number|boolean
@@ -63,6 +64,13 @@ local string = "" ---@type string
 --- | "spawn::timeout"
 ---@class gears.surface :userdata
 ---@field finish fun()
+---@alias awful.key table
+---@alias awful.button table
+---@alias gears.color |string A hexadecimal color code, such as "#ff0000" for red.
+---|string A color name, such as "red".
+---|table A gradient table.
+---|CairoPattern Any valid Cairo pattern.
+---|CairoPattern A texture build from an image by gears.color.create_png_pattern
 
 ---@class AwesomeSignalClass
 types.AwesomeSignalClass = {
@@ -84,20 +92,10 @@ types.AwesomeSignalClass = {
   set_newindex_miss_handler = function(handler) end, --- Typically this shouldn't be used
 }
 ---@class AwesomeSignalClassInstance used for connect_signal and disconnect_signal methods
-types.AwesomeSignalClassInstance = {
-  ---@param self AwesomeSignalClassInstance
-  ---@param signal SignalName
-  ---@param callback function
-  connect_signal = function(self, signal, callback) end,
-  ---@param self AwesomeSignalClassInstance
-  ---@param signal SignalName
-  ---@param callback function
-  disconnect_signal = function(self, signal, callback) end,
-  ---@param self AwesomeSignalClassInstance
-  ---@param signal SignalName
-  ---@param ... unknown
-  emit_signal = function(self, signal, ...) end,
-}
+---@field emit_signal fun(self: AwesomeSignalClassInstance, name: SignalName, ...: unknown) Emit a signal.
+---@field connect_signal fun(self: AwesomeSignalClassInstance, name: SignalName, func: fun(...: unknown): any) Connect to a signal.
+---@field weak_connect_signal fun(self: AwesomeSignalClassInstance, name: SignalName, func: fun(...: unknown): any) Connect to a signal weakly.
+---@field disconnect_signal fun(self: AwesomeSignalClassInstance, name: SignalName, func: fun(...: unknown): any) Disconnect from a signal.
 
 ---@class Awesome
 ---@field unix_signal { [string]: integer?, [integer]: string? }
@@ -282,42 +280,99 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field gap integer
 ---@field clients fun(self: AwesomeTagInstance, clients:AwesomeClientInstance[]?): AwesomeClientInstance[]
 
+---@alias AwesomeClientType 'desktop'|'dock'|'splash'|'dialog'|'menu'|'toolbar'|'utility'|'dropdown_menu'|'popup_menu'|'notification'|'combo'|'dnd'|'normal' The window type.
 ---@class AwesomeClientInstance :AwesomeSignalClassInstance
----@field opacity number between 0 and 1
----@field floating boolean
----@field valid boolean
----@field maximized boolean
----@field minimized boolean
----@field isvisible fun(): boolean
----@field first_tag AwesomeTagInstance?
----@field above boolean
----@field below boolean
----@field ontop boolean
----@field sticky boolean
----@field maximized_horizontal boolean
----@field maximized_vertical boolean
----@field hidden boolean
----@field border_width integer
----@field instance string
----@field name string
----@field class string
----@field shape gears.shape
----@field move_to_tag fun(self: AwesomeClientInstance, tag: AwesomeTagInstance)
----@field toggle_tag fun(self: AwesomeClientInstance, tag: AwesomeTagInstance)
----@field raise fun(self: AwesomeClientInstance)
----@field jump_to fun(self: AwesomeClientInstance)
----@field screen AwesomeScreenInstance?
----@field fullscreen boolean
----@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[]
----@field size_hints_honor boolean
----@field geometry fun(self: AwesomeClientInstance, geometry:AwesomeGeometry?): AwesomeGeometry
----@field kill fun()
----@field swap fun(self: AwesomeClientInstance, c: AwesomeClientInstance)
----Note: if s is nil, default is self.screen.index+1
----@field move_to_screen fun(self: AwesomeClientInstance, s?: screen)
---- Introduced in V5. Replaces awful.autofocus
----@field grant? fun(self: AwesomeClientInstance, req: string, context: string)
----@field skip_taskbar boolean
+---@field above boolean The client is above normal windows.
+---@field active boolean Return true if the client is active (has focus). (Read only)
+---@field below boolean The client is below normal windows.
+---@field border_color gears.color? The client border color.
+---@field border_width integer? The client border width.
+---@field buttons table Get or set mouse buttons bindings for a client.
+---@field class string The client class. (Read only)
+---@field client_shape_bounding CairoSurface The client's bounding shape as set by the program as a (native) cairo surface. (Read only)
+---@field client_shape_clip CairoSurface The client's clip shape as set by the program as a (native) cairo surface. (Read only)
+---@field content CairoSurface A cairo surface for the client window content. (Read only)
+---@field dockable boolean If the client is dockable.
+---@field first_tag AwesomeTagInstance? The first tag of the client. (Read only)
+---@field floating boolean The client floating state.
+---@field focusable boolean True if the client can receive the input focus.
+---@field fullscreen boolean The client is fullscreen or not.
+---@field group_window integer Window identification unique to a group of windows. (Read only)
+---@field height integer The height of the client.
+---@field hidden boolean Define if the client must be hidden (Never mapped, invisible in taskbar).
+---@field icon CairoSurface The client icon as a surface.
+---@field icon_name string The client name when iconified. (Read only)
+---@field icon_sizes table The available sizes of client icons. (Read only)
+---@field immobilized_horizontal boolean Is the client immobilized horizontally? (Read only)
+---@field immobilized_vertical boolean Is the client immobilized vertically? (Read only)
+---@field instance string The client instance. (Read only)
+---@field is_fixed boolean Return if a client has a fixed size or not. (Read only)
+---@field keys table Get or set keys bindings for a client.
+---@field leader_window integer Identification unique to windows spawned by the same command. (Read only)
+---@field machine string The machine the client is running on. (Read only)
+---@field marked boolean If a client is marked or not.
+---@field maximized boolean The client is maximized (horizontally and vertically) or not.
+---@field maximized_horizontal boolean The client is maximized horizontally or not.
+---@field maximized_vertical boolean The client is maximized vertically or not.
+---@field minimized boolean Define if the client must be iconified (Only visible in taskbar).
+---@field modal boolean Indicate if the client is modal.
+---@field motif_wm_hints table The motif WM hints of the client. (Read only)
+---@field name string The client title.
+---@field ontop boolean The client is on top of every other windows.
+---@field opacity number The client opacity.
+---@field pid integer The client PID, if available. (Read only)
+---@field requests_no_titlebar boolean If the client requests not to be decorated with a titlebar.
+---@field role string The window role, if available. (Read only)
+---@field screen AwesomeScreenInstance? Client screen.
+---@field shape gears.shape Set the client shape.
+---@field shape_bounding CairoSurface The client's bounding shape as set by awesome as a (native) cairo surface.
+---@field shape_clip CairoSurface The client's clip shape as set by awesome as a (native) cairo surface.
+---@field shape_input CairoSurface The client's input shape as set by awesome as a (native) cairo surface.
+---@field size_hints table? A table with size hints of the client. (Read only)
+---@field size_hints_honor boolean Honor size hints, e.g.
+---@field skip_taskbar boolean True if the client does not want to be in taskbar.
+---@field startup_id string The FreeDesktop StartId.
+---@field sticky boolean Set the client sticky (Available on all tags).
+---@field transient_for AwesomeClientInstance? The client the window is transient for. (Read only)
+---@field type AwesomeClientType The window type. (Read only)
+---@field urgent boolean Set to true when the client ask for attention.
+---@field valid boolean If the client that this object refers to is still managed by awesome. (Read only)
+---@field width integer The width of the client.
+---@field window integer The X window id. (Read only)
+---@field x integer The x coordinates.
+---@field y integer The y coordinates.
+---@field apply_size_hints fun(self: AwesomeClientInstance, width: integer, height: integer): (integer, integer) Apply size hints to a size.
+---@field geometry fun(self: AwesomeClientInstance, geometry:AwesomeGeometry?): AwesomeGeometry Return or set client geometry.
+---@field get_icon fun(self: AwesomeClientInstance, index): CairoSurface Get the client's n-th icon.
+---@field get_transient_for_matching fun(self: AwesomeClientInstance, matcher: fun(c: AwesomeClientInstance): boolean): AwesomeClientInstance? Get a matching transient_for client (if any).
+---@field is_transient_for fun(self: AwesomeClientInstance, c2: AwesomeClientInstance): AwesomeClientInstance? Is a client transient for another one?
+---@field isvisible fun(self: AwesomeClientInstance): boolean Check if a client is visible on its screen.
+-- If true then merge tags (select the client's first tag additionally) when
+-- client and its first tag as arguments.
+-- the client is not visible. If it is a function, it will be called with the
+---@field jump_to fun(self: AwesomeClientInstance, merge: boolean|fun(self: AwesomeClientInstance, old: AwesomeTagInstance?)) Jump to the given client.
+---@field kill fun(self: AwesomeClientInstance) Kill a client.
+---@field lower fun(self: AwesomeClientInstance) Lower a client on bottom of others which are on the same layer.
+---@field move_to_screen fun(self: AwesomeClientInstance, s?: AwesomeScreenInstance) Move a client to a screen. Note: if s is nil, default is next screen
+---@field move_to_tag fun(self: AwesomeClientInstance, target: AwesomeTagInstance) Move a client to a tag.
+---@field raise fun(self: AwesomeClientInstance) Raise a client on top of others which are on the same layer.
+---@field relative_move fun(self: AwesomeClientInstance, x?: integer, y?: integer, w?: integer, h?: integer) Move/resize a client relative to current coordinates.
+---@field struts fun(struts): table Return client struts (reserved space at the edge of the screen).
+---@field swap fun(self: AwesomeClientInstance, c: AwesomeClientInstance) Swap a client with another one in global client list.
+---@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[] Access or set the client tags.
+---@field to_selected_tags fun(self: AwesomeClientInstance) Find suitable tags for newly created clients.
+---@field toggle_tag fun(self: AwesomeClientInstance, target: AwesomeTagInstance) Toggle a tag on a client.
+---@field unmanage fun(self: AwesomeClientInstance) Stop managing a client.
+---Introduced in V5: If running in V5 or greater, all of the below functions will be defined
+---@field activate? fun(args: table) Activate (focus) a client. See the docs for the args table.
+---@field append_keybinding? fun(self: AwesomeClientInstance, key: awful.key) Append a keybinding.
+---@field remove_keybinding? fun(self: AwesomeClientInstance, key: awful.key) Remove a keybinding.
+---@field append_mousebinding? fun(self: AwesomeClientInstance, button: awful.button) Append a mousebinding.
+---@field remove_mousebinding? fun(self: AwesomeClientInstance, button: awful.button) Remove a mousebinding.
+---@field grant? fun(self: AwesomeClientInstance, permission: string, context: string) Grant a permission for a client.
+---@field deny? fun(self: AwesomeClientInstance, permission: string, context: string) Deny a permission for a client.
+---@field to_primary_section? fun(self: AwesomeClientInstance) Move the client to the most significant layout position.
+---@field to_secondary_section? fun(self: AwesomeClientInstance) Move the client to the least significant layout position.
 
 ---@class AwesomeClient :AwesomeSignalClass
 ---@field focus AwesomeClientInstance?
