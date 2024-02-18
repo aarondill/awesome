@@ -6,6 +6,8 @@
 ---@field FILE_ATTRIBUTE_STANDARD_TYPE "standard::type"
 ---@field FILE_ATTRIBUTE_STANDARD_NAME "standard::name"
 ---@field File GFileStatic
+---@field InputStream GInputStreamStatic
+---@field DataInputStream GDataInputStreamStatic
 ---@field FileInfo GFileInfoStatic
 ---@field FileQueryInfoFlags EnumDefinition<GFileQueryInfoFlags>
 ---@field FileType EnumDefinition<GFileType>
