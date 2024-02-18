@@ -20,6 +20,7 @@ capi.awesome.connect_signal("exit", function(reason_restart)
 end)
 
 capi.awesome.connect_signal("startup", function()
+  require("module.tags") -- ensure that tags are properly initialized
   -- This is intentionally synchronous to ensure it's done *before* user control.
   local f = io.open(filepath, "r")
   if not f then return end -- file doesn't exist

@@ -16,9 +16,10 @@ end
 
 ---Requires all files in a directory
 ---Filepath must be a path in which slashes can be replaced with dots to make it a lua module
----@param modname string
+---@param modname string the name of the root module to require
+---@param ... unknown Parameters to pass to setup functions
 ---@return true?, (GError|string)?
-local function dir_require(modname)
+local function dir_require(modname, ...)
   local root = find_root(modname)
   if not root then return nil, "Could not find " .. modname end
   local res = {} ---@type ({ mod: string, path: string })[]
@@ -40,7 +41,10 @@ local function dir_require(modname)
   local log = {}
   for _, m in ipairs(res) do
     table.insert(log, m.mod)
-    require(m.mod)
+    local mod = require(m.mod)
+    if type(mod) == "table" and type(mod.setup) == "function" then
+      mod.setup(...) -- Call setup function with user supplied arguments
+    end
   end
 end
 

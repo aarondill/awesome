@@ -334,4 +334,5 @@ for i = 1, 9 do
   )
 end
 
+capi.root.keys(globalKeys)
 return globalKeys

@@ -8,6 +8,7 @@ local Run_prompt = require("widget.run-prompt")
 local TagList = require("widget.tag-list.fancy")
 local TaskList = require("widget.task-list")
 local apps = require("configuration.apps")
+local ascreen = require("awful.screen")
 local awful_wibar = require("awful.wibar")
 local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
@@ -19,8 +20,8 @@ local screen = require("util.types.screen")
 local spawn = require("util.spawn")
 local suspend_listener = require("util.suspend-listener")
 local wibox = require("wibox")
-local dpi = require("beautiful").xresources.apply_dpi
 local widgets = require("util.awesome.widgets")
+local dpi = require("beautiful").xresources.apply_dpi
 
 ---@param args {screen: screen}
 local TopPanel = function(args)
@@ -145,5 +146,14 @@ local TopPanel = function(args)
   widgets.clickable_if(apps.default.system_manager, cpu_widget, panel.widget)
   return panel
 end
+
+---@class AwesomeScreenInstance
+---@field top_panel widget an injected field that represents the top panel for that screen.
+
+-- Create a wibox for each screen and add it
+---@param s AwesomeScreenInstance
+ascreen.connect_for_each_screen(function(s)
+  s.top_panel = TopPanel({ screen = s })
+end)
 
 return TopPanel
