@@ -2,7 +2,20 @@
 ---@diagnostic disable: duplicate-doc-field This is used for overloading. Note: It's not perfect because the return types will not be narrowed.
 ---Note that none of the type definitions in this file are complete. If a field is missing, add it and report it.
 
----@alias GSubprocessFlags "NONE"|"STDIN_PIPE"|"STDIN_INHERIT"|"STDOUT_PIPE"|"STDOUT_SILENCE"|"STDERR_PIPE"|"STDERR_SILENCE"|"STDERR_MERGE"|"INHERIT_FDS"|"SEARCH_PATH_FROM_ENVP"
+-- Note that the default for stdin is to redirect from /dev/null. For stdout
+-- and stderr the default are for them to inherit the corresponding descriptor
+-- from the calling process.
+---@alias GSubprocessFlags
+---|"NONE" No flags.
+---|"STDIN_PIPE" Create a pipe for the stdin of the spawned process.
+---|"STDIN_INHERIT" Stdin is inherited from the calling process.
+---|"STDOUT_PIPE" Create a pipe for the stdout of the spawned process.
+---|"STDOUT_SILENCE" Silence the stdout of the spawned process. (ie: redirect to /dev/null)
+---|"STDERR_PIPE" Create a pipe for the stderr of the spawned process.
+---|"STDERR_SILENCE" Silence the stderr of the spawned process. (ie: redirect to /dev/null)
+---|"STDERR_MERGE" Merge the stderr of the spawned process with whatever the stdout happens to be.
+---|"INHERIT_FDS" Spawned process inherits the file descriptors of thier parents (excluding std{in,out,err}).
+---|"SEARCH_PATH_FROM_ENVP" If path searching is needed when spawning the subprocess, use the PATH in the launcher environment.
 
 ---@class GSubprocessStatic
 ---@field new fun(argv: string[], flags: Enum<GSubprocessFlags>): GSubprocess?, GError?
