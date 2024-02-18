@@ -2,7 +2,7 @@ local assertions = require("util.types.assertions")
 local gfilesystem = require("gears.filesystem")
 local gstring = require("gears.string")
 local path = require("util.path")
-local shell_escape = require("util.command.shell_escape")
+local Gio = require("util.lgi").Gio
 local cache = {} ---@type table<string, string>
 local defaults = {
   CONFIG = ".config",
@@ -33,12 +33,12 @@ local function get_xdg_user_dir_impl(dir)
   do
     local conf = gfilesystem.get_configuration_dir()
     local exec = path.join(conf, "scripts", "xdg-user-dir")
-    local cmd = shell_escape({ "exec", exec, dir })
-    local f = io.popen(cmd) -- TODO: Skip the shell using subprocesses
-    if not f then return "" end
-    local result = f:read("*a")
-    f:close()
-    if result and #result > 0 then return result end
+    local flags = { "STDOUT_PIPE", "STDERR_SILENCE" } ---@type GSubprocessFlags[]
+    local process = (Gio.Subprocess.new({ exec, dir }, flags))
+    if not process then return "" end
+    local stdout = assert(process:communicate())
+    process:wait()
+    if stdout:get_size() > 0 then return stdout.data or "" end
   end
 
   -- Defaults
