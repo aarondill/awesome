@@ -23,5 +23,5 @@
 ---Note: BAD IDEA™. Just create a new cancellable
 ---@field reset fun(self: GCancellable)
 
-local lgi = require("lgi").Gio ---@type lgi
+local lgi = require("lgi") ---@type lgi
 return lgi.Gio
