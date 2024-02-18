@@ -10,6 +10,8 @@
 ---@field FileQueryInfoFlags EnumDefinition<GFileQueryInfoFlags>
 ---@field FileType EnumDefinition<GFileType>
 ---@field IOErrorEnum EnumDefinition<string>
+---@field Subprocess GSubprocessStatic
+---@field SubprocessFlags EnumDefinition<GSubprocessFlags>
 
 ---@class GCancellable
 ---@field cancel fun(self: GCancellable)

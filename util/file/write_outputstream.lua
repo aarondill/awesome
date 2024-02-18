@@ -1,12 +1,12 @@
 local assertions = require("util.types.assertions")
 
----@class GioOutputStream
----@field write_async fun(self: GioOutputStream, content: string, len: integer, cancellable?: userdata, callback?: fun(self: GioOutputStream, task: userdata))
----@field write_finish fun(self: GioOutputStream, task: userdata): new_etags: userdata?, err: userdata?
----@field close fun(self: GioOutputStream)
+---@class GOutputStream
+---@field write_async fun(self: GOutputStream, content: string, len: integer, cancellable?: userdata, callback?: fun(self: GOutputStream, task: userdata))
+---@field write_finish fun(self: GOutputStream, task: userdata): new_etags: userdata?, err: userdata?
+---@field close fun(self: GOutputStream)
 
 --- Write to a stream - async
----@param stream GioOutputStream
+---@param stream GOutputStream
 ---@param content string
 ---@param cb? fun(err?: userdata): any?
 local function outputstream_write(stream, content, cb)

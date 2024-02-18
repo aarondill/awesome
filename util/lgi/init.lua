@@ -31,7 +31,7 @@
 ---@field Gio Gio
 ---@field GLib GLib
 ---Use direct access instead. It has better types.
----@field require fun(mod: string): table
+---@field require fun(mod: string): unknown
 
 local lgi = require("lgi") ---@type lgi
 
