@@ -4,6 +4,11 @@
 ---Note that none of the type definitions in this file are complete.
 ---If a field is missing, add it and report it.
 
+---LGI handles enums, allowing a string to be passed, or an array of strings, or an integer
+---It also allows a table {[T]=any}, but I've chosen not to include this in the type
+---@alias Enum<T> T|T[]|integer
+---@alias EnumDefinition<T> {[T]: integer, [integer]: T}
+
 ---An intentionally opaque class that must be passed to the _finish method. This should only ever be used *once*!
 ---@class GAsyncResult
 ---@alias GAsyncReadyCallback<T> fun(self: T, task: GAsyncResult)

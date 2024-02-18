@@ -16,7 +16,13 @@
 ---@field get_user_name fun(): string
 ---@field find_program_in_path fun(prog: string): string?
 ---@field Error GErrorStatic
+---@field Bytes GBytesStatic
 
-local lgi = require("lgi") ---@type lgi
-local GLib = lgi.GLib
-return GLib
+---@class GBytesStatic TODO:
+---@field new fun(string): GBytes
+
+---@class GBytes TODO:
+
+---@type lgi
+local lgi = require("lgi")
+return lgi.GLib
