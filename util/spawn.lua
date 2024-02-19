@@ -3,7 +3,7 @@ local awful_spawn = require("awful.spawn")
 local capi = require("capi")
 local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
-local lgi = require("lgi")
+local lgi = require("util.lgi")
 local write_outputstream = require("util.file.write_outputstream")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
@@ -250,8 +250,6 @@ local function get_end_of_file_func()
 end
 local end_of_file = get_end_of_file_func()
 
----@class Gio.InputStream
-
 ---@param cb fun(line: string) called with each line read
 ---@param done fun(error: userdata?) called when done
 local function read_lines_handler(stream, cb, done)
@@ -276,7 +274,7 @@ local function read_lines_handler(stream, cb, done)
   end)
 end
 --- Read lines from a Gio input stream
----@param input_stream Gio.InputStream The input stream to read from.
+---@param input_stream GInputStream The input stream to read from.
 ---@param line_callback fun(line: string) Function that is called with each line read, e.g. `line_callback(line_from_stream)`.
 ---@param done_callback? fun(error: userdata?) Function that is called when the operation finishes (e.g. due to end of file).
 ---@param close boolean? Should the stream be closed after end-of-file? default true
