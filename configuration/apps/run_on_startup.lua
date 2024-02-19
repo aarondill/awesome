@@ -61,8 +61,8 @@ while true do
       break
     end
   end
-  stdout:close_async(0)
 end
+stdout:close_async(0)
 
 if has_touchpad then
   table.insert(
