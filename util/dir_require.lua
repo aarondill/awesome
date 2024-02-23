@@ -35,9 +35,7 @@ local function dir_require(modname, ...)
   end)
   if not suc then return nil, err end
 
-  table.sort(res, function(a, b)
-    return a.path < b.path
-  end) -- sort alphabetically
+  table.sort(res, function(a, b) return a.path < b.path end) -- sort alphabetically
   local log = {}
   for _, m in ipairs(res) do
     table.insert(log, m.mod)

@@ -87,9 +87,7 @@ local function fancy_tasklist(cfg, tag)
     widget_template = {
       id = "clienticon",
       widget = awidget.clienticon,
-      create_callback = function(self, c, _, _)
-        self:get_children_by_id("clienticon")[1].client = c
-      end,
+      create_callback = function(self, c, _, _) self:get_children_by_id("clienticon")[1].client = c end,
     },
   })
   return awidget.tasklist(c)

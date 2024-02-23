@@ -73,9 +73,7 @@ function M.find(modname, opts)
 
   ---@type ModuleInfo[]
   local results = {}
-  local function continue()
-    return #results == 0 or opts.all
-  end
+  local function continue() return #results == 0 or opts.all end
 
   -- Checks if the given paths contain the top-level module.
   -- If so, it tries to find the module path for the given module name.

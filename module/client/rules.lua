@@ -111,9 +111,7 @@ local rules = {
       ontop = true,
       floating = true,
       drawBackdrop = true,
-      shape = compat.rules.shape_function(function(cr, w, h)
-        return gshape.rounded_rect(cr, w, h, 8)
-      end),
+      shape = compat.rules.shape_function(function(cr, w, h) return gshape.rounded_rect(cr, w, h, 8) end),
       skip_decoration = true,
     },
   },

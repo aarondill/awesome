@@ -49,9 +49,7 @@ local GioInputStreamAsyncHelper = {
   each_line = function(self, callback, done)
     if done == nil then
       -- Cleanup after ourselves
-      done = function()
-        return self:close()
-      end
+      done = function() return self:close() end
     end
     local function handler(line, err)
       if err then return done and done(false, err) end
@@ -122,9 +120,7 @@ local GioInputStreamAsyncHelper = {
   end,
   ---@param self GInputStreamAsyncHelper
   ---@return integer
-  tell = function(self)
-    return self.stream:tell()
-  end,
+  tell = function(self) return self.stream:tell() end,
   ---Note: this is an async close. You can not use the steam after calling this anyways though. Regardless of the possibilty of race conditions.
   ---@param self GInputStreamAsyncHelper
   ---@param callback? fun(suc: boolean, error: string?):any?
@@ -138,9 +134,7 @@ local GioInputStreamAsyncHelper = {
 
 ---@param stream GInputStream
 ---@return GInputStreamAsyncHelper
-local function gen_stream_ret(stream)
-  return setmetatable({ stream = stream }, { __index = GioInputStreamAsyncHelper })
-end
+local function gen_stream_ret(stream) return setmetatable({ stream = stream }, { __index = GioInputStreamAsyncHelper }) end
 
 ---Gets a GInputStream and GInputStreamAsyncHelper for the given filepath
 ---@param path string

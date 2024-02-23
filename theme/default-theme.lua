@@ -52,9 +52,7 @@ local function do_theme(theme, _theme_dir)
   theme.tooltip_bg = theme.bg_normal
   --theme.tooltip_border_color = '#232323'
   theme.tooltip_border_width = 0
-  theme.tooltip_shape = function(cr, w, h)
-    gshape.rounded_rect(cr, w, h, dpi(6))
-  end
+  theme.tooltip_shape = function(cr, w, h) gshape.rounded_rect(cr, w, h, dpi(6)) end
 
   -- Layout
   theme.layout_tile = icons.layout.tile

@@ -8,9 +8,10 @@ local table_utils = require("util.tables")
 local tags = require("configuration.tags")
 
 if alayout.append_default_layouts then -- Added in v5
-  capi.tag.connect_signal("request::default_layouts", function()
-    return alayout.append_default_layouts(require("configuration.layouts"))
-  end)
+  capi.tag.connect_signal(
+    "request::default_layouts",
+    function() return alayout.append_default_layouts(require("configuration.layouts")) end
+  )
 else -- v4. Breaks in v5
   alayout.layouts = require("configuration.layouts")
 end

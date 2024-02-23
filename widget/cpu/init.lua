@@ -10,9 +10,7 @@ local bind = require("util.bind")
 -- All special characters escaped in a string: %%, %^, %$, ...
 local patternchars = table.concat({ "[", ("%^$().[]*+-?"):gsub("(.)", "%%%1"), "]" })
 -- Taken from gears.string.quote_pattern
-local function escape_pattern(str)
-  return str:gsub(patternchars, "%%%1")
-end
+local function escape_pattern(str) return str:gsub(patternchars, "%%%1") end
 
 ---@class CPUWidgetConfig
 ---What to show before the percentage (default: '').

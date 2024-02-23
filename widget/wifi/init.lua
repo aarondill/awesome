@@ -37,9 +37,7 @@ local widget = wibox.widget({
 })
 
 local widget_button = clickable_container(wibox.container.margin(widget, dpi(14), dpi(14), dpi(4), dpi(4)))
-widget_button:buttons(gtable.join(abutton({}, 1, nil, function()
-  spawn.nosn("wicd-client -n")
-end)))
+widget_button:buttons(gtable.join(abutton({}, 1, nil, function() spawn.nosn("wicd-client -n") end)))
 -- Alternative to naughty.notify - tooltip. You can compare both and choose the preferred one
 atooltip({
   objects = { widget_button },
@@ -59,9 +57,10 @@ atooltip({
 
 local function grabText()
   if not connected then return end
-  return spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout)
-    essid = stdout:match("SSID:(.-)\n") or "N/A"
-  end)
+  return spawn.easy_async(
+    { "iw", "dev", interface, "link" },
+    function(stdout) essid = stdout:match("SSID:(.-)\n") or "N/A" end
+  )
 end
 
 watch("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", 5, function(_, stdout)
@@ -81,8 +80,6 @@ watch("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", 5, funct
   collectgarbage("collect")
 end, widget)
 
-widget:connect_signal("mouse::enter", function()
-  grabText()
-end)
+widget:connect_signal("mouse::enter", function() grabText() end)
 
 return widget_button

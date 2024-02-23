@@ -15,9 +15,7 @@ local function debounce(f, delay)
   local timer = gtimer.new({
     timeout = delay,
     single_shot = true, -- only run once
-    callback = function()
-      f(table.unpack(indirect.args, 1, indirect.args.n))
-    end,
+    callback = function() f(table.unpack(indirect.args, 1, indirect.args.n)) end,
   })
   return function(...)
     if timer.started then timer:stop() end

@@ -9,12 +9,8 @@ local IconButton = {}
 
 ---@param img string the path to the image
 ---@return boolean success
-function IconButton:set_image(img)
-  return self._private.iconbox:set_image(img)
-end
-function IconButton:get_image()
-  return self._private.iconbox:get_image()
-end
+function IconButton:set_image(img) return self._private.iconbox:set_image(img) end
+function IconButton:get_image() return self._private.iconbox:get_image() end
 -- alias icon to image
 IconButton.set_icon = IconButton.set_image
 IconButton.get_icon = IconButton.get_image

@@ -3,14 +3,10 @@ local capi = require("capi")
 local M = {}
 
 ---@return AwesomeScreenInstance?
-function M.primary()
-  return capi.screen.primary
-end
+function M.primary() return capi.screen.primary end
 
 ---@return AwesomeScreenInstance?
-function M.focused()
-  return ascreen.focused()
-end
+function M.focused() return ascreen.focused() end
 
 ---@param o AwesomeClientInstance | AwesomeScreenInstance | AwesomeTagInstance | integer | nil The object to find screen on.
 ---@return AwesomeScreenInstance?

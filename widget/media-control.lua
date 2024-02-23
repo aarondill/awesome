@@ -44,9 +44,7 @@ local defaults = {
 local MediaControl = {}
 
 ---@param args MediaControl.args?
-function MediaControl:new(args)
-  return setmetatable({}, { __index = self }):init(args)
-end
+function MediaControl:new(args) return setmetatable({}, { __index = self }):init(args) end
 
 ---@param args MediaControl.args?
 ---@return MediaControl
@@ -85,9 +83,7 @@ function MediaControl:init(args)
     align = "bottom",
     delay_show = 1,
   })
-  function self.widget:set_status(image)
-    self:get_children_by_id("icon")[1].image = image
-  end
+  function self.widget:set_status(image) self:get_children_by_id("icon")[1].image = image end
   function self.widget:set_text(text)
     self:get_children_by_id("current_song")[1].text = text
     self.tooltip:set_text(text)
@@ -136,9 +132,7 @@ function MediaControl:handle_name(cmd)
     return cmd
   end
 end
-local function handle_exit_callback(cb, reason, code)
-  return cb(reason == "exit" and code == 0)
-end
+local function handle_exit_callback(cb, reason, code) return cb(reason == "exit" and code == 0) end
 ---@param cb fun(success: boolean)
 function MediaControl:PlayPause(cb)
   spawn.spawn(self:handle_name({ "playerctl", "play-pause" }), {

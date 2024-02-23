@@ -6,7 +6,5 @@ local basename = require(..., "basename") ---@module 'util.path.basename'
 --- If the path has no extension or begins with a dot (and no other dot), and empty string is returned
 ---@param path string
 ---@return string
-local function extname(path)
-  return basename(path):match(".+(%..+)") or ""
-end
+local function extname(path) return basename(path):match(".+(%..+)") or "" end
 return extname
