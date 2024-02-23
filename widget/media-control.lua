@@ -6,6 +6,7 @@ local concat_command = require("util.command.concat_command")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local spawn = require("util.spawn")
+local stream = require("stream")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
@@ -168,19 +169,15 @@ function MediaControl:info(cb)
     "url",
     "volume",
   }
-  local cmd
-  do
-    local format_stats = {}
-    for _, v in ipairs(variables) do
-      table.insert(format_stats, table.concat({ "{{", v, "}}" }))
-    end
-    cmd = self:handle_name({
-      "playerctl",
-      "metadata",
-      "--format",
-      table.concat(format_stats, "\n"),
-    })
-  end
+  local cmd = self:handle_name({
+    "playerctl",
+    "metadata",
+    "--format",
+    stream
+      .new(variables) -- join each {{variable}}
+      :map(function(v) return table.concat({ "{{", v, "}}" }) end)
+      :join("\n"),
+  })
   spawn.async(cmd, function(stdout, _, exit_reason, exit_code)
     if exit_reason ~= "exit" or exit_code ~= 0 then return cb(nil) end
     ---@class MediaControl.info

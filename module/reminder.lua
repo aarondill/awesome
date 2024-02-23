@@ -2,6 +2,7 @@ local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local read_async = require("util.file.read_async")
+local stream = require("stream")
 local tables = require("util.tables")
 
 ---Return a table of permutations of extensions
@@ -14,17 +15,17 @@ local function add_suffix(filepath, exts, include_original)
   include_original = include_original == nil and true or include_original -- default to true
   if type(filepath) == "table" then
     local ret = include_original and gtable.clone(filepath, false) or {}
-    for _, p in ipairs(filepath) do
-      gtable.merge(ret, add_suffix(p, exts, false)) -- Don't include original to remove duplicates
-    end
-    return ret
+    return stream
+      .new(filepath)
+      :map(function(p) -- Don't include original to remove duplicates
+        return add_suffix(p, exts, false)
+      end)
+      :reduce(ret, gtable.merge)
   end
-
-  local ret = include_original and { filepath } or {}
-  for _, ext in ipairs(exts) do
-    table.insert(ret, ("%s%s"):format(filepath, ext))
-  end
-  return ret
+  return stream
+    .new(exts)
+    :map(function(ext) return ("%s%s"):format(filepath, ext) end)
+    :toarray(include_original and { filepath } or nil)
 end
 local home_reminder_paths = { "reminder", ".reminder", ".todo", "todo" }
 local extensions = { ".txt", ".md" }
