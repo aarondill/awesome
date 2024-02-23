@@ -1,21 +1,21 @@
-local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
+local stream = require("stream")
 local tables = require("util.tables")
 local function get_cache(cache, key)
   local func, len, outer = key.func, key.len, key.outer
-  local k = gtable.find_first_key(cache, function(props)
-    if props.func ~= func or props.len ~= len then return false end -- has a different function or a different given length
-    if len <= 0 then return true end -- no args, this is a valid return value
-
+  local s = stream
+    .new(cache) --
+    :filter(function(props) return props.func == func and props.len == len end)
+  -- If no arguments, the first found is always valid
+  if len <= 0 then return s:next() end
+  return s:filter(function(props)
     for i = 1, len do -- iterate each given argument
       if props.outer[i] ~= outer[i] then
         return false -- not same! can't use this function
       end
     end
-
     return true -- ALL arguments are the same (Referencial equality!!)
-  end)
-  if k then return cache[k] end
+  end):next()
 end
 local Bind = {}
 --- Weak cache for functions, as they can be the same if given the function and args
@@ -40,12 +40,13 @@ function Bind.bind(func, ...)
   local c = get_cache(cache, key)
   if c then return c end
 
-  cache[key] = function(...)
+  local f = function(...)
     if not outer then return func(...) end -- save processing/memory in storing the above table
     local args = select("#", ...) > 0 and tables.tbl_concat(outer, ...) or outer -- Avoid the copy if possible
     return func(table.unpack(args, 1, args.n))
   end
-  return cache[key]
+  cache[key] = f
+  return f
 end
 Bind.with_start_args = Bind.bind -- Alias for symetry with Bind.with_args
 
@@ -65,11 +66,12 @@ function Bind.with_args(func, ...)
   local c = get_cache(cache, key)
   if c then return c end
 
-  cache[key] = function()
+  local f = function()
     if not args then return func() end -- save processing/memory in storing the above table
     return func(table.unpack(args, 1, args.n))
   end
-  return cache[key]
+  cache[key] = f
+  return f
 end
 
 setmetatable(Bind, {
