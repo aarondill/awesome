@@ -4,7 +4,7 @@ local atag = require("awful.tag")
 local capi = require("capi")
 local gtable = require("gears.table")
 local layouts = require("configuration.layouts")
-local table_utils = require("util.tables")
+local stream = require("stream")
 local tags = require("configuration.tags")
 
 if alayout.append_default_layouts then -- Added in v5
@@ -26,20 +26,21 @@ local function resolve_tag(tag, s, i)
   return {} -- Unknown tag -- empty properties
 end
 ascreen.connect_for_each_screen(function(s)
-  return table_utils.foreach(tags, function(tag, i)
-    if not tag then return end
-    tag = resolve_tag(tag, s, i)
-    local params = gtable.crush({
-      name = i,
-      layout = layouts[1] or alayout.suit.tile,
-      gap_single_client = true,
-      screen = s,
-      selected = i == 1,
-    }, tag)
-
-    -- icon_only not specified, but icon is, and name isn't. Default to only icon.
-    if tag.icon_only == nil and tag.icon and not tag.name then params.icon_only = true end
-
-    return atag.add(params.name, params)
-  end)
+  return stream
+    .rangeclosed(0, #tags)
+    :filter(function(i) return tags[i] ~= false end)
+    :map(function(i)
+      local tag = resolve_tag(tags[i], s, i)
+      local params = gtable.crush({
+        name = i,
+        layout = layouts[1] or alayout.suit.tile,
+        gap_single_client = true,
+        screen = s,
+        selected = i == 1,
+      }, tag)
+      -- icon_only not specified, but icon is, and name isn't. Default to only icon.
+      if tag.icon_only == nil and tag.icon and not tag.name then params.icon_only = true end
+      return params
+    end)
+    :foreach(function(p) return atag.add(p.name, p) end)
 end)

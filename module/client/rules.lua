@@ -11,7 +11,7 @@ local client_keys = require("configuration.keys.client")
 local compat = require("util.awesome.compat")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
-local table_utils = require("util.tables")
+local stream = require("stream")
 
 ---@class AwesomeClientInstance
 ---@field skip_decoration boolean? Whether to skip decorating the client instance. This is an injected field!
@@ -123,10 +123,11 @@ if has_ruled then
   capi.client.disconnect_signal(compat.signal.manage, ruled.client.apply)
   return capi.client.connect_signal(compat.signal.manage, function(c)
     if not capi.awesome.startup then return ruled.client.apply(c) end
-    return table_utils.foreach(ruled.client.matching_rules(c), function(rule)
+    return stream.new(ruled.client.matching_rules(c)):foreach(function(rule)
       local props = rule.properties or {}
       if rule.apply_on_restart then return ruled.client.execute(c, props, { rule.callback }) end
-      local mini_properties = { -- These will always be applied.
+      -- These will always be applied.
+      local mini_properties = {
         buttons = props.buttons,
         keys = props.keys,
         size_hints_honor = props.size_hints_honor,
@@ -141,7 +142,7 @@ arules.rules = rules
 capi.client.disconnect_signal(compat.signal.manage, arules.apply)
 return capi.client.connect_signal(compat.signal.manage, function(c)
   if not capi.awesome.startup then return arules.apply(c) end
-  return table_utils.foreach(arules.matching_rules(c, arules.rules), function(rule)
+  return stream.new(arules.matching_rules(c, arules.rules)):foreach(function(rule)
     local props = rule.properties or {}
     if rule.apply_on_restart then return arules.execute(c, props, { rule.callback }) end
     local mini_properties = { -- These will always be applied.
