@@ -27,7 +27,7 @@ local function resolve_tag(tag, s, i)
 end
 ascreen.connect_for_each_screen(function(s)
   return stream
-    .rangeclosed(0, #tags)
+    .rangeclosed(1, #tags)
     :filter(function(i) return tags[i] ~= false end)
     :map(function(i)
       local tag = resolve_tag(tags[i], s, i)
