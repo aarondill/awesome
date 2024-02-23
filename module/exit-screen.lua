@@ -8,7 +8,7 @@ local exit_screen_conf = require("configuration.exit-screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local screen = require("util.types.screen")
-local tables = require("util.tables")
+local stream = require("stream")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
@@ -117,8 +117,6 @@ exit_screen.fg = exit_screen_conf.fg
   or beautiful.fg_normal
   or "#FEFEFE"
 
-local buttons = tables.map(exit_screen_conf.buttons, buildButton) -- Note: keeps order of buttons array
-
 ---@param opts? {screen?: screen}
 local function exit_screen_show(opts)
   opts = opts or {}
@@ -161,7 +159,7 @@ exit_screen:setup({
     nil, -- No left
     { -- This should be centered
       layout = wibox.layout.fixed.horizontal,
-      table.unpack(buttons), -- Note: this must be last!
+      stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
     },
     nil, -- No right
     expand = "none",
