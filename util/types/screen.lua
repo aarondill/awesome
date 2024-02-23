@@ -19,5 +19,13 @@ function M.get(o)
   end
   return nil -- IDK
 end
+---@return fun(): AwesomeScreenInstance?
+function M.iterator()
+  local prev = nil
+  return function()
+    prev = capi.screen(nil, prev)
+    return prev
+  end
+end
 
 return M

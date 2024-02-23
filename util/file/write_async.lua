@@ -1,5 +1,5 @@
 local garbage_collection = require("util.garbage_collection")
-local gio = require("lgi").require("Gio")
+local new_file_for_path = require("util.file.new_file_for_path")
 
 --- Replace a file content or create a new one - Async :)
 ---@param path string file path to write to
@@ -13,7 +13,7 @@ local function file_write(path, content, cb)
 
   ---params(replace_contents_async): string contents, string etag, boolean make_backup, GFileCreateFlags flags, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   --- NOTE: This function does not copy `content`, so we must protect it from being garbage-collected (resulting in garbage being written to disk)
-  gio.File.new_for_path(path):replace_contents_async(content, nil, false, 0, nil, function(file, task)
+  new_file_for_path(path):replace_contents_async(content, nil, false, 0, nil, function(file, task)
     --- Finish the write operation and close the file(?)
     local new_etags, error = file:replace_contents_finish(task)
 
@@ -22,11 +22,10 @@ local function file_write(path, content, cb)
     index = nil
     collectgarbage("collect")
     if not new_etags then
-      cb(error)
-    else
-      cb(nil)
+      assert(type(error) == "userdata", "Non-userdata error returned from replace_contents_finish!")
+      return cb(error)
     end
-    collectgarbage("collect")
+    return cb(nil)
   end)
 end
 
