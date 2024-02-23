@@ -7,11 +7,9 @@ local beautiful = require("beautiful")
 local capi = require("capi")
 local gtimer = require("gears.timer")
 local quake = require("module.quake")
-local table_utils = require("util.tables")
+local stream = require("stream")
 
-local function shape_rounded_rect(cr, w, h)
-  return require("gears.shape").rounded_rect(cr, w, h, 8)
-end
+local function shape_rounded_rect(cr, w, h) return require("gears.shape").rounded_rect(cr, w, h, 8) end
 ---@param client AwesomeClientInstance
 ---@param render_maximized boolean
 local function renderClient(client, render_maximized)
@@ -41,9 +39,12 @@ local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
 end
 local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScreenInstance
   if not currentScreen.valid then return end -- Check if the screen is still valid!
-  local managed_clients = table_utils.filter(currentScreen.clients, function(c)
-    return c.valid and not c.skip_decoration and not c.hidden and not quake:client_is_quake(c)
-  end)
+  local managed_clients = stream
+    .new(currentScreen.clients)
+    :filter(function(c) return c.valid end)
+    :filter(function(c) return not c.skip_decoration and not c.hidden end)
+    :filter(function(c) return not quake:client_is_quake(c) end)
+    :toarray()
 
   local tag = currentScreen.selected_tag
   local tag_is_max = is_tag_maximized(tag)

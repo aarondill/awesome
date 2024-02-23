@@ -1,20 +1,14 @@
-local rel_require = require("util.rel_require")
-local map_val = rel_require(..., "map_val") ---@module 'util.tables.map_val'
+local bind = require("util.bind")
+local stream = require("stream")
 ---Concat elements of a table with a format
 ---@generic V :unknown
 ---@param t V[]
 ---@param format (string|fun(v: V): string)? the format for each element
 ---@param separator string? the separator between each formatted element
 ---@return string
-local function concat(t, separator, format)
+return function(t, separator, format)
   if not format then return table.concat(t, separator) end
-  if type(format) == "function" then -- call format on each element and join
-    return table.concat(map_val(t, format), separator)
-  end
-  local ret = {}
-  for k, v in ipairs(t) do
-    ret[k] = format:format(v)
-  end
-  return table.concat(ret, separator)
+  --- Either call format(v) or string.format(format, v)
+  local mapper = type(format) == "function" and format or bind.with_start_args(string.format, format)
+  return stream.new(t):map(mapper):join(separator)
 end
-return concat
