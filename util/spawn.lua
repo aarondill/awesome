@@ -244,9 +244,7 @@ local function get_end_of_file_func()
   -- The above uninitialized variable was fixed and thus length is always 0 when line is NULL in C.
   -- We cannot tell apart an empty line and EOF in this case.
   require("gears.debug").print_warning("Cannot reliably detect EOF on an GIOInputStream with this LGI version")
-  return function(arg)
-    return tostring(arg) == ""
-  end
+  return function(arg) return tostring(arg) == "" end
 end
 local end_of_file = get_end_of_file_func()
 
@@ -351,9 +349,7 @@ function spawn.async(cmd, callback, opts)
   opts = opts and gtable.clone(opts, false) or {} -- Clone opts, since we modify it in a moment
   local stdout, stderr = "", ""
   local exitcode, exitreason
-  local function done_callback()
-    return callback(stdout, stderr, exitreason, exitcode)
-  end
+  local function done_callback() return callback(stdout, stderr, exitreason, exitcode) end
 
   local exit_callback_fired = false
   local output_done_callback_fired = false
@@ -365,12 +361,8 @@ function spawn.async(cmd, callback, opts)
   end
   opts.exit_callback = exit_callback
   local pid, err, info = spawn.with_lines(cmd, {
-    stdout = function(str)
-      stdout = stdout .. str .. "\n"
-    end,
-    stderr = function(str)
-      stderr = stderr .. str .. "\n"
-    end,
+    stdout = function(str) stdout = stdout .. str .. "\n" end,
+    stderr = function(str) stderr = stderr .. str .. "\n" end,
     done = function()
       output_done_callback_fired = true
       if exit_callback_fired then return done_callback() end
@@ -397,9 +389,7 @@ spawn.is_normal_exit = function(reason, code)
 end
 
 setmetatable(spawn, {
-  __call = function(_, ...)
-    return spawn.spawn(...)
-  end,
+  __call = function(_, ...) return spawn.spawn(...) end,
 })
 
 return spawn

@@ -11,9 +11,10 @@ local slider = wibox.widget({
   widget = mat_slider,
 })
 
-slider:connect_signal("property::value", function()
-  spawn.nosn({ "amixer", "-D", "pulse", "sset", "Master", slider.value .. "%" })
-end)
+slider:connect_signal(
+  "property::value",
+  function() spawn.nosn({ "amixer", "-D", "pulse", "sset", "Master", slider.value .. "%" }) end
+)
 
 watch("amixer -D pulse sget Master", 1, function(_, stdout)
   -- local mute = string.match(stdout, "%[(o%D%D?)%]")

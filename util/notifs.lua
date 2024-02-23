@@ -70,9 +70,7 @@ local function _notify(text, opts)
 end
 
 ---@param opts? NotifyOpts|string
-local function has_msg(opts)
-  return type(opts) == "table" and (opts.message or opts.text) or nil
-end
+local function has_msg(opts) return type(opts) == "table" and (opts.message or opts.text) or nil end
 ---@alias loglevel "low"| "normal"| "critical"| "ok"| "info"| "warn"
 ---Create a notification.
 ---@param text? string The text to display
@@ -104,9 +102,7 @@ function M.notify(loglevel, text, opts, extra_opts)
 
   return _notify(text, opts)
 end
-function M.notify_once(loglevel, text, opts)
-  return M.notify(loglevel, text, opts, { once = true })
-end
+function M.notify_once(loglevel, text, opts) return M.notify(loglevel, text, opts, { once = true }) end
 
 M.low = bind(M.notify, "low") ---@type logFunc
 M.normal = bind(M.notify, "normal") ---@type logFunc

@@ -26,9 +26,7 @@ local delay = require("configuration").tag_throttle_delay
 ---@param press? fun(): any
 ---@param release? (fun(): any)|aKeyDataTable
 ---@param data? aKeyDataTable
-local gkey = function(modKeys, key, press, release, data)
-  return awful_key.new(modKeys, key, press, release, data)
-end
+local gkey = function(modKeys, key, press, release, data) return awful_key.new(modKeys, key, press, release, data) end
 
 ---send a notification alerting the new state of `what`
 ---@param what string
@@ -86,12 +84,18 @@ local globalKeys = gtable.join(
   gkey({ modkey }, "s", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
 
   -- Client management
-  gkey({ modkey }, "j", function()
-    aclient.focus.byidx(1)
-  end, { description = "Focus next by index", group = "client" }),
-  gkey({ modkey }, "k", function()
-    aclient.focus.byidx(-1)
-  end, { description = "Focus previous by index", group = "client" }),
+  gkey(
+    { modkey },
+    "j",
+    function() aclient.focus.byidx(1) end,
+    { description = "Focus next by index", group = "client" }
+  ),
+  gkey(
+    { modkey },
+    "k",
+    function() aclient.focus.byidx(-1) end,
+    { description = "Focus previous by index", group = "client" }
+  ),
 
   gkey({ modkey }, "r", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ altkey }, "space", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
@@ -108,18 +112,30 @@ local globalKeys = gtable.join(
 
   -- Layout management
 
-  gkey({ modkey, "Shift" }, "j", function()
-    aclient.swap.byidx(1)
-  end, { description = "Swap with next client by index", group = "client" }),
-  gkey({ modkey, "Shift" }, "k", function()
-    aclient.swap.byidx(-1)
-  end, { description = "Swap with previous client by index", group = "client" }),
-  gkey({ modkey, "Control" }, "j", function()
-    ascreen.focus_relative(1)
-  end, { description = "Focus the next screen", group = "screen" }),
-  gkey({ modkey, "Control" }, "k", function()
-    ascreen.focus_relative(-1)
-  end, { description = "Focus the previous screen", group = "screen" }),
+  gkey(
+    { modkey, "Shift" },
+    "j",
+    function() aclient.swap.byidx(1) end,
+    { description = "Swap with next client by index", group = "client" }
+  ),
+  gkey(
+    { modkey, "Shift" },
+    "k",
+    function() aclient.swap.byidx(-1) end,
+    { description = "Swap with previous client by index", group = "client" }
+  ),
+  gkey(
+    { modkey, "Control" },
+    "j",
+    function() ascreen.focus_relative(1) end,
+    { description = "Focus the next screen", group = "screen" }
+  ),
+  gkey(
+    { modkey, "Control" },
+    "k",
+    function() ascreen.focus_relative(-1) end,
+    { description = "Focus the previous screen", group = "screen" }
+  ),
   gkey({ modkey }, "u", aclient.urgent.jumpto, { description = "Jump to urgent client", group = "client" }),
 
   gkey({ altkey }, "Tab", function()
@@ -182,31 +198,55 @@ local globalKeys = gtable.join(
     bind(capi.awesome.emit_signal, "quake::toggle"),
     { description = "Open a quake terminal", group = "launcher" }
   ),
-  gkey({ modkey }, "l", function()
-    return atag.incmwfact(0.05)
-  end, { description = "Increase master width factor", group = "layout" }),
-  gkey({ modkey }, "h", function()
-    return atag.incmwfact(-0.05)
-  end, { description = "Decrease master width factor", group = "layout" }),
-  gkey({ modkey, "Shift" }, "h", function()
-    return atag.incnmaster(1, nil, true)
-  end, { description = "Increase the number of master clients", group = "layout" }),
-  gkey({ modkey, "Shift" }, "l", function()
-    return atag.incnmaster(-1, nil, true)
-  end, { description = "Decrease the number of master clients", group = "layout" }),
-  gkey({ modkey, "Control" }, "h", function()
-    return atag.incncol(1, nil, true)
-  end, { description = "Increase the number of columns", group = "layout" }),
-  gkey({ modkey, "Control" }, "l", function()
-    return atag.incncol(-1, nil, true)
-  end, { description = "Decrease the number of columns", group = "layout" }),
+  gkey(
+    { modkey },
+    "l",
+    function() return atag.incmwfact(0.05) end,
+    { description = "Increase master width factor", group = "layout" }
+  ),
+  gkey(
+    { modkey },
+    "h",
+    function() return atag.incmwfact(-0.05) end,
+    { description = "Decrease master width factor", group = "layout" }
+  ),
+  gkey(
+    { modkey, "Shift" },
+    "h",
+    function() return atag.incnmaster(1, nil, true) end,
+    { description = "Increase the number of master clients", group = "layout" }
+  ),
+  gkey(
+    { modkey, "Shift" },
+    "l",
+    function() return atag.incnmaster(-1, nil, true) end,
+    { description = "Decrease the number of master clients", group = "layout" }
+  ),
+  gkey(
+    { modkey, "Control" },
+    "h",
+    function() return atag.incncol(1, nil, true) end,
+    { description = "Increase the number of columns", group = "layout" }
+  ),
+  gkey(
+    { modkey, "Control" },
+    "l",
+    function() return atag.incncol(-1, nil, true) end,
+    { description = "Decrease the number of columns", group = "layout" }
+  ),
 
-  gkey({ modkey }, "=", function()
-    return atag.incgap(5)
-  end, { description = "Increase the gaps between windows", group = "layout" }),
-  gkey({ modkey, "Shift" }, "=", function()
-    return atag.incgap(1)
-  end, { description = "Increase the gaps between windows by 1", group = "layout" }),
+  gkey(
+    { modkey },
+    "=",
+    function() return atag.incgap(5) end,
+    { description = "Increase the gaps between windows", group = "layout" }
+  ),
+  gkey(
+    { modkey, "Shift" },
+    "=",
+    function() return atag.incgap(1) end,
+    { description = "Increase the gaps between windows by 1", group = "layout" }
+  ),
 
   gkey({ modkey }, "-", function()
     -- if <5, set to 0
@@ -214,16 +254,20 @@ local globalKeys = gtable.join(
       atag.incgap(-1)
     end
   end, { description = "Decrease the gaps between windows", group = "layout" }),
-  gkey({ modkey, "Shift" }, "-", function()
-    return atag.incgap(-1)
-  end, { description = "Decrease the gaps between windows by 1", group = "layout" }),
+  gkey(
+    { modkey, "Shift" },
+    "-",
+    function() return atag.incgap(-1) end,
+    { description = "Decrease the gaps between windows by 1", group = "layout" }
+  ),
 
-  gkey({ modkey }, "space", function()
-    return alayout.inc(1)
-  end, { description = "Select next", group = "layout" }),
-  gkey({ modkey, "Shift" }, "space", function()
-    return alayout.inc(-1)
-  end, { description = "Select previous", group = "layout" }),
+  gkey({ modkey }, "space", function() return alayout.inc(1) end, { description = "Select next", group = "layout" }),
+  gkey(
+    { modkey, "Shift" },
+    "space",
+    function() return alayout.inc(-1) end,
+    { description = "Select previous", group = "layout" }
+  ),
 
   gkey({ modkey, "Control" }, "n", function()
     local c = aclient.restore()
@@ -232,44 +276,77 @@ local globalKeys = gtable.join(
   end, { description = "Restore minimized", group = "client" }),
 
   -- Brightness
-  gkey({}, "XF86MonBrightnessUp", function()
-    return spawn.nosn(apps.default.brightness.up)
-  end, { description = "Brightness up", group = "hotkeys" }),
-  gkey({}, "XF86MonBrightnessDown", function()
-    return spawn.nosn(apps.default.brightness.down)
-  end, { description = "Brightness down", group = "hotkeys" }),
+  gkey(
+    {},
+    "XF86MonBrightnessUp",
+    function() return spawn.nosn(apps.default.brightness.up) end,
+    { description = "Brightness up", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86MonBrightnessDown",
+    function() return spawn.nosn(apps.default.brightness.down) end,
+    { description = "Brightness down", group = "hotkeys" }
+  ),
   -- volume control
-  gkey({}, "XF86AudioRaiseVolume", function()
-    return spawn.nosn(apps.default.volume.up)
-  end, { description = "Volume up", group = "hotkeys" }),
-  gkey({}, "XF86AudioLowerVolume", function()
-    return spawn.nosn(apps.default.volume.down)
-  end, { description = "Volume down", group = "hotkeys" }),
-  gkey({}, "XF86AudioMute", function()
-    return spawn.nosn(apps.default.volume.toggle_mute)
-  end, { description = "Toggle mute", group = "hotkeys" }),
+  gkey(
+    {},
+    "XF86AudioRaiseVolume",
+    function() return spawn.nosn(apps.default.volume.up) end,
+    { description = "Volume up", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86AudioLowerVolume",
+    function() return spawn.nosn(apps.default.volume.down) end,
+    { description = "Volume down", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86AudioMute",
+    function() return spawn.nosn(apps.default.volume.toggle_mute) end,
+    { description = "Toggle mute", group = "hotkeys" }
+  ),
 
-  gkey({}, "XF86AudioPlay", function()
-    return spawn.nosn({ "playerctl", "play-pause" })
-  end, { description = "Play/Pause Audio Track", group = "hotkeys" }),
-  gkey({}, "XF86AudioNext", function()
-    return spawn.nosn({ "playerctl", "next" })
-  end, { description = "Next Audio Track", group = "hotkeys" }),
-  gkey({}, "XF86AudioPrev", function()
-    return spawn.nosn({ "playerctl", "previous" })
-  end, { description = "Previous Audio Track", group = "hotkeys" }),
-  gkey({}, "XF86PowerDown", function()
-    return require("module.exit-screen").show()
-  end, { description = "Open Poweroff Menu", group = "hotkeys" }),
-  gkey({}, "XF86PowerOff", function()
-    return require("module.exit-screen").show()
-  end, { description = "Open Poweroff Menu", group = "hotkeys" }),
+  gkey(
+    {},
+    "XF86AudioPlay",
+    function() return spawn.nosn({ "playerctl", "play-pause" }) end,
+    { description = "Play/Pause Audio Track", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86AudioNext",
+    function() return spawn.nosn({ "playerctl", "next" }) end,
+    { description = "Next Audio Track", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86AudioPrev",
+    function() return spawn.nosn({ "playerctl", "previous" }) end,
+    { description = "Previous Audio Track", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86PowerDown",
+    function() return require("module.exit-screen").show() end,
+    { description = "Open Poweroff Menu", group = "hotkeys" }
+  ),
+  gkey(
+    {},
+    "XF86PowerOff",
+    function() return require("module.exit-screen").show() end,
+    { description = "Open Poweroff Menu", group = "hotkeys" }
+  ),
 
   -- Custom hotkeys
   -- Emoji Picker
-  gkey({ modkey }, "a", function()
-    return spawn({ "ibus", "emoji" })
-  end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
+  gkey(
+    { modkey },
+    "a",
+    function() return spawn({ "ibus", "emoji" }) end,
+    { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }
+  ),
   gkey({ modkey, "Shift" }, "`", function()
     local s = ascreen.focused() ---@type AwesomeScreenInstance?
     local tl = s and widgets.get_by_id(s.top_panel, "taglist")

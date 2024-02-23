@@ -73,8 +73,6 @@ function Bind.with_args(func, ...)
 end
 
 setmetatable(Bind, {
-  __call = function(self, ...)
-    return self.bind(...)
-  end,
+  __call = function(self, ...) return self.bind(...) end,
 })
 return Bind

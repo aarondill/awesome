@@ -198,19 +198,13 @@ function quake:kill()
 end
 
 ---Hide the quake application
-function quake:hide()
-  return self:_display(false)
-end
+function quake:hide() return self:_display(false) end
 ---Show the quake application
 ---@param tag AwesomeTagInstance? the tag to show on (optional: current)
-function quake:show(tag)
-  return self:_display(true, tag)
-end
+function quake:show(tag) return self:_display(true, tag) end
 ---Toggle the quake application
 ---@param tag AwesomeTagInstance? the tag to show on (optional: current). Only used when showing
-function quake:toggle(tag)
-  return self:_display("toggle", tag)
-end
+function quake:toggle(tag) return self:_display("toggle", tag) end
 ---@param conf QuakeConfig
 function quake.new(conf)
   local self = tables.clone(quake, true)
@@ -225,7 +219,5 @@ function quake.new(conf)
 end
 
 return setmetatable(quake, {
-  __call = function(_, ...)
-    return quake.new(...)
-  end,
+  __call = function(_, ...) return quake.new(...) end,
 })

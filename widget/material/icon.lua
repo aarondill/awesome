@@ -32,9 +32,7 @@ function Icon:set_icon(icon)
   self._private.icon = icon
   self._private.imagebox:set_image(icon)
 end
-function Icon:get_icon()
-  return self._private.icon
-end
+function Icon:get_icon() return self._private.icon end
 -- alias icon to image
 Icon.set_image = Icon.set_icon
 Icon.get_image = Icon.get_icon
@@ -43,17 +41,13 @@ function Icon:set_size(size)
   self._private.size = size
   self:emit_signal("widget::layout_changed")
 end
-function Icon:get_size()
-  return self._private.size
-end
+function Icon:get_size() return self._private.size end
 
 function Icon:set_render_empty(render_empty)
   self._private.render_empty = render_empty
   self:emit_signal("widget::layout_changed")
 end
-function Icon:get_render_empty()
-  return self._private.render_empty
-end
+function Icon:get_render_empty() return self._private.render_empty end
 
 ---Creates a widget to hold an icon with a given size
 ---The icon will be centered in a square of size

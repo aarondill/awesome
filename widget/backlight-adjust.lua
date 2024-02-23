@@ -58,9 +58,7 @@ backlight_adjust:setup({
 local hide_backlight_adjust = gtimer({
   timeout = 4,
   autostart = true,
-  callback = function()
-    backlight_adjust.visible = false
-  end,
+  callback = function() backlight_adjust.visible = false end,
 })
 
 --HACK:

@@ -4,23 +4,17 @@ local capi = require("capi")
 ---@param val R
 ---@return fun():R
 local function ret_val(val)
-  return function()
-    return val
-  end
+  return function() return val end
 end
 ---Not a factory!
-local function ret_arg(val)
-  return val
-end
+local function ret_arg(val) return val end
 ---@generic T
 ---t is just used to handle the return signature
 ---@return fun(o: table, t?: T): T
 local function lazy_access(key)
   if key == nil then return ret_val(nil) end
   ---@diagnostic disable-next-line :unused-local
-  return function(o, t)
-    return o[key]
-  end
+  return function(o, t) return o[key] end
 end
 ---@generic T
 ---@return fun(o: table, val: T):T
@@ -82,9 +76,7 @@ local M = verify_functions({
       return o
     end,
     ---@param args table<'screen', screen>
-    get_layoutbox_args = function(args)
-      return vers("v4.3", args.screen, args)
-    end,
+    get_layoutbox_args = function(args) return vers("v4.3", args.screen, args) end,
     set_border_width = lazy_set(vers("v4.3", "shape_border_width", "border_width")),
     get_border_width = lazy_access(vers("v4.3", "shape_border_width", "border_width")),
     set_border_color = lazy_set(vers("v4.3", "shape_border_color", "border_color")),
@@ -103,9 +95,7 @@ local M = verify_functions({
     ---@generic F :function
     ---@param f F
     ---@return F|fun():F
-    shape_function = function(f)
-      return vers("v4.3", ret_val(f), f)
-    end,
+    shape_function = function(f) return vers("v4.3", ret_val(f), f) end,
   },
 })
 

@@ -1,8 +1,6 @@
 local serializeTable -- Define this within the scope of type_tostring to resolve the circular dependencies
 
-local function string_warning(warning)
-  return string.format('"[%s]"', warning)
-end
+local function string_warning(warning) return string.format('"[%s]"', warning) end
 ---@param val unknown the value to serialize
 ---@param skipnewlines boolean Should newlines be present in the output
 ---@param depth integer used for the recursive implementation. DO NOT use this.

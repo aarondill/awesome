@@ -24,9 +24,7 @@ end
 local timer = gtimer.new({
   timeout = 1,
   call_now = true,
-  callback = function()
-    spawn.easy_async("free", free_handler)
-  end,
+  callback = function() spawn.easy_async("free", free_handler) end,
 })
 timer:start()
 

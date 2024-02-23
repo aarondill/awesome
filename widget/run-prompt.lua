@@ -24,9 +24,7 @@ local function Run_prompt()
   promptbox.timer = gtimer.new({
     timeout = 5,
     single_shot = true,
-    callback = function()
-      promptbox.widget:set_text("")
-    end,
+    callback = function() promptbox.widget:set_text("") end,
   })
 
   local old_run = promptbox.run
@@ -35,9 +33,7 @@ local function Run_prompt()
     return old_run(...)
   end
 
-  promptbox.widget.run = function(_widget, ...)
-    return promptbox:run(...)
-  end -- Expose this on the returned widget
+  promptbox.widget.run = function(_widget, ...) return promptbox:run(...) end -- Expose this on the returned widget
   promptbox.widget.promptbox = promptbox -- Allow the returned widget to access the promptbox
   return promptbox.widget
 end

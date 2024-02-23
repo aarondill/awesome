@@ -12,9 +12,10 @@ default_theme(final_theme, theme_dir)
 beautiful.init(final_theme) -- Set the theme to our newly calculated theme
 
 -- Enable sloppy focus, so that focus follows mouse.
-capi.client.connect_signal("mouse::enter", function(c)
-  return c:emit_signal("request::activate", "mouse_enter", { raise = true })
-end)
+capi.client.connect_signal(
+  "mouse::enter",
+  function(c) return c:emit_signal("request::activate", "mouse_enter", { raise = true }) end
+)
 
 -- Make the focused window have a glowing border
 local function focus_handler(c) ---@param c AwesomeClientInstance

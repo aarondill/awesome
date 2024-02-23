@@ -71,7 +71,5 @@ function Assert.assert(bool, msg, level, ...)
 end
 
 local mt = {}
-function mt:call(...)
-  return assert(...)
-end
+function mt:call(...) return assert(...) end
 return setmetatable(Assert, mt)

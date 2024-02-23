@@ -54,7 +54,5 @@ function M.new(opts)
   }
   return ataglist(gtable.join(opts, overrides))
 end
-function M.mt:__call(...)
-  return M.new(...)
-end
+function M.mt:__call(...) return M.new(...) end
 return setmetatable(M, M.mt)

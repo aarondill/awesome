@@ -13,9 +13,7 @@ do
   function set_alpha_cb(alpha)
     if not cache[alpha] then
       local c = ("#%s%s"):format("ffffff", alpha) -- white + alpha
-      cache[alpha] = function(container)
-        container:set_bg(c)
-      end
+      cache[alpha] = function(container) container:set_bg(c) end
     end
     return cache[alpha]
   end

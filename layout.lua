@@ -152,8 +152,6 @@ end
 
 -- Create a wibox for each screen and add it
 ---@param s AwesomeScreenInstance
-ascreen.connect_for_each_screen(function(s)
-  s.top_panel = TopPanel({ screen = s })
-end)
+ascreen.connect_for_each_screen(function(s) s.top_panel = TopPanel({ screen = s }) end)
 
 return TopPanel

@@ -22,9 +22,7 @@ function mat_slider:set_value(value)
   end
 end
 
-function mat_slider:get_value()
-  return self._private.value
-end
+function mat_slider:get_value() return self._private.value end
 
 function mat_slider:set_read_only(value)
   if self._private.read_only ~= value then
@@ -34,9 +32,7 @@ function mat_slider:set_read_only(value)
   end
 end
 
-function mat_slider:get_read_only()
-  return self._private.read_only
-end
+function mat_slider:get_read_only() return self._private.read_only end
 
 function mat_slider:layout(_, width, height)
   local layout = {}
@@ -51,9 +47,7 @@ function mat_slider:draw(_, _, _, _)
   if self._private.read_only then self._private.slider.forced_height = 0 end
 end
 
-function mat_slider:fit(_, width, height)
-  return width, height
-end
+function mat_slider:fit(_, width, height) return width, height end
 
 local function new(args)
   local ret = base.make_widget(nil, nil, {
@@ -88,18 +82,14 @@ local function new(args)
     widget = wibox.widget.slider,
   })
 
-  ret._private.slider:connect_signal("property::value", function()
-    ret:set_value(ret._private.slider.value)
-  end)
+  ret._private.slider:connect_signal("property::value", function() ret:set_value(ret._private.slider.value) end)
 
   ret._private.read_only = false
 
   return ret
 end
 
-function mat_slider.mt:__call(...)
-  return new(...)
-end
+function mat_slider.mt:__call(...) return new(...) end
 
 --@DOC_widget_COMMON@
 

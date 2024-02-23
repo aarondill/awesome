@@ -59,9 +59,7 @@ function mat_list_item:layout(_, width, height)
   return layout
 end
 
-function mat_list_item:fit(_, width)
-  return width, dpi(40)
-end
+function mat_list_item:fit(_, width) return width, dpi(40) end
 
 ---- Properties ----
 
@@ -76,9 +74,7 @@ function mat_list_item:set_clickable(value)
   end
 end
 
-function mat_list_item:get_clickable()
-  return self._private.clickable
-end
+function mat_list_item:get_clickable() return self._private.clickable end
 
 -- Property divider
 
@@ -92,9 +88,7 @@ function mat_list_item:set_divider(value)
   end
 end
 
-function mat_list_item:get_divider()
-  return self._private.divider
-end
+function mat_list_item:get_divider() return self._private.divider end
 
 function mat_list_item:set_prefix(widget)
   if widget then base.check_widget(widget) end
@@ -102,9 +96,7 @@ function mat_list_item:set_prefix(widget)
   self:emit_signal("widget::layout_changed")
 end
 
-function mat_list_item:get_prefix()
-  return self._private.prefix
-end
+function mat_list_item:get_prefix() return self._private.prefix end
 
 function mat_list_item:set_suffix(widget)
   if widget then base.check_widget(widget) end
@@ -112,9 +104,7 @@ function mat_list_item:set_suffix(widget)
   self:emit_signal("widget::layout_changed")
 end
 
-function mat_list_item:get_suffix()
-  return self._private.suffix
-end
+function mat_list_item:get_suffix() return self._private.suffix end
 
 --- The widget who will be the content.
 -- @property content
@@ -126,15 +116,11 @@ function mat_list_item:set_content(widget)
   self:emit_signal("widget::layout_changed")
 end
 
-function mat_list_item:get_content()
-  return self._private.content
-end
+function mat_list_item:get_content() return self._private.content end
 
 -- Get the number of children element
 -- @treturn table The children
-function mat_list_item:get_children()
-  return { self._private.widget }
-end
+function mat_list_item:get_children() return { self._private.widget } end
 
 -- Replace the layout children
 -- This layout only accept one children, all others will be ignored
