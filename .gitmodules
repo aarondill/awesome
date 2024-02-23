@@ -10,3 +10,6 @@
 [submodule "deps/luaposix"]
 	path = deps/luaposix
 	url = https://github.com/luaposix/luaposix/
+[submodule "deps/lua-stream"]
+	path = deps/lua-stream
+	url = https://github.com/aarondill/lua-stream
