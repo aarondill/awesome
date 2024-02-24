@@ -19,12 +19,13 @@ function M.get(o)
   end
   return nil -- IDK
 end
----@return fun(): AwesomeScreenInstance?
+---@return fun(): AwesomeScreenInstance?, done:boolean
+---Note: if screen is nil, the iterator will be done. This allows it to be used in a normal for loop
 function M.iterator()
   local prev = nil
   return function()
     prev = capi.screen(nil, prev)
-    return prev
+    return prev, prev ~= nil
   end
 end
 

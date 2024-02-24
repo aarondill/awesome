@@ -27,10 +27,12 @@ capi.awesome.connect_signal("startup", function()
   local screen_tags = stream ---@type (number[])[]
     .new(strings.split(contents, "\n"))
     :map(function(line)
-      return stream
-        .new(line:gmatch("%d+")) -- line:gmatch returns a stateful iterator
-        :map(tonumber)
-        :toarray() ---@type number[]
+      return (
+        stream
+          .nonnil(line:gmatch("%d+")) -- line:gmatch returns a stateful iterator
+          :map(tonumber)
+          :toarray() ---@type number[]
+      )
     end)
     :toarray()
 

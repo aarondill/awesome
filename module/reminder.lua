@@ -22,10 +22,12 @@ local function add_suffix(filepath, exts, include_original)
       end)
       :reduce(ret, gtable.merge)
   end
-  return stream
-    .new(exts)
-    :map(function(ext) return ("%s%s"):format(filepath, ext) end)
-    :toarray(include_original and { filepath } or nil)
+  return (
+    stream
+      .new(exts)
+      :map(function(ext) return ("%s%s"):format(filepath, ext) end)
+      :toarray(include_original and { filepath } or nil)
+  )
 end
 local home_reminder_paths = { "reminder", ".reminder", ".todo", "todo" }
 local extensions = { ".txt", ".md" }
