@@ -1,5 +1,6 @@
 local require = require("util.rel_require")
 
+local Gio = require("util.lgi.Gio")
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
 local apps = require("configuration.apps")
@@ -13,10 +14,32 @@ local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
+local stream = require("stream")
 local tags = require("util.tags")
 local throttle = require("util.throttle")
 local widgets = require("util.awesome.widgets")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+
+---@param str string?
+---@param cb fun(reason: "exit"|"signal", code: integer)?
+---@return SpawnInfo?
+local function copy_to_clipboard(str, cb)
+  if not str then return end
+  return spawn.nosn({ "xclip", "-selection", "clipboard" }, {
+    stdin_string = str,
+    exit_callback = cb,
+    exit_callback_err = function(_, xcode)
+      return notifs.warn(("Copying to clipboard failed. Exit code: %d"):format(xcode))
+    end,
+    on_failure_callback = function(err)
+      local msg = table.concat({
+        "Xclip must be installed to copy to clipboard.",
+        ("Error: "):format(err),
+      }, "\n")
+      return notifs.warn_once(msg, { title = "xclip failed to spawn!" })
+    end,
+  })
+end
 
 local delay = require("configuration").tag_throttle_delay
 
@@ -171,23 +194,25 @@ local globalKeys = gtable.join(
     return toggle_notif("autorandr", autorandr.is_active)
   end, { description = "Start/Stop autorandr", group = "awesome" }),
 
-  gkey({}, "Print", function()
-    return spawn.async(apps.default.region_screenshot, function(_, stderr, reason, code)
-      if not spawn.is_normal_exit(reason, code) then return end
-      local path = stderr:match("flameshot: info: Capture saved as ([^\n]*)") ---@type string?
-      if not path then return end
-      return spawn.nosn({ "xclip", "-selection", "clipboard" }, { -- Copy to clipboard using xclip
-        stdin_string = path,
-        exit_callback_err = function(_, xcode)
-          return notifs.info(("Copying screenshot path to clipboard failed. Exit code: %d"):format(xcode))
-        end,
-        on_failure_callback = function(err)
-          local msg = ("Xclip must be installed to copy to clipboard.\nError: "):format(err)
-          return notifs.warn_once(msg, { title = "xclip failed to spawn!" })
-        end,
-      })
-    end)
+  gkey({ "Control" }, "Print", function()
+    local client
+    local process = Gio.Subprocess.new({ "xdotool", "selectwindow" }, { "STDOUT_PIPE", "STDERR_SILENCE" })
+    if process then
+      local stdout = assert(process:communicate())
+      local window_id = assert(tonumber(stdout.data), "No window id in stdout")
+      client = stream.new(capi.client.get()):filter(function(c) return c.window == window_id end):next()
+    else -- if i couldn't spawn xdotool, use the focused client
+      client = capi.client.focus
+    end
+    if not client then notifs.warn("Could not find a client to take a window screenshot!") end
+    return apps.open.screenshot(client, copy_to_clipboard)
   end, { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }),
+  gkey(
+    {},
+    "Print",
+    bind.bind(apps.open.screenshot, nil, copy_to_clipboard),
+    { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }
+  ),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   gkey({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),

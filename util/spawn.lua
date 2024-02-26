@@ -9,7 +9,7 @@ local Gio = lgi.Gio
 local GLib = lgi.GLib
 
 ---@alias Command string|string[]|SpawnOptions
----@alias CommandProvider Command | fun(opts: SpawnOptions): Command
+---@alias CommandProvider Command | fun(opts: SpawnOptions): Command?
 
 local spawn = {}
 
@@ -55,9 +55,10 @@ end
 
 ---Normalizes cmd and opts. Handles the case where cmd is a function, and moves any options from cmd to opts.
 ---Clones both cmd and opts, so after this function is called, they are safe to modify
+---Note: returned cmd may be empty
 ---@param cmd CommandProvider
 ---@param opts SpawnOptions?
----@return string|string[] cmd A command
+---@return (string|string[])? cmd A command
 ---@return SpawnOptions opts SpawnOptions
 local function normalize_command(cmd, opts)
   opts = opts and gtable.clone(opts, false) or {} -- Clone the user supplied options so they can be modified
@@ -68,7 +69,7 @@ local function normalize_command(cmd, opts)
   end
   assert(type(cmd) ~= "function", "cmd is a function! expected Command.")
 
-  if not cmd or #cmd == 0 then error("No command specified.", 3) end -- 3 is caller of spawn.spawn
+  if not cmd or #cmd == 0 then return nil, opts end -- 3 is caller of spawn.spawn
 
   --- Remove any non-numeric keys from cmd and apply them to opts instead
   --- Note: this process clones the cmd if it is a table (otherwise it won't matter)
@@ -144,7 +145,9 @@ function spawn.spawn(cmd, opts)
   local function handle_inherit_default(v) ---@param v boolean?
     return (v ~= nil or false) and not v -- nil->false, else->not v
   end
-  cmd, opts = normalize_command(cmd, opts)
+  local ncmd, nopts = normalize_command(cmd, opts)
+  if not ncmd then return end
+  cmd, opts = ncmd, nopts
 
   local exit_callback = gen_exit_cb(opts.exit_callback, opts.exit_callback_err, opts.exit_callback_suc)
   local use_sn = opts.sn_rules ~= false

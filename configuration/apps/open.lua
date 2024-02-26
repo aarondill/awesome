@@ -1,5 +1,8 @@
+local path = require("util.path")
 local require = require("util.rel_require")
+local shell_escape = require("util.command.shell_escape")
 local widgets = require("util.awesome.widgets")
+local xdg_user_dir = require("util.command.xdg_user_dir")
 
 local ascreen = require("awful.screen")
 local concat_command = require("util.command.concat_command")
@@ -8,24 +11,28 @@ local lgi = require("lgi")
 local notifs = require("util.notifs")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
 local spawn = require("util.spawn")
-local tableutils = require("util.tables")
 local Gio = lgi.Gio
 
 local open = {}
 
 ---@param cmd string|string[]
+---@param err string?
+local function notif_error(cmd, err)
+  local cmd_str = type(cmd) == "string" and cmd or shell_escape(cmd)
+  -- Warn the user!
+  local msg = table.concat({
+    ("Error: %s"):format(err),
+    ("Command: %s"):format(cmd_str),
+  }, "\n")
+  notifs.critical(msg, { title = "Failed to execute program!" })
+end
+---@param cmd string|string[]
 ---@param opts SpawnOptions? Options to pass to utils.spawn
 ---Warns the user if a command fails to spawn. Returns the same values as spawn.spawn
 local function spawn_notif_on_err(cmd, opts)
-  opts = opts or {}
-  opts.on_failure_callback = function(err)
-    local cmd_string = type(cmd) == "table" and tableutils.concat(cmd, " ", "'%s'") or tostring(cmd)
-    return notifs.critical( -- Warn the user!
-      ("Error: %s\nCommand: %s"):format(err, cmd_string),
-      { title = "Failed to execute program!" }
-    )
-  end
-  return spawn.spawn(cmd, opts)
+  local info, err = spawn.spawn(cmd, opts)
+  if not info then notif_error(cmd, err) end
+  return info, err
 end
 
 ---Open a terminal with the given command
@@ -111,6 +118,34 @@ function open.rofi(mode)
     end,
     on_failure_callback = rofi_failure_callback,
   })
+end
+
+---@param dir string
+---@param ... string
+local function get_xdg_dir(dir, ...) ---@return string
+  local dest = path.join(assert(xdg_user_dir(dir), "Invalid XDG directory: " .. dir), ...)
+  assert(require("gears.filesystem").make_directories(dest)) -- Ensure parent directory exists
+  return dest
+end
+---Open a terminal with the given command
+---@param window? AwesomeClientInstance|{x: integer, y: integer, width: integer, height: integer}
+---@param callback? fun(path?: string): any? Called with the filepath of the new screenshot if successful
+---@param spawn_options? SpawnOptions Options to pass to utils.spawn
+function open.screenshot(window, callback, spawn_options)
+  callback = callback or function() end
+  local cmd = concat_command(default.region_screenshot, { "-p", get_xdg_dir("PICTURES", "Screenshots") })
+  if window then
+    local x, y, width, height = window.x, window.y, window.width, window.height
+    cmd = concat_command(cmd, { "--region", ("%sx%s+%s+%s"):format(width, height, x, y) })
+    if window.raise then window:raise() end -- ensure the selected client is visible
+  end
+
+  spawn_options = spawn_options or {}
+  spawn_options.on_failure_callback = function(err) return notif_error(cmd, err) end
+  return spawn.async(cmd, function(_, stderr, reason, code)
+    if not spawn.is_normal_exit(reason, code) then return callback(nil) end
+    return callback(stderr:match("Capture saved as ([^\n]*)"))
+  end, spawn_options)
 end
 
 return open
