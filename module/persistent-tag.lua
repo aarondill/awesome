@@ -37,7 +37,7 @@ capi.awesome.connect_signal("startup", function()
     :toarray()
 
   for s in capi.screen do
-    local sel_tags = screen_tags[s.index]
+    local sel_tags = screen_tags[s.index] or {}
     if #sel_tags > 0 then atag.viewnone(s) end
     for _, i in ipairs(sel_tags) do
       local scr_tag = s.tags[i]
