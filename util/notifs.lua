@@ -91,6 +91,9 @@ function M.notify(loglevel, text, opts, extra_opts)
   elseif type(loglevel) == "table" and has_msg(loglevel) and text == nil and opts == nil then -- notify({ opts }) || notify({ opts }, nil, nil, { extra_opts })
     opts = loglevel
     loglevel = nil
+  elseif type(loglevel) == "string" and not text then -- notify("msg") -- not suggested, but often mistyped
+    text = loglevel
+    loglevel = nil
   end
 
   opts = opts and gtable.clone(opts, false) or {} --- A deep clone is not needed, since no values' values are changed
