@@ -25,7 +25,7 @@ function M.iterator()
   local prev = nil
   return function()
     prev = capi.screen(nil, prev)
-    return prev, prev ~= nil
+    return prev, prev == nil
   end
 end
 
