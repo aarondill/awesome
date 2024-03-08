@@ -73,4 +73,13 @@ function M.count(str, sub)
   return matches
 end
 
+---@nodiscard
+---@param str string
+---@return string
+function M.trim(str)
+  if not str then return str end
+  if type(str) ~= "string" then error("Expected string. Found: " .. type(str) .. " instead.") end
+  return (str:gsub("^%s*(.-)%s*$", "%1"))
+end
+
 return M
