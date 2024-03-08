@@ -2,7 +2,9 @@ local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local read_async = require("util.file.read_async")
+local spawn = require("util.spawn")
 local stream = require("stream")
+local strings = require("util.strings")
 local tables = require("util.tables")
 
 ---Return a table of permutations of extensions
@@ -49,4 +51,10 @@ local function handler(content, _, fpath)
   local msg = content:gsub("^\n*", ""):gsub("\n*$", ""):gsub("\n\n\n", "\n\n")
   return notifs.info(msg, { title = ("Reminder (%s)"):format(path.tildify(fpath)) })
 end
+
+spawn.async({ "todo", "list" }, function(stdout, _, reason, code)
+  if not spawn.is_normal_exit(reason, code) then return end
+  notifs.info(strings.trim(stdout), { title = "Todo" })
+end)
+
 return read_async(paths[index], handler)
