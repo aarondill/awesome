@@ -54,7 +54,9 @@ end
 
 spawn.async({ "todo", "list" }, function(stdout, _, reason, code)
   if not spawn.is_normal_exit(reason, code) then return end
-  notifs.info(strings.trim(stdout), { title = "Todo" })
+  local out = strings.trim(stdout)
+  if out == "" then return end
+  notifs.info(out, { title = "Todo" })
 end)
 
 return read_async(paths[index], handler)
