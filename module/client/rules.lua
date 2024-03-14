@@ -71,6 +71,14 @@ local rules = {
       end
     end,
   },
+  --- Allow battle.net to just do whatever it wants
+  {
+    rule_any = { class = { "battle.net.exe" } },
+    apply_on_restart = true,
+    properties = {
+      size_hints_honor = true,
+    },
+  },
   -- Enable titlebars on normal clients
   -- {
   -- 	rule_any = { type = { "normal", "dialog" } },
@@ -92,7 +100,7 @@ local rules = {
     rule_any = { instance = { "fslite.vercel.app" } },
     callback = function(c) ---@param c AwesomeClientInstance
       -- HACK: chromium doesn't respect the initial property when using '--app=%s'
-      gtimer.start_new(0.2, function()
+      return gtimer.start_new(0.2, function()
         if not c.valid then return end
         c.maximized = false
       end)
