@@ -36,7 +36,7 @@ if [ "$install" -eq 1 ]; then
       awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
       lxappearance brightnessctl flameshot pasystray network-manager-applet \
       polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus \
-      numlockx playerctl libinput xorg-xrandr redshift libpulse
+      numlockx playerctl libinput xorg-xrandr redshift libpulse pacutils
     ;;
   '') # Strict compliance would set this to 'linux', but it's not useful to do.
     err "Could not find ID_LIKE or ID in /etc/os-release. Please set the FORCE_ID variable if your system is a supported system."
