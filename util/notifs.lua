@@ -38,7 +38,7 @@ local naughty = require("naughty")
 ---@field destroy? fun(reason: naughty.notificationClosedReason) Function to run when notification is destroyed.
 ---@field preset? table Table with any of the above parameters. Note: Any parameters specified directly in will override ones defined in the preset.
 ---@field replaces_id? integer Replace the notification with the given ID.
----@field actions? function[] Mapping that maps a string to a callback when this action is selected.
+---@field actions? table<string, function> Mapping that maps a string to a callback when this action is selected.
 ---@field ignore_suspend? boolean If set to true this notification will be shown even if notifications are suspended via `naughty.suspend`. [Default: false]
 
 ---@alias logFunc fun(text?: string, opts?: NotifyOpts): notification? |  fun(opts?: NotifyOpts): notification?
