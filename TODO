@@ -23,3 +23,5 @@ error("You can't require the todo file!")
 --    apt-get -q -y --ignore-hold --allow-change-held-packages --allow-unauthenticated ---simulate dist-upgrade | /bin/grep  ^Inst | wc -l --> 'updates'
 --    /usr/lib/update-notifier/apt-check 2>&1 --> 'security_updates;regular_updates'
 --Use exponential scale. Check ./widget/backlight-adjust.lua for an example
+
+---TODO: Battery widget update on upower events
