@@ -78,11 +78,14 @@ local function parse_curl_like(input)
 end
 
 ---@param stdout string
----@param if_changed fun(count: integer): any?
-local function set_notifications(stdout, if_changed)
+---@return boolean changed
+local function set_notifications(stdout)
   local res = parse_curl_like(stdout) --- Parse gh output
   local errors = { [401] = "Unauthorized request", [403] = "Forbidden request", [422] = "Validation failure" }
-  if errors[res.status] then return notifs.error(errors[res.status]) end
+  if errors[res.status] then
+    notifs.error(errors[res.status])
+    return false
+  end
   -- Reduce the debounce duration if necessary
   local interval = tonumber(res.headers["X-Poll-Interval"])
   if interval then
@@ -91,28 +94,32 @@ local function set_notifications(stdout, if_changed)
     state.debounce_duration = interval > dd and interval or M.default_debounce_duration
   end
   --- Note: a 304 response is ignored, as it doesn't change the stored value
-  if not res.ok then return end
+  if not res.ok then return false end
   local count = assert(tonumber(res.body), "Invalid number format: " .. tostring(res.body))
   M.notification_count = count
-  return if_changed(count)
+  return true
 end
 
 -- Calls fn if enough time has passed s.t. the user is able to make a new request.
 ---@param fn fun(last_call: integer|nil)
+---@return boolean
 local function debounce(fn)
-  if not state then return end
+  if not state then return false end
   local debounce_ok_at = state.last_refresh and state.last_refresh + state.debounce_duration
-  if debounce_ok_at and debounce_ok_at >= os.time() then return end
+  if debounce_ok_at and debounce_ok_at >= os.time() then return false end
   local last_refresh = state.last_refresh
   state.last_refresh = os.time()
-  return fn(last_refresh)
+  fn(last_refresh)
+  return true
 end
 
 -- Makes a new get request to the notifications API, refreshing the state variables.
 ---@param if_changed? fun(count: integer): any?
-M.refresh = function(if_changed)
+---@param done? fun(): any?
+M.refresh = function(if_changed, done)
   if_changed = if_changed or function() end
-  return debounce(function(previous_last_refresh)
+  done = done or function() end
+  local ran = debounce(function(previous_last_refresh)
     local if_modified_since = previous_last_refresh and generate_last_modified(previous_last_refresh)
 
     local cmd = { "gh", "api", "notifications", "-i", "-t", "{{ len . }}" }
@@ -120,10 +127,16 @@ M.refresh = function(if_changed)
 
     local suc = spawn.async(cmd, function(stdout, _, reason)
       if reason ~= "exit" then return end -- died to a a signal, ignore
-      return set_notifications(stdout, if_changed)
+      local changed = set_notifications(stdout)
+      if changed then if_changed(M.notification_count) end
+      return done()
     end)
-    if not suc then return notifs.error_once("Showing github notification count requires the gh command!") end
+    if suc then return end -- handled in the callback
+    notifs.error_once("Showing github notification count requires the gh command!")
+    return done()
   end)
+  if ran then return end -- handled async
+  return done()
 end
 
 local function on_changed(count) ---@param count integer
@@ -140,9 +153,10 @@ local function on_changed(count) ---@param count integer
 end
 local function handler()
   M.timer:stop() -- ensure it doesn't run again while we refresh
-  M.refresh(on_changed)
-  M.timer.timeout = state.debounce_duration -- use the newly calculated timeout value
-  M.timer:start() -- wait for the next timeout duration
+  M.refresh(on_changed, function()
+    M.timer.timeout = state.debounce_duration -- use the newly calculated timeout value
+    M.timer:start() -- wait for the next timeout duration
+  end)
 end
 -- don't autostart because callback will start the timer
 M.timer = gtimer.new({ callback = handler })
