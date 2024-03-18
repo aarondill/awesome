@@ -1,6 +1,7 @@
 local exists = require("util.file.sync.exists")
 local find_module = require("util.find_module")
 local ls = require("util.file.sync.ls")
+local notifs = require("util.notifs")
 local path = require("util.path")
 
 ---@param modname string
@@ -35,15 +36,21 @@ local function dir_require(modname, ...)
   end)
   if not suc then return nil, err end
 
+  local all_ok = true
   table.sort(res, function(a, b) return a.path < b.path end) -- sort alphabetically
-  local log = {}
   for _, m in ipairs(res) do
-    table.insert(log, m.mod)
-    local mod = require(m.mod)
-    if type(mod) == "table" and type(mod.setup) == "function" then
-      mod.setup(...) -- Call setup function with user supplied arguments
+    local ok, mod = pcall(require, m.mod)
+    if ok then
+      if type(mod) == "table" and type(mod.setup) == "function" then
+        mod.setup(...) -- Call setup function with user supplied arguments
+      end
+    else
+      notifs.error(tostring(mod), { timeout = 0 })
+      all_ok = false
     end
   end
+  if all_ok then return true, nil end
+  return nil, "One or more modules failed to load"
 end
 
 return dir_require
