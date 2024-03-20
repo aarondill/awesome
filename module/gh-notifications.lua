@@ -53,8 +53,8 @@ local function parse_curl_like(input)
   local lines = strings.split(input, "\n")
   ---@type string,string,string
   local version, status_str, status_text = lines[1]:match("HTTP/(%S+) (%d+) (.*)")
-  assert(version and status_str and status_text, "Could not parse HTTP status line")
-  local status = assert(tonumber(status_str), "Could not parse HTTP version")
+  assert(version and status_str and status_text, "Could not parse HTTP status line: "..tostring(lines[1]))
+  local status = assert(tonumber(status_str), "Could not parse HTTP version: "..tostring(status_str))
 
   local headers = {}
   --- After parsing all headers, lines[i] will be a blank line, after which will appear the body
@@ -63,7 +63,7 @@ local function parse_curl_like(input)
     local line = lines[i]
     if line:match("^%s*$") then break end
     local key, value = line:match("^(%S+)%s*:%s*(.*)$")
-    assert(key, "Could not parse HTTP headers")
+    assert(key, "Could not parse HTTP headers: "..tostring(line))
     headers[key] = value
     i = i + 1
   end
@@ -162,4 +162,4 @@ end
 M.timer = gtimer.new({ callback = handler })
 handler()
 
-return M
+()return M
