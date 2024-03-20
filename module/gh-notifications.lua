@@ -80,7 +80,11 @@ end
 ---@param stdout string
 ---@return boolean changed
 local function set_notifications(stdout)
-  local res = parse_curl_like(stdout) --- Parse gh output
+  local ok, res = pcall(parse_curl_like, stdout) --- Parse gh output
+  if not ok then
+    notifs.error(stdout, { title = "Failed to parse gh output: " .. tostring(res) })
+    return false
+  end
   local errors = { [401] = "Unauthorized request", [403] = "Forbidden request", [422] = "Validation failure" }
   if errors[res.status] then
     notifs.error(errors[res.status])
@@ -127,8 +131,11 @@ M.refresh = function(if_changed, done)
 
     local suc = spawn.async(cmd, function(stdout, _, reason)
       if reason ~= "exit" then return end -- died to a a signal, ignore
-      local changed = set_notifications(stdout)
-      if changed then if_changed(M.notification_count) end
+      -- Ignore empty stdout, this is likely a timeout error
+      if not stdout:match("^%s*$") then
+        local changed = set_notifications(stdout)
+        if changed then if_changed(M.notification_count) end
+      end
       return done()
     end)
     if suc then return end -- handled in the callback
