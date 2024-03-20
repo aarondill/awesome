@@ -161,5 +161,4 @@ end
 -- don't autostart because callback will start the timer
 M.timer = gtimer.new({ callback = handler })
 handler()
-()
 return M
