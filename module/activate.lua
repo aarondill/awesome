@@ -26,7 +26,7 @@ local function create_widgets(s)
   local width, height = textbox:get_preferred_size(s)
   local box = wibox({
     type = "utility",
-    fg = "#ffffff",
+    fg = "#7C7E93",
     bg = "#00000000",
     width = math.min(width, s.workarea.width), -- crop to workarea size if too big
     height = math.min(height, s.workarea.height), -- crop to workarea size if too big
@@ -59,7 +59,6 @@ local function handler(s) ---@param s AwesomeScreenInstance
   end
   box = box or create_widgets(s)
   s.activate_box = box
-  box.ontop, box.opacity = false, 0.5
   box.visible = true
 end
 
