@@ -1,4 +1,3 @@
-local ascreen = require("awful.screen")
 local atag = require("awful.tag")
 local capi = require("capi")
 local gfilesystem = require("gears.filesystem")
