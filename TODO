@@ -25,3 +25,5 @@ error("You can't require the todo file!")
 --Use exponential scale. Check ./widget/backlight-adjust.lua for an example
 
 ---TODO: Battery widget update on upower events
+
+---TODO: Activate your linux (wallpaper)?
