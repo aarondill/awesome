@@ -13,15 +13,11 @@ local M = {}
 
 local conf_dir = gfile.get_configuration_dir()
 local spawn_args = { "autorandr", "--change", "--default", "default" }
-local spawn_autorandr = throttle(bind(spawn.nosn, spawn_args, { on_failure_callback = notifs.error }), 2)
+local spawn_autorandr = throttle(bind.with_args(spawn.nosn, spawn_args, { on_failure_callback = notifs.error }), 2)
 
 ---Run on resume from suspend
 local function suspend_handler(is_before)
   if is_before then return end -- Only run after resume
-  return spawn_autorandr()
-end
-local function upower_properties_handler(_, changed)
-  if changed["LidIsClosed"] == nil then return end
   return spawn_autorandr()
 end
 local function autorandr_failure_handler(err)
@@ -53,8 +49,12 @@ M.is_active = false
 function M.start_listener()
   suspend_listener.register_listener(suspend_handler) -- this will handle duplicate listeners
   -- Use UPower to listen for lid state changes
-  M._subscription_ids.LidIsClosed =
-    dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", upower_properties_handler)
+  M._subscription_ids.LidIsClosed = dbus.properties_changed.subscribe(
+    "org.freedesktop.UPower",
+    "/org/freedesktop/UPower",
+    spawn_autorandr,
+    "LidIsClosed"
+  )
 
   spawn_autorandr() -- Spawn when starting to ensure correct state (also for startup)
 
