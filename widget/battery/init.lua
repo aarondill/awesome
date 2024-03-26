@@ -1,6 +1,7 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
+local dbus = require("util.dbus")
 local require = require("util.rel_require")
 local throttle = require("util.throttle")
 
@@ -80,6 +81,10 @@ end
 ---A hard coded path to the /sys/... battery directory (default: first result of /sys/class/power_supply/BAT*)
 ---@field battery_path string?
 
+---Index with the widget!
+---@type table<table, SubscribeID>
+local upower_listeners = setmetatable({}, { __mode = "k" })
+
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
@@ -113,8 +118,10 @@ function Battery(args)
     end
   end
 
+  local timer
   ---@return true
   local callback = function()
+    if timer then timer:again() end -- restart the timer
     if battery_path then files.get_battery_info(battery_path, handle_error(update_widget)) end
     return true
   end
@@ -127,9 +134,11 @@ function Battery(args)
   })
   require("util.suspend-listener").register_listener(function(is_before)
     if is_before then return end
-    timer:again() -- Restart the timer
     return callback()
   end, { weak = widget })
+  -- Use UPower to listen for lid state changes
+  upower_listeners[widget] =
+    dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", callback, "OnBattery")
 
   if not battery_path then
     files.find_battery_path(function(path)
