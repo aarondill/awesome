@@ -1,5 +1,7 @@
+local gtable = require("gears.table")
 local require = require("util.rel_require")
 local subscribe_signal = require(..., "subscribe_signal") ---@module 'util.dbus.subscribe_signal'
+local tables = require("util.tables")
 
 local M = {}
 ---@return string name
@@ -37,9 +39,11 @@ M.parse = M.parse_properties_changed
 
 ---@param sender string
 ---@param object string
----@param cb fun(name: string, changed: table<string, unknown>, invalidated: string[])
+---@param cb fun(name: string, changed: table<string, unknown>, invalidated: string[]): any?
+---@param properties? string|string[] if given, callback will only be called when one of these are changed
 ---@return SubscribeID
-function M.subscribe(sender, object, cb)
+function M.subscribe(sender, object, cb, properties)
+  if type(properties) == "string" then properties = { properties } end
   return subscribe_signal.subscribe({
     sender = sender,
     object = object,
@@ -47,6 +51,12 @@ function M.subscribe(sender, object, cb)
     member = "PropertiesChanged",
     callback = function(_bus, _sender, _object, _interface, _signal, params)
       local name, changed, invalidated = M.parse_properties_changed(params)
+      if properties then
+        ---Filter only changed properties within the requested properties
+        changed = tables.filter(changed, function(v) return gtable.hasitem(properties, v) ~= nil end)
+        ---if none of the requested properties have changed, the user doesn't want a callback
+        if #changed == 0 then return end
+      end
       return cb(name, changed, invalidated)
     end,
   })

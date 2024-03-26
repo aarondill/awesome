@@ -4,7 +4,7 @@ local assertions = require("util.types.assertions")
 local iscallable = require("util.types.iscallable")
 local M = {}
 ---@alias GLibDBus unknown
----@alias DBusSignalCallback fun(bus: GLibDBus, sender: string, object: string, interface: string, signal: string, params: unknown[])
+---@alias DBusSignalCallback fun(bus: GLibDBus, sender: string, object: string, interface: string, signal: string, params: unknown[]): any?
 
 ---@class (exact) SubscribeID
 ---@field id integer
