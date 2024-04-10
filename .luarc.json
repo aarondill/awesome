@@ -15,8 +15,6 @@
     "./deps/lua-stream/?.lua",
     "./deps/lua-stream/?/init.lua",
     "./deps/?.lua",
-    "./deps/.build/lib/lua/5.4/posix/?.lua",
-    "./deps/.build/lib/lua/5.4/posix/?/init.lua",
     "./deps/?/init.lua",
     "./?.lua",
     "./?/init.lua",

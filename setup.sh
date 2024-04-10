@@ -80,14 +80,14 @@ AR_LAUNCHER_DIR="$dir/deps/autorandr/contrib/autorandr_launcher"
 log "Compiling autorandr_launcher (${AR_LAUNCHER_DIR#"$dir/"})"
 (cd "$AR_LAUNCHER_DIR" && make -s)
 
-LUAPOSIX_DIR="$dir/deps/luaposix" LUAPOSIX_DEST="$dir/deps/.build"
-
-pushd "$LUAPOSIX_DIR" >/dev/null
-for lua in "${LUA[@]}"; do
-  log "Compiling luaposix (${LUAPOSIX_DIR#"$dir/"}) using lua $lua"
-  # Note: if using lua 5.1, we may be missing the 'bit32' module!
-  "$lua" "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
-  log "Installing luaposix to ${LUAPOSIX_DEST#"$dir/"}"
-  "$lua" "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
-done
-popd >/dev/null
+# LUAPOSIX_DIR="$dir/deps/luaposix" LUAPOSIX_DEST="$dir/deps/.build"
+#
+# pushd "$LUAPOSIX_DIR" >/dev/null
+# for lua in "${LUA[@]}"; do
+#   log "Compiling luaposix (${LUAPOSIX_DIR#"$dir/"}) using lua $lua"
+#   # Note: if using lua 5.1, we may be missing the 'bit32' module!
+#   "$lua" "$LUAPOSIX_DIR/build-aux/luke" --quiet LDOC='true' # build luaposix, set LDOC to 'true' to avoid compiling docs
+#   log "Installing luaposix to ${LUAPOSIX_DEST#"$dir/"}"
+#   "$lua" "$LUAPOSIX_DIR/build-aux/luke" --quiet PREFIX="$LUAPOSIX_DEST" install # 'install' to ./deps/.build so these can be required
+# done
+# popd >/dev/null
