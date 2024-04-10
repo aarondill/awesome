@@ -21,7 +21,7 @@ cd ~/.config/awesome/ && ./setup.sh
 # run lxappearance to modify theme if so desired
 ```
 
-NOTE: `setup.sh` calls `awesome --version` to make sure luaposix is compiled with the right version of lua. if your awesome or lua are not in the PATH, set $AWESOME or $LUA respectively to override the executable.
+NOTE: if your awesome or lua are not in the PATH, set $AWESOME or $LUA respectively to override the executable.
 Note that $LUA's version _must_ match the version that will be used by awesome
 
 ```shell
