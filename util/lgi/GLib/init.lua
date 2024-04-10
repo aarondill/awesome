@@ -14,6 +14,8 @@
 ---@field path_get_dirname fun(path: string): string
 ---@field get_home_dir fun(): string
 ---@field get_user_name fun(): string
+---@field setenv fun(var: string, val: string, overwrite: boolean): boolean
+---@field unsetenv fun(var: string)
 ---@field find_program_in_path fun(prog: string): string?
 ---@field Error GErrorStatic
 ---@field Bytes GBytesStatic
