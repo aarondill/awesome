@@ -44,6 +44,7 @@ local pending_changes = {} ---@type table<AwesomeScreenInstance, true>
 
 local function handler(s) ---@param s AwesomeScreenInstance
   pending_changes[s] = nil
+  if not s.valid then return end
   --- get the number of visible clients
   --- we don't want to show the message if any clients are visible
   local num_clients = stream
