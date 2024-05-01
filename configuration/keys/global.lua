@@ -300,6 +300,10 @@ local globalKeys = gtable.join(
     if c then return c:emit_signal("request::activate", "key.unminimize", { raise = true }) end
   end, { description = "Restore minimized", group = "client" }),
 
+  gkey({ altkey }, "F4", function() --
+    return notifs.warn("Alt+F4 doesn't do anything. Go Away!")
+  end, { description = "Override Alt+F4", group = "hotkeys" }),
+
   -- Brightness
   gkey(
     {},
