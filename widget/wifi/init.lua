@@ -57,10 +57,9 @@ atooltip({
 
 local function grabText()
   if not connected then return end
-  return spawn.easy_async(
-    { "iw", "dev", interface, "link" },
-    function(stdout) essid = stdout:match("SSID:(.-)\n") or "N/A" end
-  )
+  return spawn.easy_async({ "iw", "dev", interface, "link" }, function(stdout) --
+    essid = stdout:match("SSID:(.-)\n") or "N/A"
+  end)
 end
 
 watch("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", 5, function(_, stdout)
