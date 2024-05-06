@@ -11,6 +11,7 @@ local screen = require("util.types.screen")
 local stream = require("stream")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local notifs = require("util.notifs")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -26,24 +27,27 @@ local dpi = require("beautiful").xresources.apply_dpi
 ---@field cmd? fun(self: ExitScreenButton, type: 'click'|'key'): any
 ---@field icon? string The path to the icon to be displayed
 
+local M = { disabled = false }
+
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 
 -- Create the widget
-local exit_screen = wibox({
+M.exit_screen = wibox({
   visible = false,
   ontop = true,
   type = "splash",
 })
+
 local exit_screen_grabber
-local function exit_screen_hide()
+function M.hide()
   akeygrabber.stop(exit_screen_grabber)
-  exit_screen.visible = false
+  M.exit_screen.visible = false
 end
 ---@param button ExitScreenButton
 ---@param type 'key'|'click'
 local function run_cmd(button, type)
-  exit_screen_hide() -- Always hide the exit screen first!
+  M.hide() -- Always hide the exit screen first!
   if not button.cmd then return end
   return button:cmd(type)
 end
@@ -85,24 +89,24 @@ local function buildButton(button)
 end
 
 local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
-  if not s and exit_screen.screen.valid then return end -- no s given and we have a valid screen already
+  if not s and M.exit_screen.screen.valid then return end -- no s given and we have a valid screen already
   s = s or screen.focused() or screen.primary() -- Switch to focused screen if previous screen was removed
   if not s or not s.valid then return end
-  if exit_screen.screen ~= s then
-    if exit_screen.screen then -- Ensure the screen is good
-      exit_screen.screen:disconnect_signal("property::geometry", update_wibox_screen)
+  if M.exit_screen.screen ~= s then
+    if M.exit_screen.screen then -- Ensure the screen is good
+      M.exit_screen.screen:disconnect_signal("property::geometry", update_wibox_screen)
     end
     s:connect_signal("property::geometry", update_wibox_screen)
   end
   local screen_geometry = s.geometry
-  exit_screen:geometry({
+  M.exit_screen:geometry({
     x = screen_geometry.x,
     y = screen_geometry.y,
     height = screen_geometry.height,
     width = screen_geometry.width,
   })
-  exit_screen.screen = s
-  exit_screen:emit_signal("widget::redraw_needed")
+  M.exit_screen.screen = s
+  M.exit_screen:emit_signal("widget::redraw_needed")
 end
 
 local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
@@ -110,15 +114,24 @@ local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg
 local opacity = exit_screen_conf.opacity or beautiful.exit_screen_opacity or 0.62
 -- Convert a 0-1 number to hexadecimal
 local alpha = type(opacity) == "number" and string.format("%X", math.floor(opacity * 255)) or opacity
-exit_screen.bg = bg:find("^#%x+$") and bg:match("^#......") .. alpha or bg -- light transparency if we can parse it, else give up
-exit_screen.fg = exit_screen_conf.fg
+M.exit_screen.bg = bg:find("^#%x+$") and bg:match("^#......") .. alpha or bg -- light transparency if we can parse it, else give up
+M.exit_screen.fg = exit_screen_conf.fg
   or beautiful.exit_screen_fg
   or beautiful.wibar_fg
   or beautiful.fg_normal
   or "#FEFEFE"
 
+function M.enable() M.disabled = false end
+---@param toggle boolean? default: true
+function M.disable(toggle)
+  if toggle == nil then toggle = true end
+  if not toggle and M.disabled then return end -- already disabled
+  M.disabled = not M.disabled -- toggle it
+end
+
 ---@param opts? {screen?: screen}
-local function exit_screen_show(opts)
+function M.show(opts)
+  if M.disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
   opts = opts or {}
   local s = screen.get(opts.screen) or screen.focused()
   update_wibox_screen(s)
@@ -137,23 +150,23 @@ local function exit_screen_show(opts)
     end
 
     if exit_screen_conf.exit_keys == true or gtable.hasitem(exit_screen_conf.exit_keys, key) then
-      exit_screen_hide()
+      M.hide()
       return true -- we handled this event
     end
 
     return false -- we didn't handle this event
   end)
-  exit_screen.visible = true
+  M.exit_screen.visible = true
 end
 
-exit_screen:buttons(gtable.join(
+M.exit_screen:buttons(gtable.join(
   -- Middle click - Hide exit_screen
-  abutton({}, 2, exit_screen_hide),
+  abutton({}, 2, M.hide),
   -- Right click - Hide exit_screen
-  abutton({}, 3, exit_screen_hide)
+  abutton({}, 3, M.hide)
 ))
 -- Item placement
-exit_screen:setup({
+M.exit_screen:setup({
   nil, -- No top
   {
     nil, -- No left
@@ -170,4 +183,4 @@ exit_screen:setup({
   layout = wibox.layout.align.vertical,
 })
 
-return { show = exit_screen_show, hide = exit_screen_hide }
+return M

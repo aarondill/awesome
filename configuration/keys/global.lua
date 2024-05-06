@@ -285,12 +285,6 @@ local globalKeys = gtable.join(
   gkey({}, "XF86AudioPrev", function() --
     return spawn.nosn({ "playerctl", "previous" })
   end, { description = "Previous Audio Track", group = "hotkeys" }),
-  gkey({}, "XF86PowerDown", function() --
-    return require("module.exit-screen").show()
-  end, { description = "Open Poweroff Menu", group = "hotkeys" }),
-  gkey({}, "XF86PowerOff", function() --
-    return require("module.exit-screen").show()
-  end, { description = "Open Poweroff Menu", group = "hotkeys" }),
 
   -- Custom hotkeys
   -- Emoji Picker
@@ -304,6 +298,17 @@ local globalKeys = gtable.join(
     tl.visible = not tl.visible
   end, { description = "Toggle the taglist visiblity", group = "hotkeys" })
 )
+for _, poweroff in ipairs({ "XF86PowerOff", "XF86PowerDown" }) do
+  globalKeys = gtable.join(
+    globalKeys,
+    gkey({}, poweroff, function() --
+      return require("module.exit-screen").show()
+    end, { description = "Open Poweroff Menu", group = "hotkeys" }),
+    gkey({ modkey }, poweroff, function() --
+      return require("module.exit-screen").disable()
+    end, { description = "Disable Exit Screen", group = "hotkeys" })
+  )
+end
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
