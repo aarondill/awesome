@@ -5,8 +5,7 @@ local spawn = require("util.spawn")
 local strings = require("util.strings")
 
 local user = GLib.get_user_name()
-spawn.async({ "last", "-n2", "--", user }, function(stdout, _, reason, code)
-  if not spawn.is_normal_exit(reason, code) then return end
+spawn.async_success({ "last", "-n2", "--", user }, function(stdout)
   local lines = strings.split(stdout, "\n")
   local lastlog = lines[2]
   if not user or not gstring.startswith(lastlog, user) then
