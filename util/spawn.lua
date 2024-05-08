@@ -378,6 +378,19 @@ function spawn.async(cmd, callback, opts)
   return pid, err, info
 end
 spawn.easy_async = spawn.async -- Backwards compatability with awful.spawn.easy_async
+---A wrapper around spawn.async that checks exit status before running the callback. The callback will only be run on a normal exit (spawn.is_normal_exit)
+---@param cmd CommandProvider what to run.
+---@param callback fun(stdout: string, stderr: string, reason: "exit"|"signal", code: integer)
+---@param opts SpawnOptions?
+---@return integer? pid
+---@return string? error
+---@return SpawnInfo? info only if no error
+function spawn.async_success(cmd, callback, opts)
+  return spawn.async(cmd, function(stdout, stderr, reason, code)
+    if not spawn.is_normal_exit(reason, code) then return end
+    return callback(stdout, stderr, reason, code)
+  end, opts)
+end
 
 --- Utils for parsing
 ---@param reason "exit"|"signal"|string Used in exit_callback or on_failure_callback. Note: in on_failure_callback this will always return false.
