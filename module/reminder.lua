@@ -52,11 +52,13 @@ local function handler(content, _, fpath)
   return notifs.info(msg, { title = ("Reminder (%s)"):format(path.tildify(fpath)) })
 end
 
-spawn.async({ "todo", "list" }, function(stdout, _, reason, code)
-  if not spawn.is_normal_exit(reason, code) then return end
-  local out = strings.trim(stdout)
-  if out == "" then return end
-  notifs.info(out, { title = "Todo" })
+spawn.async_success({ "todo", "count" }, function(stdout_count)
+  if tonumber(stdout_count) == 0 then return end
+  spawn.async_success({ "todo", "list" }, function(stdout)
+    local out = strings.trim(stdout)
+    if out == "" then return end
+    return notifs.info(out, { title = "Todo" })
+  end)
 end)
 
 return read_async(paths[index], handler)
