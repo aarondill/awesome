@@ -37,7 +37,7 @@ async({ "pacman", "-V" }, function()
     if not spawn.is_normal_exit(reason, code) then return 0 end
     return strings.count(stdout, "\n")
   end, { env = { CHECKUPDATES_DB = path.join(gfile.get_configuration_dir(), ".tmp/pacmandb") } })
-  if not suc then notifs.warn("Checking pacman update count requires checkupdates from extra/pacutils") end
+  if not suc then notifs.warn("Checking pacman update count requires checkupdates from extra/pacman-contrib") end
   return 0
 end)
 async({ "apt-get", "-s", "dist-upgrade" }, function(stdout, _, reason, code)
