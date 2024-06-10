@@ -24,9 +24,10 @@ local function calculate_time_remaining(info)
   local remaining_energy = info.energy_now and (tonumber(info.energy_now) / 1000) or nil
   local remaining_capacity = info.charge_now and (tonumber(info.charge_now) / 1000) or nil
 
-  if not present_rate or not remaining_energy then return format_message(nil, "rate information unavailable") end
+  if not present_rate then return format_message(nil, "rate information unavailable") end
 
   if not remaining_capacity then
+    if not remaining_energy then return format_message(nil, "rate information unavailable") end
     if voltage then
       remaining_capacity = (remaining_energy * 1000) / voltage
       present_rate = (present_rate * 1000) / voltage
