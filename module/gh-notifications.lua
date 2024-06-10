@@ -159,7 +159,8 @@ local function on_changed(count) ---@param count integer
   )
 end
 local function handler()
-  M.timer:stop() -- ensure it doesn't run again while we refresh
+  -- ensure it doesn't run again while we refresh
+  if M.timer.started then M.timer:stop() end
   M.refresh(on_changed, function()
     M.timer.timeout = state.debounce_duration -- use the newly calculated timeout value
     M.timer:start() -- wait for the next timeout duration
