@@ -7,11 +7,6 @@ local gfile = require("gears.filesystem")
 local path = require("util.path")
 local which = GLib.find_program_in_path
 
-local notification_daemon = "/usr/lib/notification-daemon-1.0/notification-daemon"
-if not gfile.file_executable(notification_daemon) then
-  notification_daemon = "/usr/lib/notification-daemon/notification-daemon"
-end
-
 local polkit = "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 if not gfile.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" end
 

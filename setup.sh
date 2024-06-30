@@ -24,7 +24,7 @@ if [ "$install" -eq 1 ]; then
     sudo apt install -- \
       awesome fonts-roboto rofi picom i3lock xclip qt5-style-plugins lxappearance \
       brightnessctl flameshot pasystray network-manager-gnome policykit-1-gnome \
-      blueman diodon udiskie xss-lock notification-daemon ibus numlockx playerctl \
+      blueman diodon udiskie xss-lock ibus numlockx playerctl \
       libinput-tools x11-xserver-utils redshift pulseaudio-utils
     ;;
   arch)
@@ -35,7 +35,7 @@ if [ "$install" -eq 1 ]; then
     yay -S --needed -- \
       awesome ttf-roboto rofi-git picom i3lock xclip qt5-styleplugins \
       lxappearance brightnessctl flameshot pasystray network-manager-applet \
-      polkit-gnome blueman diodon udiskie xss-lock notification-daemon ibus \
+      polkit-gnome blueman diodon udiskie xss-lock ibus \
       numlockx playerctl libinput xorg-xrandr redshift libpulse pacutils
     ;;
   '') # Strict compliance would set this to 'linux', but it's not useful to do.
