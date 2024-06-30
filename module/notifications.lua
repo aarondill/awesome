@@ -6,7 +6,7 @@ local naughty = require("naughty")
 
 -- Icon directories have to be hard coded.
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
-naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/usr/share/icons/hicolor/" }
+naughty.config.icon_dirs = { "/usr/share/icons/Yaru/", "/usr/share/pixmaps/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
 list_directory("/usr/share/icons", { full_path = true }, function(names)
   if not names then return end
@@ -22,6 +22,11 @@ naughty.config.defaults.timeout = 5
 naughty.config.defaults.position = "bottom_left"
 naughty.config.defaults.ontop = true
 naughty.config.defaults.hover_timeout = nil
+--- HACK: Fix Naughty's broken app_icon handling.
+naughty.config.notify_callback = function(n)
+  n.icon = n.icon or n.app_icon
+  return n
+end
 
 -- Error handling
 gtimer.delayed_call(function()
