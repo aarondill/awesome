@@ -8,7 +8,7 @@ local naughty = require("naughty")
 naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
 naughty.config.icon_dirs = { "/usr/share/pixmaps/", "/usr/share/icons/Yaru/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
-list_directory("/usr/share/icons", function(names, _)
+list_directory("/usr/share/icons", { full_path = true }, function(names)
   if not names then return end
   return gtable.merge(naughty.config.icon_dirs, names)
 end)
