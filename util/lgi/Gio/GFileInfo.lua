@@ -28,5 +28,6 @@
 ---@field next_file fun(self: GFileEnumerator, cancellable?: GCancellable): GFileInfo?, GError?
 -- To use this, G_FILE_ATTRIBUTE_STANDARD_NAME must have been listed in the attributes list used when creating the GFileEnumerator.
 ---@field get_child fun(self: GFileEnumerator, info: GFileInfo): GFile
+---@field get_container fun(self: GFileEnumerator): GFile
 
 return require("util.lgi.Gio").FileInfo
