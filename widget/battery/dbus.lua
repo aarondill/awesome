@@ -47,7 +47,6 @@ end
 ---@param callback fun(changed: {State: string}): any?
 function M.subscribe_state(widget, callback)
   return find_battery(function(bat_path) -- DBus Object path to battery
-    require("util.notifs").debug("Battery state listener: %s", bat_path)
     if not bat_path then return end
     upower_listeners[widget] = properties_changed.subscribe("org.freedesktop.UPower", bat_path, callback, "State")
   end)
