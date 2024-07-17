@@ -59,7 +59,7 @@ function M.subscribe(sender, object, cb, properties)
         end
         changed = new_changed
         ---if none of the requested properties have changed, the user doesn't want a callback
-        if #changed == 0 then return end
+        if next(changed) == nil then return end
       end
       return cb(name, changed, invalidated)
     end,
