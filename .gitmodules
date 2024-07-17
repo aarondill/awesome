@@ -10,3 +10,6 @@
 [submodule "deps/lua-stream"]
 	path = deps/lua-stream
 	url = https://github.com/aarondill/lua-stream
+[submodule "deps/inspect"]
+	path = deps/inspect
+	url = https://github.com/kikito/inspect.lua
