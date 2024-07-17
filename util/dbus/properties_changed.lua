@@ -1,7 +1,5 @@
-local gtable = require("gears.table")
 local require = require("util.rel_require")
 local subscribe_signal = require(..., "subscribe_signal") ---@module 'util.dbus.subscribe_signal'
-local tables = require("util.tables")
 
 local M = {}
 ---@return string name
