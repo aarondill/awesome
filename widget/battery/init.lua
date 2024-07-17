@@ -126,7 +126,7 @@ function Battery(args)
     return true
   end
 
-  local timer = gtimer.new({
+  timer = gtimer.new({
     timeout = args.timeout or 15,
     call_now = true,
     autostart = not not battery_path,
