@@ -1,5 +1,5 @@
 local create_inhibitor = require("util.dbus.create_inhibitor")
-local get_dbus_property = require("util.dbus.get_prop")
+local properties = require("util.dbus.properties")
 
 create_inhibitor("handle-power-key", "To manually handle power key", "block")
 
@@ -9,7 +9,7 @@ if not XDG_SESSION_ID then return end -- We're done here
 
 local object_path = ("/org/freedesktop/login1/session/%s"):format(XDG_SESSION_ID)
 -- Get session type
-return get_dbus_property(
+return properties.get(
   "org.freedesktop.login1",
   object_path,
   "org.freedesktop.login1.Session",
