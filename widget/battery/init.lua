@@ -1,18 +1,18 @@
 -- Based initially on:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/battery-widget
 -- Time remaining came from acpi source code
-local dbus = require("util.dbus")
 local require = require("util.rel_require")
-local throttle = require("util.throttle")
 
 local Icon = require("widget.material.icon")
 local atooltip = require("awful.tooltip")
 local calculate_time_remaining = require(..., "time") ---@module "widget.battery.time"
+local dbus = require(..., "dbus") ---@module "widget.battery.dbus"
 local files = require(..., "files") ---@module "widget.battery.files"
 local gtimer = require("gears.timer")
 local handle_error = require("util.handle_error")
 local notifs = require("util.notifs")
 local strings = require("util.strings")
+local throttle = require("util.throttle")
 local wibox = require("wibox")
 
 -- To use colors from beautiful theme put
@@ -81,10 +81,6 @@ end
 ---A hard coded path to the /sys/... battery directory (default: first result of /sys/class/power_supply/BAT*)
 ---@field battery_path string?
 
----Index with the widget!
----@type table<table, SubscribeID>
-local upower_listeners = setmetatable({}, { __mode = "k" })
-
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
@@ -136,9 +132,7 @@ function Battery(args)
     if is_before then return end
     return callback()
   end, { weak = widget })
-  -- Use UPower to listen for lid state changes
-  upower_listeners[widget] =
-    dbus.properties_changed.subscribe("org.freedesktop.UPower", "/org/freedesktop/UPower", callback, "OnBattery")
+  dbus.subscribe_state(widget, callback)
 
   if not battery_path then
     files.find_battery_path(function(path)

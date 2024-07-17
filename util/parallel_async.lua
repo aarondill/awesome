@@ -2,7 +2,7 @@ local gtable = require("gears.table")
 ---Runs each_cb on each of for_each in parellel and calls done_cb when all are done
 ---@generic T, R
 ---@param val T
----@param ret table a table to store the result in. It will be stored in ret[val]
+---@param ret table<T, R> a table to store the result in. It will be stored in ret[val]
 ---@param done_tbl boolean[] A table to store true in when done
 ---@param index integer
 ---@param each_cb fun(val: T, cb: fun(res: R), ...: any) the function to call with each piece of information. The return value is kept
@@ -25,7 +25,7 @@ end
 ---@generic T, R
 ---@param for_each T[]
 ---@param each_cb fun(val: T, cb: fun(res: R), ...: any) the function to call with each piece of information. The return value is kept
----@param done_cb fun(res: R[], ...: any) the function to call when the data has been retrieved
+---@param done_cb fun(res: table<T, R>, ...: any) the function to call when the data has been retrieved
 ---The done_cb will be called with a table containing the results of all the callbacks
 ---with each ret[key] being the result of each_cb(for_each[key], function(res) end)
 ---@param ... any passed to each_cb and done_cb functions after all other arguments
