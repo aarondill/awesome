@@ -53,7 +53,11 @@ function M.subscribe(sender, object, cb, properties)
       local name, changed, invalidated = M.parse_properties_changed(params)
       if properties then
         ---Filter only changed properties within the requested properties
-        changed = tables.filter(changed, function(_, k) return gtable.hasitem(properties, k) ~= nil end)
+        local new_changed = {}
+        for _, p in ipairs(properties) do
+          if changed[p] ~= nil then new_changed[p] = changed[p] end
+        end
+        changed = new_changed
         ---if none of the requested properties have changed, the user doesn't want a callback
         if #changed == 0 then return end
       end
