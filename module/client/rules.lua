@@ -97,12 +97,14 @@ local rules = {
     properties = { sticky = true },
   },
   {
-    rule_any = { instance = { "fslite.vercel.app" } },
+    rule = { role = "pop-up", class = "Vivaldi-stable" },
     callback = function(c) ---@param c AwesomeClientInstance
       -- HACK: chromium doesn't respect the initial property when using '--app=%s'
       return gtimer.start_new(0.2, function()
         if not c.valid then return end
         c.maximized = false
+        c.floating = false
+        c.ontop = false
       end)
     end,
   },
