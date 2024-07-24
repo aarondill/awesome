@@ -1,4 +1,3 @@
-local quake = require("module.quake")
 local require = require("util.rel_require")
 
 local aclient = require("awful.client")
@@ -11,6 +10,7 @@ local client_keys = require("configuration.keys.client")
 local compat = require("util.awesome.compat")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
+local quake = require("module.quake")
 local stream = require("stream")
 
 ---@class AwesomeClientInstance
@@ -100,9 +100,10 @@ local rules = {
     rule = { role = "pop-up", class = "Vivaldi-stable" },
     callback = function(c) ---@param c AwesomeClientInstance
       -- HACK: chromium doesn't respect the initial property when using '--app=%s'
-      return gtimer.start_new(0.2, function()
-        if not c.valid then return end
+      gtimer.start_new(0.2, function()
+        if not c.valid then return false end
         c.maximized = false
+        return false
       end)
     end,
   },
