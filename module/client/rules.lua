@@ -103,8 +103,6 @@ local rules = {
       return gtimer.start_new(0.2, function()
         if not c.valid then return end
         c.maximized = false
-        c.floating = false
-        c.ontop = false
       end)
     end,
   },
@@ -115,7 +113,8 @@ local rules = {
       class = { "Wicd-client.py", "calendar.google.com", "ripdrag" },
       role = { "pop-up" },
     },
-    except_any = { instance = { "fslite.vercel.app" } },
+    -- This isn't really a pop-up
+    except = { role = "pop-up", class = "Vivaldi-stable" },
     properties = {
       placement = aplacement.centered,
       ontop = true,
