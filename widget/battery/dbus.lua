@@ -1,4 +1,5 @@
 local Gio = require("util.lgi.Gio")
+local await = require("await")
 local gtable = require("gears.table")
 local parallel_async = require("util.parallel_async")
 local properties = require("util.dbus.properties")
@@ -11,20 +12,17 @@ local upower_listeners = setmetatable({}, { __mode = "k" })
 
 ---@param callback fun(bat_path?: string, err?: string): unknown?
 local function find_battery(callback)
-  Gio.bus_get_sync(Gio.BusType.SYSTEM):call(
-    "org.freedesktop.UPower",
-    "/org/freedesktop/UPower",
-    "org.freedesktop.UPower",
-    "EnumerateDevices",
-    nil,
-    nil,
-    0,
-    -1,
-    nil,
-    function(bus, gtask)
-      local result, err = bus:call_finish(gtask)
-      if err then return callback(nil, err) end
-      local devices = result[1] --[[ @as string[] ]]
+  return coroutine.wrap(function()
+    local bus, gtask = await(function(resolve)
+      local name, path, iname = "org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower"
+      return Gio.bus_get_sync(Gio.BusType.SYSTEM)
+        :call(name, path, iname, "EnumerateDevices", nil, nil, 0, -1, nil, resolve)
+    end)
+    local result, err = bus:call_finish(gtask)
+    if err then return callback(nil, err) end
+    local devices = result[1] --[[ @as string[] ]]
+    ---@type table<string?, boolean>
+    local res = await(function(resolve)
       return parallel_async(devices, function(dev, done)
         return properties.get_all("org.freedesktop.UPower", dev, "org.freedesktop.UPower.Device", function(v_props)
           local props = v_props[1] --[[ @as table<string, unknown> ]]
@@ -35,12 +33,11 @@ local function find_battery(callback)
           local is_laptop_battery = is_battery and PowerSupply
           return done(is_laptop_battery)
         end)
-      end, function(res) ---@param res table<string?, boolean>
-        local _, bat = tables.find(res, function(is_battery) return is_battery end)
-        return callback(bat, nil)
-      end)
-    end
-  )
+      end, resolve)
+    end)
+    local _, bat = tables.find(res, function(is_battery) return is_battery end)
+    return callback(bat, nil)
+  end)()
 end
 
 ---@param widget any
