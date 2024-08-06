@@ -109,8 +109,28 @@ function M.notify_once(loglevel, text, opts) return M.notify(loglevel, text, opt
 
 local function get_debug_msg(text, ...)
   local inspect, stream = require("inspect"), require("stream")
-  if type(text) ~= "string" then return inspect.inspect(text) end
-  return text:format(stream.of(...):map(inspect.inspect):unpack())
+  local cache, max_n = {}, 0 --- @type table<userdata, string>
+  local function stringify(v)
+    return inspect.inspect(v, {
+      -- NOTE: completely overwrite inpect's userdata handler so we can maintain the numbering
+      process = function(x) -- Handle LGI objects
+        if type(x) ~= "userdata" then return x end
+        local mt = getmetatable(x)
+        if not cache[x] then
+          local n = max_n + 1
+          max_n = max_n + 1
+          if not mt or not mt.__tostring then
+            cache[x] = ("<userdata %d>"):format(n)
+          else
+            cache[x] = ("<userdata %d '%s'>"):format(n, tostring(x))
+          end
+        end
+        return cache[x] -- This will get quoted, but there's no other way to do it
+      end,
+    })
+  end
+  if type(text) ~= "string" then return stringify(text) end
+  return text:format(stream.of(...):map(stringify):unpack())
 end
 ---Usage: `debug({ table = true })` or `debug("table: %s", table)`
 function M.debug(text, ...) return M.notify("warn", get_debug_msg(text, ...)) end
