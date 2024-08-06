@@ -14,6 +14,8 @@
 ---Gets the file’s size (in bytes)
 ---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_SIZE.
 ---@field get_size fun(self: GFileInfo): number
+---It is an error to call this if the GFileInfo does not contain G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME.
+---@field get_display_name fun(self: GFileInfo): string
 ---@field get_attribute_string fun(self: GFileInfo, attribute: string): string?
 ---@field get_attribute_type fun(self: GFileInfo, attribute: string): GFileAttributeType
 ---@field get_attribute_object fun(self: GFileInfo, attribute: string): table?

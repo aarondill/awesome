@@ -1,5 +1,4 @@
 -- awesome_mode: api-level=9999:screen=on
-local beautiful = require("beautiful")
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:

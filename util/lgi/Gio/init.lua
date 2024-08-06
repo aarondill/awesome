@@ -5,10 +5,14 @@
 ---@class Gio
 ---@field FILE_ATTRIBUTE_STANDARD_TYPE "standard::type"
 ---@field FILE_ATTRIBUTE_STANDARD_NAME "standard::name"
+---@field FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "standard::display-name"
+---@field FILE_ATTRIBUTE_STANDARD_SIZE "standard::size"
 ---@field File GFileStatic
 ---@field DataInputStream GDataInputStreamStatic
 ---@field FileInfo GFileInfoStatic
 ---@field FileQueryInfoFlags FlagsDefinition<GFileQueryInfoFlags>
+---@field FileCreateFlags FlagsDefinition<GFileCreateFlags>
+---@field FileCopyFlags FlagsDefinition<GFileCopyFlags>
 ---@field FileType EnumDefinition<GFileType>
 ---@field IOErrorEnum EnumDefinition<string>
 ---@field Subprocess GSubprocessStatic
