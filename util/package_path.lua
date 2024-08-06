@@ -1,9 +1,10 @@
 local sep = ";"
 
 local assertions = require("util.types.assertions") -- This has no requires
-local gtable = require("gears.table")
+local filter = require("util.tables.filter") -- No requires
+local gtable = require("gears.table") -- AwesomeWM builtin
 local path = require("util.path") -- This only requires lgi
-local strings = require("util.strings")
+local strings = require("util.strings") -- Only requires gears
 
 local M = {}
 ---Whether package.path contains `dir`
@@ -88,15 +89,13 @@ end
 
 ---@param force boolean Should remove relative and absolute paths that refer to the same path?
 local function _uniq(pathvar, force)
-  local res = {}
   local seen = {} -- Already found this one
-  for _, p in ipairs(strings.split(pathvar, sep)) do
+  local res = filter(strings.split(pathvar, sep), function(p)
     local normal = path.normalize(p, force) -- If force, consider all paths as absolute, else keep relative paths
-    if not seen[normal] then
-      seen[normal] = true
-      table.insert(res, p) -- Keep the original path
-    end
-  end
+    if seen[normal] then return false end
+    seen[normal] = true
+    return true
+  end)
   return table.concat(res, sep)
 end
 ---Remove duplicate paths from packge.path and package.cpath
