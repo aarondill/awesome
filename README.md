@@ -8,12 +8,16 @@ If you notice any issues, please create an issue or PR!
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with a performant opinionated keyboard workflow to increase daily productivity and comfort.
 
-<sup><sub>Todo: update this image. It's outdated</sub></sup>
-[![](./theme/titus-theme/demo.png)](https://www.reddit.com/r/unixporn/comments/anp51q/awesome_material_awesome_workflow/)
+![](./theme/images/demo.png)
+
+|             Fullscreen             |       Rofi Combo Panel        |             Exit screen              |
+| :--------------------------------: | :---------------------------: | :----------------------------------: |
+| ![](./theme/images/fullscreen.png) | ![](./theme/images/panel.png) | ![](https://i.imgur.com/rcKOLYQ.png) |
 
 ## Installation
 
 ### `setup.sh`
+
 for convenience, a `setup.sh` script has been provided, simply clone the repository and run `./setup.sh` to auto install dependencies and setup submodules.
 If using `setup.sh`, skip to 3) after successfully running it.
 
