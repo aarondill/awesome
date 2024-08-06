@@ -9,21 +9,21 @@ local strings = require("util.strings")
 local write_async = require("util.file.write_async")
 
 ---@param p string?
----@param v string?
+---@param v string|number|boolean?
 ---@param quote boolean?
 ---@param suffix string?
 ---@return string?
 local function prop(p, v, quote, suffix)
-  if not p or not v then return nil end
+  if not p or v == nil then return nil end
   suffix = suffix or ""
   local format = quote and '%s: "%s%s"' or "%s: %s%s"
   -- Add new property
-  return ("\t" .. format .. ";"):format(p, v, suffix)
+  return ("\t" .. format .. ";"):format(p, tostring(v), suffix)
 end
 do
   ---@generic T
-  ---@param v T
-  local function opt(v) end ---@return T | nil
+  ---@param _v T
+  local function opt(_v) end ---@return T | nil
   ---@class DynamicRofiWriteOptions
   ---A dummy value for autocomplete
   local _ = {
@@ -58,7 +58,7 @@ local function write_conf(opts, cb)
     prop("fg-var", opts.rofi_fg or beautiful.rofi_fg),
     prop("active-background-var", opts.rofi_active_background or beautiful.rofi_active_background),
     prop("font-var", opts.font or beautiful.font, true),
-    prop("panel-height", tostring(panel_height), false, "px"),
+    prop("panel-height", panel_height, false, "px"),
     "}",
     "// vim" .. ":ft=css commentstring=//%s:", -- hack to stop vim from processing this modeline here
   })
