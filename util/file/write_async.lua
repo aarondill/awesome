@@ -16,10 +16,8 @@ local function file_write(path, content, cb)
   ---params(replace_contents_async): string contents, string etag, boolean make_backup, GFileCreateFlags flags, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
   new_file_for_path(path):replace_contents_bytes_async(content, nil, false, 0, nil, function(file, task)
     --- Finish the write operation and close the file(?)
-    local new_etags, error = file:replace_contents_finish(task)
-
-    collectgarbage("collect")
-    if not new_etags then
+    local suc, error = file:replace_contents_finish(task)
+    if not suc then
       assert(type(error) == "userdata", "Non-userdata error returned from replace_contents_finish!")
       return cb(error)
     end
