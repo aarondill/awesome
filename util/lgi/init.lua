@@ -12,7 +12,6 @@
 ---An intentionally opaque class that must be passed to the _finish method. This should only ever be used *once*!
 ---@class GAsyncResult
 ---@alias GAsyncReadyCallback<T> fun(self: T, task: GAsyncResult)
----@alias GAsyncFinish<T, R> fun(self: T, task: GAsyncResult): R, GError?
 
 ---These are performed through lgi
 ---@alias LGI.Error.domain table|string
