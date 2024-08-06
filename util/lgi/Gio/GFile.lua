@@ -44,6 +44,13 @@
 ---@field enumerate_children_async fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field enumerate_children_finish fun(self: GFile, task: GAsyncResult): GFileEnumerator?, GError?
 ---@field enumerate_children fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileEnumerator?, GError?
+---@field read fun(self: GFile, cancellable?: GCancellable): GInputStream?, GError?
+---@field read_async fun(self: GFile, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field read_finish fun(self: GFile, task: GAsyncResult): GInputStream?, GError?
+---Same as g_file_replace_contents_async() but takes a GBytes input instead
+---Finalize with g_file_replace_contents_finish() (if needed)
+---@field replace_contents_bytes_async fun(self: GFile, contents: GBytes, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---WARNING: This function *does not* copy the contents of `contents` and so it must not be freed. Use replace_contents_bytes_async() instead.
 ---@field replace_contents_async fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field replace_contents_finish fun(self: GFile, task: GAsyncResult): true, new_etag: string?
 ---@field replace_contents_finish fun(self: GFile, task: GAsyncResult): false, GError

@@ -1,6 +1,8 @@
 ---@meta
 
 ---@class GLib
+---@field SeekType EnumDefinition<"SET"|"CUR"|"END">
+---@field PRIORITY_DEFAULT 0
 ---The directory separator as a string. This is “/” on UNIX machines and “\" under Windows.
 ---@field DIR_SEPARATOR_S string
 ---The search path separator as a string. This is “:” on UNIX machines and “;” under Windows.
@@ -21,6 +23,7 @@
 ---@field Bytes GBytesStatic
 
 ---@class GBytesStatic
+---@operator call(string): GBytes
 ---@field new fun(content: string): GBytes
 
 ---@class GBytes
