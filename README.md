@@ -10,9 +10,9 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with
 
 ![](./theme/images/demo.png)
 
-|             Fullscreen             |       Rofi Combo Panel        |             Exit screen              |
-| :--------------------------------: | :---------------------------: | :----------------------------------: |
-| ![](./theme/images/fullscreen.png) | ![](./theme/images/panel.png) | ![](https://i.imgur.com/rcKOLYQ.png) |
+|             Fullscreen             |        Rofi Launcher         |             Exit Screen             |
+| :--------------------------------: | :--------------------------: | :---------------------------------: |
+| ![](./theme/images/fullscreen.png) | ![](./theme/images/rofi.png) | ![](./theme/images/exit-screen.png) |
 
 ## Installation
 
