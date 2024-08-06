@@ -1,5 +1,4 @@
 ---@meta
----@diagnostic disable: duplicate-doc-field This is used for overloading. Note: It's not perfect because the return types will not be narrowed.
 ---Note that none of the type definitions in this file are complete. If a field is missing, add it and report it.
 
 ---@alias GFileAttributeType "INVALID"| "STRING"| "BYTE_STRING"| "BOOLEAN"| "UINT32"| "INT32"| "UINT64"| "INT64"| "OBJECT"| "STRINGV"
@@ -14,19 +13,39 @@
 ---destination” before writing to it, although the implementation may not be
 ---exactly like that. This flag can only be used with g_file_replace() and its
 ---variants, including g_file_replace_contents(). Since 2.20
+---@alias GFileCopyFlags "NONE" No flags set.
+---|"OVERWRITE" Overwrite any existing file.
+---|"BACKUP" Make a backup of any existing file.
+---|"NOFOLLOW_SYMLINKS" Don’t follow symbolic links.
+---|"ALL_METADATA" Copy all metadata information.
+---|"NO_FALLBACK_FOR_MOVE" Don’t use copy and delete fallback if native move not supported
+---|"TARGET_DEFAULT_PERMS" Use the default permissions for the target.
+---|"TARGET_DEFAULT_MODIFIED_TIME" Use default modification timestamps instead of copying them from the source file. Since 2.80
+
+---@alias GFileProgressCallback fun(current_num_bytes: integer, total_num_bytes: integer)
 
 ---@class GFileStatic
 ---@field new_for_path fun(path: string): GFile
 ---@field new_for_uri fun(uri: string): GFile
----@field new_tmp fun(tmpl?: string): GFile, GFileIOStream
----@field new_tmp fun(tmpl?: string): GError
+---@field new_tmp fun(tmpl?: string): GFile?, GFileIOStream|GError
 ---@field new_tmp_async fun (tmpl?:string, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<nil>)
----@field new_tmp_finish fun(task: GAsyncResult): GFile, GFileIOStream
----@field new_tmp_finish fun(task: GAsyncResult): GError
+---@field new_tmp_finish fun(task: GAsyncResult): GFile?, GFileIOStream|GError
 
 ---@class GFile: userdata
+---@field append_to fun(self: GFile, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): GFileOutputStream?, GError?
+---@field append_to_async fun(self: GFile, flags: Flags<GFileCreateFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field append_to_finish fun(self: GFile, result: GAsyncResult): GFileOutputStream?, GError?
+---@field build_attribute_list_for_copy fun(self: GFile, flags: Flags<GFileCopyFlags>, cancellable?: GCancellable): string?, GError?
+---@field copy fun(self: GFile, destination: GFile, flags: Flags<GFileCopyFlags>, cancellable?: GCancellable, progress_callback?: GFileProgressCallback): boolean, GError?
+---@field copy_async fun(self: GFile, destination: GFile, flags: Flags<GFileCopyFlags>, io_priority: integer, cancellable?: GCancellable, progress_callback?: GFileProgressCallback, callback: GAsyncReadyCallback<GFile>)
+---@field copy_finish fun(self: GFile, result: GAsyncResult): boolean, GError?
+---@field copy_attributes fun(self: GFile, destination: GFile, flags: Flags<GFileCopyFlags>, cancellable?: GCancellable): boolean, GError?
+---@field create fun(self: GFile, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): GFileOutputStream?, GError?
+---@field create_async fun(self: GFile, flags: Flags<GFileCreateFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field create_finish fun(self: GFile, result: GAsyncResult): GFileOutputStream?, GError?
 ---@field equal fun(self: GFile, other: GFile): boolean
 ---@field get_relative_path fun(self: GFile, other: GFile): string?
+---@field get_uri fun(self: GFile): string
 ---@field query_exists fun(self: GFile, cancellable?: GCancellable): boolean
 ---Returns G_FILE_TYPE_UNKNOWN if the file does not exist.
 ---@field query_file_type fun(self: GFile, flags: Flags<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileType
@@ -35,10 +54,8 @@
 ---@field get_path fun(self: GFile): string?
 ---@field get_basename fun(self: GFile): string?
 ---@field load_contents_async fun(self: GFile, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
----@field load_contents_finish fun(self: GFile, task: GAsyncResult): nil, GError
----@field load_contents_finish fun(self: GFile, task: GAsyncResult): contents: string, length: number, etag: string
----@field load_contents fun(self: GFile, cancellable?: GCancellable): contents: string, length: number, etag: string
----@field load_contents fun(self: GFile, cancellable?: GCancellable): nil, GError
+---@field load_contents_finish fun(self: GFile, task: GAsyncResult): contents: string|false, etag: string|GError
+---@field load_contents fun(self: GFile, cancellable?: GCancellable): contents: string|false, etag: string|GError
 ---@field query_info_async fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field query_info_finish fun(self: GFile, task: GAsyncResult): GFileInfo?, GError?
 ---@field enumerate_children_async fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
@@ -52,11 +69,11 @@
 ---@field replace_contents_bytes_async fun(self: GFile, contents: GBytes, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---WARNING: This function *does not* copy the contents of `contents` and so it must not be freed. Use replace_contents_bytes_async() instead.
 ---@field replace_contents_async fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
----@field replace_contents_finish fun(self: GFile, task: GAsyncResult): true, new_etag: string?
----@field replace_contents_finish fun(self: GFile, task: GAsyncResult): false, GError
----@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): true, new_etag: string?
----@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): false, GError
+---@field replace_contents_finish fun(self: GFile, task: GAsyncResult): new_etag: string|false, GError?
+---@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): new_etag: string|false, GError?
 ---@field delete fun(self: GFile, cancellable?: GCancellable): boolean, GError?
+---@field delete_async fun(self: GFile, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field delete_finish fun(self: GFile, result: GAsyncResult): boolean, GError?
 
 ---@class GFileIOStream TODO:
 

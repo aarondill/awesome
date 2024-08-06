@@ -17,3 +17,5 @@
 ---@field splice fun(self: GOutputStream, source: GInputStream, flags: Flags<GOutputStreamSpliceFlags>, cancellable?: GCancellable): size: integer, GError?
 ---@field splice_async fun(self: GOutputStream, source: GInputStream, flags: Flags<GOutputStreamSpliceFlags>, io_priority: integer, cancellable?: GCancellable, callback?: GAsyncReadyCallback<GOutputStream>)
 ---@field splice_finish fun(self: GOutputStream, task: userdata): size: integer?, GError?
+
+---@class GFileOutputStream: GOutputStream
