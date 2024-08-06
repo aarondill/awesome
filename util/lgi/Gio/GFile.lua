@@ -43,6 +43,9 @@
 ---@field create fun(self: GFile, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): GFileOutputStream?, GError?
 ---@field create_async fun(self: GFile, flags: Flags<GFileCreateFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field create_finish fun(self: GFile, result: GAsyncResult): GFileOutputStream?, GError?
+---@field replace fun(self: GFile, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): GFileOutputStream?, GError?
+---@field replace_async fun(self: GFile, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, io_priority?: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field replace_finish fun(self: GFile, result: GAsyncResult): GFileOutputStream?, GError?
 ---@field equal fun(self: GFile, other: GFile): boolean
 ---@field get_relative_path fun(self: GFile, other: GFile): string?
 ---@field get_uri fun(self: GFile): string

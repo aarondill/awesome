@@ -88,6 +88,15 @@ local rules = {
   -- 	end,
   -- },
   {
+    rule_any = { class = {
+      "org.wezfurlong.wezterm",
+      "XTerm",
+      "kitty",
+      "alacritty",
+    } },
+    properties = { opacity = 0.85 },
+  },
+  {
     -- Note: when using --app=%s, the role=browser is not applied, instead use the class
     rule_any = { role = { "browser" }, class = { "Vivaldi-stable" } },
     properties = { opacity = 0.90, maximized = false },

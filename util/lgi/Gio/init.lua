@@ -18,6 +18,7 @@
 ---@field Subprocess GSubprocessStatic
 ---@field SubprocessFlags FlagsDefinition<GSubprocessFlags>
 ---@field OutputStreamSpliceFlags FlagsDefinition<GOutputStreamSpliceFlags>
+---@field UnixInputStream GUnixInputStreamStatic
 
 ---@class GCancellable
 ---@field cancel fun(self: GCancellable)
