@@ -138,7 +138,7 @@ function Battery(args)
     files.find_battery_path(function(path)
       battery_path = path or battery_path
       callback()
-      timer:start()
+      if not timer.started then timer:start() end
     end)
   end
 
