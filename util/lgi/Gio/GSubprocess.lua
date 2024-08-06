@@ -18,7 +18,7 @@
 ---|"SEARCH_PATH_FROM_ENVP" If path searching is needed when spawning the subprocess, use the PATH in the launcher environment.
 
 ---@class GSubprocessStatic
----@field new fun(argv: string[], flags: Enum<GSubprocessFlags>): GSubprocess?, GError?
+---@field new fun(argv: string[], flags: Flags<GSubprocessFlags>): GSubprocess?, GError?
 
 ---@class GSubprocess
 ---If stdin is given, the subprocess must have been created with "STDIN_PIPE".

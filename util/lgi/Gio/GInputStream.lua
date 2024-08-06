@@ -1,7 +1,7 @@
 ---@alias GSeekType "SET"|"CUR"|"END"
 
 ---@class GSeekable
----@field seek fun(self: GSeekable, offset: integer, type: GSeekType): suc: boolean, GError?
+---@field seek fun(self: GSeekable, offset: integer, type: Enum<GSeekType>): suc: boolean, GError?
 ---@field can_seek fun(self: GSeekable): boolean
 ---@field can_truncate fun(self: GSeekable): boolean
 ---@field tell fun(self: GInputStream): integer -- Zero if not seekable

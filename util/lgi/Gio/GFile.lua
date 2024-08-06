@@ -29,8 +29,8 @@
 ---@field get_relative_path fun(self: GFile, other: GFile): string?
 ---@field query_exists fun(self: GFile, cancellable?: GCancellable): boolean
 ---Returns G_FILE_TYPE_UNKNOWN if the file does not exist.
----@field query_file_type fun(self: GFile, flags: Enum<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileType
----@field query_info fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileInfo?, GError?
+---@field query_file_type fun(self: GFile, flags: Flags<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileType
+---@field query_info fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileInfo?, GError?
 ---@field get_parent fun(self: GFile): GFile?
 ---@field get_path fun(self: GFile): string?
 ---@field get_basename fun(self: GFile): string?
@@ -39,23 +39,23 @@
 ---@field load_contents_finish fun(self: GFile, task: GAsyncResult): contents: string, length: number, etag: string
 ---@field load_contents fun(self: GFile, cancellable?: GCancellable): contents: string, length: number, etag: string
 ---@field load_contents fun(self: GFile, cancellable?: GCancellable): nil, GError
----@field query_info_async fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field query_info_async fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field query_info_finish fun(self: GFile, task: GAsyncResult): GFileInfo?, GError?
----@field enumerate_children_async fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field enumerate_children_async fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field enumerate_children_finish fun(self: GFile, task: GAsyncResult): GFileEnumerator?, GError?
----@field enumerate_children fun(self: GFile, attributes: string, flags: Enum<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileEnumerator?, GError?
+---@field enumerate_children fun(self: GFile, attributes: string, flags: Flags<GFileQueryInfoFlags>, cancellable?: GCancellable): GFileEnumerator?, GError?
 ---@field read fun(self: GFile, cancellable?: GCancellable): GInputStream?, GError?
 ---@field read_async fun(self: GFile, io_priority: integer, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field read_finish fun(self: GFile, task: GAsyncResult): GInputStream?, GError?
 ---Same as g_file_replace_contents_async() but takes a GBytes input instead
 ---Finalize with g_file_replace_contents_finish() (if needed)
----@field replace_contents_bytes_async fun(self: GFile, contents: GBytes, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field replace_contents_bytes_async fun(self: GFile, contents: GBytes, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---WARNING: This function *does not* copy the contents of `contents` and so it must not be freed. Use replace_contents_bytes_async() instead.
----@field replace_contents_async fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
+---@field replace_contents_async fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable, callback: GAsyncReadyCallback<GFile>)
 ---@field replace_contents_finish fun(self: GFile, task: GAsyncResult): true, new_etag: string?
 ---@field replace_contents_finish fun(self: GFile, task: GAsyncResult): false, GError
----@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable): true, new_etag: string?
----@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Enum<GFileCreateFlags>, cancellable?: GCancellable): false, GError
+---@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): true, new_etag: string?
+---@field replace_contents fun(self: GFile, contents: string, etag?: string, make_backup: boolean, flags: Flags<GFileCreateFlags>, cancellable?: GCancellable): false, GError
 ---@field delete fun(self: GFile, cancellable?: GCancellable): boolean, GError?
 
 ---@class GFileIOStream TODO:
