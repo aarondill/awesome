@@ -1,6 +1,6 @@
-local lgi = require("lgi")
-local glib = lgi.GLib
-local gio = lgi.Gio
+local lgi = require("util.lgi")
+local new_file_for_path = require("util.file.new_file_for_path")
+local GLib, Gio = lgi.GLib, lgi.Gio
 
 ---@class GInputStreamAsyncHelper
 ---@field data_stream GDataInputStream?
@@ -10,15 +10,15 @@ local GioInputStreamAsyncHelper = {
   ---@param count integer
   ---@param callback fun(content?: string, error?: userdata):any
   read_bytes = function(self, count, callback)
-    return self.stream:read_bytes_async(count, -1, nil, function(source, gtask)
+    return self.stream:read_bytes_async(count, GLib.PRIORITY_DEFAULT, nil, function(source, gtask)
       local gbytes, err = source:read_bytes_finish(gtask)
       return callback(gbytes and gbytes:get_data(), err)
     end)
   end,
   ---@param self GInputStreamAsyncHelper
   get_data_stream = function(self)
-    self.data_stream = self.data_stream or gio.DataInputStream.new(self.stream)
-    local type = glib.SeekType.SET -- From beginning
+    self.data_stream = self.data_stream or Gio.DataInputStream.new(self.stream)
+    local type = GLib.SeekType.SET -- From beginning
     self.data_stream:seek(self:tell(), type) -- Sync the offset to the main stream's offset.
     return self.data_stream
   end,
@@ -64,7 +64,7 @@ local GioInputStreamAsyncHelper = {
   ---@param count integer
   ---@param callback fun(lines?: string[], error?: userdata):any
   read_lines = function(self, count, callback)
-    local data_stream = gio.DataInputStream.new(self.stream)
+    local data_stream = Gio.DataInputStream.new(self.stream)
     local lines = {}
     local function _read()
       local old_location = self:tell() -- The old position is lost after read_line_async. Record it here for later.
@@ -115,7 +115,7 @@ local GioInputStreamAsyncHelper = {
   seek = function(self, offset, from)
     local key_hash = { ["start"] = "SET", ["current"] = "CUR", ["end"] = "END" }
     local key = from and key_hash[from:lower()] or key_hash.start -- Defaults to from start
-    local type = glib.SeekType[key]
+    local type = GLib.SeekType[key]
     return self.stream:seek(offset, type)
   end,
   ---@param self GInputStreamAsyncHelper
@@ -140,7 +140,7 @@ local function gen_stream_ret(stream) return setmetatable({ stream = stream }, {
 ---@param path string
 ---@param callback fun(stream?: GInputStreamAsyncHelper, error?: userdata): any
 local function get_stream(path, callback)
-  return gio.File.new_for_path(path):read_async(-1, nil, function(file, task)
+  return new_file_for_path(path):read_async(-1, nil, function(file, task)
     local stream, error = file:read_finish(task)
     if not stream then return callback(nil, error) end
     local ret = gen_stream_ret(stream)
