@@ -13,6 +13,7 @@
 ---@field IOErrorEnum EnumDefinition<string>
 ---@field Subprocess GSubprocessStatic
 ---@field SubprocessFlags FlagsDefinition<GSubprocessFlags>
+---@field OutputStreamSpliceFlags FlagsDefinition<GOutputStreamSpliceFlags>
 
 ---@class GCancellable
 ---@field cancel fun(self: GCancellable)

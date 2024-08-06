@@ -12,8 +12,7 @@ local function outputstream_write(stream, content, cb)
     content = GLib.Bytes.new(content)
   end
   --- only pass callback if results are needed.
-  ---params(stream:write_async) GOutputStream* stream, void* buffer, gsize count, int io_priority, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data
-  return stream:write_async_bytes(content, GLib.PRIORITY_DEFAULT, nil, cb and function(file, task)
+  return stream:write_bytes_async(content, GLib.PRIORITY_DEFAULT, nil, cb and function(file, task)
     local new_etags, err = file:write_finish(task)
     if not new_etags then return cb(err) end
     return cb(nil)
