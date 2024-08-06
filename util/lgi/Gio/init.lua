@@ -8,11 +8,11 @@
 ---@field File GFileStatic
 ---@field DataInputStream GDataInputStreamStatic
 ---@field FileInfo GFileInfoStatic
----@field FileQueryInfoFlags EnumDefinition<GFileQueryInfoFlags>
+---@field FileQueryInfoFlags FlagsDefinition<GFileQueryInfoFlags>
 ---@field FileType EnumDefinition<GFileType>
 ---@field IOErrorEnum EnumDefinition<string>
 ---@field Subprocess GSubprocessStatic
----@field SubprocessFlags EnumDefinition<GSubprocessFlags>
+---@field SubprocessFlags FlagsDefinition<GSubprocessFlags>
 
 ---@class GCancellable
 ---@field cancel fun(self: GCancellable)

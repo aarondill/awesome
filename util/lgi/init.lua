@@ -4,9 +4,12 @@
 ---Note that none of the type definitions in this file are complete.
 ---If a field is missing, add it and report it.
 
----LGI handles enums, allowing a string to be passed, or an array of strings, or an integer
+---LGI handles enums and bitflags, allowing a string to be passed, or an array of strings, or an integer
 ---It also allows a table {[T]=any}, but I've chosen not to include this in the type
----@alias Enum<T> T|T[]|integer
+---@alias Flags<T> T|T[]|integer
+---Note that this also allows calling the enum with a table, to get the integer value `FLAGS({"A", "B"}) == FLAGS.A | FLAGS.B`
+---@alias FlagsDefinition<T> {[T]: integer, [integer]: T|{[T]: integer?, [1]: integer?}}
+---@alias Enum<T> T|integer
 ---@alias EnumDefinition<T> {[T]: integer, [integer]: T}
 
 ---An intentionally opaque class that must be passed to the _finish method. This should only ever be used *once*!
