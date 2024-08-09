@@ -1,5 +1,5 @@
 local gfile = require("gears.filesystem")
-local glib = require("util.lgi.GLib")
+local glib = require("lgi.GLib")
 local handle_error = require("util.handle_error")
 local path = require("util.path")
 

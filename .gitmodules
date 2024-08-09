@@ -13,3 +13,6 @@
 [submodule "deps/inspect"]
 	path = deps/inspect
 	url = https://github.com/kikito/inspect.lua
+[submodule "deps/lgi-types"]
+	path = deps/lgi-types
+	url = https://github.com/aarondill/lgi-types

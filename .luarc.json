@@ -5,6 +5,7 @@
   "workspace": {
     "library": ["/usr/share/awesome/lib/", "./deps"]
   },
+  "runtime.version": "Lua 5.3",
   "runtime.path": [
     "/usr/local/share/lua/5.3/?.lua",
     "/usr/local/share/lua/5.3/?/init.lua",

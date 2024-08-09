@@ -1,4 +1,4 @@
-local GLib = require("util.lgi").GLib
+local GLib = require("lgi").GLib
 local metainit = require("util.metainit")
 local new_file_for_path = require("util.file.new_file_for_path")
 

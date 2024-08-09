@@ -17,8 +17,7 @@ end
 require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash" or "/bin/sh"
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
--- Note: we can't use util.lgi here because util might not be in the path
-local dirsep = require("lgi").GLib.DIR_SEPARATOR_S ---@type string
+local dirsep = require("lgi").GLib.DIR_SEPARATOR_S
 
 local conf_dir = gfile.get_configuration_dir()
 local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)" .. dirsep .. ".-$") or ".") -- Should be same as conf_dir

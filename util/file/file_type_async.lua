@@ -1,4 +1,4 @@
-local Gio = require("util.lgi").Gio
+local Gio = require("lgi").Gio
 local new_file_for_path = require("util.file.new_file_for_path")
 ---Gets the file type of a file
 ---@generic Path :string

@@ -1,4 +1,4 @@
-local lgi = require("util.lgi")
+local lgi = require("lgi")
 local GLib = lgi.GLib
 ---Joins paths with slashes.
 ---Usage: path.join({'directory', 'file'}) OR path.join('directory', 'file')

@@ -1,4 +1,4 @@
-local Gio = require("util.lgi").Gio
+local Gio = require("lgi").Gio
 ---If a File is passed, it is returned.
 ---@param path string|GFile
 local function new_file_for_path(path)

@@ -1,7 +1,7 @@
 local require = require("util.rel_require")
 
-local GLib = require("util.lgi.GLib")
-local Gio = require("util.lgi.Gio")
+local GLib = require("lgi.GLib")
+local Gio = require("lgi.Gio")
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 local gfile = require("gears.filesystem")
 local path = require("util.path")

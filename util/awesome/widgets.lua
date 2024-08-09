@@ -1,4 +1,4 @@
-local GLib = require("util.lgi.GLib")
+local GLib = require("lgi.GLib")
 local abutton = require("awful.button")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
