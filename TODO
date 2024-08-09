@@ -1,8 +1,6 @@
 #!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 error("You can't require the todo file!")
----TODO: Types for https://docs.gtk.org/gio/class.Subprocess.html
----TODO: Types for https://docs.gtk.org/gio/class.DBusConnection.html
 
 ---Update Package List. (Can I convert ./setup.sh to a lua script? then generate this list in CI?)
 
