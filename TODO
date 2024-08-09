@@ -4,7 +4,6 @@ error("You can't require the todo file!")
 ---TODO: Types for https://docs.gtk.org/gio/class.Subprocess.html
 ---TODO: Types for https://docs.gtk.org/gio/class.DBusConnection.html
 
----TODO: Update README screenshot (automatically? CI?)
 ---Update Package List. (Can I convert ./setup.sh to a lua script? then generate this list in CI?)
 
 ---TODO: Async functions (coroutines). No more Callback hell!
