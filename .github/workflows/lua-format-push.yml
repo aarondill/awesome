@@ -1,11 +1,7 @@
 name: Lint With Stylua
-on:
-  push:
-    paths:
-      - "**.lua"
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 jobs:
-  format_code:
+  format:
     runs-on: ubuntu-latest
     permissions:
       contents: write
