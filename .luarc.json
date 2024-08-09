@@ -1,28 +1,20 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "diagnostics.unusedLocalExclude": ["_*"],
-  "workspace.ignoreDir": [".vscode"],
   "workspace": {
+    "ignoreDir": [".vscode"],
     "library": ["/usr/share/awesome/lib/", "./deps"]
   },
-  "runtime.version": "Lua 5.3",
-  "runtime.path": [
-    "/usr/local/share/lua/5.3/?.lua",
-    "/usr/local/share/lua/5.3/?/init.lua",
-    "/usr/local/lib/lua/5.3/?.lua",
-    "/usr/local/lib/lua/5.3/?/init.lua",
-    "/usr/share/lua/5.3/?.lua",
-    "/usr/share/lua/5.3/?/init.lua",
-    "./deps/?.lua",
-    "./deps/?/init.lua",
-    "./deps/.lua/?.lua",
-    "./deps/.lua/?/init.lua",
-    "./?.lua",
-    "./?/init.lua",
-    "/etc/xdg/awesome/?.lua",
-    "/etc/xdg/awesome/?/init.lua",
-    "/usr/share/awesome/lib/?.lua",
-    "/usr/share/awesome/lib/?/init.lua"
-  ],
-  "runtime.pathStrict": true
+  "runtime": {
+    "version": "Lua 5.3",
+    "path": [
+      "./deps/.lua/?.lua",
+      "./deps/.lua/?/init.lua",
+      "./?.lua",
+      "./?/init.lua",
+      "/usr/share/awesome/lib/?.lua",
+      "/usr/share/awesome/lib/?/init.lua"
+    ],
+    "pathStrict": true
+  }
 }
