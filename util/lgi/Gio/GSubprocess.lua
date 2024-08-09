@@ -1,5 +1,5 @@
 ---@meta
----@diagnostic disable: duplicate-doc-field This is used for overloading. Note: It's not perfect because the return types will not be narrowed.
+---@diagnostic disable: duplicate-doc-field
 ---Note that none of the type definitions in this file are complete. If a field is missing, add it and report it.
 
 -- Note that the default for stdin is to redirect from /dev/null. For stdout
@@ -23,15 +23,15 @@
 ---@class GSubprocess
 ---If stdin is given, the subprocess must have been created with "STDIN_PIPE".
 ---@field communicate fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): stdout: GBytes?, stderr: GBytes?
----@field communicate fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): nil, GError
+---@field communicate fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): false, GError
 ---@field communicate_async fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable, callback: GAsyncReadyCallback<GSubprocess>)
 ---@field communicate_finish fun(self: GSubprocess, result: GAsyncResult): stdout: GBytes?, stderr: GBytes?
----@field communicate_finish fun(self: GSubprocess, result: GAsyncResult): nil, GError
+---@field communicate_finish fun(self: GSubprocess, result: GAsyncResult): false, GError
 ---@field communicate_utf8 fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): stdout: GBytes?, stderr: GBytes?
----@field communicate_utf8 fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): nil, GError
+---@field communicate_utf8 fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable): false, GError
 ---@field communicate_utf8_async fun(self: GSubprocess, stdin?: GBytes, cancellable?: GCancellable, callback: GAsyncReadyCallback<GSubprocess>)
 ---@field communicate_utf8_finish fun(self: GSubprocess, result: GAsyncResult): stdout: GBytes?, stderr: GBytes?
----@field communicate_utf8_finish fun(self: GSubprocess, result: GAsyncResult): nil, GError
+---@field communicate_utf8_finish fun(self: GSubprocess, result: GAsyncResult): false, GError
 ---@field force_exit fun(self: GSubprocess) On Unix, this function sends SIGKILL.
 ---It is an error to call this function before g_subprocess_wait() and unless g_subprocess_get_if_exited() returned TRUE.
 ---@field get_exit_status fun(self: GSubprocess): integer
