@@ -31,11 +31,15 @@ local function add_suffix(filepath, exts, include_original)
       :toarray(include_original and { filepath } or nil)
   )
 end
-local home_reminder_paths = { "reminder", ".reminder", ".todo", "todo" }
+--- Only all caps or all lower case is allowed
+local home_reminder_paths = tables.map_val({ "reminder", ".reminder", ".todo", "todo" }, string.lower)
 local extensions = { ".txt", ".md" }
---- These should be /todo, /todo.txt, /todo.md, ...
+--  These should be /todo, /reminder, ...
 local files_wo_extensions = add_suffix(path.sep, home_reminder_paths, false)
-local allowed_files = add_suffix(files_wo_extensions, extensions, true)
+local files_wo_extensions_allow_cap =
+  gtable.join(files_wo_extensions, tables.map_val(files_wo_extensions, string.upper))
+--- These should be /todo, /todo.txt, /todo.md, ...
+local allowed_files = add_suffix(files_wo_extensions_allow_cap, extensions, true)
 --- reminder/todo.txt, todo.txt, .reminder.md, ...
 local paths = add_suffix(tables.map_val(home_reminder_paths, path.get_home), gtable.join(extensions, allowed_files))
 local index = 1
