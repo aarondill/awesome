@@ -1,6 +1,5 @@
 ---@meta
 
----@diagnostic disable: duplicate-doc-field This is used for overloading. Note: It's not perfect because the return types will not be narrowed.
 ---Note that none of the type definitions in this file are complete.
 ---If a field is missing, add it and report it.
 
@@ -24,8 +23,10 @@
 ---@field message string
 ---@field domain string
 ---@field code string
+---@diagnostic disable: duplicate-doc-field
 ---@field matches fun(self: GError, other: GError): boolean
 ---@field matches fun(self: GError, domain: LGI.Error.domain, code: LGI.Error.code): boolean
+---@diagnostic enable: duplicate-doc-field
 
 ---@class GErrorStatic
 ---@field new fun(domain: LGI.Error.domain, code: LGI.Error.code, message: string): GError
