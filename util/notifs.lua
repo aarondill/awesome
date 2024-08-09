@@ -129,7 +129,8 @@ local function get_debug_msg(text, ...)
       end,
     })
   end
-  if type(text) ~= "string" then return stringify(text) end
+  --- They passed an object, return the options
+  if type(text) ~= "string" then return stringify(text), ... end
   return text:format(stream.of(...):map(stringify):unpack())
 end
 ---Usage: `debug({ table = true })` or `debug("table: %s", table)`
