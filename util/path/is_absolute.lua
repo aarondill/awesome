@@ -1,4 +1,4 @@
-local lgi = require("util.lgi")
+local lgi = require("lgi")
 local GLib = lgi.GLib
 ---@param path string
 ---@return boolean

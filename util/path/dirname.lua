@@ -1,4 +1,4 @@
-local lgi = require("util.lgi")
+local lgi = require("lgi")
 local GLib = lgi.GLib
 ---Gets the dirname
 ---@param path string

@@ -1,4 +1,4 @@
-local GLib = require("util.lgi").GLib
+local GLib = require("lgi").GLib
 local path = require("util.path")
 
 local home_cached = nil

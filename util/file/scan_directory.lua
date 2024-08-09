@@ -1,5 +1,5 @@
 local assertions = require("util.types.assertions")
-local gio = require("util.lgi").Gio
+local gio = require("lgi").Gio
 local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
 ---@alias filter_func  fun(file: table): boolean?, boolean?

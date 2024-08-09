@@ -1,6 +1,6 @@
 local new_file_for_path = require("util.file.new_file_for_path")
 local outputstream_write = require("util.file.write_outputstream")
-local GLib = require("util.lgi").GLib
+local GLib = require("lgi").GLib
 
 --- Append to a file's content - Async :)
 ---@param path string file path to append to

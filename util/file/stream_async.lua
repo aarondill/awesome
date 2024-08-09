@@ -1,4 +1,4 @@
-local lgi = require("util.lgi")
+local lgi = require("lgi")
 local new_file_for_path = require("util.file.new_file_for_path")
 local GLib, Gio = lgi.GLib, lgi.Gio
 
