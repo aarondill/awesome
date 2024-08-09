@@ -82,4 +82,16 @@ function M.trim(str)
   return (str:gsub("^%s*(.-)%s*$", "%1"))
 end
 
+---@nodiscard
+---@param single string
+---@param count integer
+---@param plural? string [default: single .. "s"]
+---@return string
+function M.pluralize(single, count, plural)
+  if not single then return single end
+  if type(single) ~= "string" then error("Expected string. Found: " .. type(single) .. " instead.") end
+  if count == 1 then return single end
+  return plural or (single .. "s")
+end
+
 return M
