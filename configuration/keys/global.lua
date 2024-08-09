@@ -1,6 +1,6 @@
 local require = require("util.rel_require")
 
-local Gio = require("lgi.Gio")
+local Gio = require("lgi").Gio
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
 local apps = require("configuration.apps")

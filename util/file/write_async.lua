@@ -1,4 +1,4 @@
-local GLib = require("lgi.GLib")
+local GLib = require("lgi").GLib
 local new_file_for_path = require("util.file.new_file_for_path")
 
 --- Replace a file content or create a new one - Async :)

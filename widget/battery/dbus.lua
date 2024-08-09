@@ -1,4 +1,4 @@
-local Gio = require("lgi.Gio")
+local Gio = require("lgi").Gio
 local await = require("await")
 local parallel_async = require("util.parallel_async")
 local properties = require("util.dbus.properties")

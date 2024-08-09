@@ -1,4 +1,4 @@
-local GLib = require("lgi.GLib")
+local GLib = require("lgi").GLib
 local assertions = require("util.types.assertions")
 
 --- Write to a stream - async
