@@ -1,4 +1,4 @@
-local GLib = require("lgi.GLib")
+local GLib = require("lgi").GLib
 local gstring = require("gears.string")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")

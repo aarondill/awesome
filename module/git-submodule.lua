@@ -1,4 +1,4 @@
-local Gio = require("lgi.Gio")
+local Gio = require("lgi").Gio
 local gfile = require("gears.filesystem")
 local notifs = require("util.notifs")
 
