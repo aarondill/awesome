@@ -37,7 +37,7 @@ For convenience, a `setup.lua` script has been provided, simply clone the reposi
   - brightnessctl: adjusting screen brightness with keyboard shortcuts
   - diodon: Persistent cliboard manager
   - flameshot: Screenshot tool
-  - i3lock: Screen locker
+  - i3lock: Screen locker - `lock` script
   - ibus: Changing input method - System Tray
   - libinput: Needed for libinput-gestures (touchpad gestures)
   - libpulse: Adjust volume with keyboard shortcuts
@@ -64,7 +64,7 @@ For convenience, a `setup.lua` script has been provided, simply clone the reposi
   - diodon: Persistent cliboard manager
   - flameshot: Screenshot tool
   - fonts-roboto: The primary font
-  - i3lock: Screen locker
+  - i3lock: Screen locker - `lock` script
   - ibus: Changing input method - System Tray
   - libinput-tools: Needed for libinput-gestures (touchpad gestures)
   - network-manager-gnome: Network - System Tray
