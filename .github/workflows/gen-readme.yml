@@ -18,8 +18,10 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           # We don't strictly need awesome, but it includes all the dependencies I expect to have
+          # NOTE: If lua5.3 is changed, the below ln must be changed to match
           packages: awesome lua5.3
           version: 1.0
+        run: sudo ln -sf /usr/bin/lua5.3 /usr/bin/lua
       - name: Generate README
         run: ./scripts/gen-readme
       - uses: stefanzweifel/git-auto-commit-action@v4
