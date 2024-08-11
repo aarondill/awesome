@@ -44,6 +44,7 @@ local function _gen_pkgs(id, pkgs)
     for pkg, desc in pairs(pkgs) do
       ret[#ret + 1] = ("  - %s: %s"):format(pkg, desc)
     end
+    table.sort(ret) -- Ensure consistent ordering
     pkgs_str = table.concat(ret, "\n")
   end
 
