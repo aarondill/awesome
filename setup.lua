@@ -123,6 +123,9 @@ local function _get_install_cmd(id)
 end
 ---@param id string ID of the OS
 function M.install_packages(id)
+  while M.aliases[id] do
+    id = M.aliases[id]
+  end
   assert(M.commands[id], ("Unsupported OS: %s. Use --no-install to skip installing packages"):format(id))
   local cmd = assert(_get_install_cmd(id), "BUG: Failed to construct command")
   utils.spawn_check("install packages", cmd)
