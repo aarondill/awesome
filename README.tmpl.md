@@ -28,7 +28,7 @@ For convenience, a `setup.lua` script has been provided, simply clone the reposi
 
 ### Program List
 
-<!-- This is generated via lua. Note: the full line must match ^%s*{{([%w_])}}%s*$ -->
+<!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
 
 {{program-list}}
 

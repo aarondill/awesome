@@ -1,55 +1,90 @@
 #!/usr/bin/env lua
 local lgi = require("lgi")
 local GLib, Gio = lgi.GLib, lgi.Gio
-local packages = require("setup").packages
-local utils = require("utils")
-
 local script_dir = debug.getinfo(1).source:match("@?(.*/)") or "."
 ---NOTE: Assumes this script is located in ./scripts/
 local dir = assert(Gio.File.new_for_path(script_dir):get_parent(), "Failed to get root directory")
 assert(dir:query_exists(), "Current directory does not exist")
 assert(GLib.chdir(assert(dir:get_path())) == 0, "Failed to change directory")
+---Iterate over lines in a string
+local function ilines(s) ---@param s string
+  if s:sub(-1) ~= "\n" then s = s .. "\n" end
+  return s:gmatch("(.-)\n")
+end
+
+---Note: do this *after* changing directory
+local setup = require("setup")
+local utils = require("scripts.utils")
 
 local readme_template = Gio.File.new_for_path("./README.tmpl.md")
 local readme = Gio.File.new_for_path("./README.md")
 
----@param distro string
+---@param id string
 ---@param pkgs table<string, string>
 ---@return string markdown header(distro) + table of packages
-local function _gen_pkgs(distro, pkgs)
-  local pkgs_str = table.concat(pkgs, "\n") .. "\n"
-  return ([[
-## %s
-%s
-]]):format(distro, pkgs_str)
+local function _gen_pkgs(id, pkgs)
+  local display_disto ---@type string
+  do -- Format distro(s)
+    local distros = { id }
+    --- Get aliases
+    for alias, res in pairs(setup.aliases) do
+      if res == id then distros[#distros + 1] = alias end
+    end
+    ---Title Case
+    for i, distro in ipairs(distros) do
+      distros[i] = distro:gsub("(%l)(%w+)", function(a, b) return string.upper(a) .. b end)
+    end
+    table.sort(distros) -- Ensure consistent ordering
+    display_disto = table.concat(distros, " / ")
+  end
+
+  local pkgs_str ---@type string
+  do -- Format packages
+    local ret = {}
+    for pkg, desc in pairs(pkgs) do
+      ret[#ret + 1] = ("  - %s: %s"):format(pkg, desc)
+    end
+    pkgs_str = table.concat(ret, "\n")
+  end
+
+  return ("- %s:\n%s\n"):format(display_disto, pkgs_str)
 end
 
+---@param template string
 ---@param data table<string, string>
-local function _template(data)
-  local template = assert(readme_template:load_contents(nil))
-  assert(template, "BUG: unreachable")
-  local lines = {}
-  for line in template:gmatch("[^\n]+") do
-    line = line:gsub("^%s*{{([%w_])}}%s*$", data)
+local function _template(template, data)
+  local lines = {
+    "<!--- This is a generated file. Do not edit it directly. Edit the template instead. -->",
+  }
+  for line in ilines(template) do
+    line = line:gsub("^%s*{{([%w_-]+)}}%s*$", data)
     lines[#lines + 1] = line
   end
   local contents = table.concat(lines, "\n")
-  assert(readme:replace_contents(contents, nil, false, Gio.FileCreateFlags.REPLACE_DESTINATION, nil))
+  return contents
 end
 
-local data = {
-  ---@type string
-  ["program-list"] = "",
-}
-for id, list in pairs(packages) do
+---@type string[]
+local package_lists = {}
+for id, list in pairs(setup.packages) do
   ---@type PackageList
   local p
   if list._repo then
-    p = utils.table_merge(list._repo, list._extra)
+    local repo, extra = list._repo, list._extra
+    assert(type(repo) == "table", "BUG: repo packages must be a table")
+    assert(not extra or type(extra) == "table", "BUG: extra packages must be a table")
+    p = extra and utils.table_merge(repo, extra) or repo
   else
     assert(not list._extra, "BUG: extra packages without repo packages")
     p = list --[[@as PackageList]]
   end
-  data["program-list"] = data["program-list"] .. _gen_pkgs(id, p)
+  package_lists[#package_lists + 1] = _gen_pkgs(id, p)
 end
-_template(data)
+-- Ensure consistent ordering -- This should sort by the distro, since it's the first part of the header
+table.sort(package_lists)
+
+local data = { ["program-list"] = table.concat(package_lists, "\n") }
+local template = assert(readme_template:load_contents(nil))
+assert(template, "BUG: unreachable")
+local contents = _template(template, data)
+assert(readme:replace_contents(contents, nil, false, Gio.FileCreateFlags.REPLACE_DESTINATION, nil))

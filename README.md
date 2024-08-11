@@ -1,3 +1,4 @@
+<!--- This is a generated file. Do not edit it directly. Edit the template instead. -->
 ## Theme for [AwesomeWM](https://awesomewm.org/)
 
 ### Original design by [PapyElGringo](https://github.com/PapyElGringo). Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
@@ -18,8 +19,7 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with
 
 ### `setup.lua`
 
-for convenience, a `setup.lua` script has been provided, simply clone the repository and run `lua ./setup.lua` to auto install dependencies and setup submodules.
-If using `setup.lua`, skip to 3) after successfully running it.
+For convenience, a `setup.lua` script has been provided, simply clone the repository and run `lua ./setup.lua` to auto install dependencies and setup submodules.
 
 ```shell
 > git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
@@ -27,48 +27,66 @@ If using `setup.lua`, skip to 3) after successfully running it.
 > # run lxappearance to modify theme if so desired
 ```
 
-NOTE: if your awesome or lua are not in the PATH, set $AWESOME or $LUA respectively to override the executable.
-Note that $LUA's version _must_ match the version that will be used by awesome
+### Program List
 
-```shell
-> # get the lua version required by awesome
-> awesome-client 'require("naughty").notify({text=_VERSION})' # awesome v4.3 or before
-> awesome-client 'require("naughty").notify({message=_VERSION})' # awesome v4.4 or later
-```
+<!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
 
-### Manual (not recommended. May be required on unsupported distros):
+- Arch:
+  - i3lock: Screen locker
+  - numlockx: Enable Numlock on startup
+  - libpulse: Adjust volume with keyboard shortcuts
+  - xss-lock: Auto-lock on suspend/idle
+  - ibus: Changing input method - System Tray
+  - pacutils: Get update count
+  - brightnessctl: adjusting screen brightness with keyboard shortcuts
+  - awesome: AwesomeWM
+  - pasystray: Audio system tray
+  - picom: Compositor
+  - libinput: Needed for libinput-gestures (touchpad gestures)
+  - redshift: Automatically adjust screen temperatur
+  - ttf-roboto: The primary font
+  - blueman: Bluetooth - System Tray
+  - qt5-styleplugins: Use GTK theme in Qt applications
+  - polkit-gnome: Polkit
+  - rofi-git: Window switcher and application launcher - Git Version has some fixes
+  - diodon: Persistent cliboard manager
+  - xclip: Copy to clipboard
+  - playerctl: Control media players
+  - udiskie: Automatically mount removable media - System Tray
+  - network-manager-applet: Network - System Tray
+  - flameshot: Screenshot tool
+  - xorg-xrandr: xrandr - needed for autorandr, xset - disable DPMS
 
-```
-git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
-cd ~/.config/awesome && git submodule update --init --recursive
-```
+- Debian / Ubuntu:
+  - i3lock: Screen locker
+  - numlockx: Enable Numlock on startup
+  - xss-lock: Auto-lock on suspend/idle
+  - rofi: Window switcher and application launcher
+  - brightnessctl: adjusting screen brightness with keyboard shortcuts
+  - awesome: AwesomeWM
+  - pasystray: Audio - System Tray
+  - picom: Compositor
+  - pulseaudio-utils: Adjust volume with keyboard shortcuts
+  - redshift: Automatically adjust screen temperature
+  - x11-xserver-utils: xrandr - needed for autorandr, xset - disable DPMS
+  - libinput-tools: Needed for libinput-gestures (touchpad gestures)
+  - blueman: Bluetooth - System Tray
+  - fonts-roboto: The primary font
+  - qt5-style-plugins: Use GTK theme in Qt applications
+  - network-manager-gnome: Network - System Tray
+  - udiskie: Automatically mount removable media - System Tray
+  - ibus: Changing input method - System Tray
+  - playerctl: Control media players
+  - diodon: Persistent cliboard manager
+  - policykit-1-gnome: Polkit
+  - flameshot: Screenshot tool
+  - xclip: Copy to clipboard
 
-### Program list (note: may be outdated. See `setup.lua` for full dependency list)
 
-- [AwesomeWM](https://awesomewm.org/) as the window manager - universal package install: awesome
-- [Roboto](https://fonts.google.com/specimen/Roboto) as the **font** - Debian: fonts-roboto Arch: ttf-roboto
-- [Rofi](https://github.com/DaveDavenport/rofi) for the app launcher - universal install: rofi
-- [picom](https://github.com/yshui/picom) for the compositor (blur and animations) Universasal install: picom
-- [i3lock](https://github.com/meskarune/i3lock-fancy) the lockscreen application universal install: i3lock-fancy
-- [xclip](https://github.com/astrand/xclip) for copying screenshots to clipboard package: xclip
-- [gnome-polkit](https://gitlab.gnome.org/Archive/policykit-gnome) recommend using the gnome-polkit as it integrates nicely for elevating programs that need root access
-- [lxappearance](https://sourceforge.net/projects/lxde/files/LXAppearance/) to set up the gtk and icon theme
-- [flameshot](https://flameshot.org/) screenshot utility of choice, can be replaced by whichever you want, just remember to edit the `configuration/apps/default.lua` file
-- [pasystray](https://github.com/christophgysin/pasystray) Audio Tray icon for PulseAudio. Replace with another if not running PulseAudio.
-- [network-manager-applet](https://gitlab.gnome.org/GNOME/network-manager-applet) nm-applet is a Network Manager Tray display from GNOME.
-- [xcape](https://github.com/alols/xcape) xcape makes single taps of ctrl (or caps lock) emit an ESC code
-- [blueman](https://github.com/blueman-project/blueman/) blueman is a simple bluetooth manager that doesn't depend on any specific DE.
-- [diodon](https://github.com/diodon-dev/diodon) is a clipboard manager to keep clipboard after closing a window
-- [udiskie](https://github.com/coldfix/udiskie) handles USB drives and auto-mount
+## Set the theme (optional)
 
-## Set the themes
-
-Start `lxappearance` to activate the **icon** theme and **GTK** theme
+Install `lxappearance` to setup the _icon and GTK_ themes
 Note: copy `~/.config/gtk3-0/settings.ini` to `~root/config/gtk3-0/settings.ini` to also show up in applications run as root
-
-### Same theme for Qt/KDE applications and GTK applications
-
-install `qt5-style-plugins` (debian) | `qt5-styleplugins` (arch)
 
 ## Configuration:
 
@@ -79,12 +97,8 @@ Note that some of this has become complicated, so please report an issue if any 
 
 Start awesome you might start any other X window manager.
 
-If you don't know how to do this, I suggest you research the topic.
-Use one of the following commands, depending on your installed packages:
-
 ```shell
 > startx "$(which awesome)"
-> xinit "$(which awesome)"
 ```
 
 If you cloned the repository to an unusual location, you can use awesome's `-c` option to start it
