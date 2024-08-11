@@ -16,14 +16,14 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with
 
 ## Installation
 
-### `setup.sh`
+### `setup.lua`
 
-for convenience, a `setup.sh` script has been provided, simply clone the repository and run `./setup.sh` to auto install dependencies and setup submodules.
-If using `setup.sh`, skip to 3) after successfully running it.
+for convenience, a `setup.lua` script has been provided, simply clone the repository and run `lua ./setup.lua` to auto install dependencies and setup submodules.
+If using `setup.lua`, skip to 3) after successfully running it.
 
 ```shell
 > git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
-> cd ~/.config/awesome/ && ./setup.sh
+> cd ~/.config/awesome/ && ./setup.lua
 > # run lxappearance to modify theme if so desired
 ```
 
@@ -43,7 +43,7 @@ git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
 cd ~/.config/awesome && git submodule update --init --recursive
 ```
 
-### Program list (note: may be outdated. See `setup.sh` for full dependency list)
+### Program list (note: may be outdated. See `setup.lua` for full dependency list)
 
 - [AwesomeWM](https://awesomewm.org/) as the window manager - universal package install: awesome
 - [Roboto](https://fonts.google.com/specimen/Roboto) as the **font** - Debian: fonts-roboto Arch: ttf-roboto
