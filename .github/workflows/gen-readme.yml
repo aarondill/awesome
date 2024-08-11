@@ -1,0 +1,28 @@
+name: Generate README
+on:
+  push:
+    paths:
+      - "setup.lua"
+  workflow_dispatch:
+jobs:
+  generate-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@master
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.4.7"
+      - uses: leafo/gh-actions-luarocks@v4
+        # We don't strictly need awesome, but it includes all the dependencies I expect to have
+      - name: Install lgi/dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: awesome
+          version: 1.0
+      - name: Generate README
+        run: ./scripts/gen-readme
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: Generate README"
