@@ -11,14 +11,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@master
-      - uses: leafo/gh-actions-lua@v10
-        with:
-          luaVersion: "5.3" # Ubuntu lua-lgi supports 5.1-5.3
+      # - uses: leafo/gh-actions-lua@v10
+      #   with:
+      #     luaVersion: "5.3" # Ubuntu lua-lgi supports 5.1-5.3
       - name: Install lgi/dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           # We don't strictly need awesome, but it includes all the dependencies I expect to have
-          packages: awesome
+          packages: awesome lua5.3
           version: 1.0
       - name: Generate README
         run: ./scripts/gen-readme
