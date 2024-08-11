@@ -32,55 +32,55 @@ For convenience, a `setup.lua` script has been provided, simply clone the reposi
 <!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
 
 - Arch:
-  - i3lock: Screen locker
-  - numlockx: Enable Numlock on startup
-  - libpulse: Adjust volume with keyboard shortcuts
-  - xss-lock: Auto-lock on suspend/idle
-  - ibus: Changing input method - System Tray
-  - pacutils: Get update count
-  - brightnessctl: adjusting screen brightness with keyboard shortcuts
   - awesome: AwesomeWM
+  - blueman: Bluetooth - System Tray
+  - brightnessctl: adjusting screen brightness with keyboard shortcuts
+  - diodon: Persistent cliboard manager
+  - flameshot: Screenshot tool
+  - i3lock: Screen locker
+  - ibus: Changing input method - System Tray
+  - libinput: Needed for libinput-gestures (touchpad gestures)
+  - libpulse: Adjust volume with keyboard shortcuts
+  - network-manager-applet: Network - System Tray
+  - numlockx: Enable Numlock on startup
+  - pacutils: Get update count
   - pasystray: Audio system tray
   - picom: Compositor
-  - libinput: Needed for libinput-gestures (touchpad gestures)
-  - redshift: Automatically adjust screen temperatur
-  - ttf-roboto: The primary font
-  - blueman: Bluetooth - System Tray
-  - qt5-styleplugins: Use GTK theme in Qt applications
-  - polkit-gnome: Polkit
-  - rofi-git: Window switcher and application launcher - Git Version has some fixes
-  - diodon: Persistent cliboard manager
-  - xclip: Copy to clipboard
   - playerctl: Control media players
+  - polkit-gnome: Polkit
+  - qt5-styleplugins: Use GTK theme in Qt applications
+  - redshift: Automatically adjust screen temperatur
+  - rofi-git: Window switcher and application launcher - Git Version has some fixes
+  - ttf-roboto: The primary font
   - udiskie: Automatically mount removable media - System Tray
-  - network-manager-applet: Network - System Tray
-  - flameshot: Screenshot tool
+  - xclip: Copy to clipboard
   - xorg-xrandr: xrandr - needed for autorandr, xset - disable DPMS
+  - xss-lock: Auto-lock on suspend/idle
 
 - Debian / Ubuntu:
-  - i3lock: Screen locker
-  - numlockx: Enable Numlock on startup
-  - xss-lock: Auto-lock on suspend/idle
-  - rofi: Window switcher and application launcher
-  - brightnessctl: adjusting screen brightness with keyboard shortcuts
   - awesome: AwesomeWM
+  - blueman: Bluetooth - System Tray
+  - brightnessctl: adjusting screen brightness with keyboard shortcuts
+  - diodon: Persistent cliboard manager
+  - flameshot: Screenshot tool
+  - fonts-roboto: The primary font
+  - i3lock: Screen locker
+  - ibus: Changing input method - System Tray
+  - libinput-tools: Needed for libinput-gestures (touchpad gestures)
+  - network-manager-gnome: Network - System Tray
+  - numlockx: Enable Numlock on startup
   - pasystray: Audio - System Tray
   - picom: Compositor
-  - pulseaudio-utils: Adjust volume with keyboard shortcuts
-  - redshift: Automatically adjust screen temperature
-  - x11-xserver-utils: xrandr - needed for autorandr, xset - disable DPMS
-  - libinput-tools: Needed for libinput-gestures (touchpad gestures)
-  - blueman: Bluetooth - System Tray
-  - fonts-roboto: The primary font
-  - qt5-style-plugins: Use GTK theme in Qt applications
-  - network-manager-gnome: Network - System Tray
-  - udiskie: Automatically mount removable media - System Tray
-  - ibus: Changing input method - System Tray
   - playerctl: Control media players
-  - diodon: Persistent cliboard manager
   - policykit-1-gnome: Polkit
-  - flameshot: Screenshot tool
+  - pulseaudio-utils: Adjust volume with keyboard shortcuts
+  - qt5-style-plugins: Use GTK theme in Qt applications
+  - redshift: Automatically adjust screen temperature
+  - rofi: Window switcher and application launcher
+  - udiskie: Automatically mount removable media - System Tray
+  - x11-xserver-utils: xrandr - needed for autorandr, xset - disable DPMS
   - xclip: Copy to clipboard
+  - xss-lock: Auto-lock on suspend/idle
 
 
 ## Set the theme (optional)
