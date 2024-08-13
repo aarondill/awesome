@@ -32,55 +32,55 @@ For convenience, a `setup.lua` script has been provided, simply clone the reposi
 <!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
 
 - Arch:
-  - awesome: AwesomeWM
-  - blueman: Bluetooth - System Tray
-  - brightnessctl: adjusting screen brightness with keyboard shortcuts
-  - diodon: Persistent cliboard manager
-  - flameshot: Screenshot tool
-  - i3lock: Screen locker - `lock` script
-  - ibus: Changing input method - System Tray
-  - libinput: Needed for libinput-gestures (touchpad gestures)
-  - libpulse: Adjust volume with keyboard shortcuts
-  - network-manager-applet: Network - System Tray
-  - numlockx: Enable Numlock on startup
-  - pacutils: Get update count
-  - pasystray: Audio system tray
-  - picom: Compositor
-  - playerctl: Control media players
-  - polkit-gnome: Polkit
-  - qt5-styleplugins: Use GTK theme in Qt applications
-  - redshift: Automatically adjust screen temperatur
-  - rofi-git: Window switcher and application launcher - Git Version has some fixes
-  - ttf-roboto: The primary font
-  - udiskie: Automatically mount removable media - System Tray
-  - xclip: Copy to clipboard
-  - xorg-xrandr: xrandr - needed for autorandr, xset - disable DPMS
-  - xss-lock: Auto-lock on suspend/idle
+  - [awesome](https://awesomewm.org/): AwesomeWM
+  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
+  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
+  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
+  - [flameshot](https://flameshot.org): Screenshot tool
+  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
+  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
+  - [libinput](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
+  - [libpulse](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
+  - [network-manager-applet](https://apps.gnome.org): Network - System Tray
+  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
+  - [pacutils](https://github.com/andrewgregory/pacutils): Get update count
+  - [pasystray](https://github.com/christophgysin/pasystray): Audio system tray
+  - [picom](https://github.com/yshui/picom): Compositor
+  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
+  - [polkit-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
+  - [qt5-styleplugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
+  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [rofi-git](https://github.com/davatorium/rofi): Window switcher and application launcher - Git Version has some fixes
+  - [ttf-roboto](https://fonts.google.com/specimen/Roboto): The primary font
+  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
+  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
+  - [xorg-xrandr](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
+  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
 
 - Debian / Ubuntu:
-  - awesome: AwesomeWM
-  - blueman: Bluetooth - System Tray
-  - brightnessctl: adjusting screen brightness with keyboard shortcuts
-  - diodon: Persistent cliboard manager
-  - flameshot: Screenshot tool
-  - fonts-roboto: The primary font
-  - i3lock: Screen locker - `lock` script
-  - ibus: Changing input method - System Tray
-  - libinput-tools: Needed for libinput-gestures (touchpad gestures)
-  - network-manager-gnome: Network - System Tray
-  - numlockx: Enable Numlock on startup
-  - pasystray: Audio - System Tray
-  - picom: Compositor
-  - playerctl: Control media players
-  - policykit-1-gnome: Polkit
-  - pulseaudio-utils: Adjust volume with keyboard shortcuts
-  - qt5-style-plugins: Use GTK theme in Qt applications
-  - redshift: Automatically adjust screen temperature
-  - rofi: Window switcher and application launcher
-  - udiskie: Automatically mount removable media - System Tray
-  - x11-xserver-utils: xrandr - needed for autorandr, xset - disable DPMS
-  - xclip: Copy to clipboard
-  - xss-lock: Auto-lock on suspend/idle
+  - [awesome](https://awesomewm.org/): AwesomeWM
+  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
+  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
+  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
+  - [flameshot](https://flameshot.org): Screenshot tool
+  - [fonts-roboto](https://fonts.google.com/specimen/Roboto): The primary font
+  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
+  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
+  - [libinput-tools](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
+  - [network-manager-gnome](https://apps.gnome.org): Network - System Tray
+  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
+  - [pasystray](https://github.com/christophgysin/pasystray): Audio - System Tray
+  - [picom](https://github.com/yshui/picom): Compositor
+  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
+  - [policykit-1-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
+  - [pulseaudio-utils](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
+  - [qt5-style-plugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
+  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [rofi](https://github.com/davatorium/rofi): Window switcher and application launcher
+  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
+  - [x11-xserver-utils](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
+  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
+  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
 
 
 ## Set the theme (optional)
