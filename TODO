@@ -2,11 +2,6 @@
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 error("You can't require the todo file!")
 
----Package list urls
-
----TODO: Async functions (coroutines). No more Callback hell!
----https://github.com/ms-jpq/lua-async-await
-
 -- TODO: implement notification center (only in awesome-git)
 -- awesome-shell@widgets/noti-center.lua is a good place to start
 -- This is not possible in v4.3 because naughty is too simple and doesn't provide signals
