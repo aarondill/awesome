@@ -20,7 +20,7 @@ local readme_template = Gio.File.new_for_path("./README.tmpl.md")
 local readme = Gio.File.new_for_path("./README.md")
 
 ---@param id string
----@param pkgs table<string, string>
+---@param pkgs PackageList
 ---@return string markdown header(distro) + table of packages
 local function _gen_pkgs(id, pkgs)
   local display_disto ---@type string
@@ -41,8 +41,17 @@ local function _gen_pkgs(id, pkgs)
   local pkgs_str ---@type string
   do -- Format packages
     local ret = {}
-    for pkg, desc in pairs(pkgs) do
-      ret[#ret + 1] = ("  - %s: %s"):format(pkg, desc)
+    for pkg, d_or_info in pairs(pkgs) do
+      local info ---@type PackageInfo
+      if type(d_or_info) == "string" then
+        info = { description = d_or_info }
+      elseif type(d_or_info) == "table" then
+        info = d_or_info
+      end
+      if info.url then -- If url is set, then format as link
+        pkg = string.format("[%s](%s)", pkg, info.url)
+      end
+      ret[#ret + 1] = ("  - %s: %s"):format(pkg, info.description)
     end
     table.sort(ret) -- Ensure consistent ordering
     pkgs_str = table.concat(ret, "\n")
