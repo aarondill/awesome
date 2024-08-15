@@ -95,6 +95,9 @@ function M.notify(loglevel, text, opts, extra_opts)
     text = loglevel
     loglevel = nil
   end
+  assert(type(text or "") == "string", "notify: text must be a string")
+  assert(type(loglevel or "") == "string", "notify: loglevel must be a string")
+  assert(type(opts or {}) == "table", "notify: opts must be a table")
 
   opts = opts and gtable.clone(opts, false) or {} --- A deep clone is not needed, since no values' values are changed
   if loglevel then
