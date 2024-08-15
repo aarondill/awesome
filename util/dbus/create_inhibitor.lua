@@ -1,7 +1,6 @@
 local capi = require("capi")
 local lgi = require("lgi")
-local Gio = lgi.require("Gio")
-local GLib = lgi.require("GLib")
+local Gio, GLib = lgi.Gio, lgi.GLib
 local assertions = require("util.types.assertions")
 ---@alias create_inhibitor_cb fun(fd?: GioUnixInputStream, err?: userdata)
 

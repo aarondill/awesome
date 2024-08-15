@@ -1,17 +1,15 @@
 local lgi = require("lgi")
-local Gio = lgi.require("Gio")
-local GLib = lgi.require("GLib")
----@alias GLibVariant unknown pain and suffering.
+local Gio, GLib = lgi.Gio, lgi.GLib
 local M = {}
 
 ---Asynchronously gets a dbus property.
----Note: the returned value is likely a GLibVariant. Good luck.
+---Note: the returned value is likely a GVariant. Good luck.
 ---Here's some help with that: https://github.com/lgi-devs/lgi/blob/master/docs/variant.md
 ---@param bus_name string
 ---@param object_path string
 ---@param interface string
 ---@param prop string
----@param callback fun(res?: GLibVariant, err?: userdata)
+---@param callback fun(res?: GVariant, err?: userdata)
 function M.get(bus_name, object_path, interface, prop, callback)
   Gio.bus_get_sync(Gio.BusType.SYSTEM):call(
     bus_name,
@@ -30,12 +28,12 @@ function M.get(bus_name, object_path, interface, prop, callback)
   )
 end
 ---Asynchronously gets a dbus property.
----Note: the returned value is likely a GLibVariant. Good luck.
+---Note: the returned value is likely a GVariant. Good luck.
 ---Here's some help with that: https://github.com/lgi-devs/lgi/blob/master/docs/variant.md
 ---@param bus_name string
 ---@param object_path string
 ---@param interface string
----@param callback fun(res?: GLibVariant, err?: userdata)
+---@param callback fun(res?: GVariant, err?: userdata)
 function M.get_all(bus_name, object_path, interface, callback)
   Gio.bus_get_sync(Gio.BusType.SYSTEM):call(
     bus_name,
