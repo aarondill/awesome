@@ -1,5 +1,5 @@
 local gfile = require("gears.filesystem")
-local glib = require("lgi").GLib
+local GLib = require("lgi").GLib
 local handle_error = require("util.handle_error")
 local path = require("util.path")
 
@@ -9,9 +9,9 @@ local path = require("util.path")
 ---@return boolean changed
 local function setenv(env, val, overwrite)
   if overwrite == nil then overwrite = true end
-  if val then return glib.setenv(env, val, overwrite) end
+  if val then return GLib.setenv(env, val, overwrite) end
   if not os.getenv(env) then return false end
-  glib.unsetenv(env)
+  GLib.unsetenv(env)
   return true
 end
 
@@ -30,7 +30,7 @@ end
 ---@return string?, string?
 local function first_in_path(progs)
   for _, p in ipairs(progs) do
-    local ppath = glib.find_program_in_path(p)
+    local ppath = GLib.find_program_in_path(p)
     if ppath then return p, ppath end
   end
 end

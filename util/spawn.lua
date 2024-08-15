@@ -165,7 +165,7 @@ function spawn.spawn(cmd, opts)
     return nil, pid_or_error
   end
   if opts.stdin_string then --
-    ---@type GOutputStream
+    assert(stdin, "stdin is nil")
     local stream = Gio.UnixOutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
     write_outputstream(stream, opts.stdin_string, function() -- Write string to stdin
       return stream:close() -- Close sync to ensure command exits if waiting for stdin.
@@ -336,8 +336,12 @@ function spawn.with_lines(cmd, callbacks, opts)
     if done_callback then return done_callback() end
   end
 
-  if stdout_callback then spawn.read_lines(Gio.UnixInputStream.new(stdout, true), stdout_callback, step_done, true) end
-  if stderr_callback then spawn.read_lines(Gio.UnixInputStream.new(stderr, true), stderr_callback, step_done, true) end
+  if stdout_callback then
+    spawn.read_lines(Gio.UnixInputStream.new(assert(stdout), true), stdout_callback, step_done, true)
+  end
+  if stderr_callback then
+    spawn.read_lines(Gio.UnixInputStream.new(assert(stderr), true), stderr_callback, step_done, true)
+  end
   return info.pid, nil, info
 end
 spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awful.spawn.with_line_callback

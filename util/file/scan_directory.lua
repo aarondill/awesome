@@ -1,5 +1,5 @@
 local assertions = require("util.types.assertions")
-local gio = require("lgi").Gio
+local Gio = require("lgi").Gio
 local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
@@ -53,7 +53,7 @@ local function enumerate_handler(content, args, cb, ret)
       ---@type FileInfoRet
       local ret_attr, has_attr = {}, false
       for _, v in ipairs(args.attributes) do
-        local attr, val = gio[v], nil
+        local attr, val = Gio[v], nil
         local attr_type = file:get_attribute_type(attr)
         if attr_type == "OBJECT" then
           val = file:get_attribute_object(attr)
@@ -126,11 +126,11 @@ local function scan_directory(path, args, cb)
 
   local attr_str = ""
   for _, v in ipairs(args.attributes) do
-    local gio_attr = assertions.assert(gio[v], ("invalid attribute: %s"):format(v))
+    local gio_attr = assertions.assert(Gio[v], ("invalid attribute: %s"):format(v))
     if gio_attr then attr_str = attr_str .. gio_attr .. "," end
   end
 
-  gio.File.new_for_path(path):enumerate_children_async(attr_str, 0, 0, nil, function(gfile, gtask)
+  Gio.File.new_for_path(path):enumerate_children_async(attr_str, 0, 0, nil, function(gfile, gtask)
     local content, error = gfile:enumerate_children_finish(gtask)
     if not content then return cb(nil, error) end
     return enumerate_handler(content, args, cb)

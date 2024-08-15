@@ -37,6 +37,7 @@ local function get_xdg_user_dir_impl(dir)
     local process = (Gio.Subprocess.new({ exec, dir }, flags))
     if not process then return "" end
     local stdout = assert(process:communicate())
+    assert(stdout ~= false)
     if stdout:get_size() > 0 then return stdout.data or "" end
   end
 
