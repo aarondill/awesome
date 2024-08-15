@@ -9,6 +9,13 @@ local stream = require("stream")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 ---@alias wibox table
+---@class AwesomeScreenInstance
+---@field countdown_widget? CountdownWidget
+
+local GLib = require("lgi").GLib
+--- only show countdown on my computer
+--- This is specific to my computer, so I'm not going to make it configurable
+if GLib.get_user_name() ~= "aaron" then return end
 
 local pending_changes = {} ---@type table<AwesomeScreenInstance, true>
 local handler = handle_error(function(s) ---@param s AwesomeScreenInstance
@@ -95,19 +102,22 @@ function CountdownWidget:get_time_remaining(t) ---@param t integer
 
   local units = { "year", "day", "hour", "minute", "second" }
   local fmt = { years, days, hours, minutes, seconds }
+  local fmt_len = #fmt
 
-  require("util.notifs").debug_once({ fmt = fmt })
   --- Remove leading zeros
   for i, val in ipairs(fmt) do
     if val ~= 0 then break end
-    table.remove(fmt, i)
-    table.remove(units, i)
+    fmt[i], units[i] = nil, nil
   end
 
   --- Add units
   local formatted = {}
-  for i, val in ipairs(fmt) do
-    table.insert(formatted, unit(units[i], val))
+  for i = 1, fmt_len do
+    local val = fmt[i]
+    if val then
+      local formatted_unit = unit(units[i], val)
+      table.insert(formatted, formatted_unit)
+    end
   end
 
   return table.concat(formatted, "\n")
@@ -162,11 +172,9 @@ function CountdownWidget:box(s) ---@param s AwesomeScreenInstance
   return box
 end
 
-ascreen.connect_for_each_screen(
-  function(s)
-    s.countdown_widget = CountdownWidget.new({
-      end_time = os.time() + 10,
-      event = "Quake Live",
-    })
-  end
-)
+local GRADUATION_DATE = os.time({ month = 5, day = 16, year = 2025 })
+ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
+  --- NOTE: Only one countdown widget per screen is allowed
+  --- Yes, I know this is hacky. I don't want to fix it.
+  s.countdown_widget = CountdownWidget.new({ end_time = GRADUATION_DATE, event = "Graduation" })
+end)
