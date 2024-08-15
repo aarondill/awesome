@@ -9,16 +9,17 @@ local M = {}
 ---@type table<table, SubscribeID>
 local upower_listeners = setmetatable({}, { __mode = "k" })
 
----@param callback fun(bat_path?: string, err?: string): unknown?
+---@param callback fun(bat_path?: string, err?: GError): unknown?
 local function find_battery(callback)
   return coroutine.wrap(function()
+    ---@type GDBusConnection, GAsyncResult
     local bus, gtask = await(function(resolve)
       local name, path, iname = "org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower"
       return Gio.bus_get_sync(Gio.BusType.SYSTEM)
         :call(name, path, iname, "EnumerateDevices", nil, nil, 0, -1, nil, resolve)
     end)
     local result, err = bus:call_finish(gtask)
-    if err then return callback(nil, err) end
+    if not result or err then return callback(nil, err) end
     local devices = result[1] --[[ @as string[] ]]
     ---@type table<string?, boolean>
     local res = await(function(resolve)

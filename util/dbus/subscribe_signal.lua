@@ -1,23 +1,19 @@
-local lgi = require("lgi")
-local Gio = lgi.require("Gio")
+local Gio = require("lgi").Gio
 local assertions = require("util.types.assertions")
 local iscallable = require("util.types.iscallable")
 local M = {}
----@alias GLibDBus unknown
----@alias DBusSignalCallback fun(bus: GLibDBus, sender: string, object: string, interface: string, signal: string, params: unknown[]): any?
-
 ---@class (exact) SubscribeID
 ---@field id integer
----@field bus GLibDBus
----@field callback DBusSignalCallback
+---@field bus GDBusConnection
+---@field callback GDBusSignalCallback
 
 ---@class (exact) SubscribeConf
 ---@field sender string
 ---@field interface string
 ---@field member string
 ---@field object string
----@field bus? GLibDBus
----@field callback DBusSignalCallback
+---@field bus? GDBusConnection
+---@field callback GDBusSignalCallback
 
 ---Subscribe to a DBus signal
 ---@param signal SubscribeConf

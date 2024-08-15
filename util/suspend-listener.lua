@@ -3,6 +3,7 @@ local M = {}
 M.callbacks = {} ---@type table<suspendCallback, unknown>
 M.callbacks_weak = setmetatable({}, { __mode = "v" }) ---@type table<suspendCallback, unknown>
 
+---@type GDBusSignalCallback
 local function handler(_bus, _sender, _object, _interface, _signal, params)
   -- "signals are sent right before (with the argument True) and
   -- after (with the argument False) the system goes down for
