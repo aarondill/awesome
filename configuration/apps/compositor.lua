@@ -1,7 +1,7 @@
 local path = require("util.path")
 local require = require("util.rel_require")
 
-local Gio = require("lgi").Gio
+local GLib = require("lgi").GLib
 local capi = require("capi")
 local gfile = require("gears.filesystem")
 local gtimer = require("gears.timer")
@@ -15,8 +15,7 @@ local config_file_dir = require(..., "conffile_dir") ---@module "configuration.a
 local compositor = {}
 compositor.pid_file = os.tmpname() -- A unique filename to use for the pid of *this* AwesomeWM process. Note that this *should* support multiple Xorg/AwesomeWM processes.
 
-local runtime = os.getenv("XDG_RUNTIME_DIR")
-  or path.join(path.root, "run", "user", assert(Gio.Credentials.new():get_unix_user()))
+local runtime = os.getenv("XDG_RUNTIME_DIR") or path.join(path.root, "run", "user", GLib.get_user_name())
 local log_file = path.resolve(runtime, "picom", (os.getenv("DISPLAY") or "picom") .. ".log")
 assert(gfile.make_parent_directories(log_file))
 compositor.cmd = {

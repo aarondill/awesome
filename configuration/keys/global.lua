@@ -181,6 +181,7 @@ local globalKeys = gtable.join(
     local process = Gio.Subprocess.new({ "xdotool", "selectwindow" }, { "STDOUT_PIPE", "STDERR_SILENCE" })
     if process then
       local stdout = assert(process:communicate())
+      assert(stdout ~= false, "unreachable")
       local window_id = assert(tonumber(stdout.data), "No window id in stdout")
       client = stream.new(capi.client.get()):filter(function(c) return c.window == window_id end):next()
     else -- if i couldn't spawn xdotool, use the focused client

@@ -4,7 +4,7 @@ local GLib, Gio = lgi.GLib, lgi.Gio
 
 ---@class GInputStreamAsyncHelper
 ---@field data_stream GDataInputStream?
----@field stream GInputStream
+---@field stream GFileInputStream
 local GioInputStreamAsyncHelper = {
   ---@param self GInputStreamAsyncHelper
   ---@param count integer
@@ -24,14 +24,14 @@ local GioInputStreamAsyncHelper = {
   end,
   ---@param self GInputStreamAsyncHelper
   ---Note that line may be nil even if no error occurred! (EOF)
-  ---@param callback fun(line?: string, error?: userdata):any
+  ---@param callback fun(line?: string, error?: GError):any
   read_line = function(self, callback)
     local data_stream = self:get_data_stream()
     local old_location = self:tell() -- The old position is lost after read_line_async. Record it here for later.
 
     return data_stream:read_line_async(-1, nil, function(obj, res)
       local line, length = obj:read_line_finish(res)
-      if type(length) ~= "number" then return callback(nil, length) end -- Error
+      if type(length) == "userdata" then return callback(nil, length) end -- Error
       self:seek(old_location + length + 1, "start") -- Move the main stream position forward -- The old positon is lost! -- Plus 1 for newline
       return callback(line, nil)
     end)
@@ -70,7 +70,7 @@ local GioInputStreamAsyncHelper = {
       local old_location = self:tell() -- The old position is lost after read_line_async. Record it here for later.
       return data_stream:read_line_async(-1, nil, function(source, task)
         local line, length = source:read_line_finish(task)
-        if type(length) ~= "number" then return callback(nil, length) end -- Error
+        if type(length) == "userdata" then return callback(nil, length) end -- Error
         self:seek(old_location + length + 1, "start") -- Move the main stream position forward -- The old positon is lost! -- Plus 1 for newline
 
         lines[#lines + 1] = line
@@ -132,11 +132,11 @@ local GioInputStreamAsyncHelper = {
   end,
 }
 
----@param stream GInputStream
+---@param stream GFileInputStream
 ---@return GInputStreamAsyncHelper
 local function gen_stream_ret(stream) return setmetatable({ stream = stream }, { __index = GioInputStreamAsyncHelper }) end
 
----Gets a GInputStream and GInputStreamAsyncHelper for the given filepath
+---Gets a GFileInputStream and GInputStreamAsyncHelper for the given filepath
 ---@param path string
 ---@param callback fun(stream?: GInputStreamAsyncHelper, error?: userdata): any
 local function get_stream(path, callback)
