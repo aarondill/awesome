@@ -1,0 +1,172 @@
+local aplacement = require("awful.placement")
+local ascreen = require("awful.screen")
+local capi = require("capi")
+local gtimer = require("gears.timer")
+local handle_error = require("util.handle_error")
+local quake = require("module.quake")
+local screen = require("util.types.screen")
+local stream = require("stream")
+local wibox = require("wibox")
+local widgets = require("util.awesome.widgets")
+---@alias wibox table
+
+local pending_changes = {} ---@type table<AwesomeScreenInstance, true>
+local handler = handle_error(function(s) ---@param s AwesomeScreenInstance
+  pending_changes[s] = nil
+  if not s.valid then return end
+  --- get the number of visible clients
+  --- we don't want to show the message if any clients are visible
+  local num_clients = stream
+    .new(s.clients)
+    :filter(function(c) return c.valid end)
+    :filter(function(c) return not c.hidden end)
+    :filter(function(c) return not quake:client_is_quake(c) end)
+    :count()
+  local instance = s.countdown_widget
+  if not instance then return end
+  if num_clients > 0 then
+    instance:hide()
+  else
+    instance:show(s)
+  end
+end)
+gtimer.new({
+  timeout = 0.5,
+  autostart = true,
+  callback = function()
+    for s in screen.iterator() do
+      handler(s)
+    end
+  end,
+})
+
+---@param tag AwesomeTagInstance|AwesomeClientInstance
+local function callback(tag)
+  local s = tag.screen
+  if not s or pending_changes[s] then return end
+  pending_changes[s] = true
+  return gtimer.delayed_call(handler, s)
+end
+
+local compat = require("util.awesome.compat")
+capi.client.connect_signal(compat.signal.manage, callback)
+capi.client.connect_signal(compat.signal.unmanage, callback)
+capi.client.connect_signal("property::hidden", callback)
+capi.client.connect_signal("property::minimized", callback)
+capi.client.connect_signal("property::fullscreen", callback)
+capi.client.connect_signal("tagged", callback)
+capi.tag.connect_signal("property::selected", callback)
+capi.tag.connect_signal("property::layout", callback)
+capi.tag.connect_signal("property::useless_gap", callback)
+
+---@class CountdownWidget
+local CountdownWidget = {
+  cached_box = nil, ---@type wibox?
+  end_time = 0, ---@type number
+  event = "countdown", ---@type string
+  fg = "#7C7E93", ---@type string
+  bg = "#00000000", ---@type string
+}
+function CountdownWidget.new(opts)
+  local self = setmetatable(
+    { end_time = opts.end_time, event = opts.event, color = opts.color, background = opts.background },
+    { __index = CountdownWidget }
+  )
+  return self
+end
+
+---@param u string
+---@param n integer
+local function unit(u, n) return ("%d %s%s"):format(n, u, (n == 1 and "" or "s")) end
+function CountdownWidget:get_time_remaining(t) ---@param t integer
+  local diff = os.difftime(t, os.time())
+  if diff < 0 then return "Time's up!" end
+
+  --- Calculate the time remaining
+  local years = math.floor(diff / 60 / 60 / 24 / 365)
+  diff = diff % (60 * 60 * 24 * 365)
+  local days = math.floor(diff / 60 / 60 / 24)
+  diff = diff % (60 * 60 * 24)
+  local hours = math.floor(diff / 60 / 60)
+  diff = diff % (60 * 60)
+  local minutes = math.floor(diff / 60)
+  diff = diff % 60
+  local seconds = math.floor(diff)
+
+  local units = { "year", "day", "hour", "minute", "second" }
+  local fmt = { years, days, hours, minutes, seconds }
+
+  require("util.notifs").debug_once({ fmt = fmt })
+  --- Remove leading zeros
+  for i, val in ipairs(fmt) do
+    if val ~= 0 then break end
+    table.remove(fmt, i)
+    table.remove(units, i)
+  end
+
+  --- Add units
+  local formatted = {}
+  for i, val in ipairs(fmt) do
+    table.insert(formatted, unit(units[i], val))
+  end
+
+  return table.concat(formatted, "\n")
+end
+
+function CountdownWidget:hide()
+  if not self.cached_box then return end
+  self.cached_box.visible = false
+end
+---Call repeatedly to update the widget (like render)
+function CountdownWidget:show(s)
+  local box = self:box(s)
+  box.visible = true
+end
+
+function CountdownWidget:box(s) ---@param s AwesomeScreenInstance
+  self.cached_box = self.cached_box
+    or wibox({
+      type = "utility",
+      widget = wibox.widget({
+        widget = wibox.container.margin,
+        {
+          widget = wibox.widget.textbox,
+          id = "textbox",
+          valign = "middle",
+        },
+      }),
+    })
+  local box = assert(self.cached_box)
+
+  local end_time, event = self.end_time, self.event
+  local fg, bg = self.fg, self.bg
+  local diff_str = self:get_time_remaining(end_time)
+
+  local w = box.widget ---@type widget
+  aplacement.top_right(box, {
+    honor_padding = true,
+    honor_workarea = true,
+    margins = { right = 8, bottom = 8 },
+  })
+  local textbox = assert(widgets.get_by_id(w, "textbox"), "Check textbox id!")
+  textbox.text = table.concat({
+    ("Time until %s:"):format(event),
+    diff_str,
+  }, "\n")
+
+  local width, height = textbox:get_preferred_size(s)
+  box.width = math.min(width, s.workarea.width) -- crop to workarea size if too big
+  box.height = math.min(height, s.workarea.height) -- crop to workarea size if too big
+  box.fg, box.bg = fg, bg
+
+  return box
+end
+
+ascreen.connect_for_each_screen(
+  function(s)
+    s.countdown_widget = CountdownWidget.new({
+      end_time = os.time() + 10,
+      event = "Quake Live",
+    })
+  end
+)
