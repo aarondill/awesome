@@ -9,13 +9,15 @@ local which = GLib.find_program_in_path
 
 local polkit = "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 if not gfile.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" end
+local ENVIRONMENT_EXPORT = { "XDG_CURRENT_DESKTOP", "DBUS_SESSION_BUS_ADDRESS", "DISPLAY", "XAUTHORITY" }
 
 -- List of apps to start once on start-up - these will (obviously) only run if available, but no errors will occur if they aren't.
 -- These can be tables or strings. They will *not* be run in a shell, so you must invoke it yourself if you so desire.
 -- Using a table is safer because quoting isn't an issue
 ---@type CommandProvider[]
 local run_on_startup = {
-  "dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY", -- Fix gnome apps taking *forever* to open
+  { "dbus-update-activation-environment", "--systemd", table.unpack(ENVIRONMENT_EXPORT) }, -- Fix gnome apps taking *forever* to open
+  { "systemctl", "--user", "import-environment", table.unpack(ENVIRONMENT_EXPORT) },
   { "xsettingsd", "-c", path.resolve(config_file_dir, "xsettingsd.conf") },
   { polkit }, -- Authentication popup
   "diodon", -- Clipboard after closing window
