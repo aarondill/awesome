@@ -13,7 +13,6 @@ error("You can't require the todo file!")
 --Improve all widgets that came with TitusTech's clone.
 --  Return functions, take args, default programs, etc...
 --  These don't work (I think)
---    Temperature - WORKS? test.
 --    Volume - works? patterns?
 --    WiFi - spawns defined program, needs fixed. Defined interface. relies on iw - not stable
 --    Bluetooth - Not even exists.
