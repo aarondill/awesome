@@ -172,7 +172,7 @@ function CountdownWidget:box(s) ---@param s AwesomeScreenInstance
   return box
 end
 
-local GRADUATION_DATE = os.time({ month = 5, day = 16, year = 2025 })
+local GRADUATION_DATE = os.time({ min = 30, hour = 19, month = 5, day = 16, year = 2025 })
 ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
   --- NOTE: Only one countdown widget per screen is allowed
   --- Yes, I know this is hacky. I don't want to fix it.
