@@ -53,7 +53,8 @@ function MediaControl:init(args)
   gtable.crush(self, defaults, true) -- Set default
   if args then gtable.crush(self, args or {}, true) end -- Set any user overrides
 
-  local update_widget = bind(self.update_widget, self)
+  local _update_widget = bind(self.update_widget, self)
+  local update_widget = function() return gtimer.start_new(0.5, _update_widget) end
   local widget_template = {
     widget = clickable_container,
     buttons = gtable.join(
