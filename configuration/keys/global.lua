@@ -299,15 +299,22 @@ local globalKeys = gtable.join(
     tl.visible = not tl.visible
   end, { description = "Toggle the taglist visiblity", group = "hotkeys" })
 )
+
 for _, poweroff in ipairs({ "XF86PowerOff", "XF86PowerDown" }) do
   globalKeys = gtable.join(
     globalKeys,
-    gkey({}, poweroff, function() --
-      return require("module.exit-screen").show()
-    end, { description = "Open Poweroff Menu", group = "hotkeys" }),
-    gkey({ modkey }, poweroff, function() --
-      return require("module.exit-screen").disable()
-    end, { description = "Disable Exit Screen", group = "hotkeys" })
+    gkey(
+      {},
+      poweroff,
+      bind.with_args(capi.awesome.emit_signal, "exit_screen::show"),
+      { description = "Open Poweroff Menu", group = "hotkeys" }
+    ),
+    gkey(
+      { modkey },
+      poweroff,
+      bind.with_args(capi.awesome.emit_signal, "exit_screen::disable"),
+      { description = "Disable Exit Screen", group = "hotkeys" }
+    )
   )
 end
 
