@@ -7,11 +7,15 @@ local compat = require("util.awesome.compat")
 local exit_screen_conf = require("configuration.exit-screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
+local notifs = require("util.notifs")
 local screen = require("util.types.screen")
+local spawn = require("util.spawn")
 local stream = require("stream")
+local strings = require("util.strings")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local notifs = require("util.notifs")
+local GLib = require("lgi").GLib
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -39,9 +43,25 @@ M.exit_screen = wibox({
   type = "splash",
 })
 
+local uptime_textbox = wibox.widget({
+  text = "Loading...",
+  font = beautiful.title_font,
+  valign = "center",
+  [compat.widget.halign] = "center",
+  widget = wibox.widget.textbox,
+})
+local function update_uptime()
+  spawn.async_success("uptime -p", function(stdout)
+    local uptime = strings.trim(stdout:match("up (.*)\n"))
+    uptime_textbox:set_markup(("<b>Uptime</b>: %s"):format(GLib.markup_escape_text(uptime, -1)))
+  end)
+end
+local uptime_timer = gtimer.new({ timeout = 30, callback = update_uptime })
+
 local exit_screen_grabber
 function M.hide()
   akeygrabber.stop(exit_screen_grabber)
+  uptime_timer:stop()
   M.exit_screen.visible = false
 end
 ---@param button ExitScreenButton
@@ -132,6 +152,10 @@ end
 ---@param opts? {screen?: screen}
 function M.show(opts)
   if M.disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
+  do -- get the uptime. Do this first because it's async!!
+    uptime_timer:emit_signal("timeout") -- force an update
+    uptime_timer:start()
+  end
   opts = opts or {}
   local s = screen.get(opts.screen) or screen.focused()
   update_wibox_screen(s)
@@ -165,14 +189,20 @@ M.exit_screen:buttons(gtable.join(
   -- Right click - Hide exit_screen
   abutton({}, 3, M.hide)
 ))
+
 -- Item placement
 M.exit_screen:setup({
   nil, -- No top
   {
     nil, -- No left
-    { -- This should be centered
-      layout = wibox.layout.fixed.horizontal,
-      stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
+    {
+      uptime_textbox,
+      { -- This should be centered
+        layout = wibox.layout.fixed.horizontal,
+        stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
+      },
+      nil, -- No bottom
+      layout = wibox.layout.align.vertical,
     },
     nil, -- No right
     expand = "none",
