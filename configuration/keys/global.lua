@@ -297,6 +297,7 @@ local globalKeys = gtable.join(
     local panel = s and s.top_panel
     if not panel then return end
     panel.visible = not panel.visible
+    panel.user_set_hidden = panel.visible == false
   end, { description = "Toggle the top panel visiblity", group = "hotkeys" }),
   gkey({ modkey, "Shift" }, "`", function()
     local s = ascreen.focused() ---@type AwesomeScreenInstance?
