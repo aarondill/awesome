@@ -55,8 +55,9 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
     if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
   end
 
-  if currentScreen.top_panel then --- Hide bars when app go fullscreen
-    currentScreen.top_panel.visible = show_top_bar
+  local panel = currentScreen.top_panel
+  if panel and not panel.user_set_hidden then --- Hide bars when app go fullscreen
+    panel.visible = show_top_bar
   end
   if tag then -- Set the gap to zero if maximized
     tag.gap = tag_is_max and 0 or 4
