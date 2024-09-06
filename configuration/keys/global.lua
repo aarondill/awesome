@@ -292,6 +292,12 @@ local globalKeys = gtable.join(
   gkey({ modkey }, "a", function() --
     return spawn({ "ibus", "emoji" })
   end, { description = "Open the ibus emoji picker to copy an emoji to your clipboard", group = "hotkeys" }),
+  gkey({ modkey }, "F2", function()
+    local s = ascreen.focused() ---@type AwesomeScreenInstance?
+    local panel = s and s.top_panel
+    if not panel then return end
+    panel.visible = not panel.visible
+  end, { description = "Toggle the top panel visiblity", group = "hotkeys" }),
   gkey({ modkey, "Shift" }, "`", function()
     local s = ascreen.focused() ---@type AwesomeScreenInstance?
     local tl = s and widgets.get_by_id(s.top_panel, "taglist")
