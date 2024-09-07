@@ -39,7 +39,11 @@ end
 ---@param cmd? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 function open.terminal(cmd, spawn_options)
-  local do_cmd = cmd and concat_command(concat_command(default.terminal, { "-e" }), cmd) or default.terminal
+  local do_cmd = default.terminal ---@type string|string[]
+  if cmd then
+    do_cmd = concat_command(do_cmd, { "-e" })
+    do_cmd = concat_command(do_cmd, cmd)
+  end
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
 ---Open a quake terminal
@@ -54,18 +58,26 @@ end
 ---@param file? string|string[]
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
 function open.editor(file, spawn_options)
-  local do_cmd = file and concat_command(concat_command(default.editor, { "-e" }), file) or default.editor
+  local do_cmd = default.editor ---@type string|string[]
+  if file then
+    do_cmd = concat_command(do_cmd, { "--" })
+    do_cmd = concat_command(do_cmd, file)
+  end
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
 ---Open a browser with the given url
 ---@param url? string|string[]
 ---@param new_window? boolean whether to create a new window - default false
+---@param incognito? boolean whether to open incognito - default false
 ---@param spawn_options SpawnOptions? Options to pass to utils.spawn
-function open.browser(url, new_window, spawn_options)
-  local new_window_arg = { "--new-window" }
-  local do_cmd = default.browser ---@type string|string[]
-  if new_window then do_cmd = concat_command(do_cmd, new_window_arg) end
-  if url then do_cmd = concat_command(do_cmd, url) end
+function open.browser(url, new_window, incognito, spawn_options)
+  local do_cmd = default.browser.open ---@type string|string[]
+  if new_window then do_cmd = concat_command(do_cmd, default.browser.new_window) end
+  if incognito then do_cmd = concat_command(do_cmd, default.browser.incognito) end
+  if url then
+    do_cmd = concat_command(do_cmd, { "--" })
+    do_cmd = concat_command(do_cmd, url)
+  end
   -- Use the user specified if present
   spawn_options = spawn_options or {}
   spawn_options.inherit_stderr = false

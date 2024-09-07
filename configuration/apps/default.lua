@@ -1,7 +1,7 @@
 local terminal = "wezterm"
 
 -- List of apps to start by default on some actions - Don't use shell features.
----@type (CommandProvider)[]
+---@type CommandProvider[]
 local default = {
   battery_manager = { "gnome-power-statistics" },
   system_manager = { "gnome-system-monitor" },
@@ -10,7 +10,12 @@ local default = {
   terminal = { terminal },
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
   region_screenshot = { "flameshot", "gui" },
-  browser = { "vivaldi-stable" },
+  browser = {
+    -- The main command to run, it will be passed the below options, followed by `--` and the url(s)
+    open = { "vivaldi" },
+    incognito = { "--incognito" },
+    new_window = { "--new-window" },
+  },
   editor = { terminal, "-e", "nvim" }, -- gui text editor
   brightness = {
     up = { "brightnessctl", "set", "10%+", "-e", "-n", "5" },
