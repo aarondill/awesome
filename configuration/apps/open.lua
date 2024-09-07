@@ -1,17 +1,17 @@
-local path = require("util.path")
 local require = require("util.rel_require")
-local shell_escape = require("util.command.shell_escape")
-local widgets = require("util.awesome.widgets")
-local xdg_user_dir = require("util.command.xdg_user_dir")
 
 local ascreen = require("awful.screen")
 local concat_command = require("util.command.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
 local lgi = require("lgi")
 local notifs = require("util.notifs")
+local path = require("util.path")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
+local shell_escape = require("util.command.shell_escape")
 local spawn = require("util.spawn")
-local Gio = lgi.Gio
+local widgets = require("util.awesome.widgets")
+local xdg_user_dir = require("util.command.xdg_user_dir")
+local GLib = lgi.GLib
 
 local open = {}
 
@@ -89,7 +89,7 @@ function open.browser(url, new_window, incognito, spawn_options)
     --- In this specific case, this is fine because chromium-based browsers open cat processes for their stdio
     --- These processes can die without the browser being killed by sigpipe.
     --- See https://github.com/awesomeWM/awesome/issues/3865 for the (eventual) better way to do this.
-    Gio.UnixInputStream.new(fd, true):close()
+    GLib.close(fd)
   end
 end
 ---Open the lock screen
