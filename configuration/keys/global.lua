@@ -198,6 +198,12 @@ local globalKeys = gtable.join(
   ),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
+  gkey(
+    { modkey, "Shift" },
+    "b",
+    bind.with_args(apps.open.browser, nil, nil, true),
+    { description = "Open an incognito browser", group = "launcher" }
+  ),
   gkey({ modkey }, "Return", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   gkey({ modkey }, "x", apps.open.terminal, { description = "Open a terminal", group = "launcher" }),
   gkey(
