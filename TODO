@@ -1,9 +1,6 @@
 #!/usr/bin/env lua --FOR-LINTING-AND-FORMATTING-DON'T-RUN
 -- This file is *not* meant to be ran or required. It's only lua for syntax highlighting.
 error("You can't require the todo file!")
----TODO: Use signals instead of functions
----SEE: https://github.com/gabrielfrimodig/dotfiles/blob/master/.config/awesome/ui/powermenu/init.lua#L117-L123
-
 ---TODO: Desktop Widget
 ---Fixup the existing ones and support new ones
 
