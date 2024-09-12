@@ -30,7 +30,7 @@ local defaults = {
   name = "",
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
-  format = "{artist} | {title}",
+  format = "{title} | {artist}",
   ---The maximum width of the widget text (px). Set to 0 for no limit.
   max_width = dpi(70),
   ---Speed to scroll the widget text.
