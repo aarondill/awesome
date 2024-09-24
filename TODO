@@ -18,3 +18,8 @@ error("You can't require the todo file!")
 --    Hard-Drive - Relies on `df`, and only checks /home
 --    RAM - Uses glob, by accident. External process, can be simplified?
 --Use exponential scale. Check ./widget/backlight-adjust.lua for an example
+
+---TODO: ProtonVPN widget:
+-- https://github.com/pivaldi/awesomewm-protonvpn/blob/master/widget.lua
+-- https://bitbucket.org/easlice/awesome-as-widgets/src/master/nordvpn/status.lua
+-- https://www.reddit.com/r/awesomewm/comments/q1s0ab/easy_vpn_toggle/
