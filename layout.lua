@@ -22,6 +22,7 @@ local suspend_listener = require("util.suspend-listener")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
+local vpn = require("widget.vpn")
 
 ---@param args {screen: screen}
 local TopPanel = function(args)
@@ -58,6 +59,7 @@ local TopPanel = function(args)
         stop_icon = icons.stop,
         pause_icon = icons.pause,
       }),
+      { vpn(), margins = dpi(4), widget = wibox.container.margin },
       { distro(), margins = dpi(4), widget = wibox.container.margin },
       {
         {
