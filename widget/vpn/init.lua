@@ -3,6 +3,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 local atooltip = require("awful.tooltip")
 local beautiful = require("beautiful")
 local clickable_container = require("widget.material.clickable-container")
+local compat = require("util.awesome.compat")
 local concat_command = require("util.command.concat_command")
 local gtimer = require("gears.timer")
 local spawn = require("util.spawn")
@@ -27,12 +28,18 @@ end
 local format = {
   pending = "…",
   on = '<span color="#22FF22">⚛</span>',
-  off = '<span color="#FFD700">☠</span>',
+  off = '<span color="#FFD700">⏻</span>',
   error = '<span color="#FF2222">⚠</span>',
 }
 local wdg = wibox.widget({
   {
-    { id = "textbox", markup = format.pending, widget = wibox.widget.textbox },
+    {
+      id = "textbox",
+      markup = format.pending,
+      [compat.widget.halign] = "center",
+      valign = "center",
+      widget = wibox.widget.textbox,
+    },
     margins = dpi(5),
     layout = wibox.container.margin,
   },
@@ -51,21 +58,21 @@ wdg.tooltip = atooltip({
 ---@param markup string
 ---@param tooltip_text string
 ---@param _status boolean?
-function wdg:__set_text(markup, tooltip_text, _status)
+function wdg:__set(markup, tooltip_text, _status)
   widgets.get_by_id(self, "textbox"):set_markup(markup)
   self.tooltip.text = tooltip_text
-  self._status = _status
+  self._cached_status = _status
 end
 ---@param connected boolean
 ---@param tooltip_text string
 function wdg:set_status(connected, tooltip_text)
-  return wdg:__set_text(connected and format.on or format.off, tooltip_text, nil)
+  return wdg:__set(connected and format.on or format.off, tooltip_text, connected)
 end
 ---@param tooltip_text string
 -- Assume disconnected on error. Worst case, the user will reconnect when they expect to disconnect.
-function wdg:set_error(tooltip_text) return wdg:__set_text(format.error, tooltip_text, false) end
+function wdg:set_error(tooltip_text) return wdg:__set(format.error, tooltip_text, false) end
 ---@param tooltip_text string
-function wdg:set_status_pending(tooltip_text) return wdg:__set_text(format.pending, tooltip_text, nil) end
+function wdg:set_status_pending(tooltip_text) return wdg:__set(format.pending, tooltip_text, nil) end
 
 function wdg:connect()
   self:set_status_pending("Connecting…")
@@ -83,8 +90,8 @@ function wdg:disconnect()
 end
 ---May do nothing if currently connecting/disconnecting
 function wdg:toggle()
-  if self._status == nil then return end
-  if self._status then return self:disconnect() end
+  if self._cached_status == nil then return end
+  if self._cached_status then return self:disconnect() end
   return self:connect()
 end
 ---@param callback? fun(enabled: boolean): any?
@@ -92,19 +99,21 @@ function wdg:update(callback)
   return spawn_proton({ "s" }, function(succ, stdout, stderr)
     if not succ or stderr ~= "" then return wdg:set_error(table.concat({ stdout, stderr }, "\n")) end
     local connected = not stdout:find("No active Proton VPN connection.", 1, true)
+    assert(stdout ~= nil, "stdout is nil")
     wdg:set_status(connected, stdout)
     if callback then return callback(connected) end
   end)
 end
 ---@return boolean active nil if pending
-function wdg:status() return self._status end
+function wdg:enabled() return self._cached_status end
 
 ---TODO: allow multiple instances
 local function create(args)
   args = args or {}
+  local args_format = args.format or {}
   connect_options = args.connect_options or connect_options
   timeout = args.timeout or timeout
-  format.on, format.off = args.format.on or format.on, args.format.off or format.off
+  format.on, format.off = args_format.on or format.on, args_format.off or format.off
   protonvpn_cli_path = args.protonvpn_cli_path or protonvpn_cli_path
 
   local font = args.font or beautiful.font
