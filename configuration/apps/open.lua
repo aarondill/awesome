@@ -76,30 +76,6 @@ function open.editor(file, spawn_options)
   end
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
----Closes the file descriptor
----A hack since we can't access freopen from lua (Glib.freopen can't work since it needs a FILE*).
----@param ifd integer
----@param ofile GFile
----@param append boolean? [opt=false] Whether to append to the file
----@async
-local function splice_to_file(ifd, ofile, append)
-  return coroutine.wrap(function()
-    local ostream = append and assert(ofile:append_to("NONE", nil)) or assert(ofile:replace(nil, false, "NONE", nil))
-    local istream = assert(Gio.UnixInputStream.new(ifd, true))
-    --- Note: this doesn't return until the stream closes (the process exits)
-    local size, err = await(function(resolve)
-      ostream:splice_async(
-        istream,
-        Gio.OutputStreamSpliceFlags.CLOSE_SOURCE | Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
-        GLib.PRIORITY_DEFAULT,
-        nil,
-        function(self, result) return resolve(self:splice_finish(result)) end
-      )
-    end)
-    assert(size and size >= 0, err)
-    assert(GLib.close(ifd))
-  end)()
-end
 
 ---Open a browser with the given url
 ---@param url? string|string[]
@@ -121,20 +97,11 @@ function open.browser(url, new_window, incognito, spawn_options)
   local info = spawn_notif_on_err(do_cmd, spawn_options)
   if not info then return end
 
-  ---Handle output descriptors
-  local outfile = new_file_for_path(path.join(get_xdg_dir("CACHE"), "browser.log"))
-  return append_async(outfile, ("Opening browser\n> %s"):format(cmd_tostring(do_cmd)), function()
-    return require("stream")
-      .of(info.stderr_fd, info.stdout_fd)
-      :foreach(function(fd) return splice_to_file(fd, outfile, true) end)
-  end)
   --- Close stdout and stderr
   --- In this specific case, this is fine because chromium-based browsers open cat processes for their stdio
   --- These processes can die without the browser being killed by sigpipe.
   --- See https://github.com/awesomeWM/awesome/issues/3865 for the (eventual) better way to do this.
-  -- for _, fd in ipairs({ info.stderr_fd, info.stdout_fd }) do
-  -- GLib.close(fd)
-  -- end
+  return require("stream").of(info.stderr_fd, info.stdout_fd):foreach(GLib.close)
 end
 ---Open the lock screen
 ---Note, this doesn't block.
