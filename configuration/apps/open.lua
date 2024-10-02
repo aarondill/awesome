@@ -1,28 +1,39 @@
 local require = require("util.rel_require")
-
+--
+local append_async = require("util.file.append_async")
 local ascreen = require("awful.screen")
+local await = require("await")
 local concat_command = require("util.command.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
 local lgi = require("lgi")
+local new_file_for_path = require("util.file.new_file_for_path")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
-local shell_escape = require("util.command.shell_escape")
 local spawn = require("util.spawn")
 local widgets = require("util.awesome.widgets")
 local xdg_user_dir = require("util.command.xdg_user_dir")
-local GLib = lgi.GLib
+local GLib, Gio = lgi.GLib, lgi.Gio
 
 local open = {}
+
+---@param dir string
+---@param ... string
+local function get_xdg_dir(dir, ...) ---@return string
+  local dest = path.join(assert(xdg_user_dir(dir), "Invalid XDG directory: " .. dir), ...)
+  assert(require("gears.filesystem").make_directories(dest)) -- Ensure parent directory exists
+  return dest
+end
+---@param cmd string|string[]
+local function cmd_tostring(cmd) return type(cmd) == "string" and cmd or require("util.command.shell_escape")(cmd) end
 
 ---@param cmd string|string[]
 ---@param err string?
 local function notif_error(cmd, err)
-  local cmd_str = type(cmd) == "string" and cmd or shell_escape(cmd)
   -- Warn the user!
   local msg = table.concat({
     ("Error: %s"):format(err),
-    ("Command: %s"):format(cmd_str),
+    ("Command: %s"):format(cmd_tostring(cmd)),
   }, "\n")
   notifs.critical(msg, { title = "Failed to execute program!" })
 end
@@ -65,6 +76,31 @@ function open.editor(file, spawn_options)
   end
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
+---Closes the file descriptor
+---A hack since we can't access freopen from lua (Glib.freopen can't work since it needs a FILE*).
+---@param ifd integer
+---@param ofile GFile
+---@param append boolean? [opt=false] Whether to append to the file
+---@async
+local function splice_to_file(ifd, ofile, append)
+  return coroutine.wrap(function()
+    local ostream = append and assert(ofile:append_to("NONE", nil)) or assert(ofile:replace(nil, false, "NONE", nil))
+    local istream = assert(Gio.UnixInputStream.new(ifd, true))
+    --- Note: this doesn't return until the stream closes (the process exits)
+    local size, err = await(function(resolve)
+      ostream:splice_async(
+        istream,
+        Gio.OutputStreamSpliceFlags.CLOSE_SOURCE | Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
+        GLib.PRIORITY_DEFAULT,
+        nil,
+        function(self, result) return resolve(self:splice_finish(result)) end
+      )
+    end)
+    assert(size and size >= 0, err)
+    assert(GLib.close(ifd))
+  end)()
+end
+
 ---Open a browser with the given url
 ---@param url? string|string[]
 ---@param new_window? boolean whether to create a new window - default false
@@ -84,13 +120,21 @@ function open.browser(url, new_window, incognito, spawn_options)
   spawn_options.inherit_stdout = false
   local info = spawn_notif_on_err(do_cmd, spawn_options)
   if not info then return end
-  for _, fd in ipairs({ info.stderr_fd, info.stdout_fd }) do
-    --- Close stdout and stderr
-    --- In this specific case, this is fine because chromium-based browsers open cat processes for their stdio
-    --- These processes can die without the browser being killed by sigpipe.
-    --- See https://github.com/awesomeWM/awesome/issues/3865 for the (eventual) better way to do this.
-    GLib.close(fd)
-  end
+
+  ---Handle output descriptors
+  local outfile = new_file_for_path(path.join(get_xdg_dir("CACHE"), "browser.log"))
+  return append_async(outfile, ("Opening browser\n> %s"):format(cmd_tostring(do_cmd)), function()
+    return require("stream")
+      .of(info.stderr_fd, info.stdout_fd)
+      :foreach(function(fd) return splice_to_file(fd, outfile, true) end)
+  end)
+  --- Close stdout and stderr
+  --- In this specific case, this is fine because chromium-based browsers open cat processes for their stdio
+  --- These processes can die without the browser being killed by sigpipe.
+  --- See https://github.com/awesomeWM/awesome/issues/3865 for the (eventual) better way to do this.
+  -- for _, fd in ipairs({ info.stderr_fd, info.stdout_fd }) do
+  -- GLib.close(fd)
+  -- end
 end
 ---Open the lock screen
 ---Note, this doesn't block.
@@ -132,13 +176,6 @@ function open.rofi(mode)
   })
 end
 
----@param dir string
----@param ... string
-local function get_xdg_dir(dir, ...) ---@return string
-  local dest = path.join(assert(xdg_user_dir(dir), "Invalid XDG directory: " .. dir), ...)
-  assert(require("gears.filesystem").make_directories(dest)) -- Ensure parent directory exists
-  return dest
-end
 ---Open a terminal with the given command
 ---@param window? AwesomeClientInstance|{x: integer, y: integer, width: integer, height: integer}
 ---@param callback? fun(path?: string): any? Called with the filepath of the new screenshot if successful
