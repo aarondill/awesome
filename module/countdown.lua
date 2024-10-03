@@ -25,9 +25,8 @@ local handler = handle_error(function(s) ---@param s AwesomeScreenInstance
   --- we don't want to show the message if any clients are visible
   local num_clients = stream
     .new(s.clients)
-    :filter(function(c) return c.valid end)
-    :filter(function(c) return not c.hidden end)
-    :filter(function(c) return not quake:client_is_quake(c) end)
+    :filter(function(c) return c.valid and not c.hidden end)
+    :except(quake.client_is_quake)
     :count()
   local instance = s.countdown_widget
   if not instance then return end
@@ -52,15 +51,13 @@ local function callback(tag)
 end
 
 local compat = require("util.awesome.compat")
-capi.client.connect_signal(compat.signal.manage, callback)
-capi.client.connect_signal(compat.signal.unmanage, callback)
-capi.client.connect_signal("property::hidden", callback)
-capi.client.connect_signal("property::minimized", callback)
-capi.client.connect_signal("property::fullscreen", callback)
-capi.client.connect_signal("tagged", callback)
-capi.tag.connect_signal("property::selected", callback)
-capi.tag.connect_signal("property::layout", callback)
-capi.tag.connect_signal("property::useless_gap", callback)
+capi.client.connect_signal(compat.signal.manage, callback) -- Used on startup / when a client is added
+capi.client.connect_signal(compat.signal.unmanage, callback) -- Used to update when a client is removed
+capi.client.connect_signal("property::hidden", callback) -- Used to update when a client is hidden
+capi.client.connect_signal("property::minimized", callback) -- Used to update when a client is minimized
+capi.client.connect_signal("tagged", callback) -- Used to update when a client is moved *onto* a tag (on the new tag)
+capi.tag.connect_signal("untagged", callback) -- Used to update when a client is moved *off* of a tag (on the old tag)
+capi.tag.connect_signal("property::selected", callback) -- Used to update when a tag is selected
 
 ---@class CountdownWidget
 local CountdownWidget = {
