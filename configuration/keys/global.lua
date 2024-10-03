@@ -100,11 +100,13 @@ do
   -- Connect the spawn handler. this is a noop if next_spawned_tag is false
   capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
 end
+---Ensure hotkeys shows on the focused screen (default is the current client's screen)
+local function show_help() hotkeys_popup.show_help(nil, ascreen.focused()) end
 -- Key bindings
 local globalKeys = gtable.join(
   -- Hotkeys
-  gkey({ modkey }, "F1", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
-  gkey({ modkey }, "s", hotkeys_popup.show_help, { description = "Show help", group = "awesome" }),
+  gkey({ modkey }, "F1", show_help, { description = "Show help", group = "awesome" }),
+  gkey({ modkey }, "s", show_help, { description = "Show help", group = "awesome" }),
 
   -- Client management
   gkey({ modkey }, "j", function() --
