@@ -1,4 +1,6 @@
+local capi = require("capi")
 local require = require("util.rel_require")
+local screen = require("util.types.screen")
 
 local aclient = require("awful.client")
 local atitlebar = require("awful.titlebar")
@@ -36,9 +38,8 @@ local clientkeys = gtable.join(
   ckey({ modkey, "Shift", "Control" }, "k", function(c) --
     c:move_to_screen()
   end, { description = "move window to next screen", group = "client" }),
-  ckey({ modkey, "Shift", "Control" }, "j", function(c)
-    local s = c.screen and c.screen.index - 1 -- Might be nil, thus +1, but there's a bigger problem here
-    c:move_to_screen(s)
+  ckey({ modkey, "Shift", "Control" }, "j", function(c) --
+    c:move_to_screen(screen.get(c.screen.index - 1))
   end, { description = "move window to prev screen", group = "client" }),
 
   ckey({ modkey }, "o", function(c) --
@@ -67,8 +68,6 @@ local clientkeys = gtable.join(
     c:raise()
   end, { description = "(un)maximize horizontally", group = "client" }),
 
-  ckey({ modkey }, "`", function(c) --
-    atitlebar.toggle(c, "top")
-  end, { description = "toggle top titlebar", group = "client" })
+  ckey({ modkey }, "`", atitlebar.toggle, { description = "toggle top titlebar", group = "client" })
 )
 return clientkeys

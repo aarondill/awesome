@@ -12,7 +12,8 @@ function M.focused() return ascreen.focused() end
 ---@return AwesomeScreenInstance?
 function M.get(o)
   if not o then return nil end -- nil
-  if type(o) == "number" then return capi.screen[o] end -- index
+  -- index; negative index from end, both wrap around
+  if type(o) == "number" then return capi.screen[o % capi.screen:count()] end
   if o.screen then return o.screen end -- client / tag
   if o.index and capi.screen[o.index] == o then -- screen
     return o --[[@as AwesomeScreenInstance]]

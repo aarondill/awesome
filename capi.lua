@@ -251,6 +251,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@alias AwesomeScreenIterator fun(_: nil, prev?: AwesomeScreenInstance):AwesomeScreenInstance?
 ---@class AwesomeScreen :AwesomeSignalClass
 ---@field primary AwesomeScreenInstance?
+---@field count fun(self: AwesomeScreen): integer
 ---@field [integer] AwesomeScreenInstance?
 ---@field [AwesomeScreenInstance] AwesomeScreenInstance
 
