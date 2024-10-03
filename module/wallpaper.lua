@@ -42,7 +42,7 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
   local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
 
-  local new_wallpaper = { wp_path, aspect_w, aspect_h, M.QUALITY_REDUCTION }
+  local new_wallpaper = { wp_path, geom, aspect_w, aspect_h }
   -- The wallpaper (and size) hasn't changed. Don't modify it.
   if tables.deep_equal(s._wallpaper, new_wallpaper) then return end
   s._wallpaper = new_wallpaper
