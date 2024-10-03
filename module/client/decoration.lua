@@ -13,7 +13,7 @@ local function shape_rounded_rect(cr, w, h) return require("gears.shape").rounde
 ---@param client AwesomeClientInstance
 ---@param render_maximized boolean
 local function renderClient(client, render_maximized)
-  if quake:client_is_quake(client) then return end
+  if quake.client_is_quake(client) then return end
   if client.skip_decoration then return end
 
   if client.rendering_mode == render_maximized then return end -- Check cached.
@@ -42,8 +42,8 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
   local managed_clients = stream
     .new(currentScreen.clients)
     :filter(function(c) return c.valid end)
-    :filter(function(c) return not c.skip_decoration and not c.hidden end)
-    :filter(function(c) return not quake:client_is_quake(c) end)
+    :except(function(c) return c.skip_decoration or c.hidden end)
+    :except(quake.client_is_quake)
     :toarray()
 
   local tag = currentScreen.selected_tag

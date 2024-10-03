@@ -53,7 +53,7 @@ end
 
 local function should_show_titlebars(c)
   if c.requests_no_titlebar then return false end -- No titlebars
-  if not quake:client_is_quake(c) then -- quake is always floating -- handle other ways
+  if not quake.client_is_quake(c) then -- quake is always floating -- handle other ways
     if c.floating then return true end -- Client is floating
     if c.first_tag and c.first_tag.layout == alayout.suit.floating then return true end -- layout is floating
   end

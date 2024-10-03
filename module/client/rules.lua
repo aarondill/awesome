@@ -48,7 +48,7 @@ local rules = {
     },
     callback = function(c)
       if capi.awesome.startup then return end -- Not startup windows!
-      if quake:client_is_quake(c) then return end -- Not the quake client
+      if quake.client_is_quake(c) then return end -- Not the quake client
       -- Set the windows at the slave,
       -- i.e. put it at the end of others instead of setting it master.
       aclient.setslave(c)

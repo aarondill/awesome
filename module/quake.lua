@@ -10,7 +10,7 @@ capi.awesome.connect_signal("quake::toggle", bind(quakei.toggle, quakei))
 capi.awesome.connect_signal("quake::kill", bind(quakei.kill, quakei))
 
 local M = {}
-function M:client_is_quake(c) ---@param c AwesomeClientInstance
+function M.client_is_quake(c) ---@param c AwesomeClientInstance
   return c.instance == quake_class
 end
 ---This is the class used for the quake terminal. Use it only in awful.rules.
