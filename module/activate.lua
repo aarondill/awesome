@@ -34,11 +34,17 @@ local function create_widgets(s)
     widget = w,
     input_passthrough = true,
   })
-  aplacement.bottom_right(box, {
-    honor_padding = true,
-    honor_workarea = true,
-    margins = { right = 8, bottom = 8 },
-  })
+  local function resize()
+    box.width = math.min(width, s.workarea.width)
+    box.height = math.min(height, s.workarea.height)
+    aplacement.bottom_right(box, {
+      honor_padding = true,
+      honor_workarea = true,
+      margins = { right = 8, bottom = 8 },
+    })
+  end
+  s:connect_signal("property::geometry", resize)
+  resize()
   return box
 end
 
