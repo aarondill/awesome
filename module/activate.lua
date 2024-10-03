@@ -30,7 +30,9 @@ local function create_widgets(s)
     bg = "#00000000",
     width = math.min(width, s.workarea.width), -- crop to workarea size if too big
     height = math.min(height, s.workarea.height), -- crop to workarea size if too big
+    screen = s,
     widget = w,
+    input_passthrough = true,
   })
   aplacement.bottom_right(box, {
     honor_padding = true,

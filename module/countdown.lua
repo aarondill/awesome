@@ -40,11 +40,7 @@ end)
 gtimer.new({
   timeout = 0.5,
   autostart = true,
-  callback = function()
-    for s in screen.iterator() do
-      handler(s)
-    end
-  end,
+  callback = function() return stream.new(screen.iterator()):foreach(handler) end,
 })
 
 ---@param tag AwesomeTagInstance|AwesomeClientInstance
@@ -137,6 +133,8 @@ function CountdownWidget:box(s) ---@param s AwesomeScreenInstance
   self.cached_box = self.cached_box
     or wibox({
       type = "utility",
+      screen = s,
+      input_passthrough = true,
       widget = wibox.widget({
         widget = wibox.container.margin,
         {
