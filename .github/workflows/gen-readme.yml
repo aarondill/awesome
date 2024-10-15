@@ -2,6 +2,8 @@ name: Generate README
 on:
   push:
     paths:
+      - "README.md" # This isn't needed, but it's a good sanity check
+      - "README.tmpl.md"
       - "setup.lua"
   workflow_dispatch:
 jobs:

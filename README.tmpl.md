@@ -9,10 +9,9 @@ If you notice any issues, please create an issue or PR!
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with a performant opinionated keyboard workflow to increase daily productivity and comfort.
 
 ![](./theme/images/demo.png)
-
-|             Fullscreen             |        Rofi Launcher         |             Exit Screen             |
-| :--------------------------------: | :--------------------------: | :---------------------------------: |
-| ![](./theme/images/fullscreen.png) | ![](./theme/images/rofi.png) | ![](./theme/images/exit-screen.png) |
+| Full Screen | Rofi Launcher | Exit Screen | Shortcut Menu |
+| :---------: | :-----------: | :---------: | :-----------: |
+| ![](./theme/images/fullscreen.png) | ![](./theme/images/rofi.png) | ![](./theme/images/exit-screen.png) | ![](./theme/images/shortcut-menu.png) |
 
 ## Installation
 
