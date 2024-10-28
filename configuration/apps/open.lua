@@ -1,19 +1,16 @@
 local require = require("util.rel_require")
 --
-local append_async = require("util.file.append_async")
 local ascreen = require("awful.screen")
-local await = require("await")
 local concat_command = require("util.command.concat_command")
 local default = require(..., "default") ---@module 'configuration.apps.default'
 local lgi = require("lgi")
-local new_file_for_path = require("util.file.new_file_for_path")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local rofi_command = require(..., "rofi_command") ---@module 'configuration.apps.rofi_command'
 local spawn = require("util.spawn")
 local widgets = require("util.awesome.widgets")
 local xdg_user_dir = require("util.command.xdg_user_dir")
-local GLib, Gio = lgi.GLib, lgi.Gio
+local GLib = lgi.GLib
 
 local open = {}
 
