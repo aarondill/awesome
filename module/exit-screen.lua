@@ -2,6 +2,7 @@ local abutton = require("awful.button")
 local akeygrabber = require("awful.keygrabber")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
+local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
 local compat = require("util.awesome.compat")
 local exit_screen_conf = require("configuration.exit-screen")
@@ -14,9 +15,9 @@ local spawn = require("util.spawn")
 local stream = require("stream")
 local strings = require("util.strings")
 local wibox = require("wibox")
+local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 local GLib = require("lgi").GLib
-local capi = require("capi")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -52,17 +53,56 @@ local uptime_textbox = wibox.widget({
   widget = wibox.widget.textbox,
 })
 local function update_uptime()
-  spawn.async_success("uptime -p", function(stdout)
+  spawn.async_success({ "uptime", "-p" }, function(stdout)
     local uptime = strings.trim(stdout:match("up (.*)\n"))
     uptime_textbox:set_markup(("<b>Uptime</b>: %s"):format(GLib.markup_escape_text(uptime, -1)))
   end)
 end
-local uptime_timer = gtimer.new({ timeout = 30, callback = update_uptime })
+
+local inhibit_textbox = wibox.widget({
+  {
+    {
+      { -- Header
+        text = "Systemd Inhibitors",
+        font = beautiful.title_font,
+        [compat.widget.halign] = "center",
+        widget = wibox.widget.textbox,
+      },
+      {
+        id = "textbox",
+        text = "Loading...",
+        font = "monospace", -- This *has* to be monospace!
+        valign = "center",
+        widget = wibox.widget.textbox,
+      },
+      layout = wibox.layout.fixed.vertical,
+    },
+    widget = wibox.container.margin,
+    bottom = dpi(16),
+  },
+  [compat.widget.halign] = "center",
+  widget = wibox.container.place,
+})
+local function update_inhibit()
+  local pid = spawn.async_success({ "systemd-inhibit", "--list" }, function(stdout)
+    local output = stdout:match("^(.+)\n%d inhibitors listed%.\n$") or stdout --- Remove the last two lines (blank and number)
+    widgets.get_by_id(inhibit_textbox, "textbox"):set_text(output)
+  end)
+  inhibit_textbox.visible = not not pid -- hide if systemd-inhibit didn't spawn
+end
+
+local update_timer = gtimer.new({
+  timeout = 30,
+  callback = function()
+    update_inhibit()
+    update_uptime()
+  end,
+})
 
 local exit_screen_grabber
 local function hide()
   akeygrabber.stop(exit_screen_grabber)
-  uptime_timer:stop()
+  update_timer:stop()
   exit_screen.visible = false
 end
 ---@param button ExitScreenButton
@@ -146,8 +186,8 @@ exit_screen.fg = exit_screen_conf.fg
 local function show(opts)
   if disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
   do -- get the uptime. Do this first because it's async!!
-    uptime_timer:emit_signal("timeout") -- force an update
-    uptime_timer:start()
+    update_timer:emit_signal("timeout") -- force an update
+    update_timer:start()
   end
   opts = opts or {}
   local s = screen.get(opts.screen) or screen.focused()
@@ -201,7 +241,7 @@ exit_screen:setup({
     expand = "none",
     layout = wibox.layout.align.horizontal,
   },
-  nil, -- No bottom
+  inhibit_textbox, -- No bottom
   expand = "none",
   layout = wibox.layout.align.vertical,
 })
