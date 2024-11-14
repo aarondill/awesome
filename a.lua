@@ -26,12 +26,14 @@ end
 ---@param f fun(...: A): R,...: unknown
 ---@return fun(cb: fun(r: R): any?,...: A )
 function a.sync(f)
-  return coroutine.wrap(function(...)
+  return function(...) -- This is needed to avoid resuming a dead coroutine
     local args = table.pack(...)
-    local callback = args[1]
-    -- NOTE: args[1] is the callback, so unpack from 2 to n
-    local val = table.pack(f(table.unpack(args, 2, args.n)))
-    if callback then return callback(table.unpack(val, 1, val.n)) end
-  end)
+    return coroutine.wrap(function()
+      local callback = args[1]
+      -- NOTE: args[1] is the callback, so unpack from 2 to n
+      local val = table.pack(f(table.unpack(args, 2, args.n)))
+      if callback then return callback(table.unpack(val, 1, val.n)) end
+    end)()
+  end
 end
 return a
