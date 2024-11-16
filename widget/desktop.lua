@@ -1,3 +1,4 @@
+local beautiful = require("beautiful")
 local capi = require("capi")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -72,8 +73,8 @@ function DesktopWidget.new(opts)
     input_passthrough = true,
     widget = opts.widget,
     ontop = false,
-    fg = opts.fg,
-    bg = opts.bg,
+    fg = opts.fg or beautiful.bg_focus, --or "#7C7E93",
+    bg = opts.bg or "#00000000", -- Default to transparent
     visible = false, -- If true, then the widget may render over clients on startup.
   })
   insert_instance(opts.screen, self)

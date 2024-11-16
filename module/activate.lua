@@ -16,8 +16,6 @@ local ActivateWidget = {}
 ---@param opts ActivateWidgetOpts
 function ActivateWidget.new(opts)
   local self = desktop.new({
-    fg = "#7C7E93",
-    bg = "#00000000",
     screen = opts.screen,
     widget = wibox.widget({
       widget = wibox.container.margin,
