@@ -114,7 +114,7 @@ function CountdownWidget:update()
   aplacement.top_right(self, {
     honor_padding = true,
     honor_workarea = true,
-    margins = { right = 8, bottom = 8 },
+    margins = { right = 8 },
   })
 end
 
