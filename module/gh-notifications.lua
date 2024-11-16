@@ -153,7 +153,7 @@ local function on_changed(count) ---@param count integer
     if notification then notification.die() end -- Don't pass a reason because naughty's changes are too annoying
     return require("configuration.apps.open").browser("https://github.com/notifications")
   end
-  notification = notifs.info(
+  notification = notifs.normal(
     ("%d unread github notifications!"):format(count),
     { timeout = 10, actions = { ["open in browser"] = open } }
   )

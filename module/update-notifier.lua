@@ -16,7 +16,7 @@ local wrap = function(f)
     left = left - 1
     if left > 0 then return end
     if updates <= 0 then return end -- Don't bother me if there are no updates
-    return notifs.info(MESSAGE_FORMAT:format(updates))
+    return notifs.normal(MESSAGE_FORMAT:format(updates))
   end
 end
 ---@param cmd CommandProvider

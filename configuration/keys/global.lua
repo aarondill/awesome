@@ -56,7 +56,7 @@ local gkey = function(modKeys, key, press, release, data) return awful_key.new(m
 ---@param state boolean
 local function toggle_notif(what, state)
   local stateStr = state and "enabled" or "disabled"
-  return notifs.info(("%s: %s"):format(what, stateStr), { timeout = 2, ignore_suspend = true })
+  return notifs.normal(("%s: %s"):format(what, stateStr), { timeout = 2, ignore_suspend = true })
 end
 
 local modkey, altkey = mod.modKey, mod.altKey
@@ -80,7 +80,7 @@ do
   local function notif_jump(tag, jump, disable)
     local msg = ("move next window to tag '%s'%s"):format(tag.name, jump and " (jump)" or "")
     if disable then msg = "disabled " .. msg end
-    return notifs.info(msg, { timeout = 2, ignore_suspend = true })
+    return notifs.normal(msg, { timeout = 2, ignore_suspend = true })
   end
   ---A function to be used in a keymapping that will ensure the next window spawned is moved to tag i (on focused screen)
   ---Toggles the status. If i and should_jump are the same between two calls, it will be removed instead

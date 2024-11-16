@@ -34,7 +34,7 @@ local function handler(content, _, fpath)
   if #content == 0 or content:find("^%s*$") then return end -- just whitespace
 
   local msg = content:gsub("^\n*", ""):gsub("\n*$", ""):gsub("\n\n\n", "\n\n")
-  return notifs.info(msg, { title = ("Reminder (%s)"):format(path.tildify(fpath)) })
+  return notifs.normal(msg, { title = ("Reminder (%s)"):format(path.tildify(fpath)) })
 end
 read_async(path_stream:next(), handler)
 

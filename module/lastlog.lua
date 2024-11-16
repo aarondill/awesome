@@ -15,5 +15,5 @@ spawn.async_success({ "last", "-n2", "--", user }, function(stdout)
   local timedate = lastlog:match("^%S+%s+%S+%s+(.*)")
   timedate = timedate:match("(.*)%s%-.+") or timedate -- Attempt to remove log out
   if not timedate then return notifs.error("Could not parse last output") end
-  return notifs.info("Last login: " .. tostring(timedate))
+  return notifs.normal("Last login: " .. tostring(timedate))
 end)
