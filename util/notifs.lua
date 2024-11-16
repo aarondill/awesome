@@ -144,7 +144,8 @@ M.low = bind(M.notify, "low") ---@type logFunc
 M.normal = bind(M.notify, "normal") ---@type logFunc
 M.critical = bind(M.notify, "critical") ---@type logFunc
 M.ok = bind(M.notify, "ok") ---@type logFunc
-M.info = bind(M.notify, "info") ---@type logFunc
+---@deprecated Use normal instead, since it follows the theme's color scheme.
+M.info = bind(M.notify, "normal") ---@type logFunc
 M.warn = bind(M.notify, "warn") ---@type logFunc
 M.error = bind(M.notify, "critical") ---@type logFunc -- error as synonym for critical
 -- Once
@@ -152,7 +153,8 @@ M.low_once = bind(M.notify_once, "low") ---@type logFunc
 M.normal_once = bind(M.notify_once, "normal") ---@type logFunc
 M.critical_once = bind(M.notify_once, "critical") ---@type logFunc
 M.ok_once = bind(M.notify_once, "ok") ---@type logFunc
-M.info_once = bind(M.notify_once, "info") ---@type logFunc
+---@deprecated Use normal instead, since it follows the theme's color scheme.
+M.info_once = bind(M.notify_once, "normal") ---@type logFunc
 M.warn_once = bind(M.notify_once, "warn") ---@type logFunc
 M.error_once = bind(M.notify_once, "critical") ---@type logFunc -- error as synonym for critical
 
