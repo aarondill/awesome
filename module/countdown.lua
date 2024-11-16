@@ -19,17 +19,14 @@ local CountdownWidget = {
 }
 
 ---@class CountdownWidgetOpts
-local default_opts = {
-  end_time = 0, ---@type number
-  event = "countdown", ---@type string
-  fg = "#7C7E93", ---@type string
-  bg = "#00000000", ---@type string
-  screen = nil, ---@type AwesomeScreenInstance
-}
+---@field screen AwesomeScreenInstance
+---@field end_time number
+---@field event string
+---@field fg? string
+---@field bg? string
 
 local instances = setmetatable({}, { __mode = "k" }) ---@type table<CountdownWidget, true>
 function CountdownWidget.new(opts)
-  opts = tbl_deep_extend("force", default_opts, opts)
   local self = desktop.new({
     screen = opts.screen,
     fg = opts.fg,
