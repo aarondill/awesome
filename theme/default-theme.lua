@@ -145,7 +145,7 @@ local function do_theme(theme, _theme_dir)
   theme.notification_icon_size = dpi(24)
   theme.notification_shape = function(cr, width, height)
     -- If width is too low, the rectange has issues with large values
-    gshape.rounded_rect(cr, width, height, width < dpi(40) and 0 or 10)
+    gshape.rounded_rect(cr, width, height, width < dpi(40) and 5 or 10)
   end
 
   theme.notification_border_width = 0
