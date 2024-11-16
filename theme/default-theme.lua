@@ -4,6 +4,7 @@ local theme_assets = require("beautiful.theme_assets")
 local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.awesome.compat")
 local icons = require("theme.icons")
+local naughty = require("naughty")
 
 ---Return a valid font of size given
 ---@param size integer?
@@ -148,6 +149,15 @@ local function do_theme(theme, _theme_dir)
   end
 
   theme.notification_border_width = 0
+
+  ---Remove defaults
+  for _, preset in pairs(naughty.config.presets) do
+    preset.bg = nil
+    preset.fg = nil
+  end
+  naughty.config.presets.critical.bg = theme.bg_urgent
+  naughty.config.presets.warn.bg = mat_colors.amber.hue_700
+  naughty.config.presets.ok.bg = mat_colors.green.hue_500
 
   return theme
 end
