@@ -19,10 +19,11 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with
 
 For convenience, a `setup.lua` script has been provided, simply clone the repository and run `lua ./setup.lua` to auto install dependencies and setup submodules.
 note: Gio is required. Installing `awesome` will install `gio` as a dependency.
+note: LGI is required. This may need to be installed manually.
 
 ```shell
 > git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
-> pacman -S awesome # REPLACE WITH YOUR PACKAGE MANAGER
+> pacman -S awesome lua-lgi # REPLACE WITH YOUR PACKAGE MANAGER
 > cd ~/.config/awesome/ && ./setup.lua
 > # run lxappearance to modify theme if so desired
 ```
