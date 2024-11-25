@@ -85,7 +85,7 @@ end
 function M.spawn(cmd, opts)
   local Gio = require("lgi").Gio
   opts = opts or {}
-  local launcher = Gio.SubprocessLauncher.new(Gio.SubprocessFlags.NONE)
+  local launcher = Gio.SubprocessLauncher.new(Gio.SubprocessFlags.STDIN_INHERIT)
   if opts.cwd then launcher:set_cwd(opts.cwd) end
   return assert(launcher:spawnv(cmd))
 end
