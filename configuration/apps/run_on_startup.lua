@@ -42,29 +42,14 @@ local run_on_startup = {
 
 ---Note: this is already escaped
 ---This is some evil synchronise code, but it's needed to ensure that we have a touch pad to play with
-local lid = which("libinput-list-devices")
-local cmd = lid and { lid } or { "libinput", "list-devices" }
-local p = assert(Gio.Subprocess.new(cmd, { "STDOUT_PIPE", "STDERR_SILENCE" }))
-local stdout = Gio.DataInputStream.new(assert(p:get_stdout_pipe()))
-local has_touchpad = false
-while true do
-  local line = stdout:read_line()
-  if not line then break end
-  if line:find("^Capabilities:") then
-    -- Append a space incase it ends with touch
-    if (line .. " "):find(" touch ") then
-      has_touchpad = true
-      break
-    end
-  end
+local libinput_gestures_conf = path.resolve(config_file_dir, "libinput-gestures.conf")
+local cmd = { "libinput-gestures", "--conffile", libinput_gestures_conf, "--list" }
+local p = assert(Gio.Subprocess.new(cmd, Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_PIPE))
+local stderr = Gio.DataInputStream.new(assert(p:get_stderr_pipe()))
+if stderr:read_line() ~= "Could not determine touchpad device." then
+  -- Enable touch gesture support
+  table.insert(run_on_startup, { "libinput-gestures", "--conffile", libinput_gestures_conf })
 end
-stdout:close_async(0)
-
-if has_touchpad then
-  table.insert(
-    run_on_startup,
-    { "libinput-gestures", "--conffile", path.resolve(config_file_dir, "libinput-gestures.conf") } -- Enable touch gesture support
-  )
-end
+stderr:close_async(0)
 
 return run_on_startup
