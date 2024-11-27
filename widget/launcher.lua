@@ -27,7 +27,7 @@ local function launcher_new(args, menu)
   opts.buttons = gtable.join(
     abutton.new({}, 1, nil, apps.open.rofi),
     abutton.new({}, 2, nil, function() -- Open exit screen on middle click
-      return require("module.exit-screen").show()
+      return capi.awesome.emit_signal("exit_screen::show")
     end),
     abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu))
   )
