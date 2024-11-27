@@ -25,9 +25,11 @@ local default = {
     up = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%" },
     down = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%" },
     toggle_mute = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle" },
+    toggle_mic_mute = { "pactl", "set-source-mute", "@DEFAULT_SOURCE@", "toggle" },
     -- up = { "amixer", "sset", "Master", "5%+", "unmute" },
     -- down = { "amixer", "sset", "Master", "5%-", "unmute" },
     -- toggle_mute = { "amixer", "sset", "Master", "toggle" },
+    -- toggle_mic_mute = { "amixer", "sset", "Capture", "toggle" },
   },
 }
 

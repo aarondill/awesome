@@ -284,6 +284,9 @@ local globalKeys = gtable.join(
   gkey({}, "XF86AudioMute", function() --
     return spawn.nosn(apps.default.volume.toggle_mute)
   end, { description = "Toggle mute", group = "hotkeys" }),
+  gkey({}, "XF86AudioMicMute", function() --
+    return spawn.nosn(apps.default.volume.toggle_mic_mute)
+  end, { description = "Toggle mute", group = "hotkeys" }),
 
   gkey({}, "XF86AudioPlay", function() --
     return spawn.nosn({ "playerctl", "play-pause" })
