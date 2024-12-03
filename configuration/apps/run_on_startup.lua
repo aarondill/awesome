@@ -8,6 +8,18 @@ local path = require("util.path")
 local polkit = "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 if not gfile.file_executable(polkit) then polkit = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" end
 local ENVIRONMENT_EXPORT = { "XDG_CURRENT_DESKTOP", "DBUS_SESSION_BUS_ADDRESS", "DISPLAY", "XAUTHORITY" }
+local pasystray_notify_options = {
+  ---Exclude 'new'
+  "--notify=none",
+  "--notify=sink",
+  "--notify=sink_default",
+  "--notify=source",
+  "--notify=source_default",
+  "--notify=stream",
+  "--notify=stream_output",
+  "--notify=stream_input",
+  "--notify=systray_action",
+}
 
 -- List of apps to start once on start-up - these will (obviously) only run if available, but no errors will occur if they aren't.
 -- These can be tables or strings. They will *not* be run in a shell, so you must invoke it yourself if you so desire.
@@ -21,8 +33,7 @@ local run_on_startup = {
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
-  { "pasystray", "--no-icon-tooltip" }, -- shows an audiocontrol applet in systray when installed.
-  -- "exec xfce4-power-manager", -- Power manager
+  { "pasystray", "--no-icon-tooltip", table.unpack(pasystray_notify_options) }, -- shows an audiocontrol applet in systray when installed.
   "xset s 0 0", -- disable screen saver
   "xset -dpms", -- Disable dpms because doesn't work with keys?
   { "xss-lock", "-q", "-l", "--", "lock" }, -- Lock on suspend or dpms
