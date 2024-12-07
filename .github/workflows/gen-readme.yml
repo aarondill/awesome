@@ -1,11 +1,6 @@
 name: Generate README
 on:
   push:
-    branches: [main]
-    paths:
-      - "README.md" # This isn't needed, but it's a good sanity check
-      - "README.tmpl.md"
-      - "setup.lua"
   pull_request:
     paths:
       - "README.md" # This isn't needed, but it's a good sanity check
