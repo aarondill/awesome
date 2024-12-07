@@ -110,17 +110,17 @@ The configuration should handle this without issue.
 startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
 ```
 ### Lines of code
-cloc|github.com/AlDanial/cloc v 1.96  T=0.38 s (691.4 files/s, 30998.4 lines/s)
+cloc|github.com/AlDanial/cloc v 1.96
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
 Lua|169|869|2357|7629
 SVG|84|8|23|474
-Markdown|2|46|3|131
+Markdown|2|43|3|140
 YAML|4|17|56|99
 Bourne Again Shell|2|5|18|27
 JSON|1|0|0|20
 TOML|1|1|0|9
 --------|--------|--------|--------|--------
-SUM:|263|946|2457|8389
+SUM:|263|943|2457|8398
