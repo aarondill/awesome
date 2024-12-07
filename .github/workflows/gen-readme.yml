@@ -36,7 +36,7 @@ jobs:
         uses: djdefi/cloc-action@6
         with:
           options: --md --report-file=cloc.md
-      - run: cat cloc.md >> README.md
+      - run: cat cloc.md >> README.md && rm cloc.md
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore: Generate README"
