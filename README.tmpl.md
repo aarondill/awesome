@@ -58,7 +58,3 @@ The configuration should handle this without issue.
 ```shell
 startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
 ```
-
-### Lines of code
-
-<!-- This is generated via github workflow -->
