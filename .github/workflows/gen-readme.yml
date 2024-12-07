@@ -30,7 +30,7 @@ jobs:
       - name: CLOC
         uses: djdefi/cloc-action@6
         with:
-          options: --md --report-file=cloc.md
+          options: --md --report-file=cloc.md --hide-rate
         # Note: initial newline is required because files don't end with one
       - run: |
           printf '\n%s\n' '### Lines of code' >> README.md
