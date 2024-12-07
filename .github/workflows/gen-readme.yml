@@ -1,6 +1,12 @@
 name: Generate README
 on:
   push:
+    branches: [main]
+    paths:
+      - "README.md" # This isn't needed, but it's a good sanity check
+      - "README.tmpl.md"
+      - "setup.lua"
+  pull_request:
     paths:
       - "README.md" # This isn't needed, but it's a good sanity check
       - "README.tmpl.md"
@@ -26,6 +32,11 @@ jobs:
       - run: sudo ln -sf /usr/bin/lua5.3 /usr/bin/lua
       - name: Generate README
         run: ./scripts/gen-readme
+      - name: CLOC
+        uses: djdefi/cloc-action@6
+        with:
+          options: --md --report-file=cloc.md
+      - run: cat cloc.md >> README.md
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore: Generate README"
