@@ -32,7 +32,8 @@ jobs:
         with:
           options: --md --report-file=cloc.md
         # Note: initial newline is required because files don't end with one
-      - run: printf '\n%s\n' '### Lines of code' >> README.md
+      - run: |
+          printf '\n%s\n' '### Lines of code' >> README.md
           cat cloc.md >> README.md
           rm cloc.md
       - uses: stefanzweifel/git-auto-commit-action@v4
