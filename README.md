@@ -108,17 +108,22 @@ The configuration should handle this without issue.
 
 ```shell
 startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
-```cloc|github.com/AlDanial/cloc v 1.96  T=0.38 s (695.4 files/s, 31155.7 lines/s)
+```
+
+### Lines of code
+
+<!-- This is generated via github workflow -->cloc|github.com/AlDanial/cloc v 1.96  T=0.38 s (695.1 files/s, 30999.9 lines/s)
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
 Lua|169|869|2357|7629
 SVG|84|8|23|474
-Markdown|2|42|3|126
+Markdown|3|46|4|152
 YAML|4|17|55|100
 Bourne Again Shell|2|5|18|27
 JSON|1|0|0|20
 TOML|1|1|0|9
+Text|1|0|0|4
 --------|--------|--------|--------|--------
-SUM:|263|942|2456|8385
+SUM:|265|946|2457|8415
