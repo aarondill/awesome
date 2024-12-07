@@ -1,0 +1,4 @@
+     100 files     200 files     278 text files.
+classified 264 filesDuplicate file check 264 files (243 known unique)Unique:      100 files                                          Unique:      200 files                                               263 unique files.                              
+Counting:  100Counting:  200      54 files ignored.
+Wrote cloc.md
