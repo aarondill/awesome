@@ -40,3 +40,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore: Generate README"
+          file_pattern: README.md
