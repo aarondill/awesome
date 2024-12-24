@@ -1,4 +1,4 @@
-<!--- This is a generated file. Do not edit it directly. Edit the template instead. -->
+<!-- This file is generated from README.tmpl.md -->
 ## Theme for [AwesomeWM](https://awesomewm.org/)
 
 ### Original design by [PapyElGringo](https://github.com/PapyElGringo). Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
@@ -33,57 +33,7 @@ note: LGI is required. This may need to be installed manually.
 
 <!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
 
-- Arch:
-  - [awesome](https://awesomewm.org/): AwesomeWM
-  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
-  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
-  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
-  - [flameshot](https://flameshot.org): Screenshot tool
-  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
-  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
-  - [libinput](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
-  - [libpulse](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
-  - [network-manager-applet](https://apps.gnome.org): Network - System Tray
-  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
-  - [pacutils](https://github.com/andrewgregory/pacutils): Get update count
-  - [pasystray](https://github.com/christophgysin/pasystray): Audio system tray
-  - [picom](https://github.com/yshui/picom): Compositor
-  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
-  - [polkit-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
-  - [qt5-styleplugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
-  - [rofi-git](https://github.com/davatorium/rofi): Window switcher and application launcher - Git Version has some fixes
-  - [ttf-roboto](https://fonts.google.com/specimen/Roboto): The primary font
-  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
-  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
-  - [xorg-xrandr](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
-  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
-
-- Debian / Ubuntu:
-  - [awesome](https://awesomewm.org/): AwesomeWM
-  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
-  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
-  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
-  - [flameshot](https://flameshot.org): Screenshot tool
-  - [fonts-roboto](https://fonts.google.com/specimen/Roboto): The primary font
-  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
-  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
-  - [libinput-tools](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
-  - [network-manager-gnome](https://apps.gnome.org): Network - System Tray
-  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
-  - [pasystray](https://github.com/christophgysin/pasystray): Audio - System Tray
-  - [picom](https://github.com/yshui/picom): Compositor
-  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
-  - [policykit-1-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
-  - [pulseaudio-utils](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
-  - [qt5-style-plugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
-  - [rofi](https://github.com/davatorium/rofi): Window switcher and application launcher
-  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
-  - [x11-xserver-utils](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
-  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
-  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
-
+{{program-list}}
 
 ## Set the theme (optional)
 
@@ -109,7 +59,9 @@ The configuration should handle this without issue.
 ```shell
 startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
 ```
+
 ### Lines of code
+<sup><sub>Generated at commit 676634c4026687c6b2b672ee0604052c84a768f8</sub></sup>
 cloc|github.com/AlDanial/cloc v 1.96
 --- | ---
 
@@ -118,9 +70,9 @@ Language|files|blank|comment|code
 Lua|169|869|2357|7631
 SVG|84|8|23|474
 Markdown|2|43|3|140
-YAML|4|17|56|99
+YAML|4|17|52|116
 Bourne Again Shell|2|5|18|27
 JSON|1|0|0|20
 TOML|1|1|0|9
 --------|--------|--------|--------|--------
-SUM:|263|943|2457|8400
+SUM:|263|943|2453|8417
