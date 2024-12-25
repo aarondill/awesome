@@ -179,15 +179,19 @@ local globalKeys = gtable.join(
   end, { description = "Start/Stop autorandr", group = "awesome" }),
 
   gkey({ "Control" }, "Print", function()
-    local client
+    -- if i couldn't spawn xdotool, use the focused client
+    local client = capi.client.focus
     local process = Gio.Subprocess.new({ "xdotool", "selectwindow" }, { "STDOUT_PIPE", "STDERR_SILENCE" })
     if process then
       local stdout = assert(process:communicate())
-      assert(stdout ~= false, "unreachable")
+      assert(stdout ~= false, "unreachable code")
+      local status, err = process:wait_check()
+      if not status then
+        assert(err.code == 1, err)
+        return notifs.warn("cancelled screenshot")
+      end
       local window_id = assert(tonumber(stdout.data), "No window id in stdout")
       client = stream.new(capi.client.get()):filter(function(c) return c.window == window_id end):next()
-    else -- if i couldn't spawn xdotool, use the focused client
-      client = capi.client.focus
     end
     if not client then notifs.warn("Could not find a client to take a window screenshot!") end
     return apps.open.screenshot(client, copy_to_clipboard)
