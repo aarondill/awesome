@@ -19,7 +19,7 @@ local function rofi_command(mode)
     tostring(xres.get_dpi()),
     "-width",
     tostring(xres.apply_dpi(400)),
-    "-theme",
+    "-config",
     path.resolve(config_file_dir, "rofi", "config.rasi"),
     "-show",
   }
