@@ -1,12 +1,11 @@
-local path = require("util.path")
 local require = require("util.rel_require")
 
 local ascreen = require("awful.screen")
-local assertions = require("util.types.assertions")
 local beautiful = require("beautiful")
 local config_file_dir = require(..., "apps.conffile_dir") ---@module "configuration.apps.conffile_dir"
+local path = require("util.path")
 local strings = require("util.strings")
-local write_async = require("util.file.write_async")
+local write_sync = require("util.file.sync.write_sync")
 
 ---@param p string?
 ---@param v string|number|boolean?
@@ -36,11 +35,9 @@ do
 end
 
 ---Write a new rofi config to `require("configuration.apps.conffile_dir") .. "/rofi/dynamic.rasi"`
----Note: this is async!
+---Note: this is sync. It has to be so that the file is ready before rofi is started.
 ---@param opts DynamicRofiWriteOptions?
----@param cb fun(error?: userdata)? function to call when done.
-local function write_conf(opts, cb)
-  assertions.iscallable(cb, true, "cb")
+local function write_conf(opts)
   opts = opts or {}
   local panel_height = opts.panel_height
   if not panel_height then
@@ -63,7 +60,7 @@ local function write_conf(opts, cb)
     "// vim" .. ":ft=css commentstring=//%s:", -- hack to stop vim from processing this modeline here
   })
 
-  return write_async(path.resolve(config_file_dir, "rofi", "dynamic.rasi"), conf, cb) -- this file should be ignored
+  assert(write_sync(path.resolve(config_file_dir, "rofi", "dynamic.rasi"), conf)) -- this file should be ignored
 end
 
 return write_conf
