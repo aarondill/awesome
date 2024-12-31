@@ -44,8 +44,8 @@ require("util.dir_require")("module") -- Init all modules
 
 -- Setup all configurations
 -- require("configuration.apps.compositor").autostart() -- Start the compositor on startup
-require("gears.timer").delayed_call(function() -- Wait until screens are setup
-  require("configuration.rofi_dynamic")() -- Async setup of rofi for current theme
+require("gears.timer").delayed_call(function()
+  require("configuration.rofi_dynamic")() -- Setup of rofi for current theme (sync)
 end)
 require("widget.launcher") -- Sets up menubar.utils.term
 require("configuration.keys.global") -- Setup the global keys
