@@ -65,6 +65,9 @@ capi.client.connect_signal("tagged", callback) -- Used to update when a client i
 capi.tag.connect_signal("untagged", callback) -- Used to update when a client is moved *off* of a tag (on the old tag)
 capi.tag.connect_signal("property::selected", callback) -- Used to update when a tag is selected
 
+--- This should be reassigned!
+function DesktopWidget:update() end
+
 ---@param opts DesktopWidgetOpts
 function DesktopWidget.new(opts)
   local self = wibox({
@@ -77,6 +80,9 @@ function DesktopWidget.new(opts)
     bg = opts.bg or "#00000000", -- Default to transparent
     visible = false, -- If true, then the widget may render over clients on startup.
   })
+  self:connect_signal("property::visible", function() self:update() end)
+  gtimer.delayed_call(function() self:update() end) -- Wait until update has been registered
+
   insert_instance(opts.screen, self)
   gtable.crush(self, DesktopWidget) -- DON'T USE a metatable here, it breaks __index
   callback(opts.screen) -- Check if this widget should be visible

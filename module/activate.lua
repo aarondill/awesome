@@ -14,6 +14,7 @@ local ActivateWidget = {}
 ---@field screen AwesomeScreenInstance
 
 ---@param opts ActivateWidgetOpts
+---@return ActivateWidget
 function ActivateWidget.new(opts)
   local self = desktop.new({
     screen = opts.screen,
@@ -31,9 +32,6 @@ function ActivateWidget.new(opts)
     }),
   })
   gtable.crush(self, ActivateWidget) -- DON'T USE a metatable here, it breaks __index
-
-  self:connect_signal("property::visible", function() self:update() end)
-  self:update() -- The initial update
 
   return self
 end
