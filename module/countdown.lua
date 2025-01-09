@@ -3,7 +3,6 @@ local ascreen = require("awful.screen")
 local desktop = require("widget.desktop")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local tbl_deep_extend = require("util.tables.deep_extend")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 
@@ -26,7 +25,10 @@ local CountdownWidget = {
 ---@field bg? string
 
 local instances = setmetatable({}, { __mode = "k" }) ---@type table<CountdownWidget, true>
+---@param opts CountdownWidgetOpts?
+---@return CountdownWidget
 function CountdownWidget.new(opts)
+  opts = opts or {}
   local self = desktop.new({
     screen = opts.screen,
     fg = opts.fg,
@@ -42,10 +44,6 @@ function CountdownWidget.new(opts)
   })
   gtable.crush(self, CountdownWidget) -- DON'T USE a metatable here, it breaks __index
   gtable.crush(self, opts)
-
-  self:connect_signal("property::visible", function() self:update() end)
-  self:update() -- The initial update
-
   instances[self] = true
   return self
 end
