@@ -175,7 +175,7 @@ local globalKeys = gtable.join(
   gkey({ modkey, "Shift" }, "Print", function()
     local autorandr = require("module.autorandr")
     autorandr.toggle_listener()
-    return toggle_notif("autorandr", autorandr.is_active)
+    return toggle_notif("autorandr", autorandr.is_active())
   end, { description = "Start/Stop autorandr", group = "awesome" }),
 
   gkey({ "Control" }, "Print", function()
