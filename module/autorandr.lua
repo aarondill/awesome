@@ -40,7 +40,6 @@ capi.awesome.connect_signal("exit", function()
   local sig = capi.awesome.unix_signal.SIGTERM or 15
   return capi.awesome.kill(-listener_pid, sig)
 end)
-M.is_active = false
 
 ---Start autorandr-launcher if not already running
 ---Note that just because this returned an error doesn't necisarily mean that nothing changed!
@@ -68,8 +67,14 @@ function M.start_listener()
   local info, err = spawn.nosn({ "autorandr-launcher" }, { on_failure_callback = autorandr_failure_handler })
   if not info then return nil, err end
   listener_pid = info.pid
-  M.is_active = true
   return info, nil
+end
+
+function M.is_active()
+  if not listener_pid then return false end
+  if capi.awesome.kill(listener_pid, 0) then return true end
+  listener_pid = nil
+  return false
 end
 
 ---Stop a running autorandr-launcher
@@ -83,12 +88,11 @@ function M.stop_listener()
     M._subscription_ids.LidIsClosed = nil
   end
 
-  if not listener_pid then return nil, "autorandr-launcher is not running!" end
+  if not M.is_active() then return nil, "autorandr-launcher is not running!" end
   local sig = capi.awesome.unix_signal.SIGTERM or 15
-  local suc = capi.awesome.kill(listener_pid, sig)
+  local suc = capi.awesome.kill(listener_pid or -1, sig)
   if not suc then return nil, "failed to stop autorandr-launcher" end
   listener_pid = nil
-  M.is_active = false
   return true
 end
 
@@ -96,7 +100,7 @@ end
 ---@return boolean? success if false or nil, something went wrong
 ---@return string? error
 function M.toggle_listener()
-  if M.is_active then return M.stop_listener() end
+  if M.is_active() then return M.stop_listener() end
   local info, err = M.start_listener()
   return info ~= nil, err
 end
