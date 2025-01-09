@@ -24,8 +24,8 @@ local M = {
     debian = { "apt", "install", "--" },
     arch = {
       --- Used for aur packages
-      _extra = { "yay", "-S", "--" },
-      _repo = { "pacman", "-S", "--" },
+      _extra = { "yay", "-S", "--needed", "--" },
+      _repo = { "pacman", "-S", "--needed", "--" },
     },
   },
 
