@@ -33,17 +33,23 @@ jobs:
           [ -f README.tmpl.md ] || cp README.md README.tmpl.md
           printf '%s\n' "<!-- This file is generated from README.tmpl.md -->" > README.md
           cat README.tmpl.md >> README.md
+
       - name: CLOC
         if: ${{ steps.commit-count.outcome == 'success' }}
-        uses: djdefi/cloc-action@6
-        with:
-          options: --md --report-file=cloc.md --hide-rate
-        # Note: initial newline is required because files don't end with one
+        uses: docker://aldanial/cloc
+        with: # Exclude YAML to avoid counting lock files
+          args: ${{ github.sha }} --md --report-file=cloc.md --hide-rate --exclude-lang=YAML
+
+      - name: output cloc.md
+        if: ${{ steps.commit-count.outcome == 'success' }}
+        run: cat cloc.md
+
+      # Note: initial newline is required because git files don't end with one
       - name: Update README
         if: ${{ steps.commit-count.outcome == 'success' }}
         run: |
           printf '\n' >> README.md
-          printf '%s\n' '### Lines of code' "<sup><sub>Generated at commit $(git rev-parse HEAD)</sub></sup>" >> README.md
+          printf '%s\n' '### Lines of code' "<sup><sub>Generated at commit ${{ github.sha }}</sub></sup>" >> README.md
           cat cloc.md >> README.md
           rm cloc.md
       - name: Commit README
