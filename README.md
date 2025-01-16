@@ -61,18 +61,17 @@ startx "$(which awesome)" -c "<PATH TO THE REPO>/rc.lua"
 ```
 
 ### Lines of code
-<sup><sub>Generated at commit 676634c4026687c6b2b672ee0604052c84a768f8</sub></sup>
-cloc|github.com/AlDanial/cloc v 1.96
+<sup><sub>Generated at commit 4ffd754e5bd7bfc45e33309029d94218f839f963</sub></sup>
+cloc|github.com/AlDanial/cloc v 2.02
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-Lua|169|869|2357|7631
+Lua|170|871|2367|7639
 SVG|84|8|23|474
-Markdown|2|43|3|140
-YAML|4|17|52|116
+Markdown|2|42|3|93
 Bourne Again Shell|2|5|18|27
 JSON|1|0|0|20
 TOML|1|1|0|9
 --------|--------|--------|--------|--------
-SUM:|263|943|2453|8417
+SUM:|260|927|2411|8262
