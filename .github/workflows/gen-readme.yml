@@ -23,13 +23,14 @@ jobs:
 
   generate-cloc:
     needs: generate-package-list
-    runs-on: ubuntu-latest
     permissions: { contents: write }
     uses: aarondill/github-actions/.github/workflows/gen-readme.yml@main
     with:
+      template-file: README.tmp # read from the above temporary file
       commit: false
-      input-file: README.tmp # read from the above temporary file
+
   commit-readme:
+    runs-on: ubuntu-latest
     needs: [generate-cloc, generate-package-list]
     permissions: { contents: write }
     steps:
