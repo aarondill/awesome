@@ -22,12 +22,15 @@ jobs:
         run: ./scripts/gen-readme README.tmpl.md README.tmp
 
   generate-cloc:
+    needs: generate-package-list
+    runs-on: ubuntu-latest
     permissions: { contents: write }
     uses: aarondill/github-actions/.github/workflows/gen-readme.yml@main
     with:
       commit: false
       input-file: README.tmp # read from the above temporary file
   commit-readme:
+    needs: [generate-cloc, generate-package-list]
     permissions: { contents: write }
     steps:
       - uses: stefanzweifel/git-auto-commit-action@v4
