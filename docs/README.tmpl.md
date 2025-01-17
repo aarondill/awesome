@@ -3,7 +3,7 @@
 ### Original design by [PapyElGringo](https://github.com/PapyElGringo). Cloned from [ChrisTitusTech/titus-awesome](https://github.com/ChrisTitusTech/titus-awesome)
 
 This repo is designed to be compatible with AwesomeWM latest (4.3) and the git HEAD.
-I primarily use latest, so this may be undertested on HEAD.
+I primarily use latest, so this may be under-tested on HEAD.
 If you notice any issues, please create an issue or PR!
 
 An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with a performant opinionated keyboard workflow to increase daily productivity and comfort.
@@ -18,8 +18,8 @@ An almost desktop environment made with [AwesomeWM](https://awesomewm.org/) with
 ### `setup.lua`
 
 For convenience, a `setup.lua` script has been provided, simply clone the repository and run `lua ./setup.lua` to auto install dependencies and setup submodules.
-note: Gio is required. Installing `awesome` will install `gio` as a dependency.
-note: LGI is required. This may need to be installed manually.
+Note: GIO is required. Installing `awesome` will install `gio` as a dependency.
+Note: LGI is required. This may need to be installed manually.
 
 ```shell
 > git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
