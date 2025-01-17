@@ -25,19 +25,11 @@ note: LGI is required. This may need to be installed manually.
 > git clone 'https://github.com/aarondill/awesome' ~/.config/awesome
 > pacman -S awesome lua-lgi # REPLACE WITH YOUR PACKAGE MANAGER
 > cd ~/.config/awesome/ && ./setup.lua
-> # run lxappearance to modify theme if so desired
 ```
 
 ### Program List
 
-<!-- This is generated via lua. Note: the full line must match `^%s*{{([%w_-]+)}}%s*$` -->
-
-{{program-list}}
-
-## Set the theme (optional)
-
-Install `lxappearance` to setup the _icon and GTK_ themes
-Note: copy `~/.config/gtk3-0/settings.ini` to `~root/config/gtk3-0/settings.ini` to also show up in applications run as root
+See [packages.md](./docs/packages.md) for a list of packages installed by `setup.lua` and their purpose.
 
 ## Configuration:
 
