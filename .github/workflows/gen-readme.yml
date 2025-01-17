@@ -1,9 +1,36 @@
 name: Generate README
 on:
   push:
-  pull_request: { paths: ["README.md", "README.tmpl.md"] }
+  pull_request: { paths: ["README.md", "README.tmpl.md", "setup.lua"] }
   workflow_dispatch:
 jobs:
-  generate-readme:
+  generate-package-list:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@master
+      - name: Install lgi/dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          # We don't strictly need awesome, but it includes all the dependencies I expect to have
+          # NOTE: If lua5.3 is changed, the below ln must be changed to match
+          packages: awesome lua5.3
+          version: 1.0
+      - run: sudo ln -sf /usr/bin/lua5.3 /usr/bin/lua
+      - name: Generate README
+        # write to a temporary file so that cloc can read it
+        run: ./scripts/gen-readme README.tmpl.md README.tmp
+
+  generate-cloc:
     permissions: { contents: write }
     uses: aarondill/github-actions/.github/workflows/gen-readme.yml@main
+    with:
+      commit: false
+      input-file: README.tmp # read from the above temporary file
+  commit-readme:
+    permissions: { contents: write }
+    steps:
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: Generate README" # Note this is the magic message from gen-readme
+          file_pattern: README.md README.tmpl.md

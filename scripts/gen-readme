@@ -16,8 +16,8 @@ end
 local setup = require("setup")
 local utils = require("scripts.utils")
 
-local readme_template = Gio.File.new_for_path("./README.tmpl.md")
-local readme = Gio.File.new_for_path("./README.md")
+local readme_template = Gio.File.new_for_path(arg[1] or "./README.tmpl.md")
+local readme = Gio.File.new_for_path(arg[2] or "./README.md")
 
 ---@param id string
 ---@param pkgs PackageList
