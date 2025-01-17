@@ -2,22 +2,16 @@
 local lgi = require("lgi")
 local GLib, Gio = lgi.GLib, lgi.Gio
 local script_dir = debug.getinfo(1).source:match("@?(.*/)") or "."
+local script_file = Gio.File.new_for_path(debug.getinfo(1).source:match("@?(.*)"))
+
 ---NOTE: Assumes this script is located in ./scripts/
-local dir = assert(Gio.File.new_for_path(script_dir):get_parent(), "Failed to get root directory")
-assert(dir:query_exists(), "Current directory does not exist")
-assert(GLib.chdir(assert(dir:get_path())) == 0, "Failed to change directory")
----Iterate over lines in a string
-local function ilines(s) ---@param s string
-  if s:sub(-1) ~= "\n" then s = s .. "\n" end
-  return s:gmatch("(.-)\n")
-end
+local root_dir = assert(Gio.File.new_for_path(script_dir):get_parent(), "Failed to get root directory")
+assert(root_dir:query_exists(), "Current directory does not exist")
+assert(GLib.chdir(assert(root_dir:get_path())) == 0, "Failed to change directory")
 
 ---Note: do this *after* changing directory
 local setup = require("setup")
 local utils = require("scripts.utils")
-
-local readme_template = Gio.File.new_for_path(arg[1] or "./README.tmpl.md")
-local readme = Gio.File.new_for_path(arg[2] or "./README.md")
 
 ---@param id string
 ---@param pkgs PackageList
@@ -60,20 +54,6 @@ local function _gen_pkgs(id, pkgs)
   return ("- %s:\n%s\n"):format(display_disto, pkgs_str)
 end
 
----@param template string
----@param data table<string, string>
-local function _template(template, data)
-  local lines = {
-    "<!--- This is a generated file. Do not edit it directly. Edit the template instead. -->",
-  }
-  for line in ilines(template) do
-    line = line:gsub("^%s*{{([%w_-]+)}}%s*$", data)
-    lines[#lines + 1] = line
-  end
-  local contents = table.concat(lines, "\n")
-  return contents
-end
-
 ---@type string[]
 local package_lists = {}
 for id, list in pairs(setup.packages) do
@@ -93,8 +73,10 @@ end
 -- Ensure consistent ordering -- This should sort by the distro, since it's the first part of the header
 table.sort(package_lists)
 
-local data = { ["program-list"] = table.concat(package_lists, "\n") }
-local template = assert(readme_template:load_contents(nil))
-assert(template, "BUG: unreachable")
-local contents = _template(template, data)
-assert(readme:replace_contents(contents, nil, false, Gio.FileCreateFlags.REPLACE_DESTINATION, nil))
+local header_comment = ("<!--- This is a generated file. Do not edit it directly. See %s for more information. -->"):format(
+  root_dir:get_relative_path(script_file)
+)
+print(header_comment)
+for _, line in ipairs(package_lists) do
+  print(line)
+end

@@ -1,0 +1,52 @@
+<!--- This is a generated file. Do not edit it directly. See scripts/gen-package-list for more information. -->
+- Arch:
+  - [awesome](https://awesomewm.org/): AwesomeWM
+  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
+  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
+  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
+  - [flameshot](https://flameshot.org): Screenshot tool
+  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
+  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
+  - [libinput](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
+  - [libpulse](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
+  - [network-manager-applet](https://apps.gnome.org): Network - System Tray
+  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
+  - [pacutils](https://github.com/andrewgregory/pacutils): Get update count
+  - [pasystray](https://github.com/christophgysin/pasystray): Audio system tray
+  - [picom](https://github.com/yshui/picom): Compositor
+  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
+  - [polkit-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
+  - [qt5-styleplugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
+  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [rofi-git](https://github.com/davatorium/rofi): Window switcher and application launcher - Git Version has some fixes
+  - [ttf-roboto](https://fonts.google.com/specimen/Roboto): The primary font
+  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
+  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
+  - [xorg-xrandr](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
+  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
+
+- Debian / Ubuntu:
+  - [awesome](https://awesomewm.org/): AwesomeWM
+  - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
+  - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
+  - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
+  - [flameshot](https://flameshot.org): Screenshot tool
+  - [fonts-roboto](https://fonts.google.com/specimen/Roboto): The primary font
+  - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
+  - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
+  - [libinput-tools](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
+  - [network-manager-gnome](https://apps.gnome.org): Network - System Tray
+  - [numlockx](https://github.com/rg3/numlockx): Enable Numlock on startup
+  - [pasystray](https://github.com/christophgysin/pasystray): Audio - System Tray
+  - [picom](https://github.com/yshui/picom): Compositor
+  - [playerctl](https://github.com/altdesktop/playerctl): Control media players
+  - [policykit-1-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
+  - [pulseaudio-utils](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
+  - [qt5-style-plugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
+  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [rofi](https://github.com/davatorium/rofi): Window switcher and application launcher
+  - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
+  - [x11-xserver-utils](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
+  - [xclip](https://github.com/astrand/xclip): Copy to clipboard
+  - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
+
