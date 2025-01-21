@@ -3,7 +3,6 @@ local require = require("util.rel_require")
 
 local abutton = require("awful.button")
 local aclient = require("awful.client")
-local akeyboard = require("awful.keyboard")
 local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local awful_key = require("awful.key")
@@ -102,5 +101,7 @@ capi.client.connect_signal(
   "request::default_mousebindings",
   function() amouse.append_client_mousebindings(M.buttons) end
 )
-capi.client.connect_signal("request::default_keybindings", function() akeyboard.append_client_keybindings(M.keys) end)
+capi.client.connect_signal("request::default_keybindings", function() -- NOTE: awful.keyboard only exists in v5
+  require("awful.keyboard").append_client_keybindings(M.keys)
+end)
 return M
