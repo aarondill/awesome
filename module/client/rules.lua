@@ -5,13 +5,13 @@ local aplacement = require("awful.placement")
 local arules = require("awful.rules")
 local ascreen = require("awful.screen")
 local capi = require("capi")
-local client_buttons = require(..., "buttons") ---@module "module.client.buttons"
-local client_keys = require("configuration.keys.client")
+local client_config = require("configuration.keys.client")
 local compat = require("util.awesome.compat")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
 local quake = require("module.quake")
 local stream = require("stream")
+local client_buttons, client_keys = client_config.buttons, client_config.keys
 
 ---@class AwesomeClientInstance
 ---@field skip_decoration boolean? Whether to skip decorating the client instance. This is an injected field!

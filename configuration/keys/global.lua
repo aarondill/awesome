@@ -6,6 +6,7 @@ local alayout = require("awful.layout")
 local apps = require("configuration.apps")
 local ascreen = require("awful.screen")
 local atag = require("awful.tag")
+local awful_button = require("awful.button")
 local awful_key = require("awful.key")
 local bind = require("util.bind")
 local capi = require("capi")
@@ -19,6 +20,8 @@ local tags = require("util.tags")
 local throttle = require("util.throttle")
 local widgets = require("util.awesome.widgets")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+
+local M = {}
 
 ---@param str string?
 ---@param cb fun(reason: "exit"|"signal", code: integer)?
@@ -103,7 +106,7 @@ end
 ---Ensure hotkeys shows on the focused screen (default is the current client's screen)
 local function show_help() hotkeys_popup.show_help(nil, ascreen.focused()) end
 -- Key bindings
-local globalKeys = gtable.join(
+M.keys = gtable.join(
   -- Hotkeys
   gkey({ modkey }, "F1", show_help, { description = "Show help", group = "awesome" }),
   gkey({ modkey }, "s", show_help, { description = "Show help", group = "awesome" }),
@@ -323,8 +326,8 @@ local globalKeys = gtable.join(
 )
 
 for _, poweroff in ipairs({ "XF86PowerOff", "XF86PowerDown" }) do
-  globalKeys = gtable.join(
-    globalKeys,
+  M.keys = gtable.join(
+    M.keys,
     gkey(
       {},
       poweroff,
@@ -356,8 +359,8 @@ for i = 1, 9 do
     descr_next_spawned_no_jump = { description = "Move the next spawned client to tag #;don't focus", group = "tag" }
   end
   local num = "#" .. i + 9
-  globalKeys = gtable.join(
-    globalKeys,
+  M.keys = gtable.join(
+    M.keys,
     -- View tag only.
     gkey({ modkey }, num, bind.with_args(tags.show_tag, i), descr_view),
     -- Toggle tag display.
@@ -395,6 +398,23 @@ for i = 1, 9 do
     )
   )
 end
+capi.root.keys(M.keys)
 
-capi.root.keys(globalKeys)
-return globalKeys
+---A typed helper around awful_button.new -- Note: specific to this file
+---@param modKeys string[]
+---@param button integer
+---@param press? fun(): any
+---@param release? (fun(): any)
+local gbutton = function(modKeys, button, press, release)
+  ---Note: the bind is needed because root.buttons doesn't recieve an argument, but client.buttons recieves an AwesomeClientInstance
+  return awful_button.new(modKeys, button, press and bind.with_args(press), release and bind.with_args(release))
+end
+M.buttons = gtable.join( --- Mouse buttons
+  gbutton({ modkey }, 5, throttle(atag.viewnext, delay)),
+  gbutton({ modkey }, 4, throttle(atag.viewprev, delay))
+)
+capi.root.buttons(M.buttons)
+---Note: root.buttons only works over the root client (background). We need to set it for all clients, export this to ./client.lua
+M._client_buttons = M.buttons
+
+return M

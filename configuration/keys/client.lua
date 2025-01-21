@@ -1,12 +1,16 @@
-local capi = require("capi")
 local require = require("util.rel_require")
-local screen = require("util.types.screen")
 
+local abutton = require("awful.button")
 local aclient = require("awful.client")
+local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local awful_key = require("awful.key")
+local global = require(..., "global") ---@module "configuration.keys.global"
 local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
+local screen = require("util.types.screen")
+
+local M = {}
 local modkey = mod.modKey
 ---A typed helper around awful_key.new -- Note: specific to this file
 ---@alias aKeyDataTable {description: string, group: string}
@@ -18,7 +22,7 @@ local modkey = mod.modKey
 local ckey = function(modKeys, key, press, release, data) return awful_key.new(modKeys, key, press, release, data) end
 
 -- Key bindings
-local clientkeys = gtable.join(
+M.keys = gtable.join(
   ckey({ modkey }, "f", function(c)
     c.fullscreen = not c.fullscreen
     c:raise()
@@ -70,4 +74,24 @@ local clientkeys = gtable.join(
 
   ckey({ modkey }, "`", atitlebar.toggle, { description = "toggle top titlebar", group = "client" })
 )
-return clientkeys
+
+M.buttons = gtable.join(
+  abutton({}, 1, function(c) c:emit_signal("request::activate", "mouse_click", { raise = true }) end),
+  abutton({ modkey }, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    amouse.client.move(c)
+  end),
+  abutton({ modkey }, 3, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    amouse.client.resize(c)
+  end),
+  -- ctrl+super+drag = resize client
+  abutton({ modkey, "Control" }, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    amouse.client.resize(c)
+  end),
+  ---Note: root.buttons only works over the root client (background). We need to set it for all clients
+  ---Make sure this doesn't conflict with the above. I don't know what it would do if it did.
+  global._client_buttons
+)
+return M

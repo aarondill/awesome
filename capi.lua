@@ -219,7 +219,6 @@ types.AwesomeRoot = {
   set_call_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, ...: unknown)
   set_newindex_miss_handler = function(handler) end, ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
   ---@param button_table AwesomeButton[]? An array of mouse button bindings objects, or nothing
-  ---@nodiscard
   buttons = function(button_table) end, ---@return AwesomeButton[]?
   ---@param keys_array AwesomeKey[]? An array of key binding objects, or nothing
   keys = function(keys_array) end, ---@return AwesomeKey[]?
