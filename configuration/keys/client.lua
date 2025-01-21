@@ -1,7 +1,9 @@
+local capi = require("capi")
 local require = require("util.rel_require")
 
 local abutton = require("awful.button")
 local aclient = require("awful.client")
+local akeyboard = require("awful.keyboard")
 local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local awful_key = require("awful.key")
@@ -94,4 +96,11 @@ M.buttons = gtable.join(
   ---Make sure this doesn't conflict with the above. I don't know what it would do if it did.
   global._client_buttons
 )
+-- This handles awesome-git
+-- Awesome v4.3 is handled by ../../module/client/rules.lua:62
+capi.client.connect_signal(
+  "request::default_mousebindings",
+  function() amouse.append_client_mousebindings(M.buttons) end
+)
+capi.client.connect_signal("request::default_keybindings", function() akeyboard.append_client_keybindings(M.keys) end)
 return M
