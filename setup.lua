@@ -212,6 +212,13 @@ function M.main()
     { cwd = assert(AR_LAUNCHER_DIR:get_path()) }
   )
 
+  local XOOP_DIR = dir:get_child("./deps/xoop")
+  utils.spawn_check(
+    ("compile Xoop (%s)"):format(dir:get_relative_path(XOOP_DIR)),
+    { "make", "-s" },
+    { cwd = assert(XOOP_DIR:get_path()) }
+  )
+
   print("Setup completed successfully!")
 end
 
