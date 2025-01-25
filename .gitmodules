@@ -16,3 +16,6 @@
 [submodule "deps/lgi-types"]
 	path = deps/lgi-types
 	url = https://github.com/aarondill/lgi-types
+[submodule "deps/xoop"]
+	path = deps/xoop
+	url = https://github.com/m-col/xoop

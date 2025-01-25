@@ -30,6 +30,7 @@ local run_on_startup = {
   { "dbus-update-activation-environment", table.unpack(ENVIRONMENT_EXPORT) }, -- Fix gnome apps taking *forever* to open
   { "xsettingsd", "-c", path.resolve(config_file_dir, "xsettingsd.conf") },
   { polkit }, -- Authentication popup
+  { "xoop", "-x" }, -- Start xoop to allow wrapping the screen (on x axis)
   "diodon", -- Clipboard after closing window
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
