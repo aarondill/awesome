@@ -1,5 +1,6 @@
 local aplacement = require("awful.placement")
 local ascreen = require("awful.screen")
+local capi = require("capi")
 local desktop = require("widget.desktop")
 local gtable = require("gears.table")
 local wibox = require("wibox")
@@ -54,4 +55,7 @@ end
 ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
   ---Assignment is required to avoid garbage collection
   s.activate_box = ActivateWidget.new({ screen = s })
+end)
+capi.screen.connect_signal("property::geometry", function(s) ---@param s AwesomeScreenInstance
+  s.activate_box:update()
 end)
