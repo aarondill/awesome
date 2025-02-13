@@ -13,12 +13,12 @@ local M = {}
 
 local conf_dir = gfile.get_configuration_dir()
 local spawn_args = { "autorandr", "--change", "--default", "default" }
-local spawn_autorandr = throttle(bind.with_args(spawn.nosn, spawn_args, { on_failure_callback = notifs.error }), 2)
+local _spawn_autorandr = throttle(bind.with_args(spawn.nosn, spawn_args, { on_failure_callback = notifs.error }), 2)
 
 ---Run on resume from suspend
 local function suspend_handler(is_before)
   if is_before then return end -- Only run after resume
-  return spawn_autorandr()
+  return _spawn_autorandr()
 end
 local function autorandr_failure_handler(err)
   local dir = path.resolve(conf_dir, "deps", "autorandr", "contrib", "autorandr_launcher")
@@ -41,6 +41,8 @@ capi.awesome.connect_signal("exit", function()
   return capi.awesome.kill(-listener_pid, sig)
 end)
 
+function M.spawn_autorandr() return _spawn_autorandr() end
+
 ---Start autorandr-launcher if not already running
 ---Note that just because this returned an error doesn't necisarily mean that nothing changed!
 ---@return SpawnInfo?
@@ -51,11 +53,11 @@ function M.start_listener()
   M._subscription_ids.LidIsClosed = dbus.properties_changed.subscribe(
     "org.freedesktop.UPower",
     "/org/freedesktop/UPower",
-    spawn_autorandr,
+    _spawn_autorandr,
     "LidIsClosed"
   )
 
-  spawn_autorandr() -- Spawn when starting to ensure correct state (also for startup)
+  _spawn_autorandr() -- Spawn when starting to ensure correct state (also for startup)
 
   if listener_pid then
     local is_alive = capi.awesome.kill(listener_pid, 0) --Note: could fail due to privaliges, but that's fine
