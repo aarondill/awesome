@@ -184,6 +184,9 @@ M.keys = gtable.join(
   gkey({}, "XF86Display", function() --
     return require("module.autorandr").spawn_autorandr()
   end, { description = "Spawn autorandr (fix displays)", group = "awesome" }),
+  gkey({ modkey }, "XF86Display", function() --
+    return require("module.autorandr").spawn_autorandr("common")
+  end, { description = "Clone displays", group = "awesome" }),
 
   gkey({ "Control" }, "Print", function()
     -- if i couldn't spawn xdotool, use the focused client
