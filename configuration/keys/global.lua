@@ -122,6 +122,7 @@ M.keys = gtable.join(
   gkey({ modkey }, "r", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ altkey }, "space", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ modkey }, "p", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
+  gkey({}, "XF86Favorites", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ modkey }, "w", bind.with_args(apps.open.rofi, "window"), { description = "Window Picker", group = "awesome" }),
 
   -- Tag management
