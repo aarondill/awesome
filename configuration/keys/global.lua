@@ -180,6 +180,9 @@ M.keys = gtable.join(
     autorandr.toggle_listener()
     return toggle_notif("autorandr", autorandr.is_active())
   end, { description = "Start/Stop autorandr", group = "awesome" }),
+  gkey({}, "XF86Display", function() --
+    return require("module.autorandr").spawn_autorandr()
+  end, { description = "Spawn autorandr (fix displays)", group = "awesome" }),
 
   gkey({ "Control" }, "Print", function()
     -- if i couldn't spawn xdotool, use the focused client
