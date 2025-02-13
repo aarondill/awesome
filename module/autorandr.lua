@@ -3,10 +3,12 @@ local bind = require("util.bind")
 local capi = require("capi")
 local dbus = require("util.dbus")
 local gfile = require("gears.filesystem")
+local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local spawn = require("util.spawn")
 local suspend_listener = require("util.suspend-listener")
+local tables = require("util.tables")
 local throttle = require("util.throttle")
 
 local M = {}
@@ -41,7 +43,12 @@ capi.awesome.connect_signal("exit", function()
   return capi.awesome.kill(-listener_pid, sig)
 end)
 
-function M.spawn_autorandr() return _spawn_autorandr() end
+---@param mode string? the mode to load, or nil to auto-detect. Note: this should almost never be used!
+function M.spawn_autorandr(mode)
+  local extra = mode and { "--load", mode } or { "--change" }
+  local args = { "autorandr", "--default", "default", table.unpack(extra) }
+  return spawn.nosn(args, { on_failure_callback = notifs.error })
+end
 
 ---Start autorandr-launcher if not already running
 ---Note that just because this returned an error doesn't necisarily mean that nothing changed!
