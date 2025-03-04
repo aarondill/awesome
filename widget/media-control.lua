@@ -28,9 +28,13 @@ local defaults = {
   refresh_rate = 10,
   ---The MPRIS name of the player to search for (playerctl -p NAME), empty for first available player
   name = "",
+  ---@type string|fun(info: MediaControl.info): string
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
-  format = "{title} | {artist}",
+  format = function(info)
+    if info.artist == "" then return info.title end
+    return info.title .. " | " .. info.artist
+  end,
   ---The maximum width of the widget text (px). Set to 0 for no limit.
   max_width = dpi(70),
   ---Speed to scroll the widget text.
@@ -209,15 +213,25 @@ function MediaControl:info(cb)
     local i = 1
     for line in stdout:gmatch("([^\n]*)\n?") do -- Order is defined by variables[]
       local prop = variables[i]
-      if #line == 0 then -- Empty lines
-        -- Transform camel case to lower case words -- albumArtist -> album artist
-        -- Source: https://love2d.org/forums/viewtopic.php?t=81128
-        line = "Unknown " .. prop:gsub(".%f[%l]", " %1"):gsub("%l%f[%u]", "%1 "):lower()
-      end
-      info[prop] = line
+      info[prop] = line -- Empty lines are assigned as empty strings
       i = i + 1
     end
     cb(info)
+  end)
+end
+
+function MediaControl:_format(info)
+  local f = self.format
+  if type(f) == "function" then return f(info) end
+  return string.gsub(f, "{([^}]*)}", function(k) --
+    local v = info[k]
+    if v == nil then return "{" .. k .. "}" end -- Unknown property
+    if v == "" then
+      -- Transform camel case to lower case words -- albumArtist -> album artist
+      -- Source: https://love2d.org/forums/viewtopic.php?t=81128
+      v = "Unknown " .. k:gsub(".%f[%l]", " %1"):gsub("%l%f[%u]", "%1 "):lower()
+    end
+    return v
   end)
 end
 
@@ -226,7 +240,7 @@ function MediaControl:update_widget()
     -- Status unavailable? Media Player isn't active, hide the widget
     if not info or not info.status then return self:hide_widget() end
     self:update_widget_icon(info.status)
-    local str = string.gsub(self.format, "{([^}]*)}", info)
+    local str = self:_format(info)
     self:update_widget_text(str)
   end)
 end
