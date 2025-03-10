@@ -119,6 +119,12 @@ M.keys = gtable.join(
     aclient.focus.byidx(-1)
   end, { description = "Focus previous by index", group = "client" }),
 
+  gkey({ modkey }, "u", function()
+    local n = require("naughty")
+    local r = (n.notification_closed_reason and n.notification_closed_reason.dismissed_by_user) -- V5
+      or n.notificationClosedReason.dismissedByUser -- V4.3
+    return n.destroy_all_notifications(nil, r)
+  end, { description = "Clear All Notifications", group = "awesome" }),
   gkey({ modkey }, "r", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ altkey }, "space", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
   gkey({ modkey }, "p", apps.open.rofi, { description = "Main Menu", group = "awesome" }),
