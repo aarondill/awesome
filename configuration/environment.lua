@@ -1,13 +1,29 @@
 local gfile = require("gears.filesystem")
-local GLib = require("lgi").GLib
+local gstring = require("gears.string")
+local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
+local lgi = require("lgi")
+local notifs = require("util.notifs")
 local path = require("util.path")
+local read_async = require("util.file.read_async")
+local shell_escape = require("util.command.shell_escape")
+local spawn = require("util.spawn")
+local stream = require("stream")
+local GLib, Gio = lgi.GLib, lgi.Gio
+
+---@type table<string, boolean>
+---A hack to avoid setting the same env vars twice (thus overwriting my own manual settings)
+local already_set = {}
 
 ---@param env string
 ---@param val (string|false)? Note: if false or nil is passed, unsets
 ---@param overwrite boolean? default to true
 ---@return boolean changed
 local function setenv(env, val, overwrite)
+  if overwrite ~= false then
+    if already_set[env] then return false end
+    already_set[env] = true
+  end
   if overwrite == nil then overwrite = true end
   if val then return GLib.setenv(env, val, overwrite) end
   if not os.getenv(env) then return false end
@@ -59,4 +75,52 @@ local function setup_environment()
   })
 end
 
-return handle_error(setup_environment)
+local function diff_environment(cb)
+  ---If we just came from a terminal, don't do anything
+  ---This also covers restarts, since we will have unset this variable
+  ---NOTE: This has to run before setup_environment, otherwise the environment variables won't be set
+  if os.getenv("SHLVL") then return end
+  --- Get environment from a shell
+  local tmpfile = Gio.File.new_tmp()
+  local function cleanup()
+    if tmpfile then tmpfile:delete_async(GLib.PRIORITY_DEFAULT) end
+    tmpfile = nil
+  end
+
+  assert(tmpfile, "Failed to create tmpfile")
+  local cat = lgi.GLib.find_program_in_path("cat")
+  assert(cat, "cat not found")
+  --- Source the profile, then read exported environment variables from /proc/self/environ. Note: `cat` is a subprocess, this is important so that the environment variables are present.
+  local cmd = ". ~/.profile && "
+    .. shell_escape({ cat, "/proc/self/environ" })
+    .. " >| "
+    .. shell_escape(assert(tmpfile:get_path()))
+  _ = spawn.async_success({ "sh", "-ic", cmd }, function()
+    return read_async(tmpfile, function(content, err)
+      cleanup()
+      assert(not err, "Failed to read env file")
+      local env = {} ---@type table<string, string>
+      for def in content:gmatch("([^\0]+)\0") do
+        local k, v = def:match("^([^=]+)=(.*)$")
+        --- These are just extra noise, they won't be used anyway
+        --- If it's the same, don't do anything
+        if not gstring.startswith(k, "BASH_FUNC_") and os.getenv(k) ~= v then env[k] = v end
+      end
+      do ---Technically not needed, but nicer output
+        for k, _ in pairs(env) do
+          if already_set[k] then env[k] = nil end
+        end
+        if next(env) == nil then return end -- No changes
+        local keys = gtable.keys(env)
+        local output = table.concat(gtable.map(function(k) return k .. "=" .. env[k] end, keys), "\n")
+        notifs.normal(output, { title = "Updated environment from shell" })
+      end
+      return setenv_tbl(env)
+    end)
+  end, { on_failure_callback = cleanup }) or cleanup()
+end
+
+return handle_error(function()
+  diff_environment()
+  setup_environment()
+end)
