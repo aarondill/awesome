@@ -80,13 +80,17 @@ function M.table_keys(t)
 end
 
 ---@param cmd string[]
----@param opts? {cwd?: string}
+---@param opts? {cwd?: string|GFile}
 ---@return GSubprocess
 function M.spawn(cmd, opts)
   local Gio = require("lgi").Gio
   opts = opts or {}
   local launcher = Gio.SubprocessLauncher.new(Gio.SubprocessFlags.STDIN_INHERIT)
-  if opts.cwd then launcher:set_cwd(opts.cwd) end
+  local cwd = opts.cwd
+  if cwd then
+    if type(cwd) ~= "string" then cwd = assert(cwd:get_path(), "Could not get path of cwd") end
+    launcher:set_cwd(cwd)
+  end
   return assert(launcher:spawnv(cmd))
 end
 
@@ -110,7 +114,7 @@ end
 
 ---@param action string
 ---@param cmd string[]
----@param opts? {cwd?: string}
+---@param opts? {cwd?: string|GFile}
 function M.spawn_check(action, cmd, opts)
   M.printf("Running %s...", action)
   M.printf("> %s", M.shell_escape(cmd))
