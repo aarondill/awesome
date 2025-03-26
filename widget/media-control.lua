@@ -21,28 +21,35 @@ local defaults = {
   ---Icon to show when media is stopped (no media)
   stop_icon = beautiful.stop, ---@type string?
   ---Whether to hide the widget when no media is playing
+  ---@type boolean?
   autohide = true,
   ---How often to update the widget
   ---Higher refresh_rate == less CPU requirements
   ---Lower refresh_rate == better Widget response time
+  ---@type number?
   refresh_rate = 10,
   ---The MPRIS name of the player to search for (playerctl -p NAME), empty for first available player
+  ---@type string?
   name = "",
-  ---@type string|fun(info: MediaControl.info): string
+  ---@type nil|string|fun(info: MediaControl.info): string
   ---The format to set the widget text to. {text} escapes are recogized
   --- Accepted properties are the values of MediaControl.info. If a property is not defined, it will not be changed (ie, '{not-exist}' expands to '{not-exist}').
   format = function(info)
     if info.artist == "" then return info.title end
     return info.title .. " | " .. info.artist
   end,
+  ---@type number?
   ---The maximum width of the widget text (px). Set to 0 for no limit.
   max_width = dpi(70),
+  ---@type number?
   ---Speed to scroll the widget text.
   scroll_speed = 20,
+  ---@type number?
   ---The fps to render the scrolling widget at
   fps = 15,
+  ---@type number?
   ---Number of seconds between song changes while scrolling (ignores inputs between).
-  debounce = 0.5, ---@type number
+  debounce = 0.5,
 }
 
 ---@class MediaControl :MediaControl.args
