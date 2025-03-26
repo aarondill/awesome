@@ -189,12 +189,22 @@ function M.install_packages(id)
   end
   assert(M.commands[id], ("Unsupported OS: %s. Use --no-install to skip installing packages"):format(id))
   if id == "arch" then --- Use the ./PKGBUILD to install packages (so they are dependencies)
-    local tmpdir = Gio.File.new_for_path(assert(GLib.Dir.make_tmp()))
-    local pkgfile = Gio.File.new_for_path("./PKGBUILD")
-    pkgfile:copy(tmpdir:get_child("PKGBUILD"), "ALL_METADATA", nil, nil) -- Copy PKGBUILD to tmpdir
-    local cmd = { "makepkg", "-sirc", "--dir", tmpdir:get_path() }
+    local tmpdir = Gio.File.new_for_path("./tmpdir." .. (os.time() % 1000))
+    tmpdir:make_directory_with_parents() -- Create tmpdir
+    Gio.File.new_for_path("./PKGBUILD"):copy(tmpdir:get_child("PKGBUILD"), "ALL_METADATA", nil, nil) -- Copy PKGBUILD to tmpdir
+    local yay = GLib.find_program_in_path("yay")
+    local cmd
+    if yay then
+      cmd = { "yay", "-Bi", "--", tmpdir:get_path() }
+    else
+      cmd = { "makepkg", "-sirc", "--dir", tmpdir:get_path() }
+      log.warn("yay not found, falling back to makepkg. AUR packages will not be installed!")
+    end
     local ok, err = pcall(utils.spawn_check, "install packages", cmd, { cwd = tmpdir })
-    tmpdir:delete()
+    do
+      local ok, err = pcall(utils.spawn_check, { "rm", "-rf", tmpdir:get_path() })
+      if not ok then log.warn("Failed to remove tmpdir: " .. tostring(err)) end
+    end
     assert(ok, err)
   else
     local cmd = assert(_get_install_cmd(id), "BUG: Failed to construct command")
