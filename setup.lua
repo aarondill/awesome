@@ -188,8 +188,18 @@ function M.install_packages(id)
     id = M.aliases[id]
   end
   assert(M.commands[id], ("Unsupported OS: %s. Use --no-install to skip installing packages"):format(id))
-  local cmd = assert(_get_install_cmd(id), "BUG: Failed to construct command")
-  utils.spawn_check("install packages", cmd)
+  if id == "arch" then --- Use the ./PKGBUILD to install packages (so they are dependencies)
+    local tmpdir = Gio.File.new_for_path(assert(GLib.Dir.make_tmp()))
+    local pkgfile = Gio.File.new_for_path("./PKGBUILD")
+    pkgfile:copy(tmpdir:get_child("PKGBUILD"), "ALL_METADATA", nil, nil) -- Copy PKGBUILD to tmpdir
+    local cmd = { "makepkg", "-sirc", "--dir", tmpdir:get_path() }
+    local ok, err = pcall(utils.spawn_check, "install packages", cmd, { cwd = tmpdir })
+    tmpdir:delete()
+    assert(ok, err)
+  else
+    local cmd = assert(_get_install_cmd(id), "BUG: Failed to construct command")
+    utils.spawn_check("install packages", cmd)
+  end
 end
 
 function M.main()
