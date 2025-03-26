@@ -195,14 +195,14 @@ function M.install_packages(id)
     local yay = GLib.find_program_in_path("yay")
     local cmd
     if yay then
-      cmd = { "yay", "-Bi", "--", tmpdir:get_path() }
+      cmd = { "yay", "-Bi", "--needed", "--", tmpdir:get_path() }
     else
       cmd = { "makepkg", "-sirc", "--dir", tmpdir:get_path() }
       log.warn("yay not found, falling back to makepkg. AUR packages will not be installed!")
     end
     local ok, err = pcall(utils.spawn_check, "install packages", cmd, { cwd = tmpdir })
     do
-      local ok, err = pcall(utils.spawn_check, { "rm", "-rf", tmpdir:get_path() })
+      local ok, err = pcall(utils.spawn_check, "cleanup", { "rm", "-rf", tmpdir:get_path() })
       if not ok then log.warn("Failed to remove tmpdir: " .. tostring(err)) end
     end
     assert(ok, err)
