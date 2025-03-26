@@ -75,7 +75,7 @@ local function setup_environment()
   })
 end
 
-local function diff_environment(cb)
+local function diff_environment()
   ---If we just came from a terminal, don't do anything
   ---This also covers restarts, since we will have unset this variable
   ---NOTE: This has to run before setup_environment, otherwise the environment variables won't be set
@@ -95,7 +95,7 @@ local function diff_environment(cb)
     .. shell_escape({ cat, "/proc/self/environ" })
     .. " >| "
     .. shell_escape(assert(tmpfile:get_path()))
-  _ = spawn.async_success({ "sh", "-ic", cmd }, function()
+  return spawn.async_success({ "sh", "-ic", cmd }, function()
     return read_async(tmpfile, function(content, err)
       cleanup()
       assert(not err, "Failed to read env file")
@@ -117,7 +117,7 @@ local function diff_environment(cb)
       end
       return setenv_tbl(env)
     end)
-  end, { on_failure_callback = cleanup }) or cleanup()
+  end, { on_failure_callback = cleanup, exit_callback_err = cleanup })
 end
 
 return handle_error(function()
