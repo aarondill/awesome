@@ -34,7 +34,7 @@ function M.clickable_if(cmd, replace_widget, replace_in, cb)
   local cmdname = type(cmd) == "string" and cmd or assert(cmd[1], "no command specified")
   local path = GLib.find_program_in_path(cmdname)
   if not path then return replace_widget end
-  cmd = type(cmd) == "table" and { cmdname, table.unpack(cmd) } or { cmdname }
+  cmd = type(cmd) == "table" and { cmdname, table.unpack(cmd, 2) } or { cmdname }
   local callback = cb and bind.with_args(cb, cmd, replace_widget, replace_in)
     or bind.with_args(require("util.spawn").spawn, cmd)
   local buttons = abutton({}, 1, nil, callback)
