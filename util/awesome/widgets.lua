@@ -28,17 +28,19 @@ end
 ---@param replace_widget table
 ---@param replace_in table
 ---@param cb? fun(cmd:string[], replace_widget:table, replace_in:table) defaults to spawning cmd
+---@return widget clickable container/widget
 function M.clickable_if(cmd, replace_widget, replace_in, cb)
   if not cmd or not replace_widget or not replace_in then error("clickable_if requires 3 arguments") end
   local cmdname = type(cmd) == "string" and cmd or assert(cmd[1], "no command specified")
   local path = GLib.find_program_in_path(cmdname)
-  if not path then return end
+  if not path then return replace_widget end
   cmd = type(cmd) == "table" and { cmdname, table.unpack(cmd) } or { cmdname }
   local callback = cb and bind.with_args(cb, cmd, replace_widget, replace_in)
     or bind.with_args(require("util.spawn").spawn, cmd)
   local buttons = abutton({}, 1, nil, callback)
   local clickable = clickable_container(replace_widget, buttons)
-  return M.replace(replace_in, replace_widget, clickable)
+  M.replace(replace_in, replace_widget, clickable)
+  return clickable
 end
 
 ---@alias widget table
