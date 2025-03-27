@@ -7,6 +7,7 @@ local QuakeButton = require("widget.quake-button")
 local Run_prompt = require("widget.run-prompt")
 local TagList = require("widget.tag-list.fancy")
 local TaskList = require("widget.task-list")
+local abutton = require("awful.button")
 local apps = require("configuration.apps")
 local ascreen = require("awful.screen")
 local awful_wibar = require("awful.wibar")
@@ -14,6 +15,7 @@ local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
 local distro = require("widget.distro")
 local gstring = require("gears.string")
+local gtable = require("gears.table")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local screen = require("util.types.screen")
@@ -128,7 +130,8 @@ local TopPanel = function(args)
   local battery_widget = assert(widgets.get_by_id(panel, "battery_widget"), "battery_widget is missing!")
   local cpu_widget = assert(widgets.get_by_id(panel, "cpu_widget"), "cpu_widget is missing!")
 
-  local month_calendar = calendar_popup.month({ start_sunday = true, week_numbers = false }):attach(clock_widget)
+  local month_calendar =
+    calendar_popup.month({ start_sunday = true, week_numbers = false, screen = s }):attach(clock_widget)
 
   suspend_listener.register_listener(function(is_before)
     if is_before then return end
@@ -137,6 +140,14 @@ local TopPanel = function(args)
     return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
   end)
 
+  clock_widget:buttons(gtable.join(
+    abutton({}, 3, function()
+      --- On right click, toggle calendar clicked on (keep open); If already open, close it
+      month_calendar._calendar_clicked_on = not month_calendar._calendar_clicked_on
+      month_calendar.visible = month_calendar._calendar_clicked_on
+    end),
+    clock_widget:buttons() or {}
+  ))
   widgets.clickable_if(apps.default.calendar, clock_widget, panel.widget, function(cmd)
     month_calendar.visible = false -- Hide the calendar on click (won't hide otherwise)
     month_calendar._calendar_clicked_on = false -- needed to ensure it reapears on next mouse-over
