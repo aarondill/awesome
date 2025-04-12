@@ -1,14 +1,21 @@
 -- awesome_mode: api-level=9999:screen=on
+-- If LuaRocks is installed, make sure that packages installed through it are
+-- found (e.g. lgi). If LuaRocks is not installed, do nothing.
+pcall(require, "luarocks.loader")
+
+if not pcall(require, "lgi") then error("LGI is required to run this configuration") end
+
+local GLib = require("lgi").GLib
+-- Ensure we start in the home directory (as soon as we can)
+-- Note that lua has no way to chdir, so we have to wait until lgi is available, then we can chdir
+GLib.chdir(GLib.get_home_dir())
+
 local gfile = require("gears.filesystem")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 -- Don't show the tmux keymaps
 package.loaded["awful.hotkeys_popup.keys.tmux"] = {}
 require("awful.hotkeys_popup.keys")
-
--- If LuaRocks is installed, make sure that packages installed through it are
--- found (e.g. lgi). If LuaRocks is not installed, do nothing.
-pcall(require, "luarocks.loader")
 
 if not pcall(require, "awful.permissions") then -- Added to replace awful.autofocus
   pcall(require, "awful.autofocus") -- Depreciated in V5
@@ -17,7 +24,7 @@ end
 require("awful.util").shell = gfile.file_executable("/bin/bash") and "/bin/bash" or "/bin/sh"
 
 -- Add configuration directory to package.?path so awesome --config FILE works right
-local dirsep = require("lgi").GLib.DIR_SEPARATOR_S
+local dirsep = GLib.DIR_SEPARATOR_S
 
 local conf_dir = gfile.get_configuration_dir()
 local this_dir = (debug.getinfo(1, "S").source:sub(2):match("^(.*)" .. dirsep .. ".-$") or ".") -- Should be same as conf_dir
