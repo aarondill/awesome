@@ -1,9 +1,11 @@
 local atag = require("awful.tag")
 local capi = require("capi")
 local new_file_for_path = require("util.file.new_file_for_path")
+local read_sync = require("util.file.sync.read_sync")
 local screen = require("util.types.screen")
 local stream = require("stream")
 local strings = require("util.strings")
+local write_sync = require("util.file.sync.write_sync")
 local filepath = "/tmp/awesomewm-last-selected-tags"
 capi.awesome.connect_signal("exit", function(reason_restart)
   if not reason_restart then return end
@@ -13,15 +15,14 @@ capi.awesome.connect_signal("exit", function(reason_restart)
       return stream.new(s.selected_tags):map(function(tag) return tag.index end):join(" ")
     end)
     :join("\n")
-  -- Write synchronously so it's written before awesome closes!
-  return new_file_for_path(filepath):replace_contents(str, nil, false, "REPLACE_DESTINATION")
+  return write_sync(filepath, str) -- Write synchronously so it's written before awesome closes!
 end)
 
 capi.awesome.connect_signal("startup", function()
   require("module.tags") -- ensure that tags are properly initialized
   -- This is intentionally synchronous to ensure it's done *before* user control.
   local file = new_file_for_path(filepath)
-  local contents = file:load_contents()
+  local contents = read_sync(file)
   if not contents then return end -- file doesn't exist
 
   local screen_tags = stream ---@type (number[])[]
