@@ -8,7 +8,6 @@ local path = require("util.path")
 local read_async = require("util.file.read_async")
 local shell_escape = require("util.command.shell_escape")
 local spawn = require("util.spawn")
-local stream = require("stream")
 local GLib, Gio = lgi.GLib, lgi.Gio
 
 ---@type table<string, boolean>
