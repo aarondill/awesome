@@ -2,6 +2,7 @@ local gtimer = require("gears.timer")
 local icons = require("theme.icons")
 local lgi = require("lgi")
 local mat_icon = require("widget.material.icon")
+local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local Gio = lgi.Gio
@@ -17,10 +18,9 @@ gtimer.new({
   call_now = true,
   autostart = true,
   callback = function()
-    return file:load_contents_async(nil, function(f, res)
-      local stdout = f:load_contents_finish(res)
-      if not stdout then return end
-      local temp = assert(tonumber(stdout))
+    return read_async(file, function(content)
+      if not content then return end
+      local temp = assert(tonumber(content))
       local celsius = temp / 1000
       local farenheit = celsius * 1.8 + 32
       textbox:set_text(string.format("%.2f", farenheit))
