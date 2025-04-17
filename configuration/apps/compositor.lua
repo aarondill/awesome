@@ -15,8 +15,7 @@ local config_file_dir = require(..., "conffile_dir") ---@module "configuration.a
 local compositor = {}
 compositor.pid_file = os.tmpname() -- A unique filename to use for the pid of *this* AwesomeWM process. Note that this *should* support multiple Xorg/AwesomeWM processes.
 
-local runtime = os.getenv("XDG_RUNTIME_DIR") or path.join(path.root, "run", "user", GLib.get_user_name())
-local log_file = path.resolve(runtime, "picom", (os.getenv("DISPLAY") or "picom") .. ".log")
+local log_file = path.resolve(GLib.get_user_runtime_dir(), "picom", (os.getenv("DISPLAY") or "picom") .. ".log")
 assert(gfile.make_parent_directories(log_file))
 compositor.cmd = {
   "picom",
