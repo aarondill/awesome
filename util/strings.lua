@@ -94,4 +94,41 @@ function M.pluralize(single, count, plural)
   return plural or (single .. "s")
 end
 
+local function get_timezone()
+  local now = os.time()
+  local utc_tbl = os.date("!*t", now)
+  assert(type(utc_tbl) == "table", "Failed to convert timestamp to UTC table")
+  return os.difftime(now, os.time(utc_tbl))
+end
+---Get a timestamp from a ISO 8601 date string
+---@param date_str string
+---@return integer
+function M.from_iso(date_str)
+  local year, month, day, hour, minute, seconds, offsetsign, offsethour, offsetmin =
+    date_str:match("(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%- ])(%d?%d?)%:?(%d?%d?)")
+  local timestamp = os.time({
+    year = year,
+    month = month,
+    day = day,
+    hour = hour,
+    min = minute,
+    sec = math.floor(seconds),
+  }) + get_timezone()
+  local offset = 0
+  if offsetsign ~= "Z" then
+    offset = tonumber(offsethour) * 60 + tonumber(offsetmin)
+    if offsetsign == "-" then offset = -offset end
+  end
+  return timestamp - offset * 60
+end
+
+---Get an ISO 8601 date string from a timestamp
+---@param timestamp integer
+---@return string
+function M.to_iso(timestamp)
+  local ret = os.date("!%Y-%m-%dT%H:%M:%SZ", timestamp)
+  assert(type(ret) == "string", "Failed to convert timestamp to ISO 8601 date string")
+  return ret
+end
+
 return M

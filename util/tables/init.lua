@@ -14,5 +14,6 @@ local M = require("util.metainit")(..., { ---@diagnostic disable: assign-type-mi
   clone = nil, ---@module "util.tables.clone"
   deep_extend = nil, ---@module "util.tables.deep_extend"
   is_array = nil, ---@module "util.tables.is_array"
+  reverse = nil, ---@module "util.tables.reverse"
 }) ---@diagnostic enable: assign-type-mismatch
 return M
