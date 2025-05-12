@@ -7,7 +7,7 @@ configuration {
   matching: "regex";
   drun-match-fields: [all];
   drun-display-format: "{name} [<span weight='light' size='small'><i>({comment})</i></span>] [<span weight='light' size='small'>\{{exec}\}</span>] [<span weight='light' size='small'>\{{url}\}</span>]";
-  drun-show-actions: true;
+  drun-show-actions: false;
   window-match-fields: [all];
   window-format: "{w}: {c} ({r}) - {t}";
   run-command: "{cmd}";
