@@ -87,7 +87,7 @@ local function set_notifications(stdout)
   end
   local errors = { [401] = "Unauthorized request", [403] = "Forbidden request", [422] = "Validation failure" }
   if errors[res.status] then
-    notifs.error(errors[res.status])
+    notifs.error(errors[res.status], { title = "gh api error" })
     return false
   end
   -- Reduce the debounce duration if necessary
