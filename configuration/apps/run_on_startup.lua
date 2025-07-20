@@ -42,7 +42,7 @@ local run_on_startup = {
   { "udiskie", "-q", "-c", path.resolve(config_file_dir, "udiskie.yml") }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
   { "redshift", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
-  -- { "protonvpn-app", "--start-minimized" }, -- Start VPN tray
+  { "protonvpn-app", "--start-minimized" }, -- Start VPN tray
   -- { "hp-systray" }, -- Ensure HP printer software is active.
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
