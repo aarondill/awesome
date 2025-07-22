@@ -36,10 +36,12 @@ local function run_once(cmd)
       if exitreason == "exit" and exitcode == 127 and not debug_autostart_failures then return end
       return err(cmd, get_warning(exitreason, exitcode))
     end,
-    on_failure_callback = debug_autostart_failures or nil and function(e)
-      -- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
-      return err(cmd, e)
-    end,
+    on_failure_callback = debug_autostart_failures
+        and function(e)
+          -- Something went wrong. Likely isn't installed. This would be where you notify if you want to when a command is not found.
+          return err(cmd, e)
+        end
+      or nil,
   })
   if info then return info.pid end
 end
