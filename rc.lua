@@ -6,6 +6,10 @@ pcall(require, "luarocks.loader")
 if not pcall(require, "lgi") then error("LGI is required to run this configuration") end
 
 local GLib = require("lgi").GLib
+
+local err = GLib.check_version(2, 86, 0) -- Check the minimum required GLib version
+assert(not err, err) -- Warn about bad GLib versions
+
 -- Ensure we start in the home directory (as soon as we can)
 -- Note that lua has no way to chdir, so we have to wait until lgi is available, then we can chdir
 GLib.chdir(GLib.get_home_dir())
