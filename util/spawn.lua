@@ -6,6 +6,7 @@ local iscallable = require("util.types.iscallable")
 local lgi = require("lgi")
 local write_outputstream = require("util.file.write_outputstream")
 local Gio = lgi.Gio
+local GioUnix = lgi.GioUnix
 local GLib = lgi.GLib
 
 ---@alias Command string|string[]|SpawnOptions
@@ -166,7 +167,7 @@ function spawn.spawn(cmd, opts)
   end
   if opts.stdin_string then --
     assert(stdin, "stdin is nil")
-    local stream = Gio.UnixOutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
+    local stream = GioUnix.OutputStream.new(stdin, not return_stdin_user) -- Don't close stdin on close stream, if we return to user. otherwise, close it now.
     write_outputstream(stream, opts.stdin_string, function() -- Write string to stdin
       return stream:close() -- Close sync to ensure command exits if waiting for stdin.
     end)
@@ -336,11 +337,12 @@ function spawn.with_lines(cmd, callbacks, opts)
     if done_callback then return done_callback() end
   end
 
+  --- HACK: broken!
   if stdout_callback then
-    spawn.read_lines(Gio.UnixInputStream.new(assert(stdout), true), stdout_callback, step_done, true)
+    spawn.read_lines(GioUnix.InputStream.new(assert(stdout), true), stdout_callback, step_done, true)
   end
   if stderr_callback then
-    spawn.read_lines(Gio.UnixInputStream.new(assert(stderr), true), stderr_callback, step_done, true)
+    spawn.read_lines(GioUnix.InputStream.new(assert(stderr), true), stderr_callback, step_done, true)
   end
   return info.pid, nil, info
 end

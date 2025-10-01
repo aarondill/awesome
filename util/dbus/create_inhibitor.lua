@@ -1,6 +1,7 @@
 local capi = require("capi")
 local lgi = require("lgi")
 local Gio, GLib = lgi.Gio, lgi.GLib
+local GioUnix = lgi.GioUnix
 local assertions = require("util.types.assertions")
 ---@alias create_inhibitor_cb fun(fd?: GioUnixInputStream, err?: userdata)
 
@@ -39,7 +40,7 @@ local function handler(result, err, cb)
   if fd_err then return done(cb, nil, fd_err) end
 
   -- Now turn this fd into something we can close
-  local fd = Gio.UnixInputStream.new(fd_num, true)
+  local fd = GioUnix.InputStream.new(fd_num, true)
   cached_locks[fd] = true
   return done(cb, fd, nil)
 end
