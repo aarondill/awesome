@@ -18,10 +18,10 @@ local client_buttons, client_keys = client_config.buttons, client_config.keys
 
 ---@alias AwesomeRule<T> { [string]: T }
 ---@class (exact) AwesomeRules
----@field rule? AwesomeRule<string>
----@field rule_any? AwesomeRule<string[]>
----@field except? AwesomeRule<string>
----@field except_any? AwesomeRule<string[]>
+---@field rule? AwesomeRule<unknown>
+---@field rule_any? AwesomeRule<unknown[]>
+---@field except? AwesomeRule<unknown>
+---@field except_any? AwesomeRule<unknown[]>
 ---@field properties? table
 ---@field callback? fun(c: AwesomeClientInstance): any
 
@@ -119,9 +119,10 @@ local rules = {
   -- Dialog clients should float and have rounded corners
   {
     rule_any = {
-      type = { "dialog" },
-      class = { "Wicd-client.py", "calendar.google.com", "ripdrag" },
+      type = { "dialog", "splash" },
+      class = { "Wicd-client.py", "ripdrag" },
       role = { "pop-up" },
+      modal = { true },
     },
     -- This isn't really a pop-up
     except = { role = "pop-up", class = "Vivaldi-stable" },
