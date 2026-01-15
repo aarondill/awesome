@@ -1,11 +1,11 @@
 <!--- This is a generated file. Do not edit it directly. See scripts/gen-package-list for more information. -->
-
 - Arch:
   - [awesome](https://awesomewm.org/): AwesomeWM
   - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
   - [brightnessctl](https://github.com/Hummer12007/brightnessctl): adjusting screen brightness with keyboard shortcuts
   - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
   - [flameshot](https://flameshot.org): Screenshot tool
+  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
   - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
   - [libinput](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
@@ -18,7 +18,6 @@
   - [playerctl](https://github.com/altdesktop/playerctl): Control media players
   - [polkit-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
   - [qt5-styleplugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [rofi-git](https://github.com/davatorium/rofi): Window switcher and application launcher - Git Version has some fixes
   - [ttf-roboto](https://fonts.google.com/specimen/Roboto): The primary font
   - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
@@ -33,6 +32,7 @@
   - [diodon](https://github.com/diodon-dev/diodon): Persistent cliboard manager
   - [flameshot](https://flameshot.org): Screenshot tool
   - [fonts-roboto](https://fonts.google.com/specimen/Roboto): The primary font
+  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [i3lock](https://i3wm.org/i3lock/): Screen locker - `lock` script
   - [ibus](https://github.com/ibus/ibus): Changing input method - System Tray
   - [libinput-tools](https://wayland.freedesktop.org/libinput/doc/latest/): Needed for libinput-gestures (touchpad gestures)
@@ -44,9 +44,9 @@
   - [policykit-1-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
   - [pulseaudio-utils](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
   - [qt5-style-plugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [rofi](https://github.com/davatorium/rofi): Window switcher and application launcher
   - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
   - [x11-xserver-utils](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
   - [xclip](https://github.com/astrand/xclip): Copy to clipboard
   - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
+
