@@ -83,9 +83,9 @@ local M = {
         description = "xrandr - needed for autorandr, xset - disable DPMS",
         url = "https://www.x.org/wiki/",
       },
-      ["redshift"] = {
+      ["gammastep"] = {
         description = "Automatically adjust screen temperature",
-        url = "https://github.com/jonls/redshift",
+        url = "https://gitlab.com/chinstrap/gammastep",
       },
       ["pulseaudio-utils"] = {
         description = "Adjust volume with keyboard shortcuts",
@@ -138,9 +138,9 @@ local M = {
           description = "xrandr - needed for autorandr, xset - disable DPMS",
           url = "https://www.x.org/wiki/",
         },
-        ["redshift"] = {
+        ["gammastep"] = {
           description = "Automatically adjust screen temperature",
-          url = "https://github.com/jonls/redshift",
+          url = "https://gitlab.com/chinstrap/gammastep",
         },
         ["libpulse"] = {
           description = "Adjust volume with keyboard shortcuts",

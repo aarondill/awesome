@@ -1,4 +1,5 @@
 <!--- This is a generated file. Do not edit it directly. See scripts/gen-package-list for more information. -->
+
 - Arch:
   - [awesome](https://awesomewm.org/): AwesomeWM
   - [blueman](https://github.com/blueman-project/blueman): Bluetooth - System Tray
@@ -17,7 +18,7 @@
   - [playerctl](https://github.com/altdesktop/playerctl): Control media players
   - [polkit-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
   - [qt5-styleplugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [rofi-git](https://github.com/davatorium/rofi): Window switcher and application launcher - Git Version has some fixes
   - [ttf-roboto](https://fonts.google.com/specimen/Roboto): The primary font
   - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
@@ -43,10 +44,9 @@
   - [policykit-1-gnome](https://wiki.gnome.org/Projects/PolicyKit): Polkit
   - [pulseaudio-utils](https://www.freedesktop.org/wiki/Software/PulseAudio/): Adjust volume with keyboard shortcuts
   - [qt5-style-plugins](https://github.com/qt/qtstyleplugins): Use GTK theme in Qt applications
-  - [redshift](https://github.com/jonls/redshift): Automatically adjust screen temperature
+  - [gammastep](https://gitlab.com/chinstrap/gammastep): Automatically adjust screen temperature
   - [rofi](https://github.com/davatorium/rofi): Window switcher and application launcher
   - [udiskie](https://github.com/coldfix/udiskie): Automatically mount removable media - System Tray
   - [x11-xserver-utils](https://www.x.org/wiki/): xrandr - needed for autorandr, xset - disable DPMS
   - [xclip](https://github.com/astrand/xclip): Copy to clipboard
   - [xss-lock](https://bitbucket.org/raymonad/xss-lock/src/master/): Auto-lock on suspend/idle
-
