@@ -42,7 +42,7 @@ local run_on_startup = {
   "numlockx on",
   { "udiskie", "-q", "-c", path.resolve(config_file_dir, "udiskie.yml") }, -- Automount disks.
   "ibus-daemon --xim -d", -- Run ibus-daemon for language and emoji keyboard support
-  { "redshift", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
+  { "gammastep-indicator", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
   -- HACK: sleep so it doesn't race condition with gnome-keyring (note: everything breaks irrevocably if it beats gnome-keyring, so we sleep for an exuberant amount of time)
   -- See https://github.com/ProtonVPN/proton-vpn-gtk-app/issues/100
   { shell, "-c", "sleep 5 && exec protonvpn-app --start-minimized" }, -- Start VPN tray
