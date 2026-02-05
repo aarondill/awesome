@@ -36,7 +36,7 @@ local run_on_startup = {
   "nm-applet", -- wifi
   "blueman-applet", --bluetooth
   { "pasystray", "--no-icon-tooltip", table.unpack(pasystray_notify_options) }, -- shows an audiocontrol applet in systray when installed.
-  "xset s 0 0", -- disable screen saver
+  "xset s 600", -- idle after 600 seconds
   "xset -dpms", -- Disable dpms because doesn't work with keys?
   { "xss-lock", "-q", "-l", "--", "lock" }, -- Lock on suspend or dpms
   "numlockx on",
