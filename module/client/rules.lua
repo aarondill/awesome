@@ -94,12 +94,12 @@ local rules = {
       "kitty",
       "alacritty",
     } },
-    properties = { opacity = 0.85 },
+    properties = { opacity = 0.95 },
   },
   {
     -- Note: when using --app=%s, the role=browser is not applied, instead use the class
     rule_any = { role = { "browser" }, class = { "Vivaldi-stable" } },
-    properties = { opacity = 0.90, maximized = false },
+    properties = { opacity = 0.95, maximized = false },
   },
   {
     rule_any = { class = { "ripdrag" } }, -- Make ripdrag follow the tag
