@@ -6,6 +6,7 @@ local path = require("util.path")
 local wibox = require("wibox")
 local cairo = require("lgi").cairo
 local GdkPixbuf = require("lgi").GdkPixbuf
+local config = require("configuration.wallpaper")
 local tables = require("util.tables")
 --- Place in a module so it can be changed at runtime
 local M = {
@@ -16,8 +17,12 @@ local M = {
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
   local p = path.resolve(gfilesystem.get_configuration_dir(), "wallpapers")
-  local wp = string.format("%s/%d.jpg", p, num)
-  local default = string.format("%s/%d.jpg", p, 1)
+  if config.tags and config.tags[num] then
+    if path.is_absolute(config.tags[num]) then return config.tags[num] end
+    return path.resolve(p, config.tags[num]) -- relative to /wallpapers (or absolute)
+  end
+  local wp = path.resolve(p, config.set, num .. ".jpg")
+  local default = path.resolve(p, config.set, "1.jpg")
 
   if gfilesystem.file_readable(wp) then return wp end
   if gfilesystem.file_readable(default) then return default end
