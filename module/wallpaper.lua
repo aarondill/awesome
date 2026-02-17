@@ -7,6 +7,7 @@ local wibox = require("wibox")
 local cairo = require("lgi").cairo
 local GdkPixbuf = require("lgi").GdkPixbuf
 local config = require("configuration.wallpaper")
+local download = require("wallpapers.download")
 local tables = require("util.tables")
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
@@ -35,6 +36,10 @@ end
 capi.screen.connect_signal("request::wallpaper", function(s) ---@param s AwesomeScreenInstance
   if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
+  download.get_set_async(config.set, function(success)
+    if not success then return end
+    s:emit_signal("request::wallpaper") -- Reset the wallpaper with the new set
+  end)
 
   local quality = config.QUALITY_REDUCTION or 1
   --- A reimplementation of surface.load_uncached_silently which scales down the image

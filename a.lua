@@ -23,7 +23,7 @@ end
 ---The callback will be called with the return value(s)
 ---Using this avoids the pyramid of doom, but screws with type checking
 ---@generic A, R
----@param f fun(...: A): R,...: unknown
+---@param f fun(...: A): R,...: any
 ---@return fun(cb: fun(r: R): any?,...: A )
 function a.sync(f)
   return function(...) -- This is needed to avoid resuming a dead coroutine
