@@ -8,12 +8,6 @@ local cairo = require("lgi").cairo
 local GdkPixbuf = require("lgi").GdkPixbuf
 local config = require("configuration.wallpaper")
 local tables = require("util.tables")
---- Place in a module so it can be changed at runtime
-local M = {
-  --- Note: This is directly related to the amount of memory AwesomeWM will use
-  QUALITY_REDUCTION = 2 / 3,
-}
-
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
   local p = path.resolve(gfilesystem.get_configuration_dir(), "wallpapers")
@@ -42,10 +36,11 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   if not s.selected_tag then return end
   local wp_path = get_wp_path(s.selected_tag.index)
 
+  local quality = config.QUALITY_REDUCTION or 1
   --- A reimplementation of surface.load_uncached_silently which scales down the image
   local geom = get_geometry(s)
-  local aspect_w = math.floor(M.QUALITY_REDUCTION * geom.width)
-  local aspect_h = math.floor(M.QUALITY_REDUCTION * geom.height)
+  local aspect_w = math.floor(quality * geom.width)
+  local aspect_h = math.floor(quality * geom.height)
 
   local new_wallpaper = { wp_path, geom, aspect_w, aspect_h }
   -- The wallpaper (and size) hasn't changed. Don't modify it.
@@ -97,4 +92,3 @@ if capi.awesome.version <= "v4.3" then
     end
   end)
 end
-return M
