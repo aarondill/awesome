@@ -46,7 +46,7 @@ local function get_set_async(set_name, done)
   local info = {}
   for k, v in pairs(set) do
     local r
-    if type(v) == "string" then
+    if type(k) ~= "string" then
       local name = basename(v)
       r = { url = v, dest = path.resolve(p, name) }
     else
