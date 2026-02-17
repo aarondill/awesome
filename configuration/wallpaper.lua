@@ -6,7 +6,7 @@
 
 ---@type wallpaper_config
 local config = {
-  set = "B",
+  set = "C",
   QUALITY_REDUCTION = 1,
 }
 return config
