@@ -9,6 +9,23 @@ local GdkPixbuf = require("lgi").GdkPixbuf
 local config = require("configuration.wallpaper")
 local download = require("wallpapers.download")
 local tables = require("util.tables")
+local extensions = { -- A list of accepted file extensions
+  ".jpg",
+  ".png",
+  ".jpeg",
+  ".svg",
+}
+
+---@param path_wo_ext string
+---@return string?
+local function find_image(path_wo_ext)
+  for _, ext in ipairs(extensions) do
+    local p = path.resolve(path_wo_ext .. ext)
+    if gfilesystem.file_readable(p) then return p end
+  end
+  return nil
+end
+
 local function get_wp_path(num) ---@param num integer
   -- Set according to wallpaper directory
   local p = path.resolve(gfilesystem.get_configuration_dir(), "wallpapers")
@@ -16,11 +33,13 @@ local function get_wp_path(num) ---@param num integer
     if path.is_absolute(config.tags[num]) then return config.tags[num] end
     return path.resolve(p, config.tags[num]) -- relative to /wallpapers (or absolute)
   end
-  local wp = path.resolve(p, config.set, num .. ".jpg")
-  local default = path.resolve(p, config.set, "1.jpg")
 
-  if gfilesystem.file_readable(wp) then return wp end
-  if gfilesystem.file_readable(default) then return default end
+  local wp = find_image(path.resolve(p, config.set, num))
+  if wp then return wp end
+
+  local default = find_image(path.resolve(p, config.set, "1"))
+  if default then return default end
+
   return path.resolve(gfilesystem.get_themes_dir(), "default", "background.png")
 end
 
