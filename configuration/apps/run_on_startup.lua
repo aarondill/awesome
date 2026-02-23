@@ -45,7 +45,7 @@ local run_on_startup = {
   { "gammastep-indicator", "-P" }, -- this uses the system configuration -- reset the gamma settings before applying
   -- HACK: sleep so it doesn't race condition with gnome-keyring (note: everything breaks irrevocably if it beats gnome-keyring, so we sleep for an exuberant amount of time)
   -- See https://github.com/ProtonVPN/proton-vpn-gtk-app/issues/100
-  { shell, "-c", "sleep 5 && exec protonvpn-app --start-minimized" }, -- Start VPN tray
+  -- { shell, "-c", "sleep 5 && exec protonvpn-app --start-minimized" }, -- Start VPN tray
   -- { "hp-systray" }, -- Ensure HP printer software is active.
   -- "/usr/libexec/deja-dup/deja-dup-monitor", -- Run backups using deja-dup on timer
   -- Add applications that need to be killed between reloads
