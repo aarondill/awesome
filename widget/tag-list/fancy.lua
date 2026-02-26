@@ -143,10 +143,10 @@ function module.new(cfg)
       },
       id = "background_role",
       widget = wibox.container.background,
-      create_callback = function(self, tag, _index, _tags) ---@param tag AwesomeTagInstance
+      create_callback = function(self, tag, index, tags) ---@param tag AwesomeTagInstance
         local tasklist = fancy_tasklist(tasklist_cfg, tag)
         self:get_children_by_id("tasklist_placeholder")[1]:add(tasklist)
-        return update_callback(self, tag, _index, _tags)
+        return update_callback(self, tag, index, tags)
       end,
       update_callback = update_callback,
     },

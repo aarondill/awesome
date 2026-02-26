@@ -66,7 +66,7 @@ end
 ---Create a new CPU usage widget
 ---@param args CPUWidgetConfig?
 ---@return table
-function CPU(args)
+local function CPU(args)
   args = args or {}
 
   local format = string.format(

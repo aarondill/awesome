@@ -84,7 +84,7 @@ end
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
 ---@return table BatteryWidget
-function Battery(args)
+local function Battery(args)
   args = args or {}
   local low_power = args.low_power or 15
   local low_power_frequency = args.low_power_frequency or 300

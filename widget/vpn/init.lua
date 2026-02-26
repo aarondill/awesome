@@ -55,12 +55,12 @@ end
 
 ---@param markup string
 ---@param tooltip_text string
----@param _status boolean?
-function VpnWidget:__set(markup, tooltip_text, _status)
+---@param status boolean?
+function VpnWidget:__set(markup, tooltip_text, status)
   widgets.get_by_id(self, "textbox"):set_markup(markup)
   tooltip_text = strings.trim(tooltip_text)
   self.tooltip.text = tooltip_text ~= "" and tooltip_text or "<Empty Output>"
-  self._cached_status = _status
+  self._cached_status = status
 end
 ---@param connected boolean
 ---@param tooltip_text string

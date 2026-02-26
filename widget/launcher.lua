@@ -45,7 +45,7 @@ end
 ---Create a launcher widget and a main menu
 ---@param args LauncherArgs?
 ---@return table widget
-function Launcher(args)
+local function Launcher(args)
   -- function(item, menu) end
   local menu_awesome = {
     "Awesome",

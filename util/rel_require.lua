@@ -9,12 +9,12 @@ local source_path = require("util.source_path")
 ---@param this_path string? pass ...
 ---@param path string the path to require
 ---@param assert boolean? Whether to error on failure. Default: true
----@param _this_filename string? The filename to use when checking for init.lua. Use source_path.filename() to get this.
+---@param this_filename string? The filename to use when checking for init.lua. Use source_path.filename() to get this.
 ---@return any? mod the module required or nil if not found
 ---@return unknown? loaderdata the second param returned from require (or nil if not found)
 ---@overload fun(this_path: string, path: string, assert: true): any, unknown -- Not nil
 ---@overload fun(module: string, path: nil, assert?: boolean): any, unknown -- The regular require
-local function relative_require(this_path, path, assert, _this_filename)
+local function relative_require(this_path, path, assert, this_filename)
   if assert == nil then assert = true end
   assertions.type(assert, "boolean", "assert", 2)
   assertions.type(this_path, { "string", "nil" }, "this_path", 2)
@@ -34,7 +34,7 @@ local function relative_require(this_path, path, assert, _this_filename)
   --- True if the calling file is an init.lua and is called by require('module.sub')
 
   local last_path_segment = this_path:match(".*%.(.*)$") or this_path
-  local is_init_not_called = (_this_filename or source_path.filename(2)) ~= last_path_segment
+  local is_init_not_called = (this_filename or source_path.filename(2)) ~= last_path_segment
   local this_module = is_init_not_called and this_path or (this_path):match("^(.-)%.[^%.]+$") -- returns 'lib.foo'
 
   if assert then
