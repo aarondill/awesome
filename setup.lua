@@ -202,8 +202,8 @@ function M.install_packages(id)
     end
     local ok, err = pcall(utils.spawn_check, "install packages", cmd, { cwd = tmpdir })
     do
-      local ok, err = pcall(utils.spawn_check, "cleanup", { "rm", "-rf", tmpdir:get_path() })
-      if not ok then log.warn("Failed to remove tmpdir: " .. tostring(err)) end
+      local ok_clean, err_clean = pcall(utils.spawn_check, "cleanup", { "rm", "-rf", tmpdir:get_path() })
+      if not ok_clean then log.warn("Failed to remove tmpdir: " .. tostring(err_clean)) end
     end
     assert(ok, err)
   else

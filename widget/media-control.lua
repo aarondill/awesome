@@ -229,6 +229,7 @@ end
 
 function MediaControl:_format(info)
   local f = self.format
+  assert(f, "format must be a function or a string")
   if type(f) == "function" then return f(info) end
   return string.gsub(f, "{([^}]*)}", function(k) --
     local v = info[k]

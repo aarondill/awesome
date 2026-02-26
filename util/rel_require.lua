@@ -50,6 +50,7 @@ local function relative_require(this_path, path, assert, _this_filename)
     assertions.assert(ok, msg, 2)
   end
   if not ok then return nil end
+  ---@diagnostic disable-next-line: redundant-return-value This is fine, if pcall somehow returns more things, we want to return them
   return table.unpack(ret, 1, ret.n)
 end
 

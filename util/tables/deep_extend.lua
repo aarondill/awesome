@@ -1,7 +1,6 @@
 local require = require("util.rel_require")
 --
 local isarray = require(..., "is_array")
-local stream = require("stream")
 
 --- We only merge empty tables or tables that are not an array (indexed by integers)
 local function can_merge(v) return type(v) == "table" and (next(v) == nil or not isarray(v)) end

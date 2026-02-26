@@ -53,8 +53,8 @@ end
 
 ---@param hint string String with a hint on what to use instead of the deprecated functionality.
 ---@param see string? The name of the newer API (default nil)
----@param args table? The args to gears.depreciate? I think?
-capi.awesome.connect_signal("debug::deprecate", function(hint, see, args)
+---@param _args table? The args to gears.depreciate? I think?
+capi.awesome.connect_signal("debug::deprecate", function(hint, see, _args)
   local notifs = require("util.notifs")
   local msg = string.format("%s: %s\n%s", hint, see or "", debug.traceback(nil, 2))
   notifs.warn(msg)

@@ -3,12 +3,10 @@ local bind = require("util.bind")
 local capi = require("capi")
 local dbus = require("util.dbus")
 local gfile = require("gears.filesystem")
-local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local path = require("util.path")
 local spawn = require("util.spawn")
 local suspend_listener = require("util.suspend-listener")
-local tables = require("util.tables")
 local throttle = require("util.throttle")
 
 local M = {}
