@@ -103,7 +103,7 @@ local function update_callback(self, tag, _, _)
   local list_separator = self:get_children_by_id("list_separator")[1]
   if not list_separator then return end
   for _, c in ipairs(tag:clients()) do
-    if not quake:client_is_quake(c) then -- At least one non-quake client
+    if not quake.client_is_quake(c) then -- At least one non-quake client
       return list_separator:set_spacing(internal_spacing)
     end
   end
