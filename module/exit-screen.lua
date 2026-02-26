@@ -196,7 +196,7 @@ local function show(opts)
   ---@param key string
   ---@param event "release"|"press"
   exit_screen_grabber = akeygrabber.run(function(mods, key, event)
-    if event == "release" or not #mods == 0 then return false end -- this isn't my event!
+    if event == "release" or #mods ~= 0 then return false end -- this isn't my event!
     -- if exit_screen.screen ~= screen.focused() then return false end -- ignore non-focused events
 
     for _, button in ipairs(exit_screen_conf.buttons) do
