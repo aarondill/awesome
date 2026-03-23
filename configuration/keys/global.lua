@@ -15,6 +15,7 @@ local compat = require("util.awesome.compat")
 local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
+local path = require("util.path")
 local spawn = require("util.spawn")
 local stream = require("stream")
 local tags = require("util.tags")
@@ -251,6 +252,12 @@ M.keys = gtable.join(
   gkey({ modkey, "Shift" }, "e", editor_scratchpad, { description = "Open an editor (scratchpad)", group = "launcher" }),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   gkey({ modkey }, "f", apps.open.file_browser, { description = "Open a file browser", group = "launcher" }),
+  gkey(
+    { modkey, "Shift" },
+    "f",
+    bind.with_args(apps.open.file_browser, path.get_home("Downloads")),
+    { description = "Open a file browser (downloads)", group = "launcher" }
+  ),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   gkey(
     { modkey, "Shift" },
