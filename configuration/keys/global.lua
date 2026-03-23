@@ -116,10 +116,8 @@ local function editor_scratchpad()
     local cleanup = function()
       return tmp:delete_async(GLib.PRIORITY_DEFAULT) -- result doesn't matter
     end
-    assert(
-      stream_or_err:get_output_stream():write("This is a scratchpad! It will be deleted when you close the editor.")
-    )
     assert(stream_or_err:close())
+    notifs.ok("Scratchpad created: " .. tmp:get_path(), { timeout = 2, ignore_suspend = true })
     apps.open.editor(tmp:get_path(), {
       on_failure_callback = function(err)
         notifs.warn(("Failed to open scratchpad: %s"):format(err))
