@@ -1,5 +1,6 @@
 local require = require("util.rel_require")
 
+local GLib = require("lgi").GLib
 local Gio = require("lgi").Gio
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
@@ -105,6 +106,30 @@ do
 end
 ---Ensure hotkeys shows on the focused screen (default is the current client's screen)
 local function show_help() hotkeys_popup.show_help(nil, ascreen.focused()) end
+---Create a new tmp file, then open it in the editor
+---After the editor closes, delete the file
+local function editor_scratchpad()
+  return Gio.File.new_tmp_async("awesome-scratchpad-XXXXXX.txt", GLib.PRIORITY_DEFAULT, nil, function(_, res)
+    local tmp, stream_or_err = Gio.File.new_tmp_finish(res)
+    if not tmp then return notifs.warn(("Failed to create scratchpad: %s"):format(stream_or_err)) end
+    ---@cast stream_or_err -GError
+    local cleanup = function()
+      return tmp:delete_async(GLib.PRIORITY_DEFAULT) -- result doesn't matter
+    end
+    assert(
+      stream_or_err:get_output_stream():write("This is a scratchpad! It will be deleted when you close the editor.")
+    )
+    assert(stream_or_err:close())
+    apps.open.editor(tmp:get_path(), {
+      on_failure_callback = function(err)
+        notifs.warn(("Failed to open scratchpad: %s"):format(err))
+        return cleanup()
+      end,
+      exit_callback = cleanup,
+    })
+  end)
+end
+
 -- Key bindings
 M.keys = gtable.join(
   -- Hotkeys
@@ -224,6 +249,7 @@ M.keys = gtable.join(
     bind.bind(apps.open.screenshot, nil, copy_to_clipboard),
     { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }
   ),
+  gkey({ modkey, "Shift" }, "e", editor_scratchpad, { description = "Open an editor (scratchpad)", group = "launcher" }),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
   gkey({ modkey }, "f", apps.open.file_browser, { description = "Open a file browser", group = "launcher" }),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
