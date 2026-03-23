@@ -109,6 +109,7 @@ local function show_help() hotkeys_popup.show_help(nil, ascreen.focused()) end
 ---Create a new tmp file, then open it in the editor
 ---After the editor closes, delete the file
 local function editor_scratchpad()
+  ---TODO: popup a dialog to ask for file extension
   return Gio.File.new_tmp_async("awesome-scratchpad-XXXXXX.txt", GLib.PRIORITY_DEFAULT, nil, function(_, res)
     local tmp, stream_or_err = Gio.File.new_tmp_finish(res)
     if not tmp then return notifs.warn(("Failed to create scratchpad: %s"):format(stream_or_err)) end
