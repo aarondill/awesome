@@ -74,6 +74,15 @@ function open.editor(file, spawn_options)
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
 
+---Open a file browser in the given directory
+---@param dir? string
+---@param spawn_options SpawnOptions? Options to pass to utils.spawn
+function open.file_browser(dir, spawn_options)
+  local do_cmd = default.file_manager ---@type string|string[]
+  if dir then do_cmd = concat_command(do_cmd, { "--", dir }) end
+  return spawn_notif_on_err(do_cmd, spawn_options)
+end
+
 ---Open a browser with the given url
 ---@param url? string|string[]
 ---@param new_window? boolean whether to create a new window - default false

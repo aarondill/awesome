@@ -9,6 +9,7 @@ local default = {
   -- Above are only used *if* installed
   terminal = { terminal },
   lock = { "sh", "-c", "pgrep -x xss-lock && exec loginctl lock-session || exec lock" }, -- Run loginctl if xss-lock is running, otherwise just lock
+  file_manager = { terminal, "-e", "yazi" },
   region_screenshot = { "flameshot", "gui" },
   browser = {
     -- The main command to run, it will be passed the below options, followed by `--` and the url(s)

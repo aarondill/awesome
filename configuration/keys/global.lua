@@ -225,6 +225,7 @@ M.keys = gtable.join(
     { description = "Mark an area and screenshot it to your clipboard", group = "launcher" }
   ),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
+  gkey({ modkey }, "f", apps.open.file_browser, { description = "Open a file browser", group = "launcher" }),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   gkey(
     { modkey, "Shift" },
