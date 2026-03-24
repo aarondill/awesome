@@ -251,10 +251,10 @@ M.keys = gtable.join(
   ),
   gkey({ modkey, "Shift" }, "e", editor_scratchpad, { description = "Open an editor (scratchpad)", group = "launcher" }),
   gkey({ modkey }, "e", apps.open.editor, { description = "Open an editor", group = "launcher" }),
-  gkey({ modkey }, "f", apps.open.file_browser, { description = "Open a file browser", group = "launcher" }),
+  gkey({ modkey }, "d", apps.open.file_browser, { description = "Open a file browser", group = "launcher" }),
   gkey(
     { modkey, "Shift" },
-    "f",
+    "d",
     bind.with_args(apps.open.file_browser, path.get_home("Downloads")),
     { description = "Open a file browser (downloads)", group = "launcher" }
   ),
