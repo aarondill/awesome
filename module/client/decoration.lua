@@ -59,8 +59,14 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
   if panel and not panel.user_set_hidden then --- Hide bars when app go fullscreen
     panel.visible = show_top_bar
   end
-  if tag then -- Set the gap to zero if maximized
-    tag.gap = tag_is_max and 0 or 4
+  local target_gap = tag_is_max and 0 or beautiful.useless_gap
+  -- Set the gap to zero if maximized
+  -- Only set the gap if it's different from the last calculated gap (to avoid undoing incgap/decgap)
+  ---@class AwesomeTagInstance
+  ---@field _auto_gap number? -- Injected field for this module
+  if tag and (tag._auto_gap ~= target_gap) then
+    tag.gap = target_gap
+    tag._auto_gap = target_gap
   end
   changesOnScreenPending[currentScreen] = nil
 end
