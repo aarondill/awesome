@@ -39,6 +39,7 @@ local function is_tag_maximized(tag) ---@param tag AwesomeTagInstance?
 end
 local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScreenInstance
   if not currentScreen.valid then return end -- Check if the screen is still valid!
+  ---@type AwesomeClientInstance[]
   local managed_clients = stream
     .new(currentScreen.clients)
     :filter(function(c) return c.valid end)
@@ -51,7 +52,8 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
   local render_maximized = tag_is_max or #managed_clients <= 1
   local show_top_bar = not tag_is_max or #managed_clients == 0 -- If the tag is maximized, don't show the top bar -- unless no clients.
   for _, client in ipairs(managed_clients) do
-    renderClient(client, client.fullscreen or render_maximized)
+    local client_is_max = client.maximized_horizontal or client.maximized_vertical or client.maximized
+    renderClient(client, client.fullscreen or client_is_max or render_maximized)
     if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
   end
 
@@ -88,9 +90,9 @@ end
 local compat = require("util.awesome.compat")
 capi.client.connect_signal(compat.signal.manage, clientCallback)
 capi.client.connect_signal(compat.signal.unmanage, clientCallback)
-capi.client.connect_signal("property::hidden", clientCallback)
-capi.client.connect_signal("property::minimized", clientCallback)
-capi.client.connect_signal("property::fullscreen", clientCallback)
+for _, p in ipairs({ "hidden", "minimized", "fullscreen", "maximized_horizontal", "maximized_vertical", "maximized" }) do
+  capi.client.connect_signal("property::" .. p, clientCallback)
+end
 capi.client.connect_signal("tagged", clientCallback)
 
 capi.tag.connect_signal("property::selected", tagCallback)
