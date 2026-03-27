@@ -12,21 +12,30 @@ local stream = require("stream")
 local function shape_rounded_rect(cr, w, h) return require("gears.shape").rounded_rect(cr, w, h, 8) end
 ---@param client AwesomeClientInstance
 ---@param render_maximized boolean
-local function renderClient(client, render_maximized)
+---@param rounded boolean if render_maximized, rounded is always false
+local function renderClient(client, render_maximized, rounded)
   if quake.client_is_quake(client) then return end
   if client.skip_decoration then return end
+  if render_maximized then rounded = false end
 
-  if client.rendering_mode == render_maximized then return end -- Check cached.
-  client.rendering_mode = render_maximized ---@diagnostic disable-line :inject-field this is an injected field
+  ---@class AwesomeClientInstance
+  ---@field _decoration_rendering_mode string? -- Injected field for this module
+
+  local decoration_rendering_mode = tostring(render_maximized) .. "_" .. tostring(rounded)
+  if client._decoration_rendering_mode == decoration_rendering_mode then return end -- Check cached.
+  client._decoration_rendering_mode = decoration_rendering_mode
 
   if render_maximized then
     client.border_width = 0
-    client.shape = nil -- If nil, draws as a rectangle
-    return
+  else
+    client.border_width = beautiful.border_width
   end
 
-  client.border_width = beautiful.border_width
-  client.shape = shape_rounded_rect
+  if rounded then
+    client.shape = shape_rounded_rect
+  else
+    client.shape = nil -- If nil, draws as a rectangle
+  end
 end
 
 ---@type table<AwesomeScreenInstance, true>
@@ -53,7 +62,8 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
   local show_top_bar = not tag_is_max or #managed_clients == 0 -- If the tag is maximized, don't show the top bar -- unless no clients.
   for _, client in ipairs(managed_clients) do
     local client_is_max = client.maximized_horizontal or client.maximized_vertical or client.maximized
-    renderClient(client, client.fullscreen or client_is_max or render_maximized)
+    local rounded = not not tag and tag.gap ~= 0 -- don't round if the tag has no gap
+    renderClient(client, client.fullscreen or client_is_max or render_maximized, rounded)
     if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
   end
 
@@ -97,3 +107,4 @@ capi.client.connect_signal("tagged", clientCallback)
 
 capi.tag.connect_signal("property::selected", tagCallback)
 capi.tag.connect_signal("property::layout", tagCallback)
+capi.tag.connect_signal("property::useless_gap", tagCallback)
