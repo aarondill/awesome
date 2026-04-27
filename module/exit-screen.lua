@@ -1,4 +1,5 @@
 local abutton = require("awful.button")
+local akey = require("awful.key")
 local akeygrabber = require("awful.keygrabber")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
@@ -182,6 +183,22 @@ exit_screen.fg = exit_screen_conf.fg
   or beautiful.fg_normal
   or "#FEFEFE"
 
+-- The list of modifiers from https://awesomewm.org/doc/api/classes/awful.keygrabber.html#awful.keygrabber.run
+local modifier_keys = {
+  "Mod4",
+  "Super_L",
+  "Super_R",
+  "Control",
+  "Control_L",
+  "Control_R",
+  "Shift",
+  "Shift_L",
+  "Shift_R",
+  "Mod1",
+  "Alt_L",
+  "Alt_R",
+}
+
 ---@param opts? {screen?: screen}
 local function show(opts)
   if disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
@@ -196,7 +213,9 @@ local function show(opts)
   ---@param key string
   ---@param event "release"|"press"
   exit_screen_grabber = akeygrabber.run(function(mods, key, event)
+    mods = stream.new(mods):except(function(mod) return gtable.hasitem(akey.ignore_modifiers, mod) end):toarray()
     if event == "release" or #mods ~= 0 then return false end -- this isn't my event!
+    if gtable.hasitem(modifier_keys, key) then return false end -- ignore modifier key presses
     -- if exit_screen.screen ~= screen.focused() then return false end -- ignore non-focused events
 
     for _, button in ipairs(exit_screen_conf.buttons) do
