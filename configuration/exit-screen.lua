@@ -10,8 +10,8 @@ local function suspend_command()
 end
 
 local M = { ---@type ExitScreenConf
-  -- exit_keys = { "Escape", "q", "x" },
-  exit_keys = true,
+  exit_keys = { "Escape", "q", "x" },
+  -- exit_keys = true,
   buttons = {
     { "Poweroff", "p", cmd = bind.with_args(systemctl, "poweroff"), icon = icons.power },
     { "Restart", "r", cmd = bind.with_args(systemctl, "reboot"), icon = icons.restart },
