@@ -116,6 +116,16 @@ local rules = {
       end)
     end,
   },
+  {
+    rule = { class = "Mars" },
+    callback = function(c) ---@param c AwesomeClientInstance
+      -- HACK: Mars automatically maximizes itself
+      gtimer.start_new(0.2, function()
+        if c.valid then c.maximized = false end
+        return false
+      end)
+    end,
+  },
   -- Dialog clients should float and have rounded corners
   {
     rule_any = {
