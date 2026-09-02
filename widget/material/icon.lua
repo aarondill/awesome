@@ -7,7 +7,7 @@ local load_surface = require("util.load_surface")
 -- Local declarations
 
 ---@class _icon_private
----@field icon string?
+---@field icon (string|gears.surface)?
 ---@field imagebox widget (wibox.widget.imagebox)
 ---@field size integer?
 ---@field last_size integer? Last size the icon was rendered at
@@ -52,7 +52,14 @@ end
 --- Note that this is almost certainly expensive
 ---@param size integer | nil
 function Icon:_reload_surface(size)
-  self._private.imagebox:set_image(self._private.icon and load_surface(self._private.icon, size))
+  local surf
+  local icon = self._private.icon
+  if type(icon) == "string" then
+    surf = load_surface(icon, size)
+  else
+    surf = self._private.icon
+  end
+  self._private.imagebox:set_image(surf)
 end
 
 function Icon:set_icon(icon)
