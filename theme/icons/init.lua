@@ -8,6 +8,7 @@ local icons = {
 
   logout = path.join(dir, "logout.svg"),
   sleep = path.join(dir, "power-sleep.svg"),
+  bed = path.join(dir, "bed.svg"),
   power = path.join(dir, "power.svg"),
   lock = path.join(dir, "lock.svg"),
   restart = path.join(dir, "restart.svg"),
