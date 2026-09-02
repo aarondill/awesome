@@ -18,10 +18,6 @@ local QuakeButton = function()
     abutton({}, 2, bind.with_args(capi.awesome.emit_signal, "quake::kill")),
     abutton({}, 3, open_terminal) -- open a new terminal on right click
   ))
-  -- Not supported yet:
-  -- local imgbox = layoutBox:get_children_by_id("imagebox")[1]
-  -- imgbox:set_stylesheet([[ svg{ color: white; } ]])
-
   return iconbutton
 end
 return QuakeButton
