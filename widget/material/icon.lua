@@ -58,8 +58,13 @@ end
 
 function Icon:set_icon(icon)
   -- Don't skip if it didn't change cause the file may have changed
+  local had_icon = self._private.icon ~= nil
   self._private.icon = icon
   self:_reload_surface(self._private.size)
+  if not had_icon then -- we only need to emit if we didn't have an icon
+    self:emit_signal("widget::layout_changed")
+  end
+  self:emit_signal("widget::redraw_needed")
 end
 function Icon:get_icon() return self._private.icon end
 -- alias icon to image
@@ -69,7 +74,6 @@ Icon.get_image = Icon.get_icon
 function Icon:set_size(size)
   if self._private.size == size then return end
   self._private.size = size
-  -- self:_reload_surface() TODO:
   self:emit_signal("widget::layout_changed")
 end
 function Icon:get_size() return self._private.size end
