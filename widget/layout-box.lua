@@ -22,9 +22,6 @@ local LayoutBox = function(s)
     if alayout.get() ~= t.layouts[1] then return alayout.set(t.layouts[1]) end
     return alayout.set(alayout.suit.floating)
   end
-  -- Not supported yet:
-  -- local imgbox = layoutBox:get_children_by_id("imagebox")[1]
-  -- imgbox:set_stylesheet([[ svg{ color: white; } ]])
 
   return wibox.widget({
     {

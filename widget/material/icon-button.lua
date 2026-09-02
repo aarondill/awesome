@@ -2,6 +2,7 @@ local require = require("util.rel_require")
 
 local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
 local gtable = require("gears.table")
+local mat_icon = require(..., "icon") ---@module "widget.material.icon"
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
@@ -27,12 +28,12 @@ end
 
 --- Creates a button with the path specified
 --- Ensure to call :buttons() to setup the button
----@param img? string|userdata
+---@param img? string
 ---@param margins? integer
 ---@param buttons? unknown[]
 ---@return clickable_container
 local function new(img, margins, buttons)
-  local iconbox = wibox.widget.imagebox(img)
+  local iconbox = mat_icon(img)
   local margin = wibox.container.margin(iconbox)
   local container = clickable_container(margin, buttons)
 

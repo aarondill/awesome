@@ -5,6 +5,7 @@ local bind = require("util.bind")
 local concat_command = require("util.command.concat_command")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local mat_icon = require("widget.material.icon")
 local spawn = require("util.spawn")
 local stream = require("stream")
 local wibox = require("wibox")
@@ -78,7 +79,7 @@ function MediaControl:init(args)
     ),
     {
       layout = wibox.layout.fixed.horizontal,
-      { id = "icon", widget = wibox.widget.imagebox },
+      { id = "icon", widget = mat_icon },
       {
         layout = wibox.container.scroll.horizontal,
         step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,

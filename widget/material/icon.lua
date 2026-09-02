@@ -52,18 +52,15 @@ end
 --- Note that this is almost certainly expensive
 ---@param size integer | nil
 function Icon:_reload_surface(size)
-  if not self._private.icon then return end
-  self._private.imagebox:set_image(load_surface(self._private.icon, size))
+  self._private.imagebox:set_image(self._private.icon and load_surface(self._private.icon, size))
 end
 
 function Icon:set_icon(icon)
   -- Don't skip if it didn't change cause the file may have changed
-  local had_icon = self._private.icon ~= nil
+  if icon == "" then icon = nil end
   self._private.icon = icon
   self:_reload_surface(self._private.size)
-  if not had_icon then -- we only need to emit if we didn't have an icon
-    self:emit_signal("widget::layout_changed")
-  end
+  self:emit_signal("widget::layout_changed")
   self:emit_signal("widget::redraw_needed")
 end
 function Icon:get_icon() return self._private.icon end
@@ -96,12 +93,11 @@ local function new(icon, size, render_empty)
   gtable.crush(ret, Icon, true)
   ---@diagnostic disable-next-line: invisible
   gtable.crush(ret._private, {
-    icon = icon,
     imagebox = imagebox(),
     size = size,
     render_empty = render_empty,
   })
-  ret:_reload_surface()
+  ret:set_icon(icon)
   return ret
 end
 return new

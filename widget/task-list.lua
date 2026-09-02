@@ -9,6 +9,7 @@ local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
+local mat_icon = require("widget.material.icon")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local assertions = require("util.types.assertions")
@@ -77,9 +78,8 @@ local function create_tasklist_widgets(buttons, c, max_width)
               { --- center the close button
                 { --- close button
                   image = icons.tag_close,
-                  forced_height = dpi(20),
-                  forced_width = dpi(20),
-                  widget = wibox.widget.imagebox,
+                  size = dpi(20),
+                  widget = mat_icon,
                 },
                 valign = "center",
                 [compat.widget.halign] = "center",
@@ -120,7 +120,7 @@ end
 ---@param config TaskListArgs
 ---@param self table widget
 ---@param buttons table of buttons
----@param label fun(client:table, textbox: table): text:string, bg:string, bg_image:string, icon:string
+---@param label fun(client:table, textbox: table): text:string, bg:string, bg_image:string, icon:gears.surface
 ---@param data table a weekly referenced (keys) table for use in caching
 ---@param clients table a table of the clients to display
 local function list_update(config, self, buttons, label, data, clients)
