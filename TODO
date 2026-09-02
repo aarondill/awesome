@@ -6,12 +6,6 @@ error("You can't require the todo file!")
 -- This is not possible in v4.3 because naughty is too simple and doesn't provide signals
 
 --TODO: WIDGETS
---Improve all widgets that came with TitusTech's clone.
---  Return functions, take args, default programs, etc...
---  These don't work (I think)
---    Volume - works? patterns?
---    WiFi - spawns defined program, needs fixed. Defined interface. relies on iw - not stable
---    Bluetooth - Not even exists.
---    Hard-Drive - Relies on `df`, and only checks /home
---    RAM - Uses glob, by accident. External process, can be simplified?
+--Rewrite awful.wiget.layoutbox to use material.icon (for proper svg scaling)
+---   See: widget.layout-box
 --Use exponential scale. Check ./widget/backlight-adjust.lua for an example
