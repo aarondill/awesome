@@ -19,6 +19,7 @@ local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 local GLib = require("lgi").GLib
+local load_surface = require("util.load_surface")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -121,6 +122,8 @@ local function buildButton(button)
   local title = button[1] or "<No Text Provided>"
   local k = button[2]
   local text = k and ("%s (%s)"):format(title, k) or title
+  local surf = load_surface(button.icon, icon_size) -- load manually to ensure scale
+
   local clickable = wibox.widget({
     widget = clickable_container,
     shape = gshape.circle,
@@ -129,7 +132,7 @@ local function buildButton(button)
     {
       widget = wibox.container.margin,
       margins = dpi(16),
-      wibox.widget.imagebox(button.icon),
+      wibox.widget.imagebox(surf),
     },
   })
   clickable:connect_signal("button::release", bind.with_args(run_cmd, button, "click"))

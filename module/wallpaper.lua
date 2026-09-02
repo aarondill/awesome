@@ -1,14 +1,13 @@
 local atag = require("awful.tag")
 local capi = require("capi")
-local gfilesystem = require("gears.filesystem")
-local gtimer = require("gears.timer")
-local path = require("util.path")
-local wibox = require("wibox")
-local cairo = require("lgi").cairo
-local GdkPixbuf = require("lgi").GdkPixbuf
 local config = require("configuration.wallpaper")
 local download = require("wallpapers.download")
+local gfilesystem = require("gears.filesystem")
+local gtimer = require("gears.timer")
+local load_surface = require("util.load_surface")
+local path = require("util.path")
 local tables = require("util.tables")
+local wibox = require("wibox")
 local extensions = { -- A list of accepted file extensions
   ".jpg",
   ".png",
@@ -71,10 +70,7 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   if tables.deep_equal(s._wallpaper, new_wallpaper) then return end
   s._wallpaper = new_wallpaper
 
-  local pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, aspect_w, aspect_h, true)
-  if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
-  local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, wp_path)
-  local surf = cairo.Surface:is_type_of(_surface) and _surface or cairo.Surface(_surface, true)
+  local surf = load_surface(wp_path, aspect_w, aspect_h) -- load manually to ensure size
 
   if pcall(require, "awful.wallpaper") then
     require("awful.wallpaper")({
