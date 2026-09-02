@@ -6,13 +6,30 @@ local load_surface = require("util.load_surface")
 
 -- Local declarations
 
+---@class _icon_private
+---@field icon string?
+---@field imagebox widget (wibox.widget.imagebox)
+---@field size integer?
+---@field last_size integer? Last size the icon was rendered at
+---@field render_empty boolean
+
+---@class Icon: widget
+---@field private _private _icon_private
 local Icon = {}
 
+---@param width integer
+---@param height integer
 function Icon:layout(_, width, height)
   if not self._private.icon then return {} end
-  if not self._private.size then return { base.place_widget_at(self._private.imagebox, 0, 0, width, height) } end
-  local size = self._private.size
-  size = math.min(size, width, height) -- if we don't have enough space, use all of it
+  local size = math.min(width, height)
+  if self._private.size then
+    size = math.min(size, self._private.size) -- if we don't have enough space, use all of it
+  end
+
+  -- Only reload if the size is bigger. Scaling down is not lossy, but scaling up will cause blurry icons
+  if not self._private.last_size or size > self._private.last_size then self:_reload_surface(size) end
+  self._private.last_size = size
+
   return {
     base.place_widget_at(
       self._private.imagebox,
@@ -33,17 +50,16 @@ end
 
 --- Reload the surface from the file to scale it properly
 --- Note that this is almost certainly expensive
-function Icon:_reload_surface()
+---@param size integer | nil
+function Icon:_reload_surface(size)
   if not self._private.icon then return end
-  self._private.imagebox:set_image(load_surface(self._private.icon, self._private.size))
-  self:emit_signal("widget::redraw_needed")
-  self:emit_signal("widget::layout_changed")
+  self._private.imagebox:set_image(load_surface(self._private.icon, size))
 end
 
 function Icon:set_icon(icon)
   -- Don't skip if it didn't change cause the file may have changed
   self._private.icon = icon
-  self:_reload_surface()
+  self:_reload_surface(self._private.size)
 end
 function Icon:get_icon() return self._private.icon end
 -- alias icon to image
@@ -53,7 +69,7 @@ Icon.get_image = Icon.get_icon
 function Icon:set_size(size)
   if self._private.size == size then return end
   self._private.size = size
-  self:_reload_surface()
+  -- self:_reload_surface() TODO:
   self:emit_signal("widget::layout_changed")
 end
 function Icon:get_size() return self._private.size end
@@ -71,13 +87,16 @@ function Icon:get_render_empty() return self._private.render_empty end
 ---@param render_empty boolean? Whether to show empty icons(default: true)
 ---@return unknown
 local function new(icon, size, render_empty)
-  render_empty = render_empty == nil and true or render_empty
-  local ret = base.make_widget(nil, nil, { enable_properties = true })
+  render_empty = render_empty == nil and true or render_empty ---@cast render_empty -nil
+  local ret = base.make_widget(nil, nil, { enable_properties = true }) ---@type Icon
   gtable.crush(ret, Icon, true)
-  ret._private.icon = icon
-  ret._private.imagebox = imagebox()
-  ret._private.size = size
-  ret._private.render_empty = render_empty
+  ---@diagnostic disable-next-line: invisible
+  gtable.crush(ret._private, {
+    icon = icon,
+    imagebox = imagebox(),
+    size = size,
+    render_empty = render_empty,
+  })
   ret:_reload_surface()
   return ret
 end

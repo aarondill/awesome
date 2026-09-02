@@ -20,7 +20,6 @@ local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 local GLib = require("lgi").GLib
-local load_surface = require("util.load_surface")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -133,7 +132,6 @@ local function buildButton(button)
       margins = dpi(16),
       {
         image = button.icon,
-        size = icon_size,
         widget = mat_icon,
       },
     },
