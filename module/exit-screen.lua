@@ -10,6 +10,7 @@ local exit_screen_conf = require("configuration.exit-screen")
 local gshape = require("gears.shape")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local mat_icon = require("widget.material.icon")
 local notifs = require("util.notifs")
 local screen = require("util.types.screen")
 local spawn = require("util.spawn")
@@ -122,8 +123,6 @@ local function buildButton(button)
   local title = button[1] or "<No Text Provided>"
   local k = button[2]
   local text = k and ("%s (%s)"):format(title, k) or title
-  local surf = load_surface(button.icon, icon_size) -- load manually to ensure scale
-
   local clickable = wibox.widget({
     widget = clickable_container,
     shape = gshape.circle,
@@ -132,7 +131,11 @@ local function buildButton(button)
     {
       widget = wibox.container.margin,
       margins = dpi(16),
-      wibox.widget.imagebox(surf),
+      {
+        image = button.icon,
+        size = icon_size,
+        widget = mat_icon,
+      },
     },
   })
   clickable:connect_signal("button::release", bind.with_args(run_cmd, button, "click"))
