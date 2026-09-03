@@ -41,16 +41,23 @@
 ---Only available when declaring a widget as a table
 ---@field get_children_by_id nil | fun(self: widget, id: string): widget[]
 
----@class wibox.container :widget
----@field replace_widget fun(self: wibox.container, from: widget, to: widget, recursive?: boolean): boolean
-
 ---@class widget.imagebox :widget
 ---@field set_image fun(self: widget.imagebox, image: CairoSurface|string?)
 
----@class container.background :widget
----@field set_shape fun(self: container.background, shape: gears.shape)
----@field set_bg fun(self: container.background, bg: string)
----@field set_bgimage fun(self: container.background, bg_image: string)
+---@class wibox.container :widget
+---@field replace_widget fun(self: wibox.container, from: widget, to: widget, recursive?: boolean): boolean
+
+---@class wibox.container.background :widget
+---@field set_shape fun(self: wibox.container.background, shape: gears.shape)
+---@field set_bg fun(self: wibox.container.background, bg: string)
+---@field set_bgimage fun(self: wibox.container.background, bg_image: string)
+
+---@class wibox.container.margin :widget
+---@field set_margins fun(self: wibox.container.margin, val: integer)
+---@field set_left fun(self: wibox.container.margin, val: integer)
+---@field set_right fun(self: wibox.container.margin, val: integer)
+---@field set_top fun(self: wibox.container.margin, val: integer)
+---@field set_bottom fun(self: wibox.container.margin, val: integer)
 
 ---@class widget.textbox :widget
 ---@field set_markup_silently fun(self: widget.textbox, markup: string): boolean

@@ -4,7 +4,7 @@ local wibox = require("wibox")
 local set_alpha_cb
 do
   -- Weak cache for functions, as they can be the same if given the same alpha
-  ---@type { [string]: fun(container: container.background) }
+  ---@type { [string]: fun(container: wibox.container.background) }
   local cache = setmetatable({}, { __mode = "kv" })
   ---@param alpha string two digit hex value
   function set_alpha_cb(alpha)
@@ -20,9 +20,9 @@ end
 ---Call :buttons to set up the widget
 ---@param widget widget
 ---@param buttons unknown[]?
----@return container.background
+---@return wibox.container.background
 local function build(widget, buttons)
-  ---@type container.background
+  ---@type wibox.container.background
   local container = wibox.widget({
     widget,
     buttons = buttons,

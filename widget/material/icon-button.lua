@@ -6,45 +6,41 @@ local mat_icon = require(..., "icon") ---@module "widget.material.icon"
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
+---@class _IconButtonPrivate
+---@field iconbox IconWidget
+---@field margin wibox.container.margin
+
+---@class IconButton : widget
+---@field private _private _IconButtonPrivate
 local IconButton = {}
 
 ---@param img string the path to the image
----@return boolean success
 function IconButton:set_image(img) return self._private.iconbox:set_image(img) end
-function IconButton:get_image() return self._private.iconbox:get_image() end
--- alias icon to image
-IconButton.set_icon = IconButton.set_image
-IconButton.get_icon = IconButton.get_image
+IconButton.set_icon = IconButton.set_image -- alias icon to image
 
-for _, v in pairs({ "margins", "left", "right", "top", "bottom" }) do
-  for _, t in ipairs({ "set", "get" }) do
-    local method = string.format("%s_%s", t, v)
-    IconButton[method] = function(self, m)
-      local margin = self._private.margin
-      return margin[method](margin, m)
-    end
-  end
-end
+function IconButton:set_margins(m) return self._private.margin:set_margins(m) end ---@param m integer
+function IconButton:set_left(m) return self._private.margin:set_left(m) end ---@param m integer
+function IconButton:set_right(m) return self._private.margin:set_right(m) end ---@param m integer
+function IconButton:set_top(m) return self._private.margin:set_top(m) end ---@param m integer
+function IconButton:set_bottom(m) return self._private.margin:set_bottom(m) end ---@param m integer
 
 --- Creates a button with the path specified
 --- Ensure to call :buttons() to setup the button
 ---@param img? string
 ---@param margins? integer
----@param buttons? unknown[]
----@return clickable_container
+---@param buttons? AwesomeButton[]
+---@return IconButton
 local function new(img, margins, buttons)
   local iconbox = mat_icon(img)
   local margin = wibox.container.margin(iconbox)
   local container = clickable_container(margin, buttons)
 
+  ---@type widget
   local ret = wibox.widget.base.make_widget(container, nil, { enable_properties = true })
-  gtable.crush(ret, IconButton, true)
-
-  ret._private.iconbox = iconbox
-  ret._private.margin = margin
-  ret._private.container = container
-  margin:set_margins(margins or dpi(5))
-
+  gtable.crush(ret, IconButton, true) ---@cast ret IconButton
+  ---@diagnostic disable-next-line: invisible
+  gtable.crush(ret._private, { iconbox = iconbox, margin = margin }, true)
+  ret:set_margins(margins or dpi(5))
   return ret
 end
 

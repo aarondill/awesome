@@ -14,6 +14,7 @@ function a.wait(f)
       coroutine.resume(co, ...)
     end
   end)
+  ---@diagnostic disable-next-line: redundant-return-value
   if ret then return table.unpack(ret, 1, ret.n) end
   return coroutine.yield()
 end

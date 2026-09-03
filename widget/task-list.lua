@@ -38,7 +38,7 @@ end
 ---@param buttons AwesomeButton[] a set of `button`s
 ---@param c AwesomeClientInstance a client
 ---@param max_width integer? the maximum width of each textbox
----@return { bgb: container.background, tb: widget.textbox, ib: widget.imagebox, tt: awful.tooltip } widgets the set of tasklist widgets
+---@return { bgb: wibox.container.background, tb: widget.textbox, ib: widget.imagebox, tt: awful.tooltip } widgets the set of tasklist widgets
 local function create_tasklist_widgets(buttons, c, max_width)
   local bgb = wibox.widget({ --- background
     { -- clickable_container
