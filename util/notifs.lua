@@ -135,9 +135,12 @@ local function get_debug_msg(text, ...)
   if type(text) ~= "string" then return stringify(text), ... end
   return text:format(stream.of(...):map(stringify):unpack())
 end
+
 ---Usage: `debug({ table = true })` or `debug("table: %s", table)`
-function M.debug(text, ...) return M.notify("warn", get_debug_msg(text, ...)) end
-function M.debug_once(text, ...) return M.notify_once("warn", get_debug_msg(text, ...)) end
+function M.debug(text, ...) return M.notify("warn", get_debug_msg(text, ...), { hover_timeout = 4000000, timeout = 60 }) end
+function M.debug_once(text, ...)
+  return M.notify_once("warn", get_debug_msg(text, ...), { hover_timeout = 4000000, timeout = 60 })
+end
 
 M.low = bind(M.notify, "low") ---@type logFunc
 M.normal = bind(M.notify, "normal") ---@type logFunc
