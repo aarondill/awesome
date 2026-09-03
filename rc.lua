@@ -15,11 +15,8 @@ assert(not err, err) -- Warn about bad GLib versions
 GLib.chdir(GLib.get_home_dir())
 
 local gfile = require("gears.filesystem")
--- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
--- Don't show the tmux keymaps
-package.loaded["awful.hotkeys_popup.keys.tmux"] = {}
-require("awful.hotkeys_popup.keys")
+-- PERF: Disable hotkeys_popup for clients. (I don't want this anyway)
+package.loaded["awful.hotkeys_popup.keys"] = {}
 
 if not pcall(require, "awful.permissions") then -- Added to replace awful.autofocus
   pcall(require, "awful.autofocus") -- Depreciated in V5

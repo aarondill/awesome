@@ -5,7 +5,6 @@ local apps = require("configuration.apps")
 local bind = require("util.bind")
 local capi = require("capi")
 local concat_command = require("util.command.concat_command")
-local hotkeys_popup = require("awful.hotkeys_popup")
 local icons = require("theme.icons")
 local menubar = require("menubar")
 local tables = require("util.tables")
@@ -51,7 +50,7 @@ local function Launcher(args)
   local menu_awesome = {
     "Awesome",
     {
-      { "hotkeys", bind.with_args(hotkeys_popup.show_help) },
+      { "hotkeys", function() require("awful.hotkeys_popup").show_help() end }, -- PERF: lazy require
       { "manual", bind.with_args(apps.open.terminal, { "man", "awesome" }) },
       { "edit config", bind.with_args(apps.open.editor, capi.awesome.conffile) },
       { "restart", capi.awesome.restart }, -- doesn't take arguuments anyways

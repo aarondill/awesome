@@ -21,7 +21,6 @@ local stream = require("stream")
 local tags = require("util.tags")
 local throttle = require("util.throttle")
 local widgets = require("util.awesome.widgets")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local M = {}
 
@@ -106,7 +105,10 @@ do
   capi.client.connect_signal(compat.signal.manage, next_spawned_handler)
 end
 ---Ensure hotkeys shows on the focused screen (default is the current client's screen)
-local function show_help() hotkeys_popup.show_help(nil, ascreen.focused()) end
+local function show_help()
+  local hotkeys_popup = require("awful.hotkeys_popup.widget") -- PERF: lazy require
+  hotkeys_popup.show_help(nil, ascreen.focused())
+end
 ---Create a new tmp file, then open it in the editor
 ---After the editor closes, delete the file
 local function editor_scratchpad()
