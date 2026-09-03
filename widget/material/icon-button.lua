@@ -1,7 +1,7 @@
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local clickable_container = require(..., "clickable-container") ---@module "widget.material.clickable-container"
-local gtable = require("gears.table")
 local mat_icon = require(..., "icon") ---@module "widget.material.icon"
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
@@ -37,9 +37,9 @@ local function new(img, margins, buttons)
 
   ---@type widget
   local ret = wibox.widget.base.make_widget(container, nil, { enable_properties = true })
-  gtable.crush(ret, IconButton, true) ---@cast ret IconButton
+  tables.rawcrush(ret, IconButton) ---@cast ret IconButton
   ---@diagnostic disable-next-line: invisible
-  gtable.crush(ret._private, { iconbox = iconbox, margin = margin }, true)
+  tables.rawcrush(ret._private, { iconbox = iconbox, margin = margin })
   ret:set_margins(margins or dpi(5))
   return ret
 end

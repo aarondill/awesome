@@ -3,7 +3,6 @@ local atooltip = require("awful.tooltip")
 local beautiful = require("beautiful")
 local bind = require("util.bind")
 local concat_command = require("util.command.concat_command")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local mat_icon = require("widget.material.icon")
 local spawn = require("util.spawn")
@@ -55,20 +54,19 @@ local defaults = {
 }
 
 ---@class MediaControl :MediaControl.args
+---@field widget wibox.container
+---@field tooltip awful.tooltip
 local MediaControl = {}
 
 ---@param args MediaControl.args?
-function MediaControl:new(args) return setmetatable({}, { __index = self }):init(args) end
-
----@param args MediaControl.args?
----@return MediaControl
-function MediaControl:init(args)
-  gtable.crush(self, defaults, true) -- Set default
-  if args then gtable.crush(self, args or {}, true) end -- Set any user overrides
+---@return widget
+function MediaControl.new(args)
+  local self = tables.clone(MediaControl)
+  tables.rawcrush(self, defaults, args)
 
   local _update_widget = bind(self.update_widget, self)
   local update_widget = function() return gtimer.start_new(0.5, _update_widget) end
-  local widget_template = {
+  self.widget = wibox.widget({
     widget = clickable_container,
     buttons = tables.join(
       -- button 1: left click  - play/pause
@@ -90,23 +88,26 @@ function MediaControl:init(args)
         { id = "current_song", widget = wibox.widget.textbox },
       },
     },
-  }
-  self.widget = wibox.widget(widget_template)
-  self.widget.tooltip = atooltip({
+  })
+  self.tooltip = atooltip({
     objects = { self.widget },
     mode = "outside",
     align = "bottom",
     delay_show = 1,
   })
-  function self.widget:set_status(image) self:get_children_by_id("icon")[1].image = image end
-  function self.widget:set_text(text)
-    self:get_children_by_id("current_song")[1].text = text
-    self.tooltip:set_text(text)
-  end
 
   self:watch(self.refresh_rate)
-
   return self.widget
+end
+
+function MediaControl:set_status(image)
+  local icon = self.widget:get_children_by_id("icon")[1] ---@cast icon IconWidget
+  icon:set_image(image)
+end
+function MediaControl:set_text(text)
+  local textbox = self.widget:get_children_by_id("current_song")[1] ---@cast textbox widget.textbox
+  textbox:set_text(text)
+  self.tooltip:set_text(text)
 end
 
 ---@param status string?
@@ -120,19 +121,19 @@ function MediaControl:update_widget_icon(status)
   elseif status == "Stopped" then
     icon = self.stop_icon
   end
-  self.widget:set_status(icon)
+  self:set_status(icon)
 end
 
 ---@param text string
 function MediaControl:update_widget_text(text)
-  self.widget:set_text(text)
-  self.widget:set_visible(true)
+  self:set_text(text)
+  self.widget.visible = true
 end
 
 function MediaControl:hide_widget()
-  self.widget:set_text("Offline")
-  self.widget:set_status(self.stop_icon)
-  self.widget:set_visible(not self.autohide)
+  self:set_text("Offline")
+  self:set_status(self.stop_icon)
+  self.widget.visible = not self.autohide
 end
 
 ---@private

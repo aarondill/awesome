@@ -1,8 +1,8 @@
 -- Default widget requirements
 local base = require("wibox.widget.base")
-local gtable = require("gears.table")
 local imagebox = require("wibox.widget.imagebox")
 local load_surface = require("util.load_surface")
+local tables = require("util.tables")
 
 -- Local declarations
 
@@ -97,9 +97,9 @@ function Icon:get_render_empty() return self._private.render_empty end
 local function new(icon, size, render_empty)
   render_empty = render_empty == nil and true or render_empty ---@cast render_empty -nil
   local ret = base.make_widget(nil, nil, { enable_properties = true }) ---@type IconWidget
-  gtable.crush(ret, Icon, true)
+  tables.rawcrush(ret, Icon)
   ---@diagnostic disable-next-line: invisible
-  gtable.crush(ret._private, {
+  tables.rawcrush(ret._private, {
     imagebox = imagebox(),
     size = size,
     render_empty = render_empty,

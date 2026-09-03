@@ -128,32 +128,35 @@ end
 --- We only merge empty tables or tables that are not an array (indexed by integers)
 local function can_merge(v) return type(v) == "table" and (next(v) == nil or not tables.isarray(v)) end
 
+local _SET = function(t, k, v) t[k] = v end
 --- Adapted from vim.tbl_deep_extend in NeoVim source code
 --- Merges recursively two or more tables.
 ---
 ---@generic T1: table
 ---@generic T2: table
+---@param set_index fun(t: T1, k: any, v: any) Set the value of `t[k]` to `v` (either _SET or rawset)
 ---@param behavior -- Decides what to do if a key is found in more than one map:
 ---      |"error": raise an error
 ---      |"keep":  use value from the leftmost map
 ---      |"force": use value from the rightmost map
----@param ... T1|T2|nil Two or more tables
+---@param ret T1 The table to merge results into. Pass an empty table to clone values.
+---@param ... T2|nil Two or more tables
 ---@return T1|T2 table Merged table
-local function extend_recurse(recurse, behavior, ...)
+local function extend_helper(recurse, set_index, behavior, ret, ...)
   if behavior ~= "error" and behavior ~= "keep" and behavior ~= "force" then error("invalid behavior", 1) end
-  if select("#", ...) < 2 then error("wrong number of arguments", 1) end
-  local ret = {} --- @type table<any,any>
+  -- must be at least one table because ret may count as one (ie in the crush case)
+  if select("#", ...) < 1 then error("wrong number of arguments", 1) end
   for i = 1, select("#", ...) do
     local tbl = select(i, ...)
     if not tbl then goto continue end
     if type(tbl) ~= "table" then error("argument #" .. i .. " is not a table", 2) end
     for k, v in pairs(tbl) do
       if recurse and can_merge(v) and can_merge(ret[k]) then
-        ret[k] = tables.tbl_deep_extend(behavior, ret[k], v)
+        set_index(ret, k, extend_helper(recurse, set_index, behavior, ret[k], v))
       elseif behavior ~= "force" and ret[k] ~= nil then
         if behavior == "error" then error("key found in more than one map: " .. k) end -- Else behavior is "keep".
       else
-        ret[k] = v
+        set_index(ret, k, v)
       end
     end
     ::continue::
@@ -172,7 +175,7 @@ end
 ---      |"force": use value from the rightmost map
 ---@param ... T1|T2|nil Two or more tables
 ---@return T1|T2 table Merged table
-function tables.deep_extend(behavior, ...) return extend_recurse(true, behavior, ...) end
+function tables.deep_extend(behavior, ...) return extend_helper(true, _SET, behavior, {}, ...) end
 
 --- Merges two or more tables. Keeps the value in the rightmost table (like gtable.crush, but doesn't overwrite)
 ---
@@ -180,6 +183,23 @@ function tables.deep_extend(behavior, ...) return extend_recurse(true, behavior,
 ---@generic T2: table
 ---@param ... T1|T2|nil Two or more tables
 ---@return T1|T2 table Merged table
-function tables.extend(...) return extend_recurse(false, "force", ...) end
+function tables.extend(...) return extend_helper(false, _SET, "force", {}, ...) end
+
+---Merges two or more tables by overwriting the values of the first table with the values of the latter tables.
+---Returns the first (modified!) table.
+---@generic T1 : table
+---@generic T2 : table
+---@param t1 T1
+---@param ... T2|nil
+---@return T1|T2 t1
+function tables.crush(t1, ...) return extend_helper(false, _SET, "force", t1, ...) end
+
+---Same as `tables.crush`, but uses `rawset` when setting values.
+---@generic T1 : table
+---@generic T2 : table
+---@param t1 T1
+---@param ... T2|nil
+---@return T1|T2 t1
+function tables.rawcrush(t1, ...) return extend_helper(false, rawset, "force", t1, ...) end
 
 return tables

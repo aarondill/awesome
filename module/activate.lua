@@ -2,7 +2,7 @@ local aplacement = require("awful.placement")
 local ascreen = require("awful.screen")
 local capi = require("capi")
 local desktop = require("widget.desktop")
-local gtable = require("gears.table")
+local tables = require("util.tables")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 
@@ -29,9 +29,7 @@ function ActivateWidget.new(s)
       },
     }),
   })
-  -- DON'T USE a metatable here, it breaks __index
-  gtable.crush(self, ActivateWidget) ---@cast self ActivateWidget
-
+  tables.rawcrush(self, ActivateWidget) ---@cast self ActivateWidget
   return self
 end
 function ActivateWidget:update()

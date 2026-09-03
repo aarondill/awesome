@@ -1,10 +1,10 @@
 local beautiful = require("beautiful")
 local capi = require("capi")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local quake = require("module.quake")
 local screen = require("util.types.screen")
 local stream = require("stream")
+local tables = require("util.tables")
 local wibox = require("wibox")
 
 ---@class DesktopWidget :wibox
@@ -85,7 +85,7 @@ function DesktopWidget.new(opts)
   gtimer.delayed_call(function() self:update() end) -- Wait until update has been registered
 
   insert_instance(opts.screen, self)
-  gtable.crush(self, DesktopWidget) -- DON'T USE a metatable here, it breaks __index
+  tables.rawcrush(self, DesktopWidget)
   callback(opts.screen) -- Check if this widget should be visible
   return self
 end

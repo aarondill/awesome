@@ -5,7 +5,6 @@ local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
 local compat = require("util.awesome.compat")
 local concat_command = require("util.command.concat_command")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local spawn = require("util.spawn")
 local strings = require("util.strings")
@@ -142,7 +141,7 @@ function VpnWidget.new(args)
     buttons = abutton.new({}, 1, function() return wdg:toggle() end),
     widget = clickable_container,
   })
-  gtable.crush(wdg, VpnWidget, true) ---@cast wdg VpnWidget
+  tables.rawcrush(wdg, VpnWidget) ---@cast wdg VpnWidget
   wdg.opts = opts
   wdg.tooltip = atooltip({
     objects = { wdg },

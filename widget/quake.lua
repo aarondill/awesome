@@ -4,7 +4,6 @@ local aclient = require("awful.client")
 local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.awesome.compat")
-local gtable = require("gears.table")
 local notifs = require("util.notifs")
 local screen = require("util.types.screen")
 local tables = require("util.tables")
@@ -208,8 +207,7 @@ function quake:toggle(tag) return self:_display("toggle", tag) end
 ---@return QuakeTerminal
 function quake.new(conf)
   local self = tables.clone(quake, true)
-  gtable.crush(self, get_default_config(), true) -- Override defaults using conf
-  gtable.crush(self, conf, true) -- Override defaults using conf
+  tables.rawcrush(self, get_default_config(), conf) -- Override defaults using conf
   self.maximized, self.fullscreen = false, false
   capi.client.connect_signal(compat.signal.manage, bind(self._managed, self))
   capi.client.connect_signal(compat.signal.unmanage, bind(self._unmanaged, self))
