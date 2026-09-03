@@ -32,17 +32,13 @@ function tables.clone(t, deep)
 end
 
 ---Concat all arguments into a copy of t1, returns a new table.
----@param t1 unknown[]
----@param ... unknown
----@return (unknown[]|{n: integer}) joined a new table containing the concatenation
+---@generic T
+---@param t1 T[]
+---@param ... T
+---@return T[] joined a new table containing the concatenation
 function tables.concat(t1, ...)
-  local res = tables.clone(t1)
-  local tn = #res
-  for n = 1, select("#", ...) do
-    local arg = select(n, ...)
-    res[tn + 1] = arg
-    tn = tn + 1
-  end
+  local t2 = table.pack(...)
+  local res, tn = tables.join(t1, t2)
   res.n = tn
   return res
 end
@@ -113,6 +109,7 @@ end
 -- an error is thrown.
 ---@param ... table a set of tables to join together
 ---@return table joined a new table containing the concatenation
+---@return integer length of the joined table
 function tables.join(...)
   local t = {}
   local tn = 0
@@ -125,7 +122,7 @@ function tables.join(...)
     end
     tn = tn + alen
   end
-  return t
+  return t, tn
 end
 
 --- We only merge empty tables or tables that are not an array (indexed by integers)
