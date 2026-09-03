@@ -3,6 +3,11 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+-- require("beautiful")
+-- require("wibox")
+-- require("naughty")
+-- local finish = require("_perf").profile_require() ---DEBUG:
+
 if not pcall(require, "lgi") then error("LGI is required to run this configuration") end
 
 local GLib = require("lgi").GLib
@@ -63,3 +68,6 @@ local amouse = require("awful.mouse")
 amouse.snap.edge_enabled = false
 amouse.snap.client_enabled = false
 amouse.drag_to_tag.enabled = false
+
+-- local res = finish()
+-- io.open("/home/aaron/require-log.txt", "w"):write(res):close() ---DEBUG: remove me

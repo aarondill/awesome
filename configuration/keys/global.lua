@@ -2,6 +2,7 @@ local require = require("util.rel_require")
 local tables = require("util.tables")
 
 local GLib = require("lgi").GLib
+local gtimer = require("gears.timer")
 local Gio = require("lgi").Gio
 local aclient = require("awful.client")
 local alayout = require("awful.layout")
@@ -452,7 +453,10 @@ for i = 1, 9 do
     )
   )
 end
-capi.root.keys(M.keys)
+
+gtimer.delayed_call(function()
+  capi.root.keys(M.keys) --- PERF: this takes ~15 ms
+end)
 
 ---A typed helper around awful_button.new -- Note: specific to this file
 ---@param modKeys string[]
