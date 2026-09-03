@@ -83,7 +83,7 @@ end
 
 ---Create a new battery widget
 ---@param args BatteryWidgetConfig?
----@return table BatteryWidget
+---@return widget BatteryWidget
 local function Battery(args)
   args = args or {}
   local low_power = args.low_power or 15
@@ -91,6 +91,7 @@ local function Battery(args)
   local battery_path = args.battery_path or nil
   local throttled_show_battery_warning = throttle(show_battery_warning, low_power_frequency)
 
+  ---@type widget
   local widget = wibox.widget(widget_template)
   local battery_popup = atooltip({
     objects = { widget },

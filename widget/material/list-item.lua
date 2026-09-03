@@ -119,7 +119,7 @@ end
 function mat_list_item:get_content() return self._private.content end
 
 -- Get the number of children element
--- @treturn table The children
+-- @treturn widget[] The children
 function mat_list_item:get_children() return { self._private.widget } end
 
 -- Replace the layout children

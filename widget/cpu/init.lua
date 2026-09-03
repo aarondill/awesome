@@ -65,7 +65,7 @@ end
 
 ---Create a new CPU usage widget
 ---@param args CPUWidgetConfig?
----@return table
+---@return widget
 local function CPU(args)
   args = args or {}
 
@@ -107,7 +107,7 @@ local function CPU(args)
     callback = bind.with_args(read_async, "/proc/stat", file_callback),
   })
 
-  local cpu_meter = wibox.widget({
+  return wibox.widget({
     {
       icon = icons.chart,
       widget = mat_icon,
@@ -116,7 +116,5 @@ local function CPU(args)
     spacing = dpi(2),
     layout = wibox.layout.fixed.horizontal,
   })
-
-  return cpu_meter
 end
 return CPU

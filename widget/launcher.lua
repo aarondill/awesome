@@ -15,7 +15,7 @@ local wibox = require("wibox")
 ---@param args LauncherArgs? Standard widget table arguments, plus image for the image path
 ---@param menu table
 ---and command for the command to run on click, or either menu to create menu.
----@return table launcher_widget
+---@return widget launcher_widget
 local function launcher_new(args, menu)
   args = args or {}
   if not menu then
@@ -44,7 +44,7 @@ end
 
 ---Create a launcher widget and a main menu
 ---@param args LauncherArgs?
----@return table widget
+---@return widget
 local function Launcher(args)
   -- function(item, menu) end
   local menu_awesome = {

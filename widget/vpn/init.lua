@@ -33,12 +33,11 @@ local default_args = {
   font = beautiful.font,
 }
 
----@class VpnWidget
-local VpnWidget = {
-  opts = {}, ---@type VpnWidgetArgs
-  tooltip = {}, ---@type widget awful.tooltip
-  timer = {}, ---@type table gears.timer
-}
+---@class VpnWidget :widget
+---@field opts VpnWidgetArgs
+---@field tooltip widget awful.tooltip
+---@field timer table gears.timer
+local VpnWidget = {}
 
 ---@param args string[]|string
 ---@param callback fun(succuss: boolean, stdout: string, stderr: string): any?
@@ -125,7 +124,7 @@ function VpnWidget:enabled() return self._cached_status end
 function VpnWidget.new(args)
   ---@type VpnWidgetArgs
   local opts = tables.deep_extend("force", tables.clone(default_args), args or {})
-  local wdg
+  local wdg ---@type VpnWidget
   wdg = wibox.widget({
     {
       {
@@ -142,7 +141,7 @@ function VpnWidget.new(args)
     buttons = abutton.new({}, 1, function() return wdg:toggle() end),
     widget = clickable_container,
   })
-  gtable.crush(wdg, VpnWidget, true) ---@cast wdg VpnWidget
+  gtable.crush(wdg, VpnWidget, true)
   wdg.opts = opts
   wdg.tooltip = atooltip({
     objects = { wdg },

@@ -1,15 +1,12 @@
 local capi = require("capi")
 local wibox = require("wibox")
 
----@class clickable_container
----@field buttons fun(s: clickable_container, b?: table)
-
 local set_alpha_cb
 do
   -- Weak cache for functions, as they can be the same if given the same alpha
   local cache = setmetatable({}, { __mode = "kv" })
   ---@param alpha string two digit hex value
-  ---@return fun(container: clickable_container)
+  ---@return fun(container: widget)
   function set_alpha_cb(alpha)
     if not cache[alpha] then
       local c = ("#%s%s"):format("ffffff", alpha) -- white + alpha
@@ -21,15 +18,20 @@ end
 
 ---Create a clickable containter
 ---Call :buttons to set up the widget
----@param widget table
+---@param widget widget
 ---@param buttons unknown[]?
----@return clickable_container
+---@return widget
 local function build(widget, buttons)
+  ---@type widget
   local container = wibox.widget({
     widget,
     buttons = buttons,
     widget = wibox.container.background,
   })
+
+  ---@class wibox
+  ---@field is_moused_over boolean? -- This is an injected field!
+  ---@field cursor string? -- This is an injected field!
 
   local saved_cursor, containing_wibox
   container:connect_signal("mouse::enter", function()
