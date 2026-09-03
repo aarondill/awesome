@@ -1,9 +1,9 @@
 local sep = ";"
 
 local assertions = require("util.types.assertions") -- This has no requires
-local filter = require("util.tables.filter") -- No requires
 local path = require("util.path") -- This only requires lgi
 local strings = require("util.strings") -- Only requires gears
+local tables = require("util.tables") -- No requires
 
 local M = {}
 ---Whether package.path contains `dir`
@@ -95,7 +95,7 @@ end
 ---@param force boolean Should remove relative and absolute paths that refer to the same path?
 local function _uniq(pathvar, force)
   local seen = {} -- Already found this one
-  local res = filter(strings.split(pathvar, sep), function(p)
+  local res = tables.filter(strings.split(pathvar, sep), function(p)
     local normal = path.normalize(p, force) -- If force, consider all paths as absolute, else keep relative paths
     if seen[normal] then return false end
     seen[normal] = true
