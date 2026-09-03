@@ -241,6 +241,29 @@ local function show(opts)
 
     return false -- we didn't handle this event
   end)
+  if not exit_screen.widget then -- PERF: lazy init the widget when it's needed
+    exit_screen:setup({
+      nil, -- No top
+      {
+        nil, -- No left
+        {
+          uptime_textbox,
+          { -- This should be centered
+            layout = wibox.layout.fixed.horizontal,
+            stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
+          },
+          nil, -- No bottom
+          layout = wibox.layout.align.vertical,
+        },
+        nil, -- No right
+        expand = "none",
+        layout = wibox.layout.align.horizontal,
+      },
+      inhibit_textbox, -- No bottom
+      expand = "none",
+      layout = wibox.layout.align.vertical,
+    })
+  end
   exit_screen.visible = true
 end
 
@@ -250,29 +273,6 @@ exit_screen:buttons(tables.join(
   -- Right click - Hide exit_screen
   abutton({}, 3, hide)
 ))
-
--- Item placement
-exit_screen:setup({
-  nil, -- No top
-  {
-    nil, -- No left
-    {
-      uptime_textbox,
-      { -- This should be centered
-        layout = wibox.layout.fixed.horizontal,
-        stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
-      },
-      nil, -- No bottom
-      layout = wibox.layout.align.vertical,
-    },
-    nil, -- No right
-    expand = "none",
-    layout = wibox.layout.align.horizontal,
-  },
-  inhibit_textbox, -- No bottom
-  expand = "none",
-  layout = wibox.layout.align.vertical,
-})
 
 capi.awesome.connect_signal("exit_screen::show", show)
 capi.awesome.connect_signal("exit_screen::hide", hide)
