@@ -94,11 +94,10 @@ function Icon:get_render_empty() return self._private.render_empty end
 ---@param size integer? The size of the icon. If nil, all space will be used
 ---@param render_empty boolean? Whether to show empty icons(default: true)
 ---@return unknown
-local function new(icon, size, render_empty)
+function Icon.new(icon, size, render_empty)
   render_empty = render_empty == nil and true or render_empty ---@cast render_empty -nil
   local ret = base.make_widget(nil, nil, { enable_properties = true }) ---@type IconWidget
   tables.rawcrush(ret, Icon)
-  ---@diagnostic disable-next-line: invisible
   tables.rawcrush(ret._private, {
     imagebox = imagebox(),
     size = size,
@@ -107,4 +106,4 @@ local function new(icon, size, render_empty)
   ret:set_icon(icon)
   return ret
 end
-return new
+return setmetatable(Icon, { __call = function(_, ...) return Icon.new(...) end })

@@ -30,7 +30,7 @@ function IconButton:set_bottom(m) return self._private.margin:set_bottom(m) end 
 ---@param margins? integer
 ---@param buttons? AwesomeButton[]
 ---@return IconButton
-local function new(img, margins, buttons)
+function IconButton.new(img, margins, buttons)
   local iconbox = mat_icon(img)
   local margin = wibox.container.margin(iconbox)
   local container = clickable_container(margin, buttons)
@@ -38,10 +38,9 @@ local function new(img, margins, buttons)
   ---@type widget
   local ret = wibox.widget.base.make_widget(container, nil, { enable_properties = true })
   tables.rawcrush(ret, IconButton) ---@cast ret IconButton
-  ---@diagnostic disable-next-line: invisible
   tables.rawcrush(ret._private, { iconbox = iconbox, margin = margin })
   ret:set_margins(margins or dpi(5))
   return ret
 end
 
-return new
+return setmetatable(IconButton, { __call = function(_, ...) return IconButton.new(...) end })
