@@ -105,9 +105,11 @@ local function set_notifications(stdout)
 end
 
 -- Calls fn if enough time has passed s.t. the user is able to make a new request.
+---NOTE: can't use util.throttle because debounce_duration can change after
+---each call (based on the response headers)
 ---@param fn fun(last_call: integer|nil)
 ---@return boolean
-local function debounce(fn)
+local function throttle(fn)
   if not state then return false end
   local debounce_ok_at = state.last_refresh and state.last_refresh + state.debounce_duration
   if debounce_ok_at and debounce_ok_at >= os.time() then return false end
@@ -123,7 +125,7 @@ end
 M.refresh = function(if_changed, done)
   if_changed = if_changed or function() end
   done = done or function() end
-  local ran = debounce(function(previous_last_refresh)
+  local ran = throttle(function(previous_last_refresh)
     local if_modified_since = previous_last_refresh and generate_last_modified(previous_last_refresh)
 
     local cmd = { "gh", "api", "notifications", "-i", "-t", "{{ len . }}" }
