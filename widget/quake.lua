@@ -14,6 +14,8 @@ local tables = require("util.tables")
 local quake = {}
 local function get_default_config()
   ---@class QuakeConfig
+  ---@field settings? fun(self: QuakeTerminal, c: AwesomeClientInstance)
+  ---@class QuakeConfig
   local ret = {
     class = "QuakeDD", -- window name
     border = 1, -- client border width
@@ -24,11 +26,8 @@ local function get_default_config()
     -- If width or height <= 1 this is a proportion of the workspace
     height = 0.5, -- height
     width = 1, -- width
-    vert = "top", -- top, bottom or center
-    horiz = "left", -- left, right or center
-    ---@param self QuakeTerminal
-    ---@param c AwesomeClientInstance
-    settings = function(self, c) end,
+    vert = "top", ---@type 'top'|'bottom'|'center'
+    horiz = "left", ---@type 'left'|'right'|'center'
     spawn = function(class) ---@param class string
       return require("util.spawn").spawn({ "xterm", "-class", class })
     end,

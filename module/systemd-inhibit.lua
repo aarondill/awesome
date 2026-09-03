@@ -20,6 +20,6 @@ return properties.get(
     assert(res.value[1].type == "s")
     local Type = res.value[1].value
     if Type ~= "tty" then return end -- the bug is fixed.
-    return create_inhibitor("idle", "Because idle timeout is broken with startx", "block")
+    create_inhibitor("idle", "Because idle timeout is broken with startx", "block")
   end
 )

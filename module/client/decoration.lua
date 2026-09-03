@@ -67,6 +67,9 @@ local function changesOnScreen(currentScreen) ---@param currentScreen AwesomeScr
     if client.fullscreen then show_top_bar = false end -- If *any* client is fullscreen, the top panel should be hidden
   end
 
+  ---@class wibox
+  ---@field user_set_hidden boolean? -- Injected field for the decoration module
+
   local panel = currentScreen.top_panel
   if panel and not panel.user_set_hidden then --- Hide bars when app go fullscreen
     panel.visible = show_top_bar

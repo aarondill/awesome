@@ -18,17 +18,18 @@ end
 ---@param tag tag_config
 ---@param s AwesomeScreenInstance
 ---@param i integer
+---@return table props
 local function resolve_tag(tag, s, i)
   if type(tag) == "table" then return tag end
   if type(tag) == "function" then return tag(s, i, tags) end -- Screen, index, array
   if type(tag) == "string" or type(tag) == "number" then return { name = tostring(tag) } end
   return {} -- Unknown tag -- empty properties
 end
-ascreen.connect_for_each_screen(function(s)
+ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
   return stream
     .rangeclosed(1, #tags)
     :filter(function(i) return tags[i] ~= false end)
-    :map(function(i)
+    :map(function(i) ---@param i integer
       local tag = resolve_tag(tags[i], s, i)
       local params = gtable.crush({
         name = i,

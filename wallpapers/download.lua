@@ -18,13 +18,15 @@ local Gio, GLib, GObject = lgi.Gio, lgi.GLib, lgi.GObject
 local function download(callback, url, dest_path)
   local dest = Gio.File.new_for_path(dest_path)
   local src = Gio.File.new_for_uri(url)
+  ---@type GAsyncReadyCallback<GFile>
+  local f = function(self, task) return callback(self:copy_finish(task)) end ---@cast f -nil
   return src:copy_async(
     dest,
     "OVERWRITE",
     GLib.PRIORITY_DEFAULT,
     nil,
     nil, -- progress_callback
-    GObject.Closure(function(self, task) return callback(self:copy_finish(task)) end) -- idk why this is needed
+    GObject.Closure(f) -- idk why this is needed
   )
 end
 

@@ -15,6 +15,7 @@ local client_buttons, client_keys = client_config.buttons, client_config.keys
 
 ---@class AwesomeClientInstance
 ---@field skip_decoration boolean? Whether to skip decorating the client instance. This is an injected field!
+---@field titlebars_enabled boolean? Injected field
 
 ---@alias AwesomeRule<T> { [string]: T }
 ---@class (exact) AwesomeRules
@@ -170,7 +171,7 @@ end
 
 arules.rules = rules
 capi.client.disconnect_signal(compat.signal.manage, arules.apply)
-return capi.client.connect_signal(compat.signal.manage, function(c)
+return capi.client.connect_signal(compat.signal.manage, function(c) ---@param c AwesomeClientInstance
   if not capi.awesome.startup then return arules.apply(c) end
   return stream.new(arules.matching_rules(c, arules.rules)):foreach(function(rule)
     local props = rule.properties or {}

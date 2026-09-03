@@ -10,6 +10,7 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
+---@param c AwesomeClientInstance
 local function render_titlebars(c)
   -- buttons for the titlebar
   local buttons = gtable.join(
@@ -51,6 +52,7 @@ local function render_titlebars(c)
   })
 end
 
+---@param c AwesomeClientInstance
 local function should_show_titlebars(c)
   if c.requests_no_titlebar then return false end -- No titlebars
   if not quake.client_is_quake(c) then -- quake is always floating -- handle other ways
@@ -66,6 +68,7 @@ local function should_show_titlebars(c)
 end
 
 -- Show or hide the titlebar according to requests_no_titlebar and titlebars_enabled
+---@param c AwesomeClientInstance
 local function show_titlebars(c)
   if should_show_titlebars(c) then return atitlebar.show(c, "top") end
   return atitlebar.hide(c, "top")
@@ -77,7 +80,7 @@ capi.client.connect_signal("request::tag", show_titlebars) -- A tag has changed
 capi.client.connect_signal("property::floating", show_titlebars) -- Handle floating changes
 capi.client.connect_signal("property::titlebars_enabled", show_titlebars) -- The user has indicated that titlebars should be shown
 -- Show titlebars on tags with the floating layout
-capi.tag.connect_signal("property::layout", function(t)
+capi.tag.connect_signal("property::layout", function(t) ---@param t AwesomeTagInstance
   for _, c in pairs(t:clients()) do
     show_titlebars(c)
   end

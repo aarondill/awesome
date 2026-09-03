@@ -91,7 +91,7 @@ capi.screen.connect_signal("request::wallpaper", function(s) ---@param s Awesome
   --we save a lot of memory by collecting them.
 
   ---@diagnostic disable-next-line: cast-local-type -- it's nil! They can't be accessed anymore
-  surf, _surface, pixbuf, geom = nil, nil, nil, nil -- No more references
+  surf = nil -- No more references
   return collectgarbage("collect")
 end)
 

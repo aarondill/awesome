@@ -41,12 +41,14 @@ local disabled = false
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 
 -- Create the widget
+---@type wibox
 local exit_screen = wibox({
   visible = false,
   ontop = true,
   type = "splash",
 })
 
+---@type widget.textbox
 local uptime_textbox = wibox.widget({
   text = "Loading...",
   font = beautiful.title_font,
@@ -61,6 +63,7 @@ local function update_uptime()
   end)
 end
 
+---@type widget
 local inhibit_textbox = wibox.widget({
   {
     {
@@ -94,6 +97,7 @@ local function update_inhibit()
   inhibit_textbox.visible = not not pid -- hide if systemd-inhibit didn't spawn
 end
 
+---@type gears.timer
 local update_timer = gtimer.new({
   timeout = 30,
   callback = function()

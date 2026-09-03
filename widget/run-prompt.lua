@@ -4,6 +4,11 @@ local path = require("util.path")
 local prompt = require("awful.widget.prompt")
 local spawn = require("util.spawn")
 
+---@class RunPromptWidget :widget A hack around the awful.widget.prompt widget
+---@field run fun(self: RunPromptWidget)
+---@field promptbox table
+
+---@return RunPromptWidget
 local function Run_prompt()
   local promptbox
   promptbox = prompt({

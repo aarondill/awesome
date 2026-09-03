@@ -18,6 +18,8 @@ local function err(cmd, e)
   })
 end
 
+---@param exitreason 'exit'|'signal'
+---@param exitcode integer
 local function get_warning(exitreason, exitcode)
   if exitreason == "exit" then return string.format("exit code: %d", exitcode) end
   -- Segfault:

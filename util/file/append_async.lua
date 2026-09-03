@@ -5,7 +5,7 @@ local GLib = require("lgi").GLib
 --- Append to a file's content - Async :)
 ---@param path string|GFile file path to append to
 ---@param content string content to append to the file
----@param cb fun(err?: userdata)? function to call when done.
+---@param cb fun(err?: GError)? function to call when done.
 ---@source https://github.com/Elv13/awesome-configs/blob/master/utils/fd_async.lua
 local function file_append(path, content, cb)
   cb = cb or function() end

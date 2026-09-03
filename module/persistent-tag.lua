@@ -7,7 +7,7 @@ local stream = require("stream")
 local strings = require("util.strings")
 local write_sync = require("util.file.sync.write_sync")
 local filepath = "/tmp/awesomewm-last-selected-tags"
-capi.awesome.connect_signal("exit", function(reason_restart)
+capi.awesome.connect_signal("exit", function(reason_restart) ---@param reason_restart boolean
   if not reason_restart then return end
   local str = stream
     .new(screen.iterator())

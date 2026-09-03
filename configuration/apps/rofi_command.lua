@@ -6,7 +6,7 @@ require("configuration.rofi_dynamic", nil, false) -- just in case the rc doesn't
 local config_file_dir = require(..., "conffile_dir") ---@module "configuration.apps.conffile_dir"
 
 ---Create a rofi command
----@param mode string?
+---@param mode 'window'|'run'|'drun'?
 ---@return string[]
 local function rofi_command(mode)
   rofi_dynamic() -- Write config

@@ -63,6 +63,7 @@ local string = "" ---@type string
 ---@alias AwesomeStruts {top?: integer, bottom?: integer, left?: integer, right?: integer}
 ---@alias awful.key table
 ---@alias awful.button table
+---@alias gears.timer table
 ---@alias gears.color |string A hexadecimal color code, such as "#ff0000" for red.
 ---|string A color name, such as "red".
 ---|table A gradient table.
@@ -142,7 +143,7 @@ types.Awesome = {
   ---@return string error
   ---@deprecated Use pixbuf_to_surface instead
   load_image = function(name) end, ---@nodiscard
-  ---@param pixbuf GdkPixbuf
+  ---@param pixbuf userdata pointer to a GdkPixbuf (buf._native)
   ---@param path string
   ---@return userdata pointer to a CairoSurface, use cairo.Surface(p, true) to get a value
   pixbuf_to_surface = function(pixbuf, path) end, ---@nodiscard

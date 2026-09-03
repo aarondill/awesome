@@ -43,7 +43,7 @@ local default_args = {
 ---@class VpnWidget :widget
 ---@field opts VpnWidgetArgs
 ---@field tooltip awful.tooltip
----@field timer table gears.timer
+---@field timer gears.timer
 local VpnWidget = {}
 
 ---@param args string[]|string

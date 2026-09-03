@@ -75,7 +75,7 @@ local M = verify_functions({
       o[self.halign] = val
       return o
     end,
-    ---@param args table<'screen', screen>
+    ---@param args {screen: screen}
     get_layoutbox_args = function(args) return vers("v4.3", args.screen, args) end,
     set_border_width = lazy_set(vers("v4.3", "shape_border_width", "border_width")),
     get_border_width = lazy_access(vers("v4.3", "shape_border_width", "border_width")),

@@ -9,7 +9,7 @@ local M = {}
 ---@param object_path string
 ---@param interface string
 ---@param prop string
----@param callback fun(res?: GVariant, err?: userdata)
+---@param callback fun(res?: GVariant, err?: GError)
 function M.get(bus_name, object_path, interface, prop, callback)
   Gio.bus_get_sync(Gio.BusType.SYSTEM):call(
     bus_name,
@@ -33,7 +33,7 @@ end
 ---@param bus_name string
 ---@param object_path string
 ---@param interface string
----@param callback fun(res?: GVariant, err?: userdata)
+---@param callback fun(res?: GVariant, err?: GError)
 function M.get_all(bus_name, object_path, interface, callback)
   Gio.bus_get_sync(Gio.BusType.SYSTEM):call(
     bus_name,

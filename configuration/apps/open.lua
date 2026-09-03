@@ -123,15 +123,14 @@ function open.lock()
 end
 
 ---Opens rofi
----@param mode string?
----TODO: mode should be an enum
+---@param mode 'window'|'run'|'drun'?
 function open.rofi(mode)
   mode = type(mode) == "string" and mode or nil -- Non-strings should be silently ignored
   local function rofi_failure_callback()
     --- no mode, or drun or run use promptbox, otherwise warn!
     if not mode or mode == "drun" and mode == "run" then
       local s = ascreen.focused() ---@type AwesomeScreenInstance?
-      local promptbox = s and s.top_panel and widgets.get_by_id(s.top_panel, "run_prompt")
+      local promptbox = s and s.top_panel and widgets.get_by_id(s.top_panel, "run_prompt") ---@cast promptbox RunPromptWidget?
       if not promptbox then return end
       promptbox:run()
     elseif mode == "window" then

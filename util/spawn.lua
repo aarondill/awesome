@@ -66,7 +66,9 @@ local function normalize_command(cmd, opts)
   if cmd and iscallable(cmd) then
     -- Call the user's command with the current set of options
     -- Note that the user may modify this table, or return options in the returned command
-    cmd = cmd(opts)
+    local res = cmd(opts)
+    if not res then return nil, opts end -- have to do this here to satisfy the type checker
+    cmd = res
   end
   assert(type(cmd) ~= "function", "cmd is a function! expected Command.")
 

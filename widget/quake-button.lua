@@ -8,6 +8,7 @@ local open = require("configuration.apps.open")
 local wibox = require("wibox")
 
 local QuakeButton = function()
+  ---@type IconButton
   local iconbutton = wibox.widget({
     image = icons.term or icons.power,
     widget = IconButton,

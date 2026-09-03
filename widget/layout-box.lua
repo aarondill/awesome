@@ -11,6 +11,8 @@ local compat = require("util.awesome.compat")
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.
+---@param s AwesomeScreenInstance
+---@return widget
 local LayoutBox = function(s)
   local layoutBox = alayoutbox(compat.widget.get_layoutbox_args({ screen = s }))
   local up = bind.with_args(alayout.inc, 1)

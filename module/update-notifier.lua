@@ -29,6 +29,7 @@ local async = function(cmd, cb, opts)
   local res = table.pack(spawn.async(cmd, wrap(cb), opts))
   local suc = res[1]
   if not suc then left = left - 1 end
+  ---@diagnostic disable-next-line: redundant-return-value
   return table.unpack(res, 1, res.n)
 end
 
@@ -44,7 +45,7 @@ async({ "apt-get", "-s", "dist-upgrade" }, function(stdout, _, reason, code)
   if not spawn.is_normal_exit(reason, code) then return 0 end
   -- apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
   local upgrade_line = tables.find(strings.str2line(stdout), function(v) return v:match("^%d+ upgraded") end)
-  local count = tonumber(upgrade_line:match("^(%d+) upgraded"))
+  local count = upgrade_line and tonumber(upgrade_line:match("^(%d+) upgraded"))
   if not count or count <= 0 then return 0 end
   return count
 end)

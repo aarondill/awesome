@@ -25,6 +25,8 @@ local path_stream = stream
   -- /home/user/todo, /home/user/todo/index, ...
   :map(path.get_home)
 
+---@param content string
+---@param fpath string|GFile
 local function handler(content, _, fpath)
   if not content then -- Repeat until we find one.
     local next, done = path_stream:next() -- Try the next one.
@@ -46,6 +48,6 @@ spawn.async_success({ "todo", "count" }, function(stdout_count)
     local out = strings.trim(stdout)
     if out == "" then return end
     local todo_s = strings.pluralize("todo", stdout_count)
-    return notifs.info(out, { title = ("You have %d %s"):format(stdout_count, todo_s) })
+    return notifs.normal(out, { title = ("You have %d %s"):format(stdout_count, todo_s) })
   end)
 end)
