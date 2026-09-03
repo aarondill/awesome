@@ -56,7 +56,7 @@ local function TopPanel(args)
     TaskList({ screen = s, max_width = dpi(150) }),
     {
       layout = wibox.layout.fixed.horizontal,
-      MediaControl:new({
+      MediaControl.new({
         play_icon = icons.play,
         stop_icon = icons.stop,
         pause_icon = icons.pause,
