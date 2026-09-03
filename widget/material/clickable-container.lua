@@ -4,9 +4,9 @@ local wibox = require("wibox")
 local set_alpha_cb
 do
   -- Weak cache for functions, as they can be the same if given the same alpha
+  ---@type { [string]: fun(container: container.background) }
   local cache = setmetatable({}, { __mode = "kv" })
   ---@param alpha string two digit hex value
-  ---@return fun(container: widget)
   function set_alpha_cb(alpha)
     if not cache[alpha] then
       local c = ("#%s%s"):format("ffffff", alpha) -- white + alpha
@@ -20,9 +20,9 @@ end
 ---Call :buttons to set up the widget
 ---@param widget widget
 ---@param buttons unknown[]?
----@return widget
+---@return container.background
 local function build(widget, buttons)
-  ---@type widget
+  ---@type container.background
   local container = wibox.widget({
     widget,
     buttons = buttons,
@@ -31,7 +31,6 @@ local function build(widget, buttons)
 
   ---@class wibox
   ---@field is_moused_over boolean? -- This is an injected field!
-  ---@field cursor string? -- This is an injected field!
 
   local saved_cursor, containing_wibox
   container:connect_signal("mouse::enter", function()

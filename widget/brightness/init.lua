@@ -14,6 +14,8 @@ local widgets     = require("util.awesome.widgets")
 
 local bcontrol = {}
 
+---@param args brightess_args
+---@return widget
 function bcontrol:new(args)
   return setmetatable({}, { __index = self }):init(args)
 end
@@ -98,7 +100,7 @@ function bcontrol:set_text(value)
   if type(value) == "number" then
     value = math.floor(0.5 + value) -- Round it if not an integer
   end
-  local textbox = assert(widgets.get_by_id(self.widget, "textbox"), "Textbox is required")
+  local textbox = assert(widgets.get_by_id(self.widget, "textbox"), "Textbox is required") ---@cast textbox widget.textbox
   return textbox:set_text(string.format(" [%3s] ", value))
 end
 

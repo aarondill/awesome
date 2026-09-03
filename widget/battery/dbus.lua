@@ -6,7 +6,7 @@ local properties_changed = require("util.dbus.properties_changed")
 local tables = require("util.tables")
 local M = {}
 ---Index with the widget!
----@type table<table, SubscribeID>
+---@type table<widget, SubscribeID>
 local upower_listeners = setmetatable({}, { __mode = "k" })
 
 ---@type fun(callback: fun(bat_path?: string, err?: GError): unknown?)
@@ -38,7 +38,7 @@ local find_battery = a.sync(function()
   return bat, nil
 end)
 
----@param widget any
+---@param widget widget
 ---@param callback fun(changed: {State: string}): any?
 function M.subscribe_state(widget, callback)
   return find_battery(function(bat_path) -- DBus Object path to battery

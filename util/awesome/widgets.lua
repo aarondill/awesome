@@ -25,7 +25,7 @@ end
 
 ---@param cmd string|string[]
 ---@param replace_widget widget
----@param replace_in wibox.container
+---@param replace_in widget
 ---@param cb? fun(cmd:string[], replace_widget:widget, replace_in:widget) defaults to spawning cmd
 ---@return widget clickable container/widget
 function M.clickable_if(cmd, replace_widget, replace_in, cb)
@@ -44,7 +44,7 @@ end
 
 ---Returns the first (or index) result of get_children_by_id
 ---Is same as: widget:get_children_by_id(id)[index] except that it won't error if no child is found.
----@param widget widget
+---@param widget widget|wibox
 ---@param id string
 ---@param index integer? default: 1
 ---@return widget?

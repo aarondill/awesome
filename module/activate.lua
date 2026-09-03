@@ -6,19 +6,16 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 
----@class ActivateWidget :ActivateWidgetOpts
+---@class ActivateWidget :DesktopWidget
 ---@field visible boolean
---- @field widget widget
+---@field widget widget
 local ActivateWidget = {}
 
----@class ActivateWidgetOpts
----@field screen AwesomeScreenInstance
-
----@param opts ActivateWidgetOpts
+---@param s AwesomeScreenInstance
 ---@return ActivateWidget
-function ActivateWidget.new(opts)
+function ActivateWidget.new(s)
   local self = desktop.new({
-    screen = opts.screen,
+    screen = s,
     widget = wibox.widget({
       widget = wibox.container.margin,
       {
@@ -32,14 +29,15 @@ function ActivateWidget.new(opts)
       },
     }),
   })
-  gtable.crush(self, ActivateWidget) -- DON'T USE a metatable here, it breaks __index
+  -- DON'T USE a metatable here, it breaks __index
+  gtable.crush(self, ActivateWidget) ---@cast self ActivateWidget
 
   return self
 end
 function ActivateWidget:update()
   if not self.visible then return end
-  local w = self.widget ---@type widget
-  local textbox = assert(widgets.get_by_id(w, "textbox"), "Check textbox id!")
+  local w = self.widget
+  local textbox = assert(widgets.get_by_id(w, "textbox"), "Check textbox id!") ---@cast textbox widget.textbox
   local width, height = textbox:get_preferred_size(self.screen)
   self.width = math.min(width, self.screen.workarea.width) -- crop to workarea size if too big
   self.height = math.min(height, self.screen.workarea.height) -- crop to workarea size if too big
@@ -54,7 +52,7 @@ end
 ---@field activate_box? ActivateWidget injected field for use in Activate Linux box
 ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
   ---Assignment is required to avoid garbage collection
-  s.activate_box = ActivateWidget.new({ screen = s })
+  s.activate_box = ActivateWidget.new(s)
 end)
 capi.screen.connect_signal("property::geometry", function(s) ---@param s AwesomeScreenInstance
   s.activate_box:update()

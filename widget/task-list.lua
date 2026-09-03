@@ -12,12 +12,11 @@ local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
-local assertions = require("util.types.assertions")
 local compat = require("util.awesome.compat")
 ---Common method to create buttons.
 ---@param buttons table?
 ---@param object table
----@return table?
+---@return AwesomeButton[]?
 local function create_buttons(buttons, object)
   if not buttons then return nil end
   local btns = {}
@@ -35,22 +34,11 @@ local function create_buttons(buttons, object)
   return btns
 end
 
----Return container if if_bool is true, else return container[index]
----@param container table pass to wibox.widget
----@param if_bool unknown? boolean to check
----@param index unknown? The index to get object from. Defaults to 1.
-local function optional_container(if_bool, container, index)
-  index = index or 1
-  assertions.type(container, { "table", "nil" }, "container")
-
-  if not container or if_bool then return container end
-  return container[index]
-end
 ---Creates tasklist widgets and returns them
----@param buttons table a set of `button`s
----@param c table a client
----@param max_width integer the maximum width of each textbox
----@return table widgets the set of tasklist widgets
+---@param buttons AwesomeButton[] a set of `button`s
+---@param c AwesomeClientInstance a client
+---@param max_width integer? the maximum width of each textbox
+---@return { bgb: container.background, tb: widget.textbox, ib: widget.imagebox, tt: awful.tooltip } widgets the set of tasklist widgets
 local function create_tasklist_widgets(buttons, c, max_width)
   local bgb = wibox.widget({ --- background
     { -- clickable_container
@@ -64,12 +52,12 @@ local function create_tasklist_widgets(buttons, c, max_width)
           margins = dpi(4),
         },
         { --- textbox margin
-          optional_container(max_width, { --- textbox constraint
+          { --- textbox constraint
             { id = "tb", widget = wibox.widget.textbox },
             strategy = "max",
             width = max_width,
             widget = wibox.container.constraint,
-          }),
+          },
           widget = wibox.container.margin,
         },
         { --- close button margin (non-clickable)
@@ -118,11 +106,11 @@ end
 ---setup and update widgets on the titlebar
 ---update the widgets, creating them if needed
 ---@param config TaskListArgs
----@param self table widget
----@param buttons table of buttons
----@param label fun(client:table, textbox: table): text:string, bg:string, bg_image:string, icon:gears.surface
+---@param self awful.widget.tasklist
+---@param buttons AwesomeButton[] of buttons
+---@param label fun(client: AwesomeClientInstance, textbox: widget.textbox): text:string, bg:string, bg_image:string, icon:CairoSurface, other_args: {shape: gears.shape, shape_border_width: integer, shape_border_color: gears.color}
 ---@param data table a weekly referenced (keys) table for use in caching
----@param clients table a table of the clients to display
+---@param clients AwesomeClientInstance[] a table of the clients to display
 local function list_update(config, self, buttons, label, data, clients)
   self:reset()
   for _, c in ipairs(clients) do
@@ -143,9 +131,9 @@ local function list_update(config, self, buttons, label, data, clients)
 
     bgb:set_bg(bg)
     bgb:set_bgimage(bg_image)
-    ib.image = icon
+    ib:set_image(icon)
 
-    bgb.shape = args.shape
+    bgb:set_shape(args.shape)
 
     compat.widget.set_border_width(bgb, compat.widget.get_border_width(args))
     compat.widget.set_border_color(bgb, compat.widget.get_border_color(args))
@@ -188,20 +176,18 @@ local defaults = {
   ---@type integer?
   max_width = nil,
 }
----@class TaskList
 
 ---@param args TaskListArgs
----@return TaskList
+---@return awful.widget.tasklist
 local function TaskList(args)
   local config = gtable.join(defaults, args)
-  local tl = atasklist({
+  return atasklist({
     screen = config.screen,
     filter = atasklist.filter.currenttags,
     buttons = tasklist_buttons,
     update_function = bind.with_start_args(handle_error(list_update), config),
     layout = wibox.layout.fixed.horizontal(),
   })
-  return tl
 end
 
 return TaskList

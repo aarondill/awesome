@@ -28,11 +28,6 @@ local function show_battery_warning(charge)
     title = ("Battery is dying (%s%%)"):format(charge or "??"),
   })
 end
-local widget_template = {
-  { id = "icon", widget = Icon, icon = files.get_icon("battery") },
-  { id = "text", widget = wibox.widget.textbox, text = "100%" },
-  layout = wibox.layout.fixed.horizontal,
-}
 
 local function should_warn_battery(status, charge, low_power)
   if status == "Charging" then return false end
@@ -91,8 +86,12 @@ local function Battery(args)
   local battery_path = args.battery_path or nil
   local throttled_show_battery_warning = throttle(show_battery_warning, low_power_frequency)
 
-  ---@type widget
-  local widget = wibox.widget(widget_template)
+  ---@type wibox.container
+  local widget = wibox.widget({
+    { id = "icon", widget = Icon, icon = files.get_icon("battery") },
+    { id = "text", widget = wibox.widget.textbox, text = "100%" },
+    layout = wibox.layout.fixed.horizontal,
+  })
   local battery_popup = atooltip({
     objects = { widget },
     mode = "outside",
@@ -104,8 +103,8 @@ local function Battery(args)
   ---@param info battery_info
   local update_widget = function(info)
     local res = handle_battery_info(info)
-    local icon = widget:get_children_by_id("icon")[1]
-    local text = widget:get_children_by_id("text")[1]
+    local icon = widget:get_children_by_id("icon")[1] ---@cast icon IconWidget
+    local text = widget:get_children_by_id("text")[1] ---@cast text widget.textbox
 
     icon:set_image(res.icon)
     text:set_text(tostring(res.charge or "??") .. "%")

@@ -26,10 +26,11 @@ local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 
 ---@param args {screen: screen}
-local TopPanel = function(args)
+local function TopPanel(args)
   local s = screen.get(args.screen) or screen.focused()
   assert(s, "Could not get screen!")
   local top_panel_height = beautiful.top_panel_height or dpi(32)
+  ---@type wibox
   local panel = awful_wibar.new({
     ontop = true,
     screen = s,
@@ -135,7 +136,7 @@ local TopPanel = function(args)
 
   suspend_listener.register_listener(function(is_before)
     if is_before then return end
-    local textclock = widgets.get_by_id(panel, "textclock")
+    local textclock = widgets.get_by_id(panel, "textclock") ---@cast textclock widget.textclock
     if not textclock then return end
     return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
   end)
@@ -159,7 +160,7 @@ local TopPanel = function(args)
 end
 
 ---@class AwesomeScreenInstance
----@field top_panel widget an injected field that represents the top panel for that screen.
+---@field top_panel wibox an injected field that represents the top panel for that screen.
 
 -- Create a wibox for each screen and add it
 ---@param s AwesomeScreenInstance

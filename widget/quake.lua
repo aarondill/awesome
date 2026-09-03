@@ -10,7 +10,7 @@ local screen = require("util.types.screen")
 local tables = require("util.tables")
 
 -- Quake-like Dropdown application spawn
----@class QuakeTerminalWidget :QuakeConfig
+---@class QuakeTerminal :QuakeConfig
 local quake = {}
 local function get_default_config()
   ---@class QuakeConfig
@@ -26,7 +26,7 @@ local function get_default_config()
     width = 1, -- width
     vert = "top", -- top, bottom or center
     horiz = "left", -- left, right or center
-    ---@param self QuakeTerminalWidget
+    ---@param self QuakeTerminal
     ---@param c AwesomeClientInstance
     settings = function(self, c) end,
     spawn = function(class) ---@param class string
@@ -206,6 +206,7 @@ function quake:show(tag) return self:_display(true, tag) end
 ---@param tag AwesomeTagInstance? the tag to show on (optional: current). Only used when showing
 function quake:toggle(tag) return self:_display("toggle", tag) end
 ---@param conf QuakeConfig
+---@return QuakeTerminal
 function quake.new(conf)
   local self = tables.clone(quake, true)
   gtable.crush(self, get_default_config(), true) -- Override defaults using conf

@@ -37,8 +37,6 @@ local string = "" ---@type string
 ---@alias AwesomeGeometry { height: number, width: number, x: number, y: number }
 ---@alias AwesomePosition { x: number,  y: number }
 ---@alias AwesomeLayout { arrange: function, name: string, skip_gap: function, arrange: function?}
----@alias CairoPattern userdata
----@alias CairoSurface userdata
 ---@alias exit_callback fun(type: "signal"|"exit", code: integer)
 ---@alias xkb_group 0|1|2|3
 ---@alias xprop_type string|number|boolean
@@ -62,8 +60,7 @@ local string = "" ---@type string
 --- | "spawn::completed"
 --- | "spawn::initiated"
 --- | "spawn::timeout"
----@class gears.surface :userdata
----@field finish fun()
+---@alias AwesomeStruts {top?: integer, bottom?: integer, left?: integer, right?: integer}
 ---@alias awful.key table
 ---@alias awful.button table
 ---@alias gears.color |string A hexadecimal color code, such as "#ff0000" for red.
@@ -86,9 +83,9 @@ types.AwesomeSignalClass = {
   ---@param ... unknown
   emit_signal = function(signal, ...) end,
   instances = function() end, ---@return integer
-  ---@param handler fun(self: AwesomeSignalClass, k: any)
+  ---@type fun(handler: fun(self: AwesomeSignalClass, k: any))
   set_index_miss_handler = function(handler) end, --- Typically this shouldn't be used
-  ---@param handler fun(self: AwesomeSignalClass, k: any, v: any)
+  ---@type fun(handler: fun(self: AwesomeSignalClass, k: any, v: any))
   set_newindex_miss_handler = function(handler) end, --- Typically this shouldn't be used
 }
 ---@class AwesomeSignalClassInstance used for connect_signal and disconnect_signal methods
@@ -141,12 +138,13 @@ types.Awesome = {
   ---@return table parent
   systray = function(drawin, x, y, base_size, horiz, bg, revers, spacing, rows) end,
   ---@param name string
-  ---@return gears.surface
+  ---@return userdata pointer to a CairoSurface, use cairo.Surface(p, true) to get a value
   ---@return string error
+  ---@deprecated Use pixbuf_to_surface instead
   load_image = function(name) end, ---@nodiscard
-  ---@param pixbuf userdata
+  ---@param pixbuf GdkPixbuf
   ---@param path string
-  ---@return gears.surface
+  ---@return userdata pointer to a CairoSurface, use cairo.Surface(p, true) to get a value
   pixbuf_to_surface = function(pixbuf, path) end, ---@nodiscard
   ---@param size integer
   set_preferred_icon_size = function(size) end,
@@ -359,7 +357,7 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@field move_to_tag fun(self: AwesomeClientInstance, target: AwesomeTagInstance) Move a client to a tag.
 ---@field raise fun(self: AwesomeClientInstance) Raise a client on top of others which are on the same layer.
 ---@field relative_move fun(self: AwesomeClientInstance, x?: integer, y?: integer, w?: integer, h?: integer) Move/resize a client relative to current coordinates.
----@field struts fun(struts): table Return client struts (reserved space at the edge of the screen).
+---@field struts fun(struts: AwesomeStruts?): AwesomeStruts? Return client struts (reserved space at the edge of the screen).
 ---@field swap fun(self: AwesomeClientInstance, c: AwesomeClientInstance) Swap a client with another one in global client list.
 ---@field tags fun(self: AwesomeClientInstance, tags?: AwesomeTagInstance[]): AwesomeTagInstance[] Access or set the client tags.
 ---@field to_selected_tags fun(self: AwesomeClientInstance) Find suitable tags for newly created clients.

@@ -7,7 +7,7 @@ local screen = require("util.types.screen")
 local stream = require("stream")
 local wibox = require("wibox")
 
----@class DesktopWidget
+---@class DesktopWidget :wibox
 ---@field visible boolean
 local DesktopWidget = {}
 ---@class (exact) DesktopWidgetOpts
@@ -69,6 +69,7 @@ capi.tag.connect_signal("property::selected", callback) -- Used to update when a
 function DesktopWidget:update() end
 
 ---@param opts DesktopWidgetOpts
+---@return DesktopWidget
 function DesktopWidget.new(opts)
   local self = wibox({
     type = "utility",

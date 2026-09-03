@@ -88,7 +88,8 @@ local inhibit_textbox = wibox.widget({
 local function update_inhibit()
   local pid = spawn.async_success({ "systemd-inhibit", "--list" }, function(stdout)
     local output = stdout:match("^(.+)\n%d inhibitors listed%.\n$") or stdout --- Remove the last two lines (blank and number)
-    widgets.get_by_id(inhibit_textbox, "textbox"):set_text(output)
+    local textbox = assert(widgets.get_by_id(inhibit_textbox, "textbox")) ---@cast textbox widget.textbox
+    textbox:set_text(output)
   end)
   inhibit_textbox.visible = not not pid -- hide if systemd-inhibit didn't spawn
 end
@@ -117,7 +118,7 @@ end
 
 ---Build a clickable button for the exit screen
 ---@param button ExitScreenButton
----@return table button_widget the button widget to show on the exit_screen
+---@return widget button_widget the button widget to show on the exit_screen
 local function buildButton(button)
   local title = button[1] or "<No Text Provided>"
   local k = button[2]

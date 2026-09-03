@@ -15,6 +15,13 @@ local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 
 ---@class VpnWidgetArgs
+---@field format? { on?: string, off?: string, error?: string, pending?: string }
+---@field connect_options? string[]
+---@field timeout? number
+---@field protonvpn_cli_path? string
+---@field font? string
+
+---@type VpnWidgetArgs
 local default_args = {
   ---Options to pass to protonvpn-cli connect
   connect_options = { "-f", "-p", "udp" },
@@ -35,7 +42,7 @@ local default_args = {
 
 ---@class VpnWidget :widget
 ---@field opts VpnWidgetArgs
----@field tooltip widget awful.tooltip
+---@field tooltip awful.tooltip
 ---@field timer table gears.timer
 local VpnWidget = {}
 
@@ -56,9 +63,10 @@ end
 ---@param tooltip_text string
 ---@param status boolean?
 function VpnWidget:__set(markup, tooltip_text, status)
-  widgets.get_by_id(self, "textbox"):set_markup(markup)
+  local textbox = assert(widgets.get_by_id(self, "textbox")) ---@cast textbox widget.textbox
+  textbox:set_markup(markup)
   tooltip_text = strings.trim(tooltip_text)
-  self.tooltip.text = tooltip_text ~= "" and tooltip_text or "<Empty Output>"
+  self.tooltip:set_text(tooltip_text ~= "" and tooltip_text or "<Empty Output>")
   self._cached_status = status
 end
 ---@param connected boolean
@@ -113,13 +121,6 @@ end
 ---@return boolean active nil if pending
 function VpnWidget:enabled() return self._cached_status end
 
----@class VpnWidgetArgs
----@field format? { on?: string, off?: string, error?: string, pending?: string }
----@field connect_options? string[]
----@field timeout? number
----@field protonvpn_cli_path? string
----@field font? string
-
 ---@param args? VpnWidgetArgs
 function VpnWidget.new(args)
   ---@type VpnWidgetArgs
@@ -141,7 +142,7 @@ function VpnWidget.new(args)
     buttons = abutton.new({}, 1, function() return wdg:toggle() end),
     widget = clickable_container,
   })
-  gtable.crush(wdg, VpnWidget, true)
+  gtable.crush(wdg, VpnWidget, true) ---@cast wdg VpnWidget
   wdg.opts = opts
   wdg.tooltip = atooltip({
     objects = { wdg },

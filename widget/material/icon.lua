@@ -7,13 +7,13 @@ local load_surface = require("util.load_surface")
 -- Local declarations
 
 ---@class _icon_private
----@field icon (string|gears.surface)?
----@field imagebox widget (wibox.widget.imagebox)
+---@field icon (string|CairoSurface)?
+---@field imagebox widget.imagebox
 ---@field size integer?
 ---@field last_size integer? Last size the icon was rendered at
 ---@field render_empty boolean
 
----@class Icon: widget
+---@class IconWidget: widget
 ---@field private _private _icon_private
 local Icon = {}
 
@@ -96,7 +96,7 @@ function Icon:get_render_empty() return self._private.render_empty end
 ---@return unknown
 local function new(icon, size, render_empty)
   render_empty = render_empty == nil and true or render_empty ---@cast render_empty -nil
-  local ret = base.make_widget(nil, nil, { enable_properties = true }) ---@type Icon
+  local ret = base.make_widget(nil, nil, { enable_properties = true }) ---@type IconWidget
   gtable.crush(ret, Icon, true)
   ---@diagnostic disable-next-line: invisible
   gtable.crush(ret._private, {

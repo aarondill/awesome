@@ -7,12 +7,12 @@ local capi = require("capi")
 ---@param path string path to the icon
 ---@param width integer?
 ---@param height integer?
----@return gears.surface
+---@return CairoSurface
 local function load_surface(path, width, height)
   height, width = height or width, width or height -- if not set, use the other
 
   local pixbuf, err
-  if height then
+  if height and width then
     pixbuf, err = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, width, height, true)
   else
     pixbuf, err = GdkPixbuf.Pixbuf.new_from_file(path)
@@ -20,8 +20,7 @@ local function load_surface(path, width, height)
 
   if not pixbuf then error("No pixbuf could be created: " .. tostring(err)) end
   local _surface = capi.awesome.pixbuf_to_surface(pixbuf._native, path)
-  local surf = cairo.Surface:is_type_of(_surface) and _surface or cairo.Surface(_surface, true)
-  return surf
+  return cairo.Surface:is_type_of(_surface) and _surface --[[@as CairoSurface]] or cairo.Surface(_surface, true) -- true means take ownership, I think?
 end
 
 return load_surface
