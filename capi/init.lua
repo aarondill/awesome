@@ -95,7 +95,7 @@ types.AwesomeSignalClass = {
 ---@field weak_connect_signal fun(self: AwesomeSignalClassInstance, name: SignalName, func: fun(...: unknown): any) Connect to a signal weakly.
 ---@field disconnect_signal fun(self: AwesomeSignalClassInstance, name: SignalName, func: fun(...: unknown): any) Disconnect from a signal.
 
----@class Awesome
+---@class Awesome : AwesomeSignalClass
 ---@field unix_signal { [string]: integer?, [integer]: string? }
 types.Awesome = {
   quit = function(code) end, ---@param code integer?
@@ -114,18 +114,6 @@ types.Awesome = {
   ---@return integer? stderr
   spawn = function(cmd, use_sn, stdin, stdout, stderr, exit_callback, env) end,
   restart = function() end,
-  ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal SignalName
-  ---@param callback function
-  connect_signal = function(signal, callback) end,
-  ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal SignalName
-  ---@param callback function
-  disconnect_signal = function(signal, callback) end,
-  ---Note: these aren't possible to properly type, as the callback is different for each signal
-  ---@param signal SignalName
-  ---@param ... unknown?
-  emit_signal = function(signal, ...) end,
   ---@param drawin userdata
   ---@param x number
   ---@param y number
@@ -227,14 +215,11 @@ types.AwesomeRoot = {
 function types.AwesomeRoot:__index(k) end
 function types.AwesomeRoot:__newindex(k, v) end
 
----@class AwesomeDbus
+---@class AwesomeDbus : AwesomeSignalClass
 ---@field request_name fun()
 ---@field release_name fun()
 ---@field add_match fun()
 ---@field remove_match fun()
----@field connect_signal fun()
----@field disconnect_signal fun()
----@field emit_signal fun()
 ---@field __index fun()
 ---@field __newindex fun()
 
