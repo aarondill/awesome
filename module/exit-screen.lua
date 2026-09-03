@@ -8,7 +8,6 @@ local clickable_container = require("widget.material.clickable-container")
 local compat = require("util.awesome.compat")
 local exit_screen_conf = require("configuration.exit-screen")
 local gshape = require("gears.shape")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local mat_icon = require("widget.material.icon")
 local notifs = require("util.notifs")
@@ -223,9 +222,9 @@ local function show(opts)
   ---@param key string
   ---@param event "release"|"press"
   exit_screen_grabber = akeygrabber.run(function(mods, key, event)
-    mods = stream.new(mods):except(function(mod) return gtable.hasitem(akey.ignore_modifiers, mod) end):toarray()
+    mods = stream.new(mods):except(function(mod) return tables.contains(akey.ignore_modifiers, mod) end):toarray()
     if event == "release" or #mods ~= 0 then return false end -- this isn't my event!
-    if gtable.hasitem(modifier_keys, key) then return false end -- ignore modifier key presses
+    if tables.contains(modifier_keys, key) then return false end -- ignore modifier key presses
     -- if exit_screen.screen ~= screen.focused() then return false end -- ignore non-focused events
 
     for _, button in ipairs(exit_screen_conf.buttons) do
@@ -235,7 +234,7 @@ local function show(opts)
       end
     end
 
-    if exit_screen_conf.exit_keys == true or gtable.hasitem(exit_screen_conf.exit_keys, key) then
+    if exit_screen_conf.exit_keys == true or tables.contains(exit_screen_conf.exit_keys, key) then
       hide()
       return true -- we handled this event
     end

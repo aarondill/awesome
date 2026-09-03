@@ -1,13 +1,13 @@
 local basename = require("util.path.basename")
 local exists = require("util.file.sync.exists")
 local gfilesystem = require("gears.filesystem")
-local gtable = require("gears.table")
 local lgi = require("lgi")
 local new_file_for_path = require("util.file.new_file_for_path")
 local notifs = require("util.notifs")
 local parallel_async = require("util.parallel_async")
 local path = require("util.path")
 local stream = require("stream")
+local tables = require("util.tables")
 local Gio, GLib, GObject = lgi.Gio, lgi.GLib, lgi.GObject
 ---@class URL :string
 ---@alias WallpaperSourceSet URL[] | table<URL, string>
@@ -70,7 +70,7 @@ local function get_set_async(set_name, done)
 
   new_file_for_path(p):make_directory_with_parents(nil)
   parallel_async(info, function(val, cb) return download(cb, val.url, val.dest) end, function(res)
-    local success = gtable.hasitem(res, false) == nil
+    local success = tables.contains(res, false) == nil
     return done(success)
   end)
   return false

@@ -26,7 +26,6 @@ local tables = require("util.tables")
 local ascreen = require("awful.screen")
 local awidget = require("awful.widget")
 local beautiful = require("beautiful")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
@@ -67,7 +66,7 @@ end
 local function fancy_tasklist(cfg, tag)
   local MAX_ICONS = 5
   local function only_this_tag(c) ---@param c AwesomeClientInstance
-    return gtable.hasitem(c:tags(), tag)
+    return tables.contains(c:tags(), tag)
   end
   local c = tables.extend(cfg, {
     filter = function()

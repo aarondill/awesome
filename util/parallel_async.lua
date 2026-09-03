@@ -1,4 +1,4 @@
-local gtable = require("gears.table")
+local tables = require("util.tables")
 ---Runs each_cb on each of for_each in parellel and calls done_cb when all are done
 ---@generic T, R
 ---@param val T
@@ -13,7 +13,7 @@ local function run_callbacks_in_parellel(done_tbl, ret, each_cb, done_cb, index,
   return each_cb(val, function(res)
     ret[val] = res
     done_tbl[index] = true
-    local is_done = not gtable.hasitem(done_tbl, false) -- All are true
+    local is_done = not tables.contains(done_tbl, false) -- All are true
     if is_done then
       done_tbl[index] = false -- Reduce the chance of race conditions, subsequent calculations will return false
       return done_cb(ret, table.unpack(user_args))

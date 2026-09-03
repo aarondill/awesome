@@ -2,10 +2,10 @@
 --- It had to be heavily modified to run outside of vim
 
 local exists = require("util.file.sync.exists")
-local gtable = require("gears.table")
 local ls = require("util.file.sync.ls")
 local path = require("util.path")
 local strings = require("util.strings")
+local tables = require("util.tables")
 local M = {}
 
 local Loader = {
@@ -29,7 +29,7 @@ function Loader.lsmod(filepath)
     if topname then
       Loader._indexed[filepath][topname] = { modpath = modpath, modname = topname }
       Loader._topmods[topname] = Loader._topmods[topname] or {}
-      if not gtable.hasitem(Loader._topmods[topname], filepath) then
+      if not tables.contains(Loader._topmods[topname], filepath) then
         table.insert(Loader._topmods[topname], filepath)
       end
     end
