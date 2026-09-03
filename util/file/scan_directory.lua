@@ -1,7 +1,7 @@
 local assertions = require("util.types.assertions")
 local Gio = require("lgi").Gio
-local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
+local tables = require("util.tables")
 ---@alias filter_func  fun(file: table): boolean?, boolean?
 ---@class scan_directory_args
 ---@field attributes? string[] see: https://docs.gtk.org/gio/method.File.enumerate_children.html
@@ -110,7 +110,7 @@ local function scan_directory(path, args, cb)
   if type(args) == "function" and cb == nil then
     cb, args = args, nil
   end
-  args = args and gtable.clone(args, false) or {} ---@type scan_directory_args
+  args = args and tables.clone(args, false) or {} ---@type scan_directory_args
   assertions.type(path, "string", "path")
   assertions.type(args, "table", "args")
   assertions.iscallable(cb, "cb")

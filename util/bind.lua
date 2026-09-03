@@ -42,7 +42,7 @@ function Bind.bind(func, ...)
 
   local f = function(...)
     if not outer then return func(...) end -- save processing/memory in storing the above table
-    local args = select("#", ...) > 0 and tables.tbl_concat(outer, ...) or outer -- Avoid the copy if possible
+    local args = select("#", ...) > 0 and tables.concat(outer, ...) or outer -- Avoid the copy if possible
     return func(table.unpack(args, 1, args.n))
   end
   cache[key] = f

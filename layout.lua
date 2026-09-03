@@ -15,7 +15,6 @@ local beautiful = require("beautiful")
 local calendar_popup = require("awful.widget.calendar_popup")
 local distro = require("widget.distro")
 local gstring = require("gears.string")
-local gtable = require("gears.table")
 local icons = require("theme.icons")
 local launcher = require("widget.launcher")
 local screen = require("util.types.screen")
@@ -24,6 +23,7 @@ local suspend_listener = require("util.suspend-listener")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
+local tables = require("util.tables")
 
 ---@param args {screen: screen}
 local function TopPanel(args)
@@ -141,7 +141,7 @@ local function TopPanel(args)
     return textclock:force_update() -- Update the time on suspend (incase >1 min has passed)
   end)
 
-  clock_widget:buttons(gtable.join(
+  clock_widget:buttons(tables.join(
     abutton({}, 3, function()
       --- On right click, toggle calendar clicked on (keep open); If already open, close it
       month_calendar._calendar_clicked_on = not month_calendar._calendar_clicked_on

@@ -9,7 +9,7 @@ local tables = require("util.tables")
 ---@return string[]|string new_cmd string if args is a string
 local function __concat_command_tbl(command, args)
   if type(args) == "string" then return table.concat({ shell_escape(command), args }, " ") end
-  return tables.tbl_join(command, args)
+  return tables.join(command, args)
 end
 
 ---concat_command when command is a string

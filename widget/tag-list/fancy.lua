@@ -21,6 +21,7 @@ local capi = require("capi")
 local compat = require("util.awesome.compat")
 local quake = require("module.quake")
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local ascreen = require("awful.screen")
 local awidget = require("awful.widget")
@@ -68,7 +69,7 @@ local function fancy_tasklist(cfg, tag)
   local function only_this_tag(c) ---@param c AwesomeClientInstance
     return gtable.hasitem(c:tags(), tag)
   end
-  local c = gtable.join(cfg, {
+  local c = tables.extend(cfg, {
     filter = function()
       return true -- Truth filter. The filter is called in source (to ensure that we don't get too many clients)
     end,
@@ -151,7 +152,7 @@ function module.new(cfg)
       update_callback = update_callback,
     },
   }
-  return awidget.taglist(gtable.join(taglist_cfg, overrides))
+  return awidget.taglist(tables.extend(taglist_cfg, overrides))
 end
 
 return module
