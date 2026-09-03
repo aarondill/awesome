@@ -7,7 +7,7 @@ local new_file_for_path = require("util.file.new_file_for_path")
 local notifs = require("util.notifs")
 local parallel_async = require("util.parallel_async")
 local path = require("util.path")
-local tables = require("util.tables")
+local stream = require("stream")
 local Gio, GLib, GObject = lgi.Gio, lgi.GLib, lgi.GObject
 ---@class URL :string
 ---@alias WallpaperSourceSet URL[] | table<URL, string>
@@ -44,20 +44,20 @@ local function get_set_async(set_name, done)
   assert(type(set) == "table")
   -- make `dest` relative to /wallpapers/<set>
   local p = path.resolve(gfilesystem.get_configuration_dir(), "wallpapers", set_name, "images")
-  ---@type { url: URL, dest: string }[]
-  local info = {}
-  for k, v in pairs(set) do
-    local r
-    if type(k) ~= "string" then
-      local name = basename(v)
-      r = { url = v, dest = path.resolve(p, name) }
-    else
-      assert(type(k) == "string")
-      r = { url = k, dest = path.resolve(p, v) }
-    end
-    if not exists(r.dest) then table.insert(info, r) end -- Remove existing files
-  end
-  if #info == 0 then return true end
+  ---@type NTable<{ url: URL, dest: string }>
+  local info = stream
+    .key_values(set)
+    :map(function(kv) ---@param kv [integer, URL] | [URL, string]
+      local k, v = kv[1], kv[2]
+      if type(k) ~= "string" then
+        local name = basename(v)
+        return { url = v, dest = path.resolve(p, name) }
+      end
+      return { url = k, dest = path.resolve(p, v) }
+    end)
+    :filter(function(val) return not exists(val.dest) end) -- Remove existing files
+    :toarray()
+  if info.n == 0 then return true end
   local tries = _tries[set_name] or 0
   _tries[set_name] = tries + 1
   if tries > 3 then
@@ -65,8 +65,9 @@ local function get_set_async(set_name, done)
     -- done(false)
     return false
   end
-  local urls = tables.map(info, function(val) return val.url end)
-  notifs.normal(tables.concat(urls, "\n"), { title = "Downloading wallpapers" })
+
+  notifs.normal(stream.new(info):map(function(val) return val.url end):join("\n"), { title = "Downloading wallpapers" })
+
   new_file_for_path(p):make_directory_with_parents(nil)
   parallel_async(info, function(val, cb) return download(cb, val.url, val.dest) end, function(res)
     local success = gtable.hasitem(res, false) == nil
