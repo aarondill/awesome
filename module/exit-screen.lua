@@ -21,6 +21,8 @@ local dpi = require("beautiful").xresources.apply_dpi
 local GLib = require("lgi").GLib
 local tables = require("util.tables")
 
+local M = {}
+
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
 ---@field exit_keys string[]|true
@@ -35,87 +37,15 @@ local tables = require("util.tables")
 ---@field cmd? fun(self: ExitScreenButton, type: 'click'|'key'): any
 ---@field icon? string The path to the icon to be displayed
 
-local disabled = false
+M.disabled = false
 
 -- Appearance
 local icon_size = beautiful.exit_screen_icon_size or dpi(140)
 
--- Create the widget
----@type wibox
-local exit_screen = wibox({
-  visible = false,
-  ontop = true,
-  type = "splash",
-})
-
----@type widget.textbox
-local uptime_textbox = wibox.widget({
-  text = "Loading...",
-  font = beautiful.title_font,
-  valign = "center",
-  [compat.widget.halign] = "center",
-  widget = wibox.widget.textbox,
-})
-local function update_uptime()
-  spawn.async_success({ "uptime", "-p" }, function(stdout)
-    local uptime = strings.trim(stdout:match("up (.*)\n"))
-    uptime_textbox:set_markup(("<b>Uptime</b>: %s"):format(GLib.markup_escape_text(uptime, -1)))
-  end)
-end
-
----@type widget
-local inhibit_textbox = wibox.widget({
-  {
-    {
-      { -- Header
-        text = "Systemd Inhibitors",
-        font = beautiful.title_font,
-        [compat.widget.halign] = "center",
-        widget = wibox.widget.textbox,
-      },
-      {
-        id = "textbox",
-        text = "Loading...",
-        font = "monospace", -- This *has* to be monospace!
-        valign = "center",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.layout.fixed.vertical,
-    },
-    widget = wibox.container.margin,
-    bottom = dpi(16),
-  },
-  [compat.widget.halign] = "center",
-  widget = wibox.container.place,
-})
-local function update_inhibit()
-  local pid = spawn.async_success({ "systemd-inhibit", "--list" }, function(stdout)
-    local output = stdout:match("^(.+)\n%d inhibitors listed%.\n$") or stdout --- Remove the last two lines (blank and number)
-    local textbox = assert(widgets.get_by_id(inhibit_textbox, "textbox")) ---@cast textbox widget.textbox
-    textbox:set_text(output)
-  end)
-  inhibit_textbox.visible = not not pid -- hide if systemd-inhibit didn't spawn
-end
-
----@type gears.timer
-local update_timer = gtimer.new({
-  timeout = 30,
-  callback = function()
-    update_inhibit()
-    update_uptime()
-  end,
-})
-
-local exit_screen_grabber
-local function hide()
-  akeygrabber.stop(exit_screen_grabber)
-  update_timer:stop()
-  exit_screen.visible = false
-end
 ---@param button ExitScreenButton
 ---@param type 'key'|'click'
 local function run_cmd(button, type)
-  hide() -- Always hide the exit screen first!
+  M.hide() -- Always hide the exit screen first!
   if not button.cmd then return end
   return button:cmd(type)
 end
@@ -159,7 +89,142 @@ local function buildButton(button)
   })
 end
 
-local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
+---@type { wibox: wibox, timer: gears.timer }?
+local _exit_screen
+--- Call to set exit_screen
+function M._lazy_init()
+  if _exit_screen then return _exit_screen end
+  -- Create the widget
+  local box = wibox({
+    visible = false,
+    ontop = true,
+    type = "splash",
+  })
+
+  ---@type widget.textbox
+  local uptime_textbox = wibox.widget({
+    text = "Loading...",
+    font = beautiful.title_font,
+    valign = "center",
+    [compat.widget.halign] = "center",
+    widget = wibox.widget.textbox,
+  })
+  local function update_uptime()
+    spawn.async_success({ "uptime", "-p" }, function(stdout)
+      local uptime = strings.trim(stdout:match("up (.*)\n"))
+      uptime_textbox:set_markup(("<b>Uptime</b>: %s"):format(GLib.markup_escape_text(uptime, -1)))
+    end)
+  end
+
+  ---@type widget
+  local inhibit_textbox = wibox.widget({
+    {
+      {
+        { -- Header
+          text = "Systemd Inhibitors",
+          font = beautiful.title_font,
+          [compat.widget.halign] = "center",
+          widget = wibox.widget.textbox,
+        },
+        {
+          id = "textbox",
+          text = "Loading...",
+          font = "monospace", -- This *has* to be monospace!
+          valign = "center",
+          widget = wibox.widget.textbox,
+        },
+        layout = wibox.layout.fixed.vertical,
+      },
+      widget = wibox.container.margin,
+      bottom = dpi(16),
+    },
+    [compat.widget.halign] = "center",
+    widget = wibox.container.place,
+  })
+  local function update_inhibit()
+    local pid = spawn.async_success({ "systemd-inhibit", "--list" }, function(stdout)
+      local output = stdout:match("^(.+)\n%d inhibitors listed%.\n$") or stdout --- Remove the last two lines (blank and number)
+      local textbox = assert(widgets.get_by_id(inhibit_textbox, "textbox")) ---@cast textbox widget.textbox
+      textbox:set_text(output)
+    end)
+    inhibit_textbox.visible = not not pid -- hide if systemd-inhibit didn't spawn
+  end
+
+  ---@type gears.timer
+  local update_timer = gtimer.new({
+    timeout = 30,
+    callback = function()
+      update_inhibit()
+      update_uptime()
+    end,
+  })
+  local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
+
+  local opacity = exit_screen_conf.opacity or beautiful.exit_screen_opacity or 0.62
+  -- Convert a 0-1 number to hexadecimal
+  local alpha = type(opacity) == "number" and string.format("%X", math.floor(opacity * 255)) or opacity
+  box.bg = bg:find("^#%x+$") and bg:match("^#......") .. alpha or bg -- light transparency if we can parse it, else give up
+  box.fg = exit_screen_conf.fg or beautiful.exit_screen_fg or beautiful.wibar_fg or beautiful.fg_normal or "#FEFEFE"
+
+  box:buttons(tables.join(
+    -- Middle click - Hide exit_screen
+    abutton({}, 2, M.hide),
+    -- Right click M.- Hide exit_screen
+    abutton({}, 3, M.hide)
+  ))
+
+  box:setup({
+    nil, -- No top
+    {
+      nil, -- No left
+      {
+        uptime_textbox,
+        { -- This should be centered
+          layout = wibox.layout.fixed.horizontal,
+          stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
+        },
+        nil, -- No bottom
+        layout = wibox.layout.align.vertical,
+      },
+      nil, -- No right
+      expand = "none",
+      layout = wibox.layout.align.horizontal,
+    },
+    inhibit_textbox, -- No bottom
+    expand = "none",
+    layout = wibox.layout.align.vertical,
+  })
+  _exit_screen = { wibox = box, timer = update_timer }
+  return _exit_screen
+end
+
+local exit_screen_grabber
+function M.hide()
+  local m = M._lazy_init()
+  akeygrabber.stop(exit_screen_grabber)
+  m.timer:stop()
+  m.wibox.visible = false
+end
+
+-- The list of modifiers from https://awesomewm.org/doc/api/classes/awful.keygrabber.html#awful.keygrabber.run
+local modifier_keys = {
+  "Mod4",
+  "Super_L",
+  "Super_R",
+  "Control",
+  "Control_L",
+  "Control_R",
+  "Shift",
+  "Shift_L",
+  "Shift_R",
+  "Mod1",
+  "Alt_L",
+  "Alt_R",
+}
+
+---@param s AwesomeScreenInstance?
+local function update_wibox_screen(s)
+  local exit_screen = M._lazy_init().wibox
   if not s and exit_screen.screen.valid then return end -- no s given and we have a valid screen already
   s = s or screen.focused() or screen.primary() -- Switch to focused screen if previous screen was removed
   if not s or not s.valid then return end
@@ -180,40 +245,13 @@ local function update_wibox_screen(s) ---@param s AwesomeScreenInstance?
   exit_screen:emit_signal("widget::redraw_needed")
 end
 
-local bg = exit_screen_conf.bg or beautiful.exit_screen_bg or beautiful.wibar_bg or beautiful.bg_normal or "#000000"
-
-local opacity = exit_screen_conf.opacity or beautiful.exit_screen_opacity or 0.62
--- Convert a 0-1 number to hexadecimal
-local alpha = type(opacity) == "number" and string.format("%X", math.floor(opacity * 255)) or opacity
-exit_screen.bg = bg:find("^#%x+$") and bg:match("^#......") .. alpha or bg -- light transparency if we can parse it, else give up
-exit_screen.fg = exit_screen_conf.fg
-  or beautiful.exit_screen_fg
-  or beautiful.wibar_fg
-  or beautiful.fg_normal
-  or "#FEFEFE"
-
--- The list of modifiers from https://awesomewm.org/doc/api/classes/awful.keygrabber.html#awful.keygrabber.run
-local modifier_keys = {
-  "Mod4",
-  "Super_L",
-  "Super_R",
-  "Control",
-  "Control_L",
-  "Control_R",
-  "Shift",
-  "Shift_L",
-  "Shift_R",
-  "Mod1",
-  "Alt_L",
-  "Alt_R",
-}
-
 ---@param opts? {screen?: screen}
-local function show(opts)
-  if disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
+function M.show(opts)
+  if M.disabled then return notifs.warn("exit screen is disabled!") end -- exit screen is disabled
+  local m = M._lazy_init()
   do -- get the uptime. Do this first because it's async!!
-    update_timer:emit_signal("timeout") -- force an update
-    update_timer:start()
+    m.timer:emit_signal("timeout") -- force an update
+    m.timer:start()
   end
   opts = opts or {}
   local s = screen.get(opts.screen) or screen.focused()
@@ -235,52 +273,26 @@ local function show(opts)
     end
 
     if exit_screen_conf.exit_keys == true or tables.contains(exit_screen_conf.exit_keys, key) then
-      hide()
+      M.hide()
       return true -- we handled this event
     end
 
     return false -- we didn't handle this event
   end)
-  if not exit_screen.widget then -- PERF: lazy init the widget when it's needed
-    exit_screen:setup({
-      nil, -- No top
-      {
-        nil, -- No left
-        {
-          uptime_textbox,
-          { -- This should be centered
-            layout = wibox.layout.fixed.horizontal,
-            stream.new(exit_screen_conf.buttons):map(buildButton):unpack(),
-          },
-          nil, -- No bottom
-          layout = wibox.layout.align.vertical,
-        },
-        nil, -- No right
-        expand = "none",
-        layout = wibox.layout.align.horizontal,
-      },
-      inhibit_textbox, -- No bottom
-      expand = "none",
-      layout = wibox.layout.align.vertical,
-    })
-  end
-  exit_screen.visible = true
+  m.wibox.visible = true
 end
 
-exit_screen:buttons(tables.join(
-  -- Middle click - Hide exit_screen
-  abutton({}, 2, hide),
-  -- Right click - Hide exit_screen
-  abutton({}, 3, hide)
-))
+capi.awesome.connect_signal("exit_screen::show", M.show)
+capi.awesome.connect_signal("exit_screen::hide", M.hide)
 
-capi.awesome.connect_signal("exit_screen::show", show)
-capi.awesome.connect_signal("exit_screen::hide", hide)
-
-capi.awesome.connect_signal("exit_screen::enable", function() disabled = false end)
+function M.enable() M.disabled = false end
 ---@param toggle boolean? default: true
-capi.awesome.connect_signal("exit_screen::disable", function(toggle)
+function M.disable(toggle)
   if toggle == nil then toggle = true end
-  if not toggle and disabled then return end -- already disabled
-  disabled = not disabled -- toggle it
-end)
+  if not toggle and M.disabled then return end -- already disabled
+  M.disabled = not M.disabled -- toggle it
+end
+
+capi.awesome.connect_signal("exit_screen::enable", M.enable)
+capi.awesome.connect_signal("exit_screen::disable", M.disable)
+return M
