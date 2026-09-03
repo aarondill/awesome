@@ -244,7 +244,8 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@class AwesomeMouse
 ---@field coords fun(coords_table?: AwesomePosition, silent?: boolean): {[integer]: boolean, x: number, y: number}
 ---@field screen AwesomeScreenInstance
----@field current_wibox table? wibox
+---@field current_wibox wibox?
+---@field current_widget widget?
 ---@field current_client AwesomeClientInstance?
 
 ---@alias AwesomeScreenIterator fun(_: nil, prev?: AwesomeScreenInstance):AwesomeScreenInstance?
@@ -384,6 +385,19 @@ function types.AwesomeRoot:__newindex(k, v) end
 ---@alias selectionFunc fun(): string
 ---@alias AwesomeSelection { selection: selectionFunc } | selectionFunc
 ---moved under selection.selection in v5
+
+---@class wibox :AwesomeSignalClassInstance
+
+---@class widget :AwesomeSignalClassInstance
+---@field visible boolean
+---@field buttons fun(s: widget, b?: AwesomeButton[]): AwesomeButton[]
+---@field children widget[]
+---Only available when declaring a widget as a table
+---@field get_children_by_id nil | fun(self: widget, id: string): widget[]
+---TODO: rest of the methods
+
+---@class wibox.layout :widget
+---@field replace_widget fun(self: wibox.layout, from: widget, to: widget, recursive?: boolean): boolean
 
 types = nil -- remove references to above tables
 collectgarbage("collect") -- Encourage lua to remove the above tables
