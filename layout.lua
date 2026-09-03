@@ -23,6 +23,7 @@ local suspend_listener = require("util.suspend-listener")
 local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
+local gtimer = require("gears.timer")
 local tables = require("util.tables")
 
 ---@param args {screen: screen}
@@ -164,6 +165,9 @@ end
 
 -- Create a wibox for each screen and add it
 ---@param s AwesomeScreenInstance
-ascreen.connect_for_each_screen(function(s) s.top_panel = TopPanel({ screen = s }) end)
+ascreen.connect_for_each_screen(function(s)
+  ---PERF: delay the panel setup and widget instantiations to avoid blocking startup.
+  return gtimer.delayed_call(function() s.top_panel = TopPanel({ screen = s }) end)
+end)
 
 return TopPanel
