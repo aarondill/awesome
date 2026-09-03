@@ -1,4 +1,5 @@
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local GLib = require("lgi").GLib
 local Gio = require("lgi").Gio
@@ -12,7 +13,6 @@ local awful_key = require("awful.key")
 local bind = require("util.bind")
 local capi = require("capi")
 local compat = require("util.awesome.compat")
-local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local notifs = require("util.notifs")
 local path = require("util.path")
@@ -131,7 +131,7 @@ local function editor_scratchpad()
 end
 
 -- Key bindings
-M.keys = gtable.join(
+M.keys = tables.join(
   -- Hotkeys
   gkey({ modkey }, "F1", show_help, { description = "Show help", group = "awesome" }),
   gkey({ modkey }, "s", show_help, { description = "Show help", group = "awesome" }),
@@ -378,7 +378,7 @@ M.keys = gtable.join(
 )
 
 for _, poweroff in ipairs({ "XF86PowerOff", "XF86PowerDown" }) do
-  M.keys = gtable.join(
+  M.keys = tables.join(
     M.keys,
     gkey(
       {},
@@ -411,7 +411,7 @@ for i = 1, 9 do
     descr_next_spawned_no_jump = { description = "Move the next spawned client to tag #;don't focus", group = "tag" }
   end
   local num = "#" .. i + 9
-  M.keys = gtable.join(
+  M.keys = tables.join(
     M.keys,
     -- View tag only.
     gkey({ modkey }, num, bind.with_args(tags.show_tag, i), descr_view),
@@ -461,7 +461,7 @@ local gbutton = function(modKeys, button, press, release)
   ---Note: the bind is needed because root.buttons doesn't recieve an argument, but client.buttons recieves an AwesomeClientInstance
   return awful_button.new(modKeys, button, press and bind.with_args(press), release and bind.with_args(release))
 end
-M.buttons = gtable.join( --- Mouse buttons
+M.buttons = tables.join( --- Mouse buttons
   gbutton({ modkey }, 5, throttle(atag.viewnext, delay)),
   gbutton({ modkey }, 4, throttle(atag.viewprev, delay))
 )

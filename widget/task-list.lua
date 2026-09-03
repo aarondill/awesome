@@ -6,13 +6,13 @@ local bind = require("util.bind")
 local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
 local gshape = require("gears.shape")
-local gtable = require("gears.table")
 local handle_error = require("util.handle_error")
 local icons = require("theme.icons")
 local mat_icon = require("widget.material.icon")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.awesome.compat")
+local tables = require("util.tables")
 ---Common method to create buttons.
 ---@param buttons table?
 ---@param object table
@@ -143,7 +143,7 @@ local function list_update(config, self, buttons, label, data, clients)
 end
 
 -- we can use a global set of buttons because they work with their parameters
-local tasklist_buttons = gtable.join(
+local tasklist_buttons = tables.join(
   abutton({}, 1, function(c) ---@param c AwesomeClientInstance
     if c == capi.client.focus then
       c.minimized = true
@@ -180,7 +180,7 @@ local defaults = {
 ---@param args TaskListArgs
 ---@return awful.widget.tasklist
 local function TaskList(args)
-  local config = gtable.join(defaults, args)
+  local config = tables.extend(defaults, args)
   return atasklist({
     screen = config.screen,
     filter = atasklist.filter.currenttags,

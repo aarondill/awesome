@@ -1,7 +1,7 @@
 require("module.notifications") -- In case this is called before rc.lua requires it
 local bind = require("util.bind")
-local gtable = require("gears.table")
 local naughty = require("naughty")
+local tables = require("util.tables")
 
 ---@alias gears.shape fun(cr: userdata, width: integer, height: integer)
 ---@alias gears.opacity table
@@ -99,12 +99,11 @@ function M.notify(loglevel, text, opts, extra_opts)
   assert(type(loglevel or "") == "string", "notify: loglevel must be a string")
   assert(type(opts or {}) == "table", "notify: opts must be a table")
 
-  opts = opts and gtable.clone(opts, false) or {} --- A deep clone is not needed, since no values' values are changed
+  opts = tables.extend(opts, extra_opts) -- A deep clone is not needed, since no values' values are changed
   if loglevel then
     opts.preset = naughty.config.presets[loglevel]
     if not opts.preset then error("Invalid loglevel: " .. loglevel) end
   end
-  if extra_opts then gtable.crush(opts, extra_opts) end
 
   return _notify(text, opts)
 end

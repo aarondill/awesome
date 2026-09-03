@@ -8,6 +8,7 @@ local path = require("util.path")
 local read_async = require("util.file.read_async")
 local shell_escape = require("util.command.shell_escape")
 local spawn = require("util.spawn")
+local stream = require("stream")
 local GLib, Gio = lgi.GLib, lgi.Gio
 
 ---@type table<string, boolean>
@@ -110,8 +111,7 @@ local function diff_environment()
           if already_set[k] then env[k] = nil end
         end
         if next(env) == nil then return end -- No changes
-        local keys = gtable.keys(env)
-        local output = table.concat(gtable.map(function(k) return k .. "=" .. env[k] end, keys), "\n")
+        local output = stream.new(gtable.keys(env)):map(function(k) return k .. "=" .. env[k] end):join("\n")
         notifs.normal(output, { title = "Updated environment from shell" })
       end
       return setenv_tbl(env)

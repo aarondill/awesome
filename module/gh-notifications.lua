@@ -1,8 +1,8 @@
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notifs = require("util.notifs")
 local spawn = require("util.spawn")
 local strings = require("util.strings")
+local tables = require("util.tables")
 
 local M = { notification_count = 0, default_debounce_duration = 60 }
 local state = { last_refresh = nil, debounce_duration = M.default_debounce_duration }
@@ -129,7 +129,7 @@ M.refresh = function(if_changed, done)
     local if_modified_since = previous_last_refresh and generate_last_modified(previous_last_refresh)
 
     local cmd = { "gh", "api", "notifications", "-i", "-t", "{{ len . }}" }
-    if if_modified_since then cmd = gtable.merge(cmd, { "-H", "If-Modified-Since: " .. if_modified_since }) end
+    if if_modified_since then cmd = tables.concat(cmd, "-H", "If-Modified-Since: " .. if_modified_since) end
 
     local suc = spawn.async(cmd, function(stdout, _, reason)
       if reason ~= "exit" then return end -- died to a a signal, ignore

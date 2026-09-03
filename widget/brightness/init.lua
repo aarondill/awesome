@@ -2,7 +2,6 @@
 local abutton = require("awful.button")
 local bind = require("util.bind")
 local clickable_container = require("widget.material.clickable-container")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
 local notifs = require("util.notifs")
@@ -11,6 +10,7 @@ local read_async = require("util.file.read_async")
 local wibox = require("wibox")
 local write_async = require("util.file.write_async")
 local widgets     = require("util.awesome.widgets")
+local tables      = require("util.tables")
 
 local bcontrol = {}
 
@@ -57,7 +57,7 @@ function bcontrol:init(args)
   self.widget = wibox.widget({
     { widget = wibox.widget.textbox, id = "textbox" },
     widget = clickable_container,
-    buttons = gtable.join(
+    buttons = tables.join(
       abutton({}, 1, bind.with_args(self.up, self)), -- click
       abutton({}, 3, bind.with_args(self.down, self)), -- right
       abutton({}, 4, bind.with_args(self.up, self, 1)), -- scroll up

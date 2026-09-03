@@ -11,6 +11,7 @@ local stream = require("stream")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local clickable_container = require("widget.material.clickable-container")
+local tables = require("util.tables")
 local throttle = require("util.throttle")
 
 ---@class MediaControl.args
@@ -69,7 +70,7 @@ function MediaControl:init(args)
   local update_widget = function() return gtimer.start_new(0.5, _update_widget) end
   local widget_template = {
     widget = clickable_container,
-    buttons = gtable.join(
+    buttons = tables.join(
       -- button 1: left click  - play/pause
       abutton({}, 1, bind(throttle(self.PlayPause, self.debounce), self, update_widget)),
       -- button 4: scroll up - previous song

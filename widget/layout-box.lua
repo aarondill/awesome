@@ -3,11 +3,11 @@ local alayout = require("awful.layout")
 local alayoutbox = require("awful.widget.layoutbox")
 local capi = require("capi")
 local clickable_container = require("widget.material.clickable-container")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local bind = require("util.bind")
 local compat = require("util.awesome.compat")
+local tables = require("util.tables")
 
 -- Create an imagebox widget which will contain an icon indicating which layout we're using.
 -- We need one layoutbox per screen.
@@ -32,7 +32,7 @@ local LayoutBox = function(s)
       widget = wibox.container.margin,
     },
     widget = clickable_container,
-    buttons = gtable.join(
+    buttons = tables.join(
       abutton({}, 1, up),
       abutton({}, 2, tile),
       abutton({}, 3, down),

@@ -2,7 +2,7 @@
 ---
 ---@generic T1: table
 ---@generic T2: table
----@param ... T2 Two or more tables
+---@param ... T1|T2|nil Two or more tables
 ---@return T1|T2 table Merged table
 local function tbl_extend(...)
   if select("#", ...) < 2 then error("wrong number of arguments", 1) end

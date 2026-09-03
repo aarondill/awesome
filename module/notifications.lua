@@ -1,5 +1,4 @@
 local capi = require("capi")
-local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local list_directory = require("util.file.list_directory")
 local naughty = require("naughty")
@@ -9,8 +8,9 @@ naughty.config.icon_formats = { "ico", "icon", "jpg", "png", "svg" }
 naughty.config.icon_dirs = { "/usr/share/icons/Yaru/", "/usr/share/pixmaps/", "/usr/share/icons/hicolor/" }
 -- Async. Could miss first few notifications, but hopefully is done before too many notifications.
 list_directory("/usr/share/icons", { full_path = true }, function(names)
-  if not names then return end
-  return gtable.merge(naughty.config.icon_dirs, names)
+  for _, name in ipairs(names or {}) do
+    table.insert(naughty.config.icon_dirs, name)
+  end
 end)
 
 -- Naughty presets

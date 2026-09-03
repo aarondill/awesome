@@ -1,12 +1,12 @@
 local abutton = require("awful.button")
 local atag = require("awful.tag")
 local capi = require("capi")
-local gtable = require("gears.table")
 local modkey = require("configuration.keys.mod").modKey
 local throttle = require("util.throttle")
 local delay = require("configuration").tag_throttle_delay
+local tables = require("util.tables")
 
-return gtable.join(
+return tables.join(
   abutton.new({}, 1, function(t) ---@param t AwesomeTagInstance
     t:view_only()
   end),

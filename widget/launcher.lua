@@ -5,10 +5,10 @@ local apps = require("configuration.apps")
 local bind = require("util.bind")
 local capi = require("capi")
 local concat_command = require("util.command.concat_command")
-local gtable = require("gears.table")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local icons = require("theme.icons")
 local menubar = require("menubar")
+local tables = require("util.tables")
 local wibox = require("wibox")
 
 ---Create a button widget which will launch a command.
@@ -23,15 +23,16 @@ local function launcher_new(args, menu)
       widget = wibox.widget.base.empty_widget,
     })
   end
-  local opts = gtable.crush({ image = icons.launcher }, args, true)
-  opts.buttons = gtable.join(
-    abutton.new({}, 1, nil, apps.open.rofi),
-    abutton.new({}, 2, nil, function() -- Open exit screen on middle click
-      return capi.awesome.emit_signal("exit_screen::show")
-    end),
-    abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu))
-  )
-  opts.widget = IconButton
+  local opts = tables.extend({ image = icons.launcher }, args, {
+    buttons = tables.join(
+      abutton.new({}, 1, nil, apps.open.rofi),
+      abutton.new({}, 2, nil, function() -- Open exit screen on middle click
+        return capi.awesome.emit_signal("exit_screen::show")
+      end),
+      abutton.new({}, 3, nil, bind.with_args(menu.toggle, menu))
+    ),
+    widget = IconButton,
+  })
   return wibox.widget(opts)
 end
 ---@class LauncherArgs

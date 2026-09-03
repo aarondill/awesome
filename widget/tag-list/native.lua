@@ -1,4 +1,5 @@
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local ascreen = require("awful.screen")
 local ataglist = require("awful.widget.taglist")
@@ -6,7 +7,6 @@ local clickable_container = require("widget.material.clickable-container")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local compat = require("util.awesome.compat")
-local gtable = require("gears.table")
 
 local M = { mt = {} }
 
@@ -52,7 +52,7 @@ function M.new(opts)
       widget = wibox.container.background,
     },
   }
-  return ataglist(gtable.join(opts, overrides))
+  return ataglist(tables.extend(opts, overrides))
 end
 function M.mt:__call(...) return M.new(...) end
 return setmetatable(M, M.mt)

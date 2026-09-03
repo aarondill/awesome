@@ -4,16 +4,16 @@ local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local capi = require("capi")
 local compat = require("util.awesome.compat")
-local gtable = require("gears.table")
 local quake = require("module.quake")
 local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
+local tables = require("util.tables")
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 ---@param c AwesomeClientInstance
 local function render_titlebars(c)
   -- buttons for the titlebar
-  local buttons = gtable.join(
+  local buttons = tables.join(
     abutton({}, 1, function()
       c:emit_signal("request::activate", "titlebar", { raise = true })
       amouse.client.move(c)

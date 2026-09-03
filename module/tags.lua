@@ -2,9 +2,9 @@ local alayout = require("awful.layout")
 local ascreen = require("awful.screen")
 local atag = require("awful.tag")
 local capi = require("capi")
-local gtable = require("gears.table")
 local layouts = require("configuration.layouts")
 local stream = require("stream")
+local tables = require("util.tables")
 local tags = require("configuration.tags")
 
 if alayout.append_default_layouts then -- Added in v5
@@ -31,7 +31,7 @@ ascreen.connect_for_each_screen(function(s) ---@param s AwesomeScreenInstance
     :filter(function(i) return tags[i] ~= false end)
     :map(function(i) ---@param i integer
       local tag = resolve_tag(tags[i], s, i)
-      local params = gtable.crush({
+      local params = tables.extend({
         name = i,
         layout = layouts[1] or alayout.suit.tile,
         gap_single_client = true,

@@ -20,6 +20,7 @@ local wibox = require("wibox")
 local widgets = require("util.awesome.widgets")
 local dpi = require("beautiful").xresources.apply_dpi
 local GLib = require("lgi").GLib
+local tables = require("util.tables")
 
 ---@class ExitScreenConf
 ---if `true` then any unrecognized keys will exit
@@ -244,7 +245,7 @@ local function show(opts)
   exit_screen.visible = true
 end
 
-exit_screen:buttons(gtable.join(
+exit_screen:buttons(tables.join(
   -- Middle click - Hide exit_screen
   abutton({}, 2, hide),
   -- Right click - Hide exit_screen

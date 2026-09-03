@@ -2,7 +2,6 @@ local sep = ";"
 
 local assertions = require("util.types.assertions") -- This has no requires
 local filter = require("util.tables.filter") -- No requires
-local gtable = require("gears.table") -- AwesomeWM builtin
 local path = require("util.path") -- This only requires lgi
 local strings = require("util.strings") -- Only requires gears
 
@@ -50,9 +49,12 @@ function M.add_to_cpath(dir, prepend)
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.cpath_contains(dir) then return package.cpath end
-  local new = { package.cpath, path.join(dir, "?.so") }
-  if prepend then new = gtable.reverse(new) end
-  package.cpath = table.concat(new, sep)
+  local new = path.join(dir, "?.so")
+  if prepend then
+    package.cpath = new .. sep .. package.cpath
+  else
+    package.cpath = package.cpath .. sep .. new
+  end
   return package.cpath
 end
 
@@ -73,9 +75,12 @@ function M.add_to_path(dir, prepend)
   dir = path.normalize(dir)
   prepend = prepend == nil and true or not not prepend
   if M.path_contains(dir) then return package.path end
-  local new = { package.path, path.join(dir, "?.lua"), path.join(dir, "?", "init.lua") }
-  if prepend then new = gtable.reverse(new) end
-  package.path = table.concat(new, sep)
+  local new = path.join(dir, "?.lua") .. sep .. path.join(dir, "?", "init.lua")
+  if prepend then
+    package.path = new .. sep .. package.path
+  else
+    package.path = package.path .. sep .. new
+  end
   return package.path
 end
 

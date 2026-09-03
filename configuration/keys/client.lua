@@ -1,5 +1,6 @@
 local capi = require("capi")
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local abutton = require("awful.button")
 local aclient = require("awful.client")
@@ -7,7 +8,6 @@ local amouse = require("awful.mouse")
 local atitlebar = require("awful.titlebar")
 local awful_key = require("awful.key")
 local global = require(..., "global") ---@module "configuration.keys.global"
-local gtable = require("gears.table")
 local mod = require(..., "mod") ---@module "configuration.keys.mod"
 local screen = require("util.types.screen")
 
@@ -23,7 +23,7 @@ local modkey = mod.modKey
 local ckey = function(modKeys, key, press, release, data) return awful_key.new(modKeys, key, press, release, data) end
 
 -- Key bindings
-M.keys = gtable.join(
+M.keys = tables.join(
   ckey({ modkey }, "f", function(c)
     c.fullscreen = not c.fullscreen
     c:raise()
@@ -76,7 +76,7 @@ M.keys = gtable.join(
   ckey({ modkey }, "`", atitlebar.toggle, { description = "toggle top titlebar", group = "client" })
 )
 
-M.buttons = gtable.join(
+M.buttons = tables.join(
   abutton({}, 1, function(c) c:emit_signal("request::activate", "mouse_click", { raise = true }) end),
   abutton({ modkey }, 1, function(c)
     c:emit_signal("request::activate", "mouse_click", { raise = true })

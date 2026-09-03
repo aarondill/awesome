@@ -1,9 +1,9 @@
 ---Much of this came from awful.spawn!
 local awful_spawn = require("awful.spawn")
 local capi = require("capi")
-local gtable = require("gears.table")
 local iscallable = require("util.types.iscallable")
 local lgi = require("lgi")
+local tables = require("util.tables")
 local write_outputstream = require("util.file.write_outputstream")
 local Gio = lgi.Gio
 local GioUnix = lgi.GioUnix
@@ -62,7 +62,7 @@ end
 ---@return (string|string[])? cmd A command
 ---@return SpawnOptions opts SpawnOptions
 local function normalize_command(cmd, opts)
-  opts = opts and gtable.clone(opts, false) or {} -- Clone the user supplied options so they can be modified
+  opts = opts and tables.clone(opts) or {} -- Clone the user supplied options so they can be modified
   if cmd and iscallable(cmd) then
     -- Call the user's command with the current set of options
     -- Note that the user may modify this table, or return options in the returned command
@@ -314,7 +314,7 @@ function spawn.with_lines(cmd, callbacks, opts)
   local stdout_callback, stderr_callback = callbacks.stdout, callbacks.stderr
   local done_callback = callbacks.done or callbacks.output_done
 
-  local new_opts = gtable.join(opts, { -- Clones opts
+  local new_opts = tables.extend(opts, { -- Clones opts
     sn_rules = false,
     inherit_stdin = true,
     inherit_stdout = not stdout_callback,
@@ -357,7 +357,7 @@ spawn.with_line_callback = spawn.with_lines -- Backwards compatability with awfu
 ---@return string? error
 ---@return SpawnInfo? info only if no error
 function spawn.async(cmd, callback, opts)
-  opts = opts and gtable.clone(opts, false) or {} -- Clone opts, since we modify it in a moment
+  opts = opts and tables.clone(opts) or {} -- Clone opts, since we modify it in a moment
   local stdout, stderr = "", ""
   local exitcode, exitreason
   local function done_callback() return callback(stdout, stderr, exitreason, exitcode) end
