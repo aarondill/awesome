@@ -83,6 +83,13 @@ function open.file_browser(dir, spawn_options)
   return spawn_notif_on_err(do_cmd, spawn_options)
 end
 
+---Open a calculator
+---@param spawn_options SpawnOptions? Options to pass to utils.spawn
+function open.calculator(spawn_options)
+  local do_cmd = default.calculator
+  return spawn_notif_on_err(do_cmd, spawn_options)
+end
+
 ---Open a browser with the given url
 ---@param url? string|string[]
 ---@param new_window? boolean whether to create a new window - default false

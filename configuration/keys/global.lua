@@ -261,6 +261,7 @@ M.keys = tables.join(
     bind.with_args(apps.open.file_browser, path.get_home("Downloads")),
     { description = "Open a file browser (downloads)", group = "launcher" }
   ),
+  gkey({ modkey }, "/", apps.open.calculator, { description = "Open a calculator", group = "launcher" }),
   gkey({ modkey }, "b", apps.open.browser, { description = "Open a browser", group = "launcher" }),
   gkey(
     { modkey, "Shift" },
