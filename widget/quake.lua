@@ -117,7 +117,9 @@ function quake:_display(visible, target_tag)
   c.above = true
   c.skip_taskbar = true
 
-  self:settings(c) -- Additional user settings
+  if self.settings then
+    self:settings(c) -- Additional user settings
+  end
 
   if self.visible then -- Toggle display
     self.last_tag = target_tag
