@@ -1,4 +1,5 @@
 local require = require("util.rel_require")
+local tables = require("util.tables")
 
 local aclient = require("awful.client")
 local aplacement = require("awful.placement")
@@ -145,6 +146,42 @@ local rules = {
       shape = compat.rules.shape_function(function(cr, w, h) return gshape.rounded_rect(cr, w, h, 8) end),
       skip_decoration = true,
     },
+  },
+
+  --- Floating calculator
+  {
+    rule = { class = "gnome-calculator" },
+    callback = function(c)
+      if not c.valid then return true end
+      local has_other = stream
+        .new(capi.client.get(c.screen))
+        :filter(function(c2) return c2.class == c.class and c2.window ~= c.window end)
+        :anymatch(function(c2) ---@param c2 AwesomeClientInstance
+          return stream.new(c:tags()):anymatch(function(t) return tables.contains(c2:tags(), t) end)
+        end)
+      -- If there is already another calculator open on this tag&screen, don't move it
+      if has_other then return true end
+
+      --- HACK: We want to set the window to the minimum size in the hints, but
+      --- size_hints may not be ready yet, so we may need to wait for it to be set.
+      local set_size
+      function set_size()
+        local w, h = c.size_hints.min_width, c.size_hints.min_height
+        if w and h then
+          c:disconnect_signal("property::size_hints", set_size)
+          c:geometry({ width = w, height = h })
+        end
+        -- Set these properties even if not ready so that the window doesn't move as much
+        c.floating, c.ontop = true, true
+        aplacement.top_right(c, {
+          honor_padding = true,
+          honor_workarea = true,
+        })
+        capi.client.focus = c
+      end
+      c:connect_signal("property::size_hints", set_size)
+      set_size()
+    end,
   },
 }
 
